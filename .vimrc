@@ -1,6 +1,23 @@
-set nocompatible              " be iMproved, required
-filetype off                  " required
+" Forget being compatible with good ol' vi
+set nocompatible
 
+" Get that filetype stuff happening
+filetype on
+filetype plugin on
+filetype indent on
+
+" Turn on that syntax highlighting
+syntax on
+
+" Why is this not a default
+set hidden
+
+" At least let yourself know what mode you're in
+set showmode
+
+" Enable enhanced command-line completion. Presumes you have compiled
+" with +wildmenu.  See :help 'wildmenu'
+set wildmenu
 
 " Vundle
 set rtp+=~/.vim/bundle/vundle/
