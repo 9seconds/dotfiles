@@ -1,5 +1,17 @@
 " Forget being compatible with good ol' vi
 set nocompatible
+filetype off
+
+" Vundle
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'gmarik/vundle'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'Lokaltog/vim-easymotion'
+Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-commentary'
+Plugin 'kien/ctrlp.vim'
+call vundle#end()
 
 " Get that filetype stuff happening
 filetype on
@@ -48,27 +60,12 @@ nmap <silent> <C-N> :silent noh<CR>
 
 set linespace=1
 
-" Vundle
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
-filetype plugin indent on
-
-
-" Vundle plugins
-Plugin 'gmarik/vundle'
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'Lokaltog/vim-easymotion'
-Plugin 'tpope/vim-surround'
-Plugin 'tpope/vim-commentary'
-Plugin 'kien/ctrlp.vim'
-
 " Color scheme
 set t_Co=256
 syntax enable
-let g:solarized_termcolors = 256
-let g:solarized_termtrans = 0
-let g:solarized_contrast = "normal"
-let g:solarized_visibility= "normal"
+let g:solarized_termcolors=256
+let g:solarized_contrast="normal"
+let g:solarized_visibility="normal"
 set background=dark
 colorscheme solarized
 
