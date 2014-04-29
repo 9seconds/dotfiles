@@ -1,8 +1,9 @@
-" Forget being compatible with good ol' vi
 set nocompatible
 filetype off
 
+"
 " Vundle
+"
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'gmarik/vundle'
@@ -13,19 +14,61 @@ Plugin 'tpope/vim-commentary'
 Plugin 'kien/ctrlp.vim'
 call vundle#end()
 
-" Get that filetype stuff happening
 filetype on
 filetype plugin on
 filetype indent on
 
+let mapleader = ","
+set showcmd
+
+" Set 7 lines to the cursor - when moving vertically using j/k
+set scrolloff=7
+
+" For regular expressions turn magic on
+set magic
+"
+" " Show matching brackets when text indicator is over them
+set showmatch
+"
+" " How many tenths of a second to blink when matching brackets
+set matchtime=2
+
+" Breaking lines with \[enter] without having to go to insert mode (myself).
+nmap <leader><cr> i<cr><Esc>
+
+nmap <silent> <C-N> :silent noh<CR>
+nmap <leader>l :set list!<CR>
+" Disable that goddamn 'Entering Ex mode. Type 'visual' to go to Normal mode.'
+" " that I trigger 40x a day.
+map Q <Nop>
 " Turn on that syntax highlighting
 syntax on
+
+set sidescrolloff=15
+set sidescroll=1
+nnoremap <up> <nop>
+nnoremap <down> <nop>
+nnoremap <left> <nop>
+nnoremap <right> <nop>
+inoremap <up> <nop>
+inoremap <down> <nop>
+inoremap <left> <nop>
+inoremap <right> <nop>
+
+nnoremap <C-n> :bnext<CR>
+nnoremap <C-p> :bprevious<CR>
 
 " Why is this not a default
 set hidden
 
+" Autosave
+set autowrite
+
 " At least let yourself know what mode you're in
 set showmode
+
+cmap w!! %!sudo tee > /dev/null %
+
 
 " Enable enhanced command-line completion. Presumes you have compiled
 " with +wildmenu.  See :help 'wildmenu'
@@ -56,7 +99,6 @@ set nojoinspaces                " Prevents inserting two spaces after punctuatio
 set splitright                  " Puts new vsplit windows to the right of the current
 set splitbelow                  " Puts new split windows to the bottom of the current
 
-nmap <silent> <C-N> :silent noh<CR>
 
 set linespace=1
 
@@ -72,7 +114,6 @@ colorscheme solarized
 " Different hacks
 
 " Shortcut to rapidly toggle `set list`
-nmap <leader>l :set list!<CR>
 
 " Use the same symbols as TextMate for tabstops and EOLs
 set listchars=tab:▸\ ,eol:¬
