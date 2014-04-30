@@ -48,7 +48,7 @@ COMPLETION_WAITING_DOTS="true"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git)
+plugins=(gitfast git-extras jsontools python autojump command-not-found debian docker)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -95,6 +95,18 @@ alias t='tig'
 alias ta='tig --all'
 alias tmux='tmux -2'
 
+alias -g G="| grep"
+alias -g L="| less"
+alias -g V="| view -"
+alias -g ST="2>&1"
+alias -g TEE="2>&1 | tee"
+alias -g B="&|"
+alias -g HL="--help"
+alias -g LL="2>&1 | less"
+alias -g CA="2>&1 | cat -A"
+alias -g NE="2> /dev/null"
+alias -g NUL="> /dev/null 2>&1"
+
 export WORKON_HOME=/home/nineseconds/dev/.virtualenvs/
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 export EDITOR=vim
@@ -108,3 +120,12 @@ bindkey "^S" history-incremental-pattern-search-forward
 insert_sudo () { zle beginning-of-line; zle -U "sudo " }
 zle -N insert-sudo insert_sudo
 bindkey "^[s" insert-sudo
+
+tstamp () {
+    if [ $# -ne 1 ]
+    then
+        echo "Usage: tstamp <unix timestamp>"
+        return 1
+    fi
+    echo $1 | gawk '{print strftime("%c", ( $0 + 500 ) / 1000 )}'
+}

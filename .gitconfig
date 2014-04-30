@@ -5,12 +5,13 @@
 	co = checkout
 	br = branch
 	cob = checkout -b
-	st = status
+	st = status -s
 	cp = cherry-pick
 	df = diff --minimal
 	dfc = diff --cached --minimal
 	fix = commit -a --amend
-	cmt = commit -a
+    cm = commit -m
+	cma = commit -a -m
 	bl = blame --minimal
 	cl = clean -xfd
 	pullr = pull --rebase
