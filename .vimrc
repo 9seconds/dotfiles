@@ -81,6 +81,15 @@ nnoremap <silent> # #zz
 nnoremap <silent> g* g*zz
 nnoremap <silent> g# g#zz
 
+" Fast window navigation by Alt+hjkl
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" Sugar for buffer listing
+map <F2> :ls<CR>:b<Space>
+
 " Toggle TagBar
 nmap <F8> :TagbarToggle<CR>
 
@@ -125,6 +134,9 @@ set matchtime=2
 
 " Why is this not a default
 set hidden
+
+" Explain VIM about backspaces
+set backspace=indent,eol,start
 
 " Autosave
 set autowrite
@@ -219,6 +231,11 @@ set eol
 
 " Always show statusline
 set laststatus=2
+
+" No backup or swaps, please
+set nobackup
+set nowritebackup
+set noswapfile
 
 " Encodings. Let's be reasonable, we only use UTF-8 everywhere now
 set encoding=utf-8
