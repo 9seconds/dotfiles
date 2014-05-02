@@ -261,7 +261,7 @@ let g:ctrlp_custom_ignore = {
 " https://github.com/ggreer/the_silver_searcher
 if executable('ag')
     set grepprg=ag\ --nogroup\ --nocolor
-    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+    let g:ctrlp_user_command = 'ag %s -lSf --nocolor -g ""'
 endif
 
 " Disable bullshit from graphical VIM
