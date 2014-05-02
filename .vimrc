@@ -268,4 +268,6 @@ endif
 if has('gui_running')
     set guioptions-=T
     set guioptions-=r
+
+    set guifont=Meslo\ LG\ M\ DZ\ for\ Powerline\ 11
 endif
