@@ -13,6 +13,7 @@ call vundle#begin()
     Plugin 'Lokaltog/vim-easymotion'
     Plugin 'tpope/vim-surround'
     Plugin 'tpope/vim-commentary'
+    Plugin 'tpope/vim-fugitive'
     Plugin 'kien/ctrlp.vim'
     Plugin 'bling/vim-airline'
     Plugin 'majutsushi/tagbar'
@@ -20,6 +21,7 @@ call vundle#begin()
     Plugin 'terryma/vim-expand-region'
     Plugin 'terryma/vim-multiple-cursors'
     Plugin 'terryma/vim-smooth-scroll'
+    Plugin 'Valloric/YouCompleteMe'
 call vundle#end()
 
 
@@ -82,10 +84,16 @@ nnoremap <silent> g# g#zz
 nmap <F8> :TagbarToggle<CR>
 
 " Smooth scrolling
-noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
-noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
-noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
-noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
+if has('gui_running')
+    noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
+    noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
+    noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
+    noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
+endif
+
+" YouCompleteMe settings
+let g:ycm_autoclose_preview_window_after_completion=1
+nnoremap <leader>g :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
 
 " """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -207,6 +215,12 @@ set eol
 
 " Always show statusline
 set laststatus=2
+
+" Encodings. Let's be reasonable, we only use UTF-8 everywhere now
+set encoding=utf-8
+set termencoding=utf-8
+set fileencoding=utf-8
+set fileencodings=utf8,cp1251,koi8r,cp866,ucs-2le
 
 " Setup statusline airline
 let g:airline_powerline_fonts = 1
