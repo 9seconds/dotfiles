@@ -22,6 +22,7 @@ call vundle#begin()
     Plugin 'terryma/vim-multiple-cursors'
     Plugin 'terryma/vim-smooth-scroll'
     Plugin 'Valloric/YouCompleteMe'
+    Plugin 'Raimondi/delimitMate'
 call vundle#end()
 
 
@@ -136,6 +137,9 @@ set wildmenu
 
 " Set line numbers
 set number
+
+" Ok, finally I got why do you all need for relative numbers. I'm in the van!
+set relativenumber
 
 " Mouse settings
 set mouse=a
