@@ -13,6 +13,7 @@ call vundle#begin()
     Plugin 'Lokaltog/vim-easymotion'
     Plugin 'tpope/vim-surround'
     Plugin 'tpope/vim-commentary'
+    Plugin 'tpope/vim-repeat'
     Plugin 'tpope/vim-fugitive'
     Plugin 'kien/ctrlp.vim'
     Plugin 'bling/vim-airline'
@@ -48,7 +49,7 @@ nmap <leader><cr> o<Esc>
 nmap <leader>\ O<Esc>
 
 " Disable current highlight by Ctrl+H
-nmap <silent> <C-H> :silent noh<CR>
+map <silent> <leader><c-h> :silent nohlsearch<CR>
 
 " Show invisibles by Leader + l
 nmap <leader>l :set list!<CR>
@@ -137,6 +138,12 @@ set hidden
 
 " Explain VIM about backspaces
 set backspace=indent,eol,start
+
+" Folding
+set foldmethod=indent
+set foldnestmax=10
+set foldlevel=1
+set nofoldenable
 
 " Autosave
 set autowrite
