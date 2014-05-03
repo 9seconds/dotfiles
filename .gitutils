@@ -1,0 +1,14 @@
+gitlog () {
+    # Puts a well formatted gitlog. This is not needed everytime actually
+    # but it is neet to have
+    HASH="%C(yellow)%h%C(reset)"
+    TIME="%C(green)%ar%C(reset)"
+    AUTHOR="%C(bold blue)%an%C(reset)"
+    REFS="%C(red)%d%C(reset)"
+    SUBJECT="%s"
+    LOGFORMAT="${HASH}\`(${TIME})\`${AUTHOR}\`${REFS} ${SUBJECT}"
+
+    git log --pretty --graph --format="tformat:${LOGFORMAT}" $* \
+        | column -t -s "\`" \
+        | less -XSFR
+}

@@ -1,33 +1,35 @@
 [user]
-	email = nineseconds@yandex.ru
-	name = 9seconds
+    email = nineseconds@yandex.ru
+    name = 9seconds
 [alias]
-	co = checkout
-	br = branch
-	cob = checkout -b
-	st = status -s
-	cp = cherry-pick
-	df = diff --minimal
-	dfc = diff --cached --minimal
-	fix = commit -a --amend
+    co = checkout
+    br = branch
+    cob = checkout -b
+    st = status -s
+    cp = cherry-pick
+    df = diff --minimal
+    dfc = diff --cached --minimal
+    fix = commit -a --amend
     cm = commit -m
-	cma = commit -a -m
-	bl = blame --minimal
-	cl = clean -xfd
-	pullr = pull --rebase
-	ftch = fetch --prune --all
-	pll = pull --rebase --all
-	up = "!git remote update -p; git merge --ff-only @{u}"
-	lolcommit = !git commit -a -m\"$(curl -s http://whatthecommit.com/index.txt )\"
-	l = log --graph --decorate --pretty=oneline --abbrev-commit
-	la = log --graph --decorate --pretty=oneline --abbrev-commit --all
+    cma = commit -a -m
+    bl = blame --minimal
+    cl = clean -xfd
+    pullr = pull --rebase
+    ftch = fetch --prune --all
+    pll = pull --rebase --all
+    l = "!. ~/.gitutils && gitlog"
+    la = !git l --all
+    r = !git l -20
+    ra = !git la -20
 [push]
-	default = simple
+    default = simple
 [rerere]
-	enabled = 1
+    enabled = 1
 [color]
-	ui = auto
+    ui = true
 [merge]
-	tool = kdiff3
+    tool = kdiff3
 [diff]
-	tool = kdiff3
+    tool = kdiff3
+[core]
+    pager = less -XSFR
