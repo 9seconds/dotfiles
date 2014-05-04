@@ -102,8 +102,12 @@ alias gst='g st'
 alias ffind=ffind
 alias dfind=dfind
 alias grep=egrep
+alias mkdir='mkdir -pv'
 alias ag='ag --color -fS'
 alias vless='vim -R -c "set number" -u /usr/share/vim/vim74/macros/less.vim'
+alias df='df -ah --total'
+alias du='du -ahc'
+alias pxargs='xargs -P $(nproc)'
 
 alias -g G="| grep"
 alias -g L="| less -XSFR"
