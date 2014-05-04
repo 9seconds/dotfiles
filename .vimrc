@@ -94,6 +94,9 @@ map <F2> :ls<CR>:b<Space>
 " Toggle TagBar
 nmap <F8> :TagbarToggle<CR>
 
+" For VIM delimmate stuff
+inoremap <F3> <ESC>%%a
+
 " Smooth scrolling
 if has('gui_running')
     noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
