@@ -40,7 +40,7 @@ tstamp () {
         echo "Usage: tstamp <unix timestamp>"
         return 1
     fi
-    echo $1 | gawk '{print strftime("%c", ( $0 + 500 ) / 1000 )}'
+    echo "$1" | gawk '{print strftime("%c", ( $0 + 500 ) / 1000 )}'
 }
 
 function find() {
@@ -56,6 +56,16 @@ function ffind() {
 function dfind() {
     # Find only files with some optimizations I generally use
     find $@ -type d
+}
+
+function portu() {
+    # Prints who occupied port
+    if [ $# -ne 1 ]
+    then
+        echo "Usage: portu <port number>"
+        return 1
+    fi
+    sudo netstat -lnp | ag "$1" | gawk '{print $4,"\t",$7}'
 }
 
 
@@ -108,6 +118,7 @@ alias vless='vim -R -c "set number" -u /usr/share/vim/vim74/macros/less.vim'
 alias df='df -ah --total'
 alias du='du -ahc'
 alias pxargs='xargs -P $(nproc)'
+alias portu=portu
 
 alias -g G="| grep"
 alias -g L="| less -XSFR"

@@ -24,6 +24,7 @@ call vundle#begin()
     Plugin 'terryma/vim-smooth-scroll'
     Plugin 'Valloric/YouCompleteMe'
     Plugin 'Raimondi/delimitMate'
+    Plugin 'godlygeek/tabular'
 call vundle#end()
 
 

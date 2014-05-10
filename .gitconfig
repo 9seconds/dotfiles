@@ -28,8 +28,13 @@
 [color]
     ui = true
 [merge]
-    tool = kdiff3
+	tool = p4merge
 [diff]
-    tool = kdiff3
+	tool = diffmerge
 [core]
     pager = less -XSFR
+[mergetool "p4merge"]
+    cmd = "/opt/p4merge/bin/p4merge $BASE $LOCAL $REMOTE $MERGED"
+    keepTemporaries = false
+    trustExitCode = false
+    keepBackup = false
