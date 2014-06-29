@@ -1,8 +1,5 @@
-" This is basic config for VIM. It can be placed almost everywhere
-" and has to be used even on Raspberry PI
+" Basic VIM config
 
-source includes/common.vim
-source includes/keymap.vim
-source includes/gui.vim
-
-
+source ./.vimconf/common.vim
+source ./.vimconf/keymap.vim
+source ./.vimconf/gui.vim

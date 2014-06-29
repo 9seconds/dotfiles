@@ -1,5 +1,6 @@
-" Basic settings with code support
+" Basic code config
 
-source basic.vim
-source includes/code.vim
-
+source ./.vimconf/common.vim
+source ./.vimconf/keymap.vim
+source ./.vimconf/gui.vim
+source ./.vimconf/code.vim
