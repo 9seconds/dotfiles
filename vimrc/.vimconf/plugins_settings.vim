@@ -42,3 +42,11 @@ if executable('ag')
     set grepprg=ag\ --nogroup\ --nocolor
     let g:ctrlp_user_command = 'ag %s -lSf --nocolor -g ""'
 endif
+
+" Rainbow parenthesis
+au VimEnter * RainbowParenthesesToggleAll
+au Syntax   * RainbowParenthesesLoadRound
+au Syntax   * RainbowParenthesesLoadSquare
+au Syntax   * RainbowParenthesesLoadBraces
+
+nnoremap <silent> <F11> :YRShow<CR>

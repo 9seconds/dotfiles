@@ -12,6 +12,8 @@ call vundle#begin()
     Plugin 'tpope/vim-commentary'
     Plugin 'tpope/vim-repeat'
     Plugin 'kien/ctrlp.vim'
+    Plugin 'kien/rainbow_parentheses.vim'
+    Plugin 'Yggdroot/indentLine'
     Plugin 'bling/vim-airline'
     Plugin 'majutsushi/tagbar'
     Plugin 'scrooloose/syntastic'
@@ -21,4 +23,5 @@ call vundle#begin()
     Plugin 'Valloric/YouCompleteMe'
     Plugin 'godlygeek/tabular'
     Plugin 'jnwhiteh/vim-golang'
+    Plugin 'vim-scripts/YankRing.vim'
 call vundle#end()
