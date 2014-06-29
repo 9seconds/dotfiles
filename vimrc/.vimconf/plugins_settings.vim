@@ -49,4 +49,5 @@ au Syntax   * RainbowParenthesesLoadRound
 au Syntax   * RainbowParenthesesLoadSquare
 au Syntax   * RainbowParenthesesLoadBraces
 
-nnoremap <silent> <F11> :YRShow<CR>
+nnoremap <silent> <F11> :YRShow<cr>
+nnoremap <silent> <F2>  :CtrlP<cr>

@@ -7,7 +7,7 @@ export ZSH=$HOME/.oh-my-zsh
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
-ZSH_THEME="9seconds"
+ZSH_THEME="blinks"
 
 # Uncomment the following line to use case-sensitive completion.
 CASE_SENSITIVE="true"
@@ -107,7 +107,7 @@ alias v=vim
 alias g=git
 alias t=tig
 alias ta='t --all'
-alias tmux='tmux -2'
+alias tmux='TERM=xterm-256color tmux -2'
 alias gst='g st'
 alias ffind=ffind
 alias dfind=dfind
