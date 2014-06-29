@@ -25,6 +25,8 @@ call vundle#begin()
     Plugin 'Valloric/YouCompleteMe'
     Plugin 'Raimondi/delimitMate'
     Plugin 'godlygeek/tabular'
+    Plugin 'jnwhiteh/vim-golang'
+    Plugin 'chase/vim-ansible-yaml'
 call vundle#end()
 
 
@@ -92,11 +94,8 @@ nnoremap <C-l> <C-w>l
 " Sugar for buffer listing
 map <F2> :ls<CR>:b<Space>
 
-" Toggle TagBar
-nmap <F8> :TagbarToggle<CR>
-
-" For VIM delimmate stuff
-inoremap <F3> <ESC>%%a
+" For braces-powered languages mostly
+inoremap <F5> <CR><ESC>O
 
 " Smooth scrolling
 if has('gui_running')
@@ -182,9 +181,6 @@ set ruler
 " Rulers. 80 is so-so, but after 120 goes open space
 let &colorcolumn="80,".join(range(120,999),",")
 
-" Make the 'cw' and like commands put a $ at the end
-set cpoptions=ces$
-
 " Find as you type. Like in browsers, pretty convenient
 set incsearch
 
@@ -231,7 +227,7 @@ set splitright
 set splitbelow
 
 " Linespace height. I guess this is for GVim mostly
-set linespace=4
+set linespace=2
 
 " Invisible chars presentation
 set listchars=tab:▸\ ,eol:¬,trail:⋅,extends:❯,precedes:❮
@@ -294,8 +290,10 @@ endif
 
 " Disable bullshit from graphical VIM
 if has('gui_running')
-    set guioptions-=T
+    set guioptions-=T  " hide toolbar
     set guioptions-=r
+    set guioptions-=L
+    set guioptions-=m  " hide menubar
 
     set guifont=Meslo\ LG\ M\ DZ\ for\ Powerline\ 11
 endif

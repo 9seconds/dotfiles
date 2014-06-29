@@ -20,7 +20,7 @@ COMPLETION_WAITING_DOTS="true"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-plugins=(gitfast git-extras jsontools python autojump command-not-found docker zsh-syntax-highlighting)
+plugins=(gitfast git-extras jsontools python autojump command-not-found docker)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -119,6 +119,7 @@ alias df='df -ah --total'
 alias du='du -ahc'
 alias pxargs='xargs -P $(nproc)'
 alias portu=portu
+alias aptg="sudo apt-get -qq -y update && sudo apt-get -y upgrade"
 
 alias -g G="| grep"
 alias -g L="| less -XSFR"
@@ -132,3 +133,11 @@ alias -g CA="2>&1 | cat -A"
 alias -g NE="2> /dev/null"
 alias -g NUL="> /dev/null 2>&1"
 
+export GOPATH=$HOME/dev/experiments/collectors
+export PATH=$PATH:$HOME/.local/bin
+# export GOROOT=$HOME/dev/.go/collectors
+# export GOPATH=$GOROOT
+# export GOBIN=$GOROOT/bin
+# export GOARCH=amd64
+# export GOOS=linux
+# export PATH=$GOBIN:$PATH
