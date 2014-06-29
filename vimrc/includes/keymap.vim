@@ -1,0 +1,71 @@
+" This is a keymap for the VIM
+
+" No way back. No arrows :(
+noremap  <up>    <nop>
+noremap  <down>  <nop>
+noremap  <left>  <nop>
+noremap  <right> <nop>
+inoremap <up>    <nop>
+inoremap <down>  <nop>
+inoremap <left>  <nop>
+inoremap <right> <nop>
+
+" Map Leader to the Space
+let mapleader = "\<Space>"
+let g:mapleader = "\<Space>"
+
+" Fast saving on Space+w
+nmap <leader>w :w!<cr>
+
+" :W sudo saves the file
+" (useful for handling the permission-denied error)
+cmap w!! %!sudo tee % > /dev/null%
+
+" Reselect visual block after indent or outdent
+vnoremap < <gv
+vnoremap > >gv
+
+" Reasonable navigation through wrapped lines
+nnoremap j gj
+nnoremap k gk
+
+" Keep search pattern at the center of the screen
+nnoremap <silent> n  nzz
+nnoremap <silent> N  Nzz
+nnoremap <silent> *  *zz
+nnoremap <silent> #  #zz
+nnoremap <silent> g* g*zz
+nnoremap <silent> g# g#zz
+
+" Fast window navigation by Alt+hjkl
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" Disable Q since I really bad at fast typing
+map Q <nop>
+
+" Disable highlight
+map <silent> <leader>h :silent nohlsearch<cr>
+
+" Remap VIM 0 to first non-blank character
+map 0 ^
+
+" Close the current buffer
+map <leader>bd :bdelete<cr>
+
+" List current buffers
+map <leader>bl :ls<cr>:b<Space>
+
+" Tab management
+map <leader>tn        :tabnew<cr>
+map <leader>to        :tabonly<cr>
+map <leader>tc        :tabclose<cr>
+map <leader>tm        :tabmove<Space>
+map <leader>t<leader> :tabnext<Space>
+map <leader>te        :tabedit <c-r>=expand("%:p:h")<cr>/
+
+" Switch CWD to the directory of the open buffer
+map <leader>cd :cd %:p:h<cr>:pwd<cr>
+
