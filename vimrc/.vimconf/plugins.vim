@@ -7,6 +7,7 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
     Plugin 'gmarik/vundle'
     Plugin 'altercation/vim-colors-solarized'
+    Plugin 'croaker/mustang-vim'
     Plugin 'Lokaltog/vim-easymotion'
     Plugin 'tpope/vim-surround'
     Plugin 'tpope/vim-commentary'

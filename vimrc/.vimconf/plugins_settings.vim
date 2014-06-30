@@ -20,13 +20,15 @@ let g:airline#extensions#tabline#enabled = 1
 
 "Solarized color scheme
 set t_Co=256
-let g:solarized_contrast="normal"
-let g:solarized_visibility="normal"
+" let g:solarized_contrast="normal"
+" let g:solarized_visibility="normal"
 
 colorscheme solarized
 if has("gui_running")
-    set background=light
+    colorscheme mustang
+    let g:colors_name="mustang"
 else
+    colorscheme solarized
     set background=dark
 endif
 
@@ -51,3 +53,4 @@ au Syntax   * RainbowParenthesesLoadBraces
 
 nnoremap <silent> <F11> :YRShow<cr>
 nnoremap <silent> <F2>  :CtrlP<cr>
+
