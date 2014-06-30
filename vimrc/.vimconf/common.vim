@@ -120,3 +120,6 @@ au VimResized * exe "normal! \<c-w>="
 
 " Remote trailing whitespaces on save
 autocmd BufWritePre * :%s/\s\+$//e
+
+" Disable welcome page
+set shortmess=I
