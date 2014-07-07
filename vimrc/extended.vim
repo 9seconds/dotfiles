@@ -6,3 +6,5 @@ source ~/.vimconf/keymap.vim
 source ~/.vimconf/gui.vim
 source ~/.vimconf/code.vim
 source ~/.vimconf/plugins_settings.vim
+
+set relativenumber

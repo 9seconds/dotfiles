@@ -8,9 +8,6 @@ filetype indent on
 " Enable syntax
 syntax on
 
-" Set relative numbers
-set relativenumber
-
 " Set rulers
 let &colorcolumn="80,".join(range(120,999),",")
 

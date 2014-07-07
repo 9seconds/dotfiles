@@ -65,13 +65,6 @@ set nobackup
 set nowb
 set noswapfile
 
-" Specify the behavior when switching between buffers
-try
-    set switchbuf=useopen,usetab,newtab
-    set stal=2
-catch
-endtry
-
 " Set end of line always
 set eol
 

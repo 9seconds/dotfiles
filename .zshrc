@@ -141,3 +141,12 @@ export PATH=$PATH:$HOME/.local/bin
 # export GOARCH=amd64
 # export GOOS=linux
 # export PATH=$GOBIN:$PATH
+
+
+###############################################################################
+## Private stuff I do not want to share
+################################################################################
+
+if [ -f ~/.zshrc.private ]; then
+    . ~/.zshrc.private
+fi

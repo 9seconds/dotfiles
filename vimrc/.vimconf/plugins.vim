@@ -24,5 +24,4 @@ call vundle#begin()
     Plugin 'Valloric/YouCompleteMe'
     Plugin 'godlygeek/tabular'
     Plugin 'jnwhiteh/vim-golang'
-    Plugin 'vim-scripts/YankRing.vim'
 call vundle#end()
