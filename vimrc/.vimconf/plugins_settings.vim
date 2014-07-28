@@ -20,17 +20,9 @@ let g:airline#extensions#tabline#enabled = 1
 
 "Solarized color scheme
 set t_Co=256
-" let g:solarized_contrast="normal"
-" let g:solarized_visibility="normal"
-
+let g:solarized_contrast="normal"
+let g:solarized_visibility="normal"
 colorscheme solarized
-if has("gui_running")
-    colorscheme mustang
-    let g:colors_name="mustang"
-else
-    colorscheme solarized
-    set background=dark
-endif
 
 " Ignore some folders and files for CtrlP indexing
 let g:ctrlp_custom_ignore = {
