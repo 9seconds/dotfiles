@@ -7,7 +7,7 @@ export ZSH=$HOME/.oh-my-zsh
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
-ZSH_THEME="blinks"
+ZSH_THEME="arrow"
 
 # Uncomment the following line to use case-sensitive completion.
 CASE_SENSITIVE="true"
@@ -134,7 +134,7 @@ alias -g NE="2> /dev/null"
 alias -g NUL="> /dev/null 2>&1"
 
 export GOPATH=$HOME/dev/experiments/collectors
-export PATH=$PATH:$HOME/.local/bin
+export PATH=$PATH:$HOME/.local/bin:$HOME/.gem/ruby/1.9.1/bin
 # export GOROOT=$HOME/dev/.go/collectors
 # export GOPATH=$GOROOT
 # export GOBIN=$GOROOT/bin
