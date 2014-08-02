@@ -20,6 +20,7 @@ let g:airline#extensions#tabline#enabled = 1
 
 "Solarized color scheme
 set t_Co=256
+set background=dark
 let g:solarized_contrast="normal"
 let g:solarized_visibility="normal"
 colorscheme solarized

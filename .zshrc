@@ -119,7 +119,7 @@ alias df='df -ah --total'
 alias du='du -ahc'
 alias pxargs='xargs -P $(nproc)'
 alias portu=portu
-alias aptg="sudo apt-get -qq -y update && sudo apt-get -y upgrade"
+alias aptg="sudo apt-get -qq -y update && sudo apt-get -y dist-upgrade"
 
 alias -g G="| grep"
 alias -g L="| less -XSFR"
