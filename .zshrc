@@ -142,6 +142,10 @@ export PATH=$PATH:$HOME/.local/bin:$HOME/.gem/ruby/1.9.1/bin
 # export GOOS=linux
 # export PATH=$GOBIN:$PATH
 
+export PATH="$HOME/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
 
 ###############################################################################
 ## Private stuff I do not want to share
