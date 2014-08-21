@@ -7,7 +7,7 @@ export ZSH=$HOME/.oh-my-zsh
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
-ZSH_THEME="arrow"
+ZSH_THEME="9seconds"
 
 # Uncomment the following line to use case-sensitive completion.
 CASE_SENSITIVE="true"
@@ -20,7 +20,7 @@ COMPLETION_WAITING_DOTS="true"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-plugins=(gitfast git-extras jsontools python autojump command-not-found docker)
+plugins=(gitfast autojump sudo command-not-found)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -88,15 +88,13 @@ eval `dircolors ~/.dir_colors`
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-export VIRTUAL_ENV_DISABLE_PROMPT=1
 export EDITOR=vim
+export WORKON_HOME=$HOME/dev/.virtualenvs
+export VIRTUALENVWRAPPER_PYTHON="/usr/bin/python"
+export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 bindkey "^R" history-incremental-pattern-search-backward
 bindkey "^S" history-incremental-pattern-search-forward
-
-insert_sudo () { zle beginning-of-line; zle -U "sudo " }
-zle -N insert-sudo insert_sudo
-bindkey "^[s" insert-sudo
 
 
 ###############################################################################
@@ -145,6 +143,11 @@ export PATH=$PATH:$HOME/.local/bin:$HOME/.gem/ruby/1.9.1/bin
 export PATH="$HOME/.pyenv/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
+
+virtualenvwrapper='virtualenvwrapper.sh'
+if (( $+commands[$virtualenvwrapper] )); then
+      source ${${virtualenvwrapper}:c}
+fi
 
 
 ###############################################################################
