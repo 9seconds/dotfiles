@@ -20,7 +20,7 @@ COMPLETION_WAITING_DOTS="true"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-plugins=(autojump sudo command-not-found)
+plugins=(autojump colorize sudo command-not-found)
 
 source $ZSH/oh-my-zsh.sh
 
