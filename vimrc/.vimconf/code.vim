@@ -31,15 +31,7 @@ set softtabstop=4
 set autoindent
 set smartindent
 
-" Set color scheme
-try
-    colorscheme desert
-    let g:colors_name="desert"
-catch
-endtry
-
-set background=dark
-highlight ColorColumn ctermbg=235 guibg=#2c2d27
+" highlight ColorColumn ctermbg=235 guibg=#2c2d27
 
 " Set line breaks
 set lbr
