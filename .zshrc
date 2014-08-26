@@ -101,36 +101,38 @@ bindkey "^S" history-incremental-pattern-search-forward
 # Aliases
 ###############################################################################
 
-alias v=vim
-alias g=git
-alias t=tig
-alias ta='t --all'
-alias tmux='TERM=xterm-256color tmux -2'
-alias gst='g st'
-alias ffind=ffind
-alias dfind=dfind
-alias grep=egrep
-alias mkdir='mkdir -pv'
 alias ag='ag --color -fS'
-alias vless='vim -R -c "set number" -u /usr/share/vim/vim74/macros/less.vim'
-alias df='df -ah --total'
-alias du='du -ahc'
-alias pxargs='xargs -P $(nproc)'
-alias portu=portu
 alias aptg="sudo apt-get -qq -y update && sudo apt-get -y dist-upgrade"
 alias catc="colorize"
+alias df='df -ah --total'
+alias dfind=dfind
+alias du='du -ahc'
+alias ffind=ffind
+alias g=git
+alias grep=egrep
+alias gst='g st'
+alias mkdir='mkdir -pv'
+alias portu=portu
+alias pxargs='xargs -P $(nproc)'
+alias ta='t --all'
+alias tailf='tail -f'
+alias tmux='TERM=xterm-256color tmux -2'
+alias t=tig
+alias vless='vim -R -c "set number" -u /usr/share/vim/vim74/macros/less.vim'
+alias v=vim
 
-alias -g G="| grep"
-alias -g L="| less -XSFR"
-alias -g V="| view -"
-alias -g ST="2>&1"
-alias -g TEE="2>&1 | tee"
+alias -g AG="| ag"
 alias -g B="&|"
+alias -g CA="2>&1 | cat -A"
+alias -g DEVNULL="> /dev/null 2>&1"
+alias -g G="| grep"
 alias -g HL="--help"
 alias -g LL="2>&1 | less -XSFR"
-alias -g CA="2>&1 | cat -A"
+alias -g L="| less -XSFR"
 alias -g NE="2> /dev/null"
-alias -g NUL="> /dev/null 2>&1"
+alias -g ST="2>&1"
+alias -g TEE="2>&1 | tee"
+alias -g V="| view -"
 
 export GOPATH=$HOME/dev/experiments/collectors
 export PATH=$PATH:$HOME/.local/bin:$HOME/.gem/ruby/1.9.1/bin
