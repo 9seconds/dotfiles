@@ -56,7 +56,7 @@ map 0 ^
 map <leader>bd :bdelete<cr>
 
 " List current buffers
-map <leader>bl :ls<cr>:b<Space>
+" map <leader>bl :ls<cr>:b<Space>
 
 " Tab management
 map <leader>tn        :tabnew<cr>
@@ -66,6 +66,13 @@ map <leader>tm        :tabmove<Space>
 map <leader>t<leader> :tabnext<Space>
 map <leader>te        :tabedit <c-r>=expand("%:p:h")<cr>/
 
+" Yes, I can't live without it
+map <C-s> :w<cr>
+
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
+nnoremap <silent> <Leader>m :Unite -buffer-name=recent -winheight=10 file_mru<cr>
+nnoremap <Leader>bl :Unite -buffer-name=buffers -winheight=10 buffer<cr>
+nnoremap <Leader>f :Unite grep:.<cr>
+nnoremap <silent> <C-p> :Unite -start-insert -buffer-name=files -winheight=10 file_rec/async<cr>

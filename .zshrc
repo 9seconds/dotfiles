@@ -119,7 +119,7 @@ alias tailf='tail -f'
 alias tmux='TERM=xterm-256color tmux -2'
 alias t=tig
 alias vless='vim -R -c "set number" -u /usr/share/vim/vim74/macros/less.vim'
-alias v=vim
+alias v='vim -g'
 
 alias -g AG="| ag"
 alias -g B="&|"
@@ -134,8 +134,9 @@ alias -g ST="2>&1"
 alias -g TEE="2>&1 | tee"
 alias -g V="| view -"
 
-export GOPATH=$HOME/dev/experiments/collectors
-export PATH=$PATH:$HOME/.local/bin:$HOME/.gem/ruby/1.9.1/bin
+export GOPATH=$HOME/dev/pvt/go
+export GOBIN=$GOPATH/bin
+export PATH=$PATH:$HOME/.local/bin:$HOME/.gem/ruby/1.9.1/bin:$GOBIN
 # export GOROOT=$HOME/dev/.go/collectors
 # export GOPATH=$GOROOT
 # export GOBIN=$GOROOT/bin
