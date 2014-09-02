@@ -76,3 +76,15 @@ nnoremap <silent> <Leader>m :Unite -buffer-name=recent -winheight=10 file_mru<cr
 nnoremap <Leader>bl :Unite -buffer-name=buffers -winheight=10 buffer<cr>
 nnoremap <Leader>f :Unite grep:.<cr>
 nnoremap <silent> <C-p> :Unite -start-insert -buffer-name=files -winheight=10 file_rec/async<cr>
+
+autocmd FileType unite call s:unite_settings()
+function! s:unite_settings()
+    let b:SuperTabDisabled=1
+    imap <buffer> <C-j>   <Plug>(unite_select_next_line)
+    imap <buffer> <C-k>   <Plug>(unite_select_previous_line)
+    imap <silent><buffer><expr> <C-x> unite#do_action('split')
+    imap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
+    imap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
+
+    nmap <buffer> <ESC> <Plug>(unite_exit)
+endfunction
