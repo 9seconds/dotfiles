@@ -85,6 +85,9 @@ colorscheme solarized
 " https://github.com/ggreer/the_silver_searcher
 if executable('ag')
     set grepprg=ag\ --nogroup\ --nocolor
+    let g:unite_source_grep_command = 'ag'
+    let g:unite_source_grep_default_opts = '--nocolor --nogroup --column'
+    let g:unite_source_grep_recursive_opt = ''
     " let g:ctrlp_user_command = 'ag %s -lSf --nocolor -g ""'
     " let g:ctrlp_use_caching = 0
 endif
@@ -96,7 +99,9 @@ call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
 call unite#custom#source('file_rec/async','sorters','sorter_rank')
 
-" let g:unite_enable_start_insert = 1
+let g:unite_enable_start_insert = 1
+let g:unite_source_file_rec_max_cache_files = 0
+let g:unite_source_history_yank_enable = 1
 let g:unite_split_rule = "botright"
 let g:unite_force_overwrite_statusline = 0
 let g:unite_winheight = 10
