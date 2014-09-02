@@ -108,6 +108,9 @@ set mousehide
 set ttyfast
 set ttymouse=xterm2
 
+" 0 escape time
+set timeoutlen=1000 ttimeoutlen=0
+
 " Resize splits if the window is resized
 au VimResized * exe "normal! \<c-w>="
 

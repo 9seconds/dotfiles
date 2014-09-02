@@ -18,6 +18,9 @@ DISABLE_AUTO_TITLE="true"
 # Uncomment the following line to display red dots whilst waiting for completion.
 COMPLETION_WAITING_DOTS="true"
 
+# How many hundreds of seconds to wait before start to manage next keystroke
+KEYTIMEOUT=1
+
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 plugins=(autojump colorize sudo command-not-found)
