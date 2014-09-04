@@ -31,6 +31,7 @@ endif
 call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundleFetch 'Shougo/neobundle.vim'
 
+    NeoBundle 'airblade/vim-gitgutter'
     NeoBundle 'altercation/vim-colors-solarized'
     NeoBundle 'bling/vim-airline'
     NeoBundle 'fatih/vim-go'
@@ -44,7 +45,6 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'Shougo/unite.vim'
     NeoBundle 'terryma/vim-expand-region'
     NeoBundle 'terryma/vim-multiple-cursors'
-    NeoBundle 'terryma/vim-smooth-scroll'
     NeoBundle 'tpope/vim-commentary'
     NeoBundle 'tpope/vim-repeat'
     NeoBundle 'tpope/vim-surround'
@@ -94,6 +94,9 @@ set hidden
 " Autosave and autoread
 set autoread
 set autowriteall
+
+" Admit people's modelines
+set modeline
 
 " Turn on WildMenu
 set wildmenu
@@ -193,9 +196,18 @@ set t_Co=256
 
 " Solarized
 set background=dark
-let g:solarized_contrast="normal"
-let g:solarized_visibility="normal"
+let g:solarized_contrast="high"
+let g:solarized_visibility="high"
 colorscheme solarized
+
+" Fix for GitGutter and Solarized
+highlight SignColumn ctermbg=DarkGreen
+" highlight clear SignColumn
+highlight GitGutterAdd ctermfg=green
+highlight GitGutterChange ctermfg=yellow
+highlight GitGutterDelete ctermfg=red
+highlight GitGutterChangeDelete ctermfg=yellow
+
 
 " Disable welcome page
 set shortmess=I
@@ -412,11 +424,6 @@ au Syntax   * RainbowParenthesesLoadBraces
 " =========================
 
 if has('gui_running')
-    noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<cr>
-    noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 2)<cr>
-    noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<cr>
-    noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<cr>
-
     set guifont=Meslo\ LG\ M\ DZ\ for\ Powerline\ 11
 
     set guioptions-=T  " hide toolbar
@@ -441,3 +448,10 @@ if has('gui_running')
     vnoremap <silent> y "+y
     nnoremap <silent><Leader>p "+gP
 endif
+
+" Fix for GitGutter and Solarized
+highlight clear SignColumn
+highlight GitGutterAdd ctermfg=green guifg=darkgreen
+highlight GitGutterChange ctermfg=yellow guifg=darkyellow
+highlight GitGutterDelete ctermfg=red guifg=darkred
+highlight GitGutterChangeDelete ctermfg=yellow guifg=darkyellow
