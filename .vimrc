@@ -473,6 +473,7 @@ endif
 
 " Fix for GitGutter and Solarized
 highlight clear SignColumn
+highlight clear VertSplit
 highlight GitGutterAdd ctermfg=green guifg=darkgreen
 highlight GitGutterChange ctermfg=yellow guifg=darkyellow
 highlight GitGutterDelete ctermfg=red guifg=darkred
