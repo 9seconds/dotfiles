@@ -33,10 +33,10 @@ call neobundle#begin(expand('~/.vim/bundle'))
 
     NeoBundle 'airblade/vim-gitgutter'
     NeoBundle 'altercation/vim-colors-solarized'
-    NeoBundle 'bling/vim-airline'
     NeoBundle 'fatih/vim-go'
     NeoBundle 'goldfeld/vim-seek'
     NeoBundle 'hynek/vim-python-pep8-indent'
+    NeoBundle 'itchyny/lightline.vim'
     NeoBundle 'kien/rainbow_parentheses.vim'
     NeoBundle 'Lokaltog/vim-easymotion'
     NeoBundle 'majutsushi/tagbar'
@@ -200,15 +200,6 @@ let g:solarized_contrast="high"
 let g:solarized_visibility="high"
 colorscheme solarized
 
-" Fix for GitGutter and Solarized
-highlight SignColumn ctermbg=DarkGreen
-" highlight clear SignColumn
-highlight GitGutterAdd ctermfg=green
-highlight GitGutterChange ctermfg=yellow
-highlight GitGutterDelete ctermfg=red
-highlight GitGutterChangeDelete ctermfg=yellow
-
-
 " Disable welcome page
 set shortmess=I
 
@@ -371,10 +362,41 @@ let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_add_preview_to_completeopt = 0
 let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 
-" Setup statusline airline
-let g:airline_powerline_fonts = 1
-let g:airline#extensions#tabline#enabled = 1
-let g:airline_theme="solarized"
+" Setup lightline
+let g:lightline = {
+    \     'colorscheme': 'solarized',
+    \     'active': {
+    \         'left': [
+    \             ['mode', 'paste'],
+    \             ['readonly', 'filename', 'modified']
+    \         ]
+    \     },
+    \     'component_function': {
+    \         'readonly': 'LightLineReadOnly',
+    \         'modified': 'LightLineModified',
+    \         'mode':     'LightLineMode'
+    \     },
+    \     'subseparator': {
+    \         'left': '»',
+    \         'right': '«'
+    \     }
+    \ }
+
+function! LightLineReadOnly()
+    return &ft !~? 'help' && &readonly ? '' : ''
+endfunction
+
+function! LightLineModified()
+    return &ft =~ 'help' ? '' : &modified ? '✔' : &modifiable ? '' : '✖'
+endfunction
+
+function! LightLineMode()
+    let fname = expand('%:t')
+    return fname == '__Tagbar__' ? 'Tagbar' :
+        \ fname =~ 'NERD_tree' ? 'NERDTree' :
+        \ &ft == 'unite' ? 'Unite' :
+        \ winwidth(0) > 60 ? lightline#mode() : ''
+endfunction
 
 " Use AG for search
 " https://github.com/ggreer/the_silver_searcher
