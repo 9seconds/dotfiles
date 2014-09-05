@@ -289,18 +289,18 @@ nnoremap <silent> <Leader>1 :set paste!<cr>
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
-nnoremap <silent> <Leader>m :Unite -buffer-name=recent -winheight=10 file_mru<cr>
-nnoremap <Leader>bl :Unite -buffer-name=buffers -winheight=10 buffer<cr>
-nnoremap <Leader>f :Unite grep:.<cr>
-nnoremap <silent> <C-p> :Unite -start-insert -buffer-name=files -winheight=10 file_rec/async<cr>
+nnoremap <silent> <Leader>m  :Unite -buffer-name=recent -winheight=10 file_mru<cr>
+nnoremap <silent> <Leader>bl :Unite -buffer-name=buffers -winheight=10 buffer<cr>
+nnoremap <silent> <Leader>f  :Unite grep:.<cr>
+nnoremap <silent> <C-p>      :Unite -start-insert -buffer-name=files -winheight=10 file_rec/async<cr>
 
-map <F5> :YcmCompleter GoToDefinitionElseDeclaration<cr>
+map <silent> <F5> :YcmCompleter GoToDefinitionElseDeclaration<cr>
 
 " NerdTree
-map <F2> :NERDTreeToggle<CR>
+map <silent> <F2> :NERDTreeToggle<CR>
 
 " TagBar
-map <F3> :TagbarToggle<CR>
+map <silent> <F3> :TagbarToggle<CR>
 
 
 
@@ -372,9 +372,13 @@ let g:lightline = {
     \         ]
     \     },
     \     'component_function': {
-    \         'readonly': 'LightLineReadOnly',
-    \         'modified': 'LightLineModified',
-    \         'mode':     'LightLineMode'
+    \         'fileencoding': 'LightLineFileEncoding',
+    \         'fileformat':   'LightLineFileFormat',
+    \         'filename':     'LightLineFileName',
+    \         'filetype':     'LightLineFileType',
+    \         'mode':         'LightLineMode',
+    \         'modified':     'LightLineModified',
+    \         'readonly':     'LightLineReadOnly'
     \     },
     \     'subseparator': {
     \         'left': '»',
@@ -382,12 +386,31 @@ let g:lightline = {
     \     }
     \ }
 
-function! LightLineReadOnly()
-    return &ft !~? 'help' && &readonly ? '' : ''
+function! LightLineFileEncoding()
+    return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
 endfunction
 
-function! LightLineModified()
-    return &ft =~ 'help' ? '' : &modified ? '✔' : &modifiable ? '' : '✖'
+function! LightLineFileFormat()
+    return winwidth(0) > 70 ? &fileformat : ''
+endfunction
+
+function! LightLineFileName()
+    let fname = expand('%:t')
+    if fname == '__Tagbar__'
+        return g:lightline.fname
+    elseif &ft == 'unite'
+        return unite#get_status_string()
+    elseif fname =~ 'NERD_tree'
+        return ''
+    elseif fname == ''
+        return '[noname]'
+    else
+        return fname
+    endif
+endfunction
+
+function! LightLineFileType()
+    return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
 endfunction
 
 function! LightLineMode()
@@ -398,12 +421,28 @@ function! LightLineMode()
         \ winwidth(0) > 60 ? lightline#mode() : ''
 endfunction
 
+function! LightLineModified()
+    return &ft =~ 'help' ? '' : &modified ? '✔' : &modifiable ? '' : '✖'
+endfunction
+
+function! LightLineReadOnly()
+    return &ft !~? 'help' && &readonly ? '' : ''
+endfunction
+
+" TagBar
+let g:tagbar_status_func = 'LightLineTagBarStatus'
+
+function! LightLineTagBarStatus(current, sort, fname, ...) abort
+    let g:lightline.fname = a:fname
+    return lightline#statusline(0)
+endfunction
+
 " Use AG for search
 " https://github.com/ggreer/the_silver_searcher
 if executable('ag')
     set grepprg=ag\ --nogroup\ --nocolor
     let g:unite_source_grep_command = 'ag'
-    let g:unite_source_grep_default_opts = '--nocolor --nogroup --column'
+    let g:unite_source_grep_default_opts = '-S --nocolor --nogroup --column'
     let g:unite_source_grep_recursive_opt = ''
     let g:unite_source_rec_async_command= 'ag --nocolor --nogroup --hidden -g ""'
 endif
