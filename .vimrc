@@ -33,10 +33,13 @@ call neobundle#begin(expand('~/.vim/bundle'))
 
     NeoBundle 'airblade/vim-gitgutter'
     NeoBundle 'altercation/vim-colors-solarized'
+    NeoBundle 'bps/vim-textobj-python'
     NeoBundle 'fatih/vim-go'
     NeoBundle 'goldfeld/vim-seek'
     NeoBundle 'hynek/vim-python-pep8-indent'
     NeoBundle 'itchyny/lightline.vim'
+    NeoBundle 'kana/vim-textobj-indent'
+    NeoBundle 'kana/vim-textobj-user'
     NeoBundle 'kien/rainbow_parentheses.vim'
     NeoBundle 'Lokaltog/vim-easymotion'
     NeoBundle 'majutsushi/tagbar'
