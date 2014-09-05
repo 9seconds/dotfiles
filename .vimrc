@@ -33,6 +33,7 @@ call neobundle#begin(expand('~/.vim/bundle'))
 
     NeoBundle 'airblade/vim-gitgutter'
     NeoBundle 'altercation/vim-colors-solarized'
+    NeoBundle 'benmills/vimux'
     NeoBundle 'bps/vim-textobj-python'
     NeoBundle 'fatih/vim-go'
     NeoBundle 'goldfeld/vim-seek'
@@ -297,13 +298,21 @@ nnoremap <silent> <Leader>bl :Unite -buffer-name=buffers -winheight=10 buffer<cr
 nnoremap <silent> <Leader>f  :Unite grep:.<cr>
 nnoremap <silent> <C-p>      :Unite -start-insert -buffer-name=files -winheight=10 file_rec/async<cr>
 
-map <silent> <F5> :YcmCompleter GoToDefinitionElseDeclaration<cr>
 
 " NerdTree
 map <silent> <F2> :NERDTreeToggle<CR>
 
 " TagBar
 map <silent> <F3> :TagbarToggle<CR>
+
+" YCM traveller
+map <silent> <F4> :YcmCompleter GoToDefinitionElseDeclaration<cr>
+
+" Vimux
+map <silent> <F5> :VimuxPromptCommand<cr>
+map <silent> <F6> :VimuxZoomRunner<cr>
+map <silent> <F7> :VimuxCloseRunner<cr>
+map <silent> <F8> :VimuxInterruptRunner<cr>
 
 
 
