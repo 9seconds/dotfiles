@@ -1,0 +1,314 @@
+" This is a tiny version of my .vimrc.
+"
+" This is intended to be used with low-performance devices such as
+" Raspberry Pi so it has more or less all mappings I use without
+" plugins and reasonable defaults.
+
+
+
+" =======================================
+" ========== Preliminary stuff ==========
+" =======================================
+
+set nocompatible  " Remove compatibility with VIM
+filetype off      " Required by NeoBundle to start
+
+
+
+" =============================
+" ========== Plugins ==========
+" =============================
+
+if has ('vim_starting')
+    set runtimepath+=~/.vim/bundle/neobundle.vim/
+endif
+
+call neobundle#begin(expand('~/.vim/bundle'))
+    NeoBundleFetch 'Shougo/neobundle.vim'
+
+    NeoBundle 'goldfeld/vim-seek'
+    NeoBundle 'scrooloose/nerdtree'
+    NeoBundle 'terryma/vim-expand-region'
+    NeoBundle 'terryma/vim-multiple-cursors'
+    NeoBundle 'tpope/vim-commentary'
+    NeoBundle 'tpope/vim-repeat'
+    NeoBundle 'tpope/vim-surround'
+    NeoBundle 'tpope/vim-unimpaired'
+call neobundle#end()
+
+filetype plugin indent on
+
+
+
+" =======================================
+" =========== Common settings ===========
+" =======================================
+
+try
+  lang en_us
+catch
+endtry
+
+" Show the status of the current command in the status bar
+set showcmd
+
+" Set 7 lines to the cursor when scrolling vertically
+set scrolloff=7
+
+" The same but for horizontal
+set sidescroll=1
+set sidescrolloff=15
+
+" Set magic for regular expressions
+set magic
+
+" Set abandonned buffer as hidden
+set hidden
+
+" Autosave and autoread
+set autoread
+set autowriteall
+
+" Admit people's modelines
+set modeline
+
+" Turn on WildMenu
+set wildmenu
+set wildignore=*.o,*~,*.pyc,*.pyo,.git\*,.hg\*,svn\*,idea\*,__pycache__\*
+
+" Always show current position
+set ruler
+
+" Height of the command bar
+set cmdheight=2
+
+" Ignore case when searching
+set ignorecase
+
+" When searching try to be smart about cases
+set smartcase
+
+" Highlight search results
+set hlsearch
+
+" Incremental search
+set incsearch
+
+" Don't redraw while executing macros (mostly for performance)
+set lazyredraw
+
+" No sounds on errors
+set noerrorbells
+set novisualbell
+set t_vb=
+set tm=500
+
+" Set utf8 for everything
+set encoding=utf8
+set termencoding=utf8
+set fileencoding=utf8
+set fileencodings=utf8,cp1251,koi8r,ucs-2le
+
+" Turn VIM bullshit off
+set nobackup
+set nowb
+set noswapfile
+set viminfo=
+
+" Set end of line always
+set eol
+
+" Explain VIM about backspaces
+set backspace=indent,eol,start
+
+" Prevents inserting two spaces after punctuation
+set nojoinspaces
+
+" New vertical split to the right
+set splitright
+
+" New horizontal split at the bottom
+set splitbelow
+
+" Invisible characters
+set listchars=tab:▸\ ,eol:¬,trail:⋅,extends:❯,precedes:❮
+set showbreak=↪
+
+" Show line numbers
+set number
+
+" Show what mode is active
+set showmode
+
+" Additional character for edit convenience
+set virtualedit=onemore
+
+" History size
+set history=1000
+
+" Always show statusline
+set laststatus=2
+
+" Use Unix as a default filetype
+set ffs=unix,dos,mac
+
+" Mouse settings
+set mouse=a
+set mousehide
+set ttyfast
+set ttymouse=xterm2
+
+" 0 escape time
+set timeoutlen=1000
+set ttimeoutlen=0
+
+" Solid line for vsplit separator
+set fcs=vert:│
+
+" Terminal with 256 colors
+set t_Co=256
+
+" Disable welcome page
+set shortmess=I
+
+" Resize splits if the window is resized
+au VimResized * exe "normal! \<c-w>="
+
+" Remote trailing whitespaces on save
+autocmd BufWritePre * :%s/\s\+$//e
+
+
+
+" ============================
+" ========== Keymap ==========
+" ============================
+
+" No arrows :(
+noremap  <up>    <nop>
+noremap  <down>  <nop>
+noremap  <left>  <nop>
+noremap  <right> <nop>
+inoremap <up>    <nop>
+inoremap <down>  <nop>
+inoremap <left>  <nop>
+inoremap <right> <nop>
+
+" Map Leader to the Space
+let mapleader = "\<Space>"
+let g:mapleader = "\<Space>"
+
+" Fast saving on Space+w
+nmap <leader>w :w!<cr>
+
+" :W sudo saves the file
+" (useful for handling the permission-denied error)
+cmap w!! %!sudo tee % > /dev/null%
+
+" Reselect visual block after indent or outdent
+vnoremap < <gv
+vnoremap > >gv
+
+" Reasonable navigation through wrapped lines
+nnoremap j gj
+nnoremap k gk
+nnoremap $ g$
+noremap  0 g0
+
+" Keep search pattern at the center of the screen
+nnoremap <silent> n  nzz
+nnoremap <silent> N  Nzz
+nnoremap <silent> *  *zz
+nnoremap <silent> #  #zz
+nnoremap <silent> g* g*zz
+nnoremap <silent> g# g#zz
+
+" Center screen position on fast listing
+nnoremap <C-d> <C-d>zz
+nnoremap <C-u> <C-u>zz
+nnoremap <C-f> <C-f>zz
+nnoremap <C-b> <C-b>zz
+
+" Fast window navigation by Alt+hjkl
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" Disable Q since I really bad at fast typing
+map Q <nop>
+
+" Disable highlight
+map <silent> <leader>h :silent nohlsearch<cr>
+
+" Remap VIM 0 to first non-blank character
+map 0 ^
+
+" Close the current buffer
+map <leader>bd :bdelete<cr>
+
+" Tab management
+map <leader>tn        :tabnew<cr>
+map <leader>to        :tabonly<cr>
+map <leader>tc        :tabclose<cr>
+map <leader>tm        :tabmove<Space>
+map <leader>t<leader> :tabnext<Space>
+map <leader>te        :tabedit <c-r>=expand("%:p:h")<cr>/
+
+" Toggle between paste mode
+nnoremap <silent> <Leader>1 :set paste!<cr>
+
+" Switch CWD to the directory of the open buffer
+map <leader>cd :cd %:p:h<cr>:pwd<cr>
+
+" NerdTree
+map <silent> <F2> :NERDTreeToggle<CR>
+
+
+
+" =========================
+" ========== Code==========
+" =========================
+
+" Enable filetype related settings
+filetype on
+filetype plugin on
+filetype indent on
+
+" Tab is 4 spaces length
+set shiftwidth=4
+
+" No tabs, only spaces
+set expandtab
+set smarttab
+
+" Indentation length
+set tabstop=4
+
+" Backspace unindent
+set softtabstop=4
+
+" Indents
+set autoindent
+set smartindent
+
+" Set line breaks
+set lbr
+set tw=500
+
+" Setup folding
+set foldmethod=indent
+set foldnestmax=10
+set foldlevel=1
+set nofoldenable
+
+
+
+" =====================================
+" ========== Plugin settings ==========
+" =====================================
+
+" Use AG for search
+" https://github.com/ggreer/the_silver_searcher
+if executable('ag')
+    set grepprg=ag\ --nogroup\ --nocolor
+endif
