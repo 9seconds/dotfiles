@@ -261,6 +261,12 @@ nnoremap <silent> #  #zz
 nnoremap <silent> g* g*zz
 nnoremap <silent> g# g#zz
 
+" Center screen position on fast listing
+nnoremap <C-d> <C-d>zz
+nnoremap <C-u> <C-u>zz
+nnoremap <C-f> <C-f>zz
+nnoremap <C-b> <C-b>zz
+
 " Fast window navigation by Alt+hjkl
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
