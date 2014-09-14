@@ -32,6 +32,7 @@ source $ZSH/oh-my-zsh.sh
 export PATH="/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
 
 
+
 ###############################################################################
 # Custom functions
 ###############################################################################
@@ -72,6 +73,7 @@ function portu() {
 }
 
 
+
 ###############################################################################
 # Custom configuration
 ###############################################################################
@@ -79,25 +81,44 @@ function portu() {
 unsetopt nomatch
 
 if which dircolors > /dev/null; then
-	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    test -r ~/.dir_colors && eval "$(dircolors -b ~/.dir_colors)" || eval "$(dircolors -b)"
+
 	alias ls='ls --color=auto -F'
 	alias grep='grep --color=auto'
 	alias fgrep='fgrep --color=auto'
 	alias egrep='egrep --color=auto'
 fi
 
-eval `dircolors ~/.dir_colors`
-
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
+bindkey "^R" history-incremental-pattern-search-backward
+bindkey "^S" history-incremental-pattern-search-forward
+
+export PATH=$HOME/.pyenv/bin:$PATH
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
+virtualenvwrapper='virtualenvwrapper.sh'
+if (( $+commands[$virtualenvwrapper] )); then
+      source ${${virtualenvwrapper}:c}
+fi
+
+
+
+###############################################################################
+# Exports
+###############################################################################
 export EDITOR=vim
 export WORKON_HOME=$HOME/dev/.virtualenvs
 export VIRTUALENVWRAPPER_PYTHON="/usr/bin/python"
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
-bindkey "^R" history-incremental-pattern-search-backward
-bindkey "^S" history-incremental-pattern-search-forward
+export GOPATH=$HOME/dev/pvt/go
+export GOBIN=$GOPATH/bin
+
+export PATH=$PATH:$HOME/.local/bin:$HOME/.gem/ruby/1.9.1/bin:$GOBIN
+
 
 
 ###############################################################################
@@ -115,14 +136,16 @@ alias g=git
 alias grep=egrep
 alias gst='g st'
 alias mkdir='mkdir -pv'
+alias netstat='netstat -anp'
 alias portu=portu
 alias pxargs='xargs -P $(nproc)'
-alias ta='t --all'
 alias tailf='tail -f'
+alias ta='t --all'
 alias tmux='TERM=xterm-256color tmux -2'
 alias t=tig
+alias vg='vim -g'
 alias vless='vim -R -c "set number" -u /usr/share/vim/vim74/macros/less.vim'
-alias v='vim -g'
+alias v=vim
 
 alias -g AG="| ag"
 alias -g B="&|"
@@ -137,24 +160,6 @@ alias -g ST="2>&1"
 alias -g TEE="2>&1 | tee"
 alias -g V="| view -"
 
-export GOPATH=$HOME/dev/pvt/go
-export GOBIN=$GOPATH/bin
-export PATH=$PATH:$HOME/.local/bin:$HOME/.gem/ruby/1.9.1/bin:$GOBIN
-# export GOROOT=$HOME/dev/.go/collectors
-# export GOPATH=$GOROOT
-# export GOBIN=$GOROOT/bin
-# export GOARCH=amd64
-# export GOOS=linux
-# export PATH=$GOBIN:$PATH
-
-export PATH="$HOME/.pyenv/bin:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-
-virtualenvwrapper='virtualenvwrapper.sh'
-if (( $+commands[$virtualenvwrapper] )); then
-      source ${${virtualenvwrapper}:c}
-fi
 
 
 ###############################################################################
