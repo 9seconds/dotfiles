@@ -81,7 +81,7 @@ function portu() {
 unsetopt nomatch
 
 if which dircolors > /dev/null; then
-    test -r ~/.dir_colors && eval "$(dircolors -b ~/.dir_colors)" || eval "$(dircolors -b)"
+    # test -r ~/.dir_colors && eval "$(dircolors -b ~/.dir_colors)" || eval "$(dircolors -b)"
 
 	alias ls='ls --color=auto -F'
 	alias grep='grep --color=auto'

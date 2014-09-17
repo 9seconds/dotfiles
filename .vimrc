@@ -32,7 +32,7 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundleFetch 'Shougo/neobundle.vim'
 
     NeoBundle 'airblade/vim-gitgutter'
-    NeoBundle 'altercation/vim-colors-solarized'
+    " NeoBundle 'altercation/vim-colors-solarized'
     NeoBundle 'benmills/vimux'
     NeoBundle 'bps/vim-textobj-python'
     NeoBundle 'fatih/vim-go'
@@ -40,6 +40,7 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'hynek/vim-python-pep8-indent'
     NeoBundle 'itchyny/lightline.vim'
     NeoBundle 'kana/vim-textobj-indent'
+    NeoBundle 'chriskempson/base16-vim'
     NeoBundle 'kana/vim-textobj-user'
     NeoBundle 'kien/rainbow_parentheses.vim'
     NeoBundle 'Lokaltog/vim-easymotion'
@@ -200,9 +201,10 @@ set t_Co=256
 
 " Solarized
 set background=dark
-let g:solarized_contrast="high"
-let g:solarized_visibility="high"
-colorscheme solarized
+let base16colorspace=256
+" let g:solarized_contrast="high"
+" let g:solarized_visibility="high"
+colorscheme base16-tomorrow
 
 " Disable welcome page
 set shortmess=I
@@ -383,7 +385,7 @@ let g:ycm_min_num_of_chars_for_completion = 2
 
 " Setup lightline
 let g:lightline = {
-    \     'colorscheme': 'solarized',
+    \     'colorscheme': 'Tomorrow_Night',
     \     'active': {
     \         'left': [
     \             ['mode', 'paste'],
@@ -504,8 +506,6 @@ au Syntax   * RainbowParenthesesLoadBraces
 " =========================
 
 if has('gui_running')
-    set guifont=Meslo\ LG\ M\ DZ\ for\ Powerline\ 11
-
     set guioptions-=T  " hide toolbar
     set guioptions-=r  " hide right scrollbar
     set guioptions-=L  " hide left scrollbar
@@ -530,9 +530,9 @@ if has('gui_running')
 endif
 
 " Fix for GitGutter and Solarized
-highlight clear SignColumn
-highlight clear VertSplit
-highlight GitGutterAdd ctermfg=green guifg=darkgreen
-highlight GitGutterChange ctermfg=yellow guifg=darkyellow
-highlight GitGutterDelete ctermfg=red guifg=darkred
-highlight GitGutterChangeDelete ctermfg=yellow guifg=darkyellow
+" highlight clear SignColumn
+" highlight clear VertSplit
+" highlight GitGutterAdd ctermfg=green guifg=darkgreen
+" highlight GitGutterChange ctermfg=yellow guifg=darkyellow
+" highlight GitGutterDelete ctermfg=red guifg=darkred
+" highlight GitGutterChangeDelete ctermfg=yellow guifg=darkyellow
