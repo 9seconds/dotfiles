@@ -528,11 +528,3 @@ if has('gui_running')
     vnoremap <silent> y "+y
     nnoremap <silent><Leader>p "+gP
 endif
-
-" Fix for GitGutter and Solarized
-" highlight clear SignColumn
-" highlight clear VertSplit
-" highlight GitGutterAdd ctermfg=green guifg=darkgreen
-" highlight GitGutterChange ctermfg=yellow guifg=darkyellow
-" highlight GitGutterDelete ctermfg=red guifg=darkred
-" highlight GitGutterChangeDelete ctermfg=yellow guifg=darkyellow
