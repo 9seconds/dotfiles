@@ -72,6 +72,44 @@ function portu() {
     sudo netstat -lnp | ag "$1" | gawk '{print $4,"\t",$7}'
 }
 
+function docker_update() {
+    docker images | grep -v REPO | awk '{print $1}' | sort -u | xargs -P 2 -n 1 docker pull -a
+    docker images | grep "<none>" | awk '{print $3}' | xargs docker rmi
+}
+
+function docker_clean() {
+    docker stop $(docker ps -a -q)
+    docker rm $(docker ps -a -q)
+    docker images | grep "<none>" | awk '{print $3}' | xargs docker rmi
+}
+
+
+
+###############################################################################
+# Environment variables
+###############################################################################
+
+export DEVPATH=$HOME/dev
+export DEV3PPPATH=$DEVPATH/3pp
+export DEVVIRTUALENVPATH=$DEVPATH/.virtualenvs
+export DEVPVTPATH=$DEVPATH/pvt
+export DEVWRKPATH=$DEVPATH/wrk
+export DEVEXPERIMENTSPATH=$DEVPATH/experiments
+export DEVGOPATH=$DEVPATH/gopath
+
+export GOPATH=$DEVGOPATH
+export GOBIN=$GOPATH/bin
+export WORKON_HOME=$DEVVIRTUALENVPATH
+
+export EDITOR=vim
+export VIRTUALENVWRAPPER_PYTHON="/usr/bin/python"
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+
+export PATH=$PATH:$GOBIN
+export PATH=$PATH:$HOME/.local/bin
+export PATH=$PATH::$HOME/.gem/ruby/current/bin
+export PATH=$HOME/.pyenv/bin:$PATH
+
 
 
 ###############################################################################
@@ -81,8 +119,6 @@ function portu() {
 unsetopt nomatch
 
 if which dircolors > /dev/null; then
-    # test -r ~/.dir_colors && eval "$(dircolors -b ~/.dir_colors)" || eval "$(dircolors -b)"
-
 	alias ls='ls --color=auto -F'
 	alias grep='grep --color=auto'
 	alias fgrep='fgrep --color=auto'
@@ -95,7 +131,6 @@ fi
 bindkey "^R" history-incremental-pattern-search-backward
 bindkey "^S" history-incremental-pattern-search-forward
 
-export PATH=$HOME/.pyenv/bin:$PATH
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
@@ -103,22 +138,6 @@ virtualenvwrapper='virtualenvwrapper.sh'
 if (( $+commands[$virtualenvwrapper] )); then
       source ${${virtualenvwrapper}:c}
 fi
-
-
-
-###############################################################################
-# Exports
-###############################################################################
-export EDITOR=vim
-export WORKON_HOME=$HOME/dev/.virtualenvs
-export VIRTUALENVWRAPPER_PYTHON="/usr/bin/python"
-export VIRTUAL_ENV_DISABLE_PROMPT=1
-
-export GOPATH=$HOME/dev/pvt/go
-export GOBIN=$GOPATH/bin
-
-export PATH=$PATH:$HOME/.local/bin:$HOME/.gem/ruby/1.9.1/bin:$GOBIN
-
 
 
 ###############################################################################
@@ -129,20 +148,19 @@ alias ag='ag --color -fS'
 alias aptg="sudo apt-get -qq -y update && sudo apt-get -y dist-upgrade"
 alias catc="colorize"
 alias df='df -ah --total'
-alias dfind=dfind
 alias du='du -ahc'
-alias ffind=ffind
 alias g=git
 alias grep=egrep
 alias gst='g st'
+alias h=ah
 alias mkdir='mkdir -pv'
 alias netstat='netstat -anp'
-alias portu=portu
 alias pxargs='xargs -P $(nproc)'
 alias tailf='tail -f'
 alias ta='t --all'
 alias tmux='TERM=xterm-256color tmux -2'
 alias t=tig
+alias ta='tig -a'
 alias vg='vim -g'
 alias vless='vim -R -c "set number" -u /usr/share/vim/vim74/macros/less.vim'
 alias v=vim
@@ -163,9 +181,9 @@ alias -g V="| view -"
 
 
 ###############################################################################
-## Private stuff I do not want to share
+## Colorscheme
 ################################################################################
 
-if [ -f ~/.zshrc.private ]; then
-    . ~/.zshrc.private
-fi
+BASE16_SCHEME="tomorrow"
+BASE16_SHELL="$DEV3PPPATH/base16-shell/base16-$BASE16_SCHEME.dark.sh"
+source $BASE16_SHELL
