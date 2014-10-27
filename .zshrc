@@ -73,14 +73,24 @@ function portu() {
 }
 
 function docker_update() {
-    docker images | grep -v REPO | awk '{print $1}' | sort -u | xargs -P 2 -n 1 docker pull -a
-    docker images | grep "<none>" | awk '{print $3}' | xargs docker rmi
+    docker images | egrep -v "REPO|<none>" | awk '{print $1}' | sort -u | xargs -P 2 -n 1 docker pull -a
+}
+
+function docker_stop() {
+    docker stop $(docker ps -a -q)
 }
 
 function docker_clean() {
-    docker stop $(docker ps -a -q)
+    docker_stop
     docker rm $(docker ps -a -q)
     docker images | grep "<none>" | awk '{print $3}' | xargs docker rmi
+}
+
+function aptg() {
+    sudo apt-get -qq -y update && \
+    sudo apt-get -y dist-upgrade && \
+    sudo apt-get -qq -y autoremove && \
+    sudo apt-get -qq clean
 }
 
 
@@ -145,7 +155,6 @@ fi
 ###############################################################################
 
 alias ag='ag --color -fS'
-alias aptg="sudo apt-get -qq -y update && sudo apt-get -y dist-upgrade"
 alias catc="colorize"
 alias df='df -ah --total'
 alias du='du -ahc'
@@ -158,9 +167,9 @@ alias netstat='netstat -anp'
 alias pxargs='xargs -P $(nproc)'
 alias tailf='tail -f'
 alias ta='t --all'
+alias ta='tig -a'
 alias tmux='TERM=xterm-256color tmux -2'
 alias t=tig
-alias ta='tig -a'
 alias vg='vim -g'
 alias vless='vim -R -c "set number" -u /usr/share/vim/vim74/macros/less.vim'
 alias v=vim
