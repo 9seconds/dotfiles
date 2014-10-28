@@ -119,6 +119,7 @@ export PATH=$PATH:$GOBIN
 export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH::$HOME/.gem/ruby/current/bin
 export PATH=$HOME/.pyenv/bin:$PATH
+export PATH=$PATH:/opt/packer/bin
 
 
 
