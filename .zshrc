@@ -21,6 +21,7 @@ COMPLETION_WAITING_DOTS="true"
 # How many hundreds of seconds to wait before start to manage next keystroke
 KEYTIMEOUT=1
 
+# Set proper TERM for tmux
 if [ -n "$TMUX" ]; then
     export TERM=screen-256color
 else
