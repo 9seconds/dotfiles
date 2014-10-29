@@ -121,6 +121,7 @@ export WORKON_HOME=$DEVVIRTUALENVPATH
 export EDITOR=vim
 export VIRTUALENVWRAPPER_PYTHON="/usr/bin/python"
 export VIRTUAL_ENV_DISABLE_PROMPT=1
+export HISTTIMEFORMAT="%d.%m.%y %H:%M:%S"
 
 export PATH=$PATH:$GOBIN
 export PATH=$PATH:$HOME/.local/bin
