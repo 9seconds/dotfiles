@@ -21,6 +21,12 @@ COMPLETION_WAITING_DOTS="true"
 # How many hundreds of seconds to wait before start to manage next keystroke
 KEYTIMEOUT=1
 
+if [ -n "$TMUX" ]; then
+    export TERM=screen-256color
+else
+    export TERM=xterm-256color
+fi
+
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 plugins=(autojump colorize sudo command-not-found)
@@ -168,7 +174,6 @@ alias pxargs='xargs -P $(nproc)'
 alias tailf='tail -f'
 alias ta='t --all'
 alias ta='tig -a'
-alias tmux='TERM=xterm-256color tmux -2'
 alias t=tig
 alias vg='vim -g'
 alias vless='vim -R -c "set number" -u /usr/share/vim/vim74/macros/less.vim'
@@ -195,4 +200,4 @@ alias -g V="| view -"
 
 BASE16_SCHEME="tomorrow"
 BASE16_SHELL="$DEV3PPPATH/base16-shell/base16-$BASE16_SCHEME.dark.sh"
-source $BASE16_SHELL
+[[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
