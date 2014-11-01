@@ -207,8 +207,6 @@ set t_Co=256
 " Solarized
 set background=dark
 let base16colorspace=256
-" let g:solarized_contrast="high"
-" let g:solarized_visibility="high"
 colorscheme base16-tomorrow
 
 " Disable welcome page
