@@ -128,6 +128,10 @@ export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH::$HOME/.gem/ruby/current/bin
 export PATH=$HOME/.pyenv/bin:$PATH
 export PATH=$PATH:/opt/packer/bin
+export PATH=$HOME/.linuxbrew/bin:$PATH
+
+export MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"
+export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
 
 
 

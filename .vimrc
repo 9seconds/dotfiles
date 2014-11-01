@@ -19,6 +19,11 @@ filetype off      " Required by NeoBundle to start
 " ========== Plugins ==========
 " =============================
 
+" Enable Python support for Neovim
+if has('nvim')
+  runtime! python_setup.vim
+endif
+
 let g:make = 'gmake'  " Required for vimproc plugin
 if system('uname -o') =~ '^GNU/'
     let g:make = 'make'
@@ -76,7 +81,7 @@ NeoBundleCheck
 " =======================================
 
 try
-  lang en_us
+    lang en_us
 catch
 endtry
 
