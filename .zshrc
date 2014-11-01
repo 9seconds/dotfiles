@@ -127,6 +127,8 @@ export PATH=$PATH:$GOBIN
 export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH::$HOME/.gem/ruby/current/bin
 export PATH=$HOME/.pyenv/bin:$PATH
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
 export PATH=$PATH:/opt/packer/bin
 export PATH=$HOME/.linuxbrew/bin:$PATH
 
@@ -154,8 +156,6 @@ fi
 bindkey "^R" history-incremental-pattern-search-backward
 bindkey "^S" history-incremental-pattern-search-forward
 
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
 
 virtualenvwrapper='virtualenvwrapper.sh'
 if (( $+commands[$virtualenvwrapper] )); then

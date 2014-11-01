@@ -37,13 +37,13 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundleFetch 'Shougo/neobundle.vim'
 
     NeoBundle 'airblade/vim-gitgutter'
-    " NeoBundle 'altercation/vim-colors-solarized'
     NeoBundle 'benmills/vimux'
     NeoBundle 'bps/vim-textobj-python'
     NeoBundle 'fatih/vim-go'
     NeoBundle 'goldfeld/vim-seek'
     NeoBundle 'hynek/vim-python-pep8-indent'
     NeoBundle 'itchyny/lightline.vim'
+    NeoBundle 'jistr/vim-nerdtree-tabs'
     NeoBundle 'kana/vim-textobj-indent'
     NeoBundle 'chriskempson/base16-vim'
     NeoBundle 'kana/vim-textobj-user'
@@ -311,7 +311,7 @@ nnoremap <silent> <C-p>      :Unite -start-insert -buffer-name=files -winheight=
 
 
 " NerdTree
-map <silent> <F2> :NERDTreeToggle<CR>
+map <silent> <F2> :NERDTreeTabsToggle<CR>
 
 " TagBar
 map <silent> <F3> :TagbarToggle<CR>
