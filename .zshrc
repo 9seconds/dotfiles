@@ -214,3 +214,11 @@ alias -g V="| view -"
 BASE16_SCHEME="tomorrow"
 BASE16_SHELL="$DEV3PPPATH/base16-shell/base16-$BASE16_SCHEME.dark.sh"
 [[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
+
+
+
+###############################################################################
+## Misc
+################################################################################
+
+source $DEVGOPATH/src/github.com/9seconds/ah/sourceit/zsh.sh
