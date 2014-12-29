@@ -1,0 +1,50 @@
+# [Created by task 2.3.0 12/23/2014 16:15:42]
+# Taskwarrior program configuration file.
+# For more documentation, see http://taskwarrior.org or try 'man task', 'man task-faq',
+# 'man task-tutorial', 'man task-color', 'man task-sync' or 'man taskrc'
+
+# Here is an example of entries that use the default, override and blank values
+#   variable=foo   -- By specifying a value, this overrides the default
+#   variable=      -- By specifying no value, this means no default
+#   #variable=foo  -- By commenting out the line, or deleting it, this uses the default
+
+# Use the command 'task show' to see all defaults and overrides
+
+# Files
+data.location=/home/sergey/Dropbox/taskwarrior
+
+# Color theme (uncomment one to use)
+#include /usr/share/taskwarrior/light-16.theme
+#include /usr/share/taskwarrior/light-256.theme
+#include /usr/share/taskwarrior/dark-16.theme
+#include /usr/share/taskwarrior/dark-256.theme
+#include /usr/share/taskwarrior/dark-red-256.theme
+#include /usr/share/taskwarrior/dark-green-256.theme
+#include /usr/share/taskwarrior/dark-blue-256.theme
+#include /usr/share/taskwarrior/dark-violets-256.theme
+#include /usr/share/taskwarrior/dark-yellow-green.theme
+#include /usr/share/taskwarrior/dark-gray-256.theme
+
+weekstart=monday
+regex=yes
+dateformat=D b Y
+dateformat.edit=D.M.Y H:N:S
+dateformat.info=D.M.Y H:N:S
+
+report.github.description=My GitHub Issues
+report.github.columns=id,project,priority,entry,description.combined
+report.github.labels=ID,Repository,Priority,Date,Description
+report.github.filter=status:pending +github
+report.github.sort=project+,priority-,entry-
+
+report.work_jira.description=Current Working Jira
+report.work_jira.columns=id,project,priority,entry,description.combined
+report.work_jira.labels=ID,Project,Priority,Date,Description
+report.work_jira.filter=status:pending +work +jira
+report.work_jira.sort=project+,priority-,entry-
+
+report.work.description=Current Work Tasks
+report.work.columns=id,project,priority,entry,description.combined
+report.work.labels=ID,Project,Priority,Date,Description
+report.work.filter=status:pending +work
+report.work.sort=project+,priority-,entry-
