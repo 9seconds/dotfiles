@@ -111,6 +111,7 @@ export DEV3PPPATH=$DEVPATH/3pp
 export DEVVIRTUALENVPATH=$DEVPATH/.virtualenvs
 export DEVPVTPATH=$DEVPATH/pvt
 export DEVWRKPATH=$DEVPATH/wrk
+
 export DEVEXPERIMENTSPATH=$DEVPATH/experiments
 export DEVGOPATH=$DEVPATH/gopath
 
@@ -134,6 +135,8 @@ export PATH=$HOME/.linuxbrew/bin:$PATH
 
 export MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"
 export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
+
+export HOMEBREW_TEMP=$HOME/.linuxbrew/tmp
 
 
 
@@ -174,7 +177,7 @@ alias du='du -ahc'
 alias g=git
 alias grep=egrep
 alias gst='g st'
-alias h="ah $HOME/.ah/tmp"
+alias h=ah
 alias hl='h l'
 alias hs='h s'
 alias hsg='h s -g'
@@ -222,3 +225,11 @@ BASE16_SHELL="$DEV3PPPATH/base16-shell/base16-$BASE16_SCHEME.dark.sh"
 ################################################################################
 
 source $DEVGOPATH/src/github.com/9seconds/ah/sourceit/zsh.sh
+
+
+
+###############################################################################
+## Private stuff I do not want to share
+################################################################################
+
+[[ -f $HOME/.zshrc.private ]] && source $HOME/.zshrc.private

@@ -43,6 +43,7 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'fatih/vim-go'
     NeoBundle 'goldfeld/vim-seek'
     NeoBundle 'honza/dockerfile.vim'
+    NeoBundle 'honza/vim-snippets'
     NeoBundle 'hynek/vim-python-pep8-indent'
     NeoBundle 'itchyny/lightline.vim'
     NeoBundle 'jistr/vim-nerdtree-tabs'
@@ -54,6 +55,7 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'scrooloose/nerdtree'
     NeoBundle 'Shougo/neomru.vim'
     NeoBundle 'Shougo/unite.vim'
+    NeoBundle 'sirver/ultisnips'
     NeoBundle 'terryma/vim-expand-region'
     NeoBundle 'terryma/vim-multiple-cursors'
     NeoBundle 'tpope/vim-commentary'
@@ -325,6 +327,13 @@ map <silent> <F5> :VimuxPromptCommand<cr>
 map <silent> <F6> :VimuxZoomRunner<cr>
 map <silent> <F7> :VimuxCloseRunner<cr>
 map <silent> <F8> :VimuxInterruptRunner<cr>
+
+" Ultisnips
+let g:UltiSnipsUsePythonVersion = 2
+let g:UltiSnipsExpandTrigger="<Space>q"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+let g:UltiSnipsEditSplit="context"
 
 
 
