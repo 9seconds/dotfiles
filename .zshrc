@@ -30,7 +30,7 @@ fi
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-plugins=(docker pip taskwarrior vagrant gitfast autojump colorize sudo command-not-found)
+plugins=(docker brew pyenv python pip taskwarrior vagrant gitfast git-extras autojump colorize sudo command-not-found)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -79,6 +79,10 @@ function portu() {
     sudo netstat -lnp | ag "$1" | gawk '{print $4,"\t",$7}'
 }
 
+function docker_images() {
+    docker images | egrep -v "REPOSITORY|<none>" | awk '{print $1}' | sort -u
+}
+
 function docker_update() {
     docker images | egrep -v "REPO|<none>" | awk '{print $1}' | sort -u | xargs -P 2 -n 1 docker pull -a
 }
@@ -91,6 +95,12 @@ function docker_clean() {
     docker_stop
     docker rm $(docker ps -a -q)
     docker images | grep "<none>" | awk '{print $3}' | xargs docker rmi
+}
+
+function docker_rmi() {
+    for repo in "$@"; do
+        docker images | grep "$repo" | awk '{print $2}' | xargs -n 1 -I {} docker rmi "$repo:{}"
+    done
 }
 
 function aptg() {
@@ -123,15 +133,14 @@ export EDITOR=vim
 export VIRTUALENVWRAPPER_PYTHON="/usr/bin/python"
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 export HISTTIMEFORMAT="%d.%m.%y %H:%M:%S"
+export PYENV_ROOT=$HOME/.linuxbrew/opt/pyenv
 
+export PATH=$HOME/.linuxbrew/bin:$PATH
 export PATH=$PATH:$GOBIN
 export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH::$HOME/.gem/ruby/current/bin
-export PATH=$HOME/.pyenv/bin:$PATH
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
-export PATH=$PATH:/opt/packer/bin
-export PATH=$HOME/.linuxbrew/bin:$PATH
 
 export MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"
 export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
