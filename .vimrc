@@ -403,6 +403,8 @@ endfunction
 
 nnoremap <silent> <Leader>\ :call ToggleHiddenAll()<cr>
 
+set formatprg=par
+
 
 " =====================================
 " ========== Plugin settings ==========
