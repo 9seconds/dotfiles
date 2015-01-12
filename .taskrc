@@ -11,7 +11,7 @@
 # Use the command 'task show' to see all defaults and overrides
 
 # Files
-data.location=/home/sergey/Dropbox/taskwarrior
+data.location=~/Dropbox/taskwarrior
 
 # Color theme (uncomment one to use)
 #include /usr/share/taskwarrior/light-16.theme
