@@ -561,3 +561,14 @@ if has('gui_running')
     vnoremap <silent> y "+y
     nnoremap <silent><Leader>p "+gP
 endif
+
+
+
+" ==========================
+" ========== MISC ==========
+" ==========================
+
+
+if has('nvim')
+  let g:python_host_prog="/usr/bin/python2.7"
+endif
