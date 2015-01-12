@@ -224,6 +224,8 @@ au VimResized * exe "normal! \<c-w>="
 " Remote trailing whitespaces on save
 autocmd BufWritePre * :%s/\s\+$//e
 
+autocmd BufWritePost .vimrc source $MYVIMRC
+
 
 
 " ============================
