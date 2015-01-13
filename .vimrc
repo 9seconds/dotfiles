@@ -42,6 +42,7 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'chriskempson/base16-vim'
     NeoBundle 'fatih/vim-go'
     NeoBundle 'goldfeld/vim-seek'
+    NeoBundle 'hdima/python-syntax'
     NeoBundle 'honza/dockerfile.vim'
     NeoBundle 'honza/vim-snippets'
     NeoBundle 'hynek/vim-python-pep8-indent'
