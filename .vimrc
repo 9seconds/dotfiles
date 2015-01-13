@@ -338,6 +338,10 @@ let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 let g:UltiSnipsEditSplit="context"
 
+" Python Syntax
+let python_version_2 = 1
+let python_highlight_all = 1
+
 
 
 " =========================
