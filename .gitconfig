@@ -25,6 +25,7 @@
     ra = !git la -20
     r = !git l -20
     st = status -s
+    su = submodule update --init
 [push]
     default = simple
 [rerere]
