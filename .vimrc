@@ -63,6 +63,7 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'tpope/vim-repeat'
     NeoBundle 'tpope/vim-surround'
     NeoBundle 'tpope/vim-unimpaired'
+    NeoBundle 'tpope/vim-fugitive'
     NeoBundle 'Valloric/YouCompleteMe'
 
     NeoBundle 'Shougo/vimproc.vim', {
