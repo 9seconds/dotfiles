@@ -41,7 +41,6 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'bps/vim-textobj-python'
     NeoBundle 'chriskempson/base16-vim'
     NeoBundle 'fatih/vim-go'
-    NeoBundle 'goldfeld/vim-seek'
     NeoBundle 'hdima/python-syntax'
     NeoBundle 'honza/dockerfile.vim'
     NeoBundle 'honza/vim-snippets'
@@ -53,6 +52,7 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'kien/rainbow_parentheses.vim'
     NeoBundle 'Lokaltog/vim-easymotion'
     NeoBundle 'majutsushi/tagbar'
+    NeoBundle 'osyo-manga/vim-over'
     NeoBundle 'scrooloose/nerdtree'
     NeoBundle 'Shougo/neomru.vim'
     NeoBundle 'Shougo/unite.vim'
@@ -60,10 +60,10 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'terryma/vim-expand-region'
     NeoBundle 'terryma/vim-multiple-cursors'
     NeoBundle 'tpope/vim-commentary'
+    NeoBundle 'tpope/vim-fugitive'
     NeoBundle 'tpope/vim-repeat'
     NeoBundle 'tpope/vim-surround'
     NeoBundle 'tpope/vim-unimpaired'
-    NeoBundle 'tpope/vim-fugitive'
     NeoBundle 'Valloric/YouCompleteMe'
 
     NeoBundle 'Shougo/vimproc.vim', {
@@ -316,7 +316,6 @@ nnoremap <silent> <Leader>bl :Unite -buffer-name=buffers -winheight=10 buffer<cr
 nnoremap <silent> <Leader>f  :Unite grep:.<cr>
 nnoremap <silent> <C-p>      :Unite -start-insert -buffer-name=files -winheight=10 file_rec/async<cr>
 
-
 " NerdTree
 map <silent> <F2> :NERDTreeTabsToggle<CR>
 
@@ -342,6 +341,12 @@ let g:UltiSnipsEditSplit="context"
 " Python Syntax
 let python_version_2 = 1
 let python_highlight_all = 1
+
+" Easy Motion
+let g:EasyMotion_smartcase = 1
+let g:EasyMotion_use_smartsign_us = 1
+nmap s <Plug>(easymotion-s2)
+nmap t <Plug>(easymotion-t2)
 
 
 
