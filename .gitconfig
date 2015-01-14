@@ -2,25 +2,29 @@
     email = nineseconds@yandex.ru
     name = 9seconds
 [alias]
-    co = checkout
-    br = branch
-    cob = checkout -b
-    st = status -s
-    cp = cherry-pick
-    df = diff --minimal
-    dfc = diff --cached --minimal
-    fix = commit -a --amend
-    cm = commit -m
-    cma = commit -a -m
+    a = add
+    aap = add --all --patch
+    ap = add --patch
     bl = blame --minimal
+    br = branch
     cl = clean -xfd
-    pullr = pull --rebase
+    cma = commit -a -m
+    cm = commit -m
+    cob = checkout -b
+    co = checkout
+    cp = cherry-pick
+    dfc = diff --cached --minimal
+    df = diff --minimal
+    fix = commit -a --amend
     ftch = fetch --prune --all
-    pll = pull --rebase --all
-    l = "!. ~/.gitutils && gitlog"
+    gcc = !git gc --aggressive --prune && git repack -Ad
     la = !git l --all
-    r = !git l -20
+    l = "!. ~/.gitutils && gitlog"
+    pll = pull --rebase --all
+    pullr = pull --rebase
     ra = !git la -20
+    r = !git l -20
+    st = status -s
 [push]
     default = simple
 [rerere]
