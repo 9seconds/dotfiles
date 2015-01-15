@@ -135,10 +135,10 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 export HISTTIMEFORMAT="%d.%m.%y %H:%M:%S"
 export PYENV_ROOT=$HOME/.linuxbrew/opt/pyenv
 
-export PATH=$HOME/.linuxbrew/bin:$PATH
-export PATH=$PATH:$GOBIN
 export PATH=:$HOME/.local/bin:$PATH
-export PATH=$PATH::$HOME/.gem/ruby/current/bin
+export PATH=$PATH:$GOBIN
+export PATH=$HOME/.linuxbrew/bin:$PATH
+export PATH=$HOME/.get/ruby/current/bin:$PATH
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
@@ -224,9 +224,10 @@ alias -g V="| view -"
 ## Colorscheme
 ################################################################################
 
-BASE16_SCHEME="tomorrow"
-BASE16_SHELL="$DEV3PPPATH/base16-shell/base16-$BASE16_SCHEME.dark.sh"
-[[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
+# BASE16_SCHEME="tomorrow"
+# BASE16_SHELL="$DEV3PPPATH/base16-shell/base16-$BASE16_SCHEME.dark.sh"
+# [[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
+source ~/.vim/bundle/gruvbox/gruvbox_256palette.sh
 
 
 

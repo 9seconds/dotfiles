@@ -39,7 +39,6 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'airblade/vim-gitgutter'
     NeoBundle 'benmills/vimux'
     NeoBundle 'bps/vim-textobj-python'
-    NeoBundle 'chriskempson/base16-vim'
     NeoBundle 'fatih/vim-go'
     NeoBundle 'hdima/python-syntax'
     NeoBundle 'honza/dockerfile.vim'
@@ -52,6 +51,7 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'kien/rainbow_parentheses.vim'
     NeoBundle 'Lokaltog/vim-easymotion'
     NeoBundle 'majutsushi/tagbar'
+    NeoBundle 'morhetz/gruvbox'
     NeoBundle 'osyo-manga/vim-over'
     NeoBundle 'scrooloose/nerdtree'
     NeoBundle 'Shougo/neomru.vim'
@@ -211,8 +211,9 @@ set t_Co=256
 
 " Solarized
 set background=dark
-let base16colorspace=256
-colorscheme base16-tomorrow
+" let base16colorspace=256
+colorscheme gruvbox
+let g:gruvbox_italic = 0
 
 " Disable welcome page
 set shortmess=I
@@ -558,6 +559,8 @@ au Syntax   * RainbowParenthesesLoadBraces
 " =========================
 
 if has('gui_running')
+    let g:gruvbox_italic = 1
+
     set guioptions-=T  " hide toolbar
     set guioptions-=r  " hide right scrollbar
     set guioptions-=L  " hide left scrollbar
