@@ -138,7 +138,7 @@ export PYENV_ROOT=$HOME/.linuxbrew/opt/pyenv
 export PATH=:$HOME/.local/bin:$PATH
 export PATH=$PATH:$GOBIN
 export PATH=$HOME/.linuxbrew/bin:$PATH
-export PATH=$HOME/.get/ruby/current/bin:$PATH
+export PATH=$HOME/.gem/ruby/current/bin:$PATH
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
