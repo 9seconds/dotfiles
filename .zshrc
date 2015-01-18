@@ -97,6 +97,10 @@ function docker_clean() {
     docker images | grep "<none>" | awk '{print $3}' | xargs docker rmi
 }
 
+function dockerup() {
+    docker_update && docker_clean
+}
+
 function docker_rmi() {
     for repo in "$@"; do
         docker images | grep "$repo" | awk '{print $2}' | xargs -n 1 -I {} docker rmi "$repo:{}"
