@@ -205,7 +205,6 @@ alias pxargs='xargs -P $(nproc)'
 alias reset='reset && source ~/.zshrc'
 alias tailf='tail -f'
 alias ta='t --all'
-alias ta='tig -a'
 alias t=tig
 alias vg='vim -g'
 alias vless='vim -R -c "set number" -u /usr/share/vim/vim74/macros/less.vim'
