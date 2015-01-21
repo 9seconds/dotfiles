@@ -120,6 +120,14 @@ function brewup() {
     brew cleanup
 }
 
+function pipup() {
+    cat $HOME/.config/pip.list | xargs pip install --user --upgrade
+}
+
+function allup() {
+    aptg && brewup && pipup && dockerup
+}
+
 
 
 ###############################################################################
