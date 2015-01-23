@@ -108,7 +108,23 @@ function docker_rmi() {
 }
 
 function vagrant_halt() {
-    vagrant global-status | awk 'BEGIN {start=0}; start==0 && /^-+/ {start=1}; start==1 && /^\s*$/ {exit 0}; start==1 && !/^-+/ {print $1}' | xargs -n 1 -P 4 vagrant halt
+    local awk_script='
+        BEGIN {
+            start = 0
+        };
+
+        start == 0 && /^-+/ {
+            start = 1;
+            next
+        };
+        start == 1 && /^\s*$/ {
+            exit 0
+        };
+        start == 1 && $4 != "poweroff" {
+            print $1
+        }
+    '
+    vagrant global-status | awk "$awk_script" | xargs -n 1 -P 4 vagrant halt
 }
 
 function aptg() {
