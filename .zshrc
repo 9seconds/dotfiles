@@ -107,6 +107,10 @@ function docker_rmi() {
     done
 }
 
+function vagrant_halt() {
+    vagrant global-status | awk 'BEGIN {start=0}; start==0 && /^-+/ {start=1}; start==1 && /^\s*$/ {exit 0}; start==1 && !/^-+/ {print $1}' | xargs -n 1 -P 4 vagrant halt
+}
+
 function aptg() {
     sudo apt-get -qq -y update && \
     sudo apt-get -y dist-upgrade && \
