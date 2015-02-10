@@ -196,7 +196,9 @@ set ffs=unix,dos,mac
 " Mouse settings
 set mouse=a
 set mousehide
-set ttyfast
+if !has("nvim")
+    set ttyfast
+endif
 set ttymouse=xterm2
 
 " 0 escape time
