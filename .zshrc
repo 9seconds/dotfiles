@@ -233,6 +233,7 @@ alias htx='h t -x --'
 alias hty='h t -y --'
 alias mkdir='mkdir -pv'
 alias netstat='netstat -anp'
+alias nv=nvim
 alias pxargs='xargs -P $(nproc)'
 alias reset='reset && source ~/.zshrc'
 alias tailf='tail -f'
