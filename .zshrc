@@ -60,22 +60,22 @@ tstamp () {
     echo "$1" | gawk '{print strftime("%c", ( $0 + 500 ) / 1000 )}'
 }
 
-function find() {
+find() {
     # Some optimizations for find
     /usr/bin/find -L -O3 $@
 }
 
-function ffind() {
+ffind() {
     # Find only files with some optimizations I generally use
     find $@ -type f
 }
 
-function dfind() {
+dfind() {
     # Find only files with some optimizations I generally use
     find $@ -type d
 }
 
-function portu() {
+portu() {
     # Prints who occupied port
     if [ $# -ne 1 ]
     then
@@ -85,35 +85,35 @@ function portu() {
     sudo netstat -lnp | ag "$1" | awk '{print $4,"\t",$7}'
 }
 
-function docker_images() {
+docker_images() {
     docker images | awk '!/REPOSITORY|<none>/ { if (!seen[$1]++) print $1}' | sort
 }
 
-function docker_update() {
+docker_update() {
     docker_images | xargs -P $(cpu_count) -n 1 docker pull -a
 }
 
-function docker_stop() {
+docker_stop() {
     docker stop $(docker ps -a -q)
 }
 
-function docker_clean() {
+docker_clean() {
     docker_stop
     docker rm $(docker ps -a -q) && \
     docker images | awk '/<none>/ { if (!seen[$3]++) print $3 }' | xargs docker rmi
 }
 
-function dockerup() {
+dockerup() {
     docker_update && docker_clean
 }
 
-function docker_rmi() {
+docker_rmi() {
     for repo in "$@"; do
         docker images | grep "$repo" | awk '{print $2}' | xargs -n 1 -I {} docker rmi "$repo:{}"
     done
 }
 
-function vagrant_halt() {
+vagrant_halt() {
     local awk_script='
         BEGIN {
             start = 0
@@ -133,24 +133,24 @@ function vagrant_halt() {
     vagrant global-status | awk "$awk_script" | xargs -n 1 -P $(cpu_count) vagrant halt
 }
 
-function aptg() {
+aptg() {
     sudo apt-get -qq -y update && \
     sudo apt-get -y dist-upgrade && \
     sudo apt-get -qq -y autoremove && \
     sudo apt-get -qq clean
 }
 
-function brewup() {
+brewup() {
     brew update && \
     brew upgrade && \
     brew cleanup
 }
 
-function pipup() {
+pipup() {
     cat $HOME/.config/pip.list | xargs pip install --user --upgrade
 }
 
-function allup() {
+allup() {
     aptg && brewup && pipup && dockerup
 }
 
