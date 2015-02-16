@@ -94,13 +94,26 @@ docker_update() {
 }
 
 docker_stop() {
-    docker stop $(docker ps -a -q)
+    local images="$(docker ps -a -q)"
+
+    if [ -n "${images}" ]; then
+        docker stop ${images}
+    fi
 }
 
 docker_clean() {
     docker_stop
-    docker rm $(docker ps -a -q) && \
-    docker images | awk '/<none>/ { if (!seen[$3]++) print $3 }' | xargs docker rmi
+
+    local containers="$(docker ps -a -q)"
+
+    if [ -n "${containers}" ]; then
+        docker rm ${containers}
+    fi
+
+    local images="$(docker images | awk '/<none>/ { if (!seen[$3]++) print $3 }')"
+    if [ -n "${images}" ]; then
+        echo ${images} | xargs docker rmi
+    fi
 }
 
 dockerup() {
@@ -108,9 +121,15 @@ dockerup() {
 }
 
 docker_rmi() {
+    local images="$(docker images)"
+
     for repo in "$@"; do
-        docker images | grep "$repo" | awk '{print $2}' | xargs -n 1 -I {} docker rmi "$repo:{}"
+        echo ${images} | grep "$repo" | awk '{print $2}' | xargs -n 1 -I {} docker rmi "$repo:{}"
     done
+}
+
+docker_pull() {
+    echo -n "$@" | xargs -d ' ' -n 1 -P $(cpu_count) docker pull -a
 }
 
 vagrant_halt() {
@@ -199,12 +218,6 @@ export HOMEBREW_TEMP=$HOME/.linuxbrew/tmp
 
 unsetopt nomatch
 
-if which dircolors > /dev/null; then
-	alias ls='ls --color=auto -F'
-	alias grep='grep --color=auto'
-	alias fgrep='fgrep --color=auto'
-	alias egrep='egrep --color=auto'
-fi
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -223,7 +236,6 @@ fi
 # Aliases
 ###############################################################################
 
-alias ag='ag --color -fS'
 alias catc="colorize"
 alias df='df -ah --total'
 alias du='du -ahc'
@@ -240,14 +252,23 @@ alias hty='h t -y --'
 alias mkdir='mkdir -pv'
 alias netstat='netstat -anp'
 alias nv=nvim
-alias pxargs='xargs -P $(nproc)'
-alias reset='reset && source ~/.zshrc'
+alias pxargs='xargs -P $(cpu_count)'
+alias reset='reset && resource'
+alias resource='source ~/.zshrc'
 alias tailf='tail -f'
 alias ta='t --all'
 alias t=tig
 alias vg='vim -g'
 alias vless='vim -R -c "set number" -u /usr/share/vim/vim74/macros/less.vim'
 alias v=vim
+
+if which dircolors > /dev/null; then
+    alias ag='ag --color -fS'
+	alias ls='ls --color=auto -F'
+	alias grep='grep --color=auto'
+	alias fgrep='fgrep --color=auto'
+	alias egrep='egrep --color=auto'
+fi
 
 alias -g AG="| ag"
 alias -g B="&|"
