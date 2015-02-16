@@ -44,6 +44,12 @@ export PATH="/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/
 # Custom functions
 ###############################################################################
 
+
+cpu_count() {
+    cat /proc/cpuinfo | awk '/processor/ {n++}; END {print n}'
+}
+
+
 tstamp () {
     # Converts unix timestamp into the date
     if [ $# -ne 1 ]
@@ -76,15 +82,15 @@ function portu() {
         echo "Usage: portu <port number>"
         return 1
     fi
-    sudo netstat -lnp | ag "$1" | gawk '{print $4,"\t",$7}'
+    sudo netstat -lnp | ag "$1" | awk '{print $4,"\t",$7}'
 }
 
 function docker_images() {
-    docker images | egrep -v "REPOSITORY|<none>" | awk '{print $1}' | sort -u
+    docker images | awk '!/REPOSITORY|<none>/ { if (!seen[$1]++) print $1}' | sort
 }
 
 function docker_update() {
-    docker images | egrep -v "REPO|<none>" | awk '{print $1}' | sort -u | xargs -P 2 -n 1 docker pull -a
+    docker_images | xargs -P $(cpu_count) -n 1 docker pull -a
 }
 
 function docker_stop() {
@@ -93,8 +99,8 @@ function docker_stop() {
 
 function docker_clean() {
     docker_stop
-    docker rm $(docker ps -a -q)
-    docker images | grep "<none>" | awk '{print $3}' | xargs docker rmi
+    docker rm $(docker ps -a -q) && \
+    docker images | awk '/<none>/ { if (!seen[$3]++) print $3 }' | xargs docker rmi
 }
 
 function dockerup() {
@@ -124,7 +130,7 @@ function vagrant_halt() {
             print $1
         }
     '
-    vagrant global-status | awk "$awk_script" | xargs -n 1 -P 4 vagrant halt
+    vagrant global-status | awk "$awk_script" | xargs -n 1 -P $(cpu_count) vagrant halt
 }
 
 function aptg() {
