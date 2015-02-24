@@ -30,7 +30,7 @@ fi
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-plugins=(docker brew pyenv python pip taskwarrior vagrant gitfast git-extras autojump colorize sudo command-not-found)
+plugins=(docker pyenv python pip taskwarrior vagrant gitfast git-extras autojump colorize sudo command-not-found)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -159,18 +159,12 @@ aptg() {
     sudo apt-get -qq clean
 }
 
-brewup() {
-    brew update && \
-    brew upgrade && \
-    brew cleanup
-}
-
 pipup() {
     cat $HOME/.config/pip.list | xargs pip install --user --upgrade
 }
 
 allup() {
-    aptg && brewup && pipup && dockerup
+    aptg && pipup && dockerup
 }
 
 
@@ -196,28 +190,21 @@ export EDITOR=vim
 export VIRTUALENVWRAPPER_PYTHON="/usr/bin/python"
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 export HISTTIMEFORMAT="%d.%m.%y %H:%M:%S"
-export PYENV_ROOT=$HOME/.linuxbrew/opt/pyenv
+export PYENV_ROOT=$HOME/.pyenv
 
+export PATH=$PYENV_ROOT/bin:$PATH
 export PATH=:$HOME/.local/bin:$PATH
 export PATH=$PATH:$GOBIN
-export PATH=$HOME/.linuxbrew/bin:$PATH
 export PATH=$HOME/.gem/ruby/current/bin:$PATH
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-
-export MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"
-export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
-
-export HOMEBREW_TEMP=$HOME/.linuxbrew/tmp
-
 
 
 ###############################################################################
 # Custom configuration
 ###############################################################################
 
-unsetopt nomatch
+eval "$(pyenv init -)"
 
+unsetopt nomatch
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
