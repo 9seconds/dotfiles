@@ -17,7 +17,7 @@
     df = diff --minimal
     fix = commit -a --amend
     ftch = fetch --prune --all
-    gcc = !git gc --aggressive --prune && git repack -Ad
+    gcc = !git gc --aggressive --prune && git repack -AFd
     la = !git l --all
     l = "!. ~/.gitutils && gitlog"
     mrebase = "!. ~/.gitutils && merge_rebase"
@@ -39,8 +39,12 @@
 	tool = diffmerge
 [core]
     pager = less -XSFR
+	preloadindex = true
 [mergetool "p4merge"]
     cmd = "/opt/p4merge/bin/p4merge $BASE $LOCAL $REMOTE $MERGED"
     keepTemporaries = false
     trustExitCode = false
     keepBackup = false
+[pack]
+	compression = 9
+	threads = 8
