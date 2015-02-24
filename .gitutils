@@ -1,14 +1,53 @@
-gitlog () {
-    # Puts a well formatted gitlog. This is not needed everytime actually
-    # but it is neet to have
-    HASH="%C(yellow)%h%C(reset)"
-    TIME="%C(green)%ar%C(reset)"
-    AUTHOR="%C(bold blue)%an%C(reset)"
-    REFS="%C(red)%d%C(reset)"
-    SUBJECT="%s"
-    LOGFORMAT="${HASH}\`(${TIME})\`${AUTHOR}\`${REFS} ${SUBJECT}"
+#!/usr/bin/env bash
 
-    git log --pretty --graph --format="tformat:${LOGFORMAT}" $* \
+set -e
+
+gitlog() {
+    # Puts a well formatted gitlog. This is not needed everytime actually
+    # but it is neet to have.
+
+    local commitish="%C(yellow)%h%C(reset)"
+    local timestamp="%C(green)%ar%C(reset)"
+    local author="%C(bold blue)%an%C(reset)"
+    local refs="%C(red)%d%C(reset)"
+    local subject="%s"
+    local format="${commitish}\`(${timestamp})\`${author}\`${refs} ${subject}"
+
+    git log --pretty --graph --format="tformat:${format}" $* \
         | column -t -s "\`" \
         | less -XSFR
+}
+
+
+merge_rebase() {
+    # This command should do the trick when you have to squash several
+    # several commits into one if you have merge commits.
+
+    local current_repo="$(git rev-parse --show-toplevel)"
+    local current_branch="$(git rev-parse --abbrev-ref HEAD)"
+
+    if [ "$current_branch" = "HEAD" ]; then
+        echo "Current branch cannot be HEAD"
+        exit 1
+    fi
+
+    local base_branch="$1"
+    local branch_with_changes="$2"
+
+    if [ -z "$branch_with_changes" ]; then
+        echo "Please specify branch with changes!"
+        exit 1
+    fi
+
+    local tempfile="$(mktemp)"
+    local diff_error="$(git diff ${base_branch}...${branch_with_changes} 2>&1 > ${tempfile})"
+
+    if [ -n "$diff_error" ]; then
+        echo "$diff_error"
+        rm -f "$tempfile"
+        exit 1
+    fi
+
+    git apply --index "${tempfile}"
+    git commit -a
 }

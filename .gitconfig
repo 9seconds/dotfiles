@@ -20,6 +20,7 @@
     gcc = !git gc --aggressive --prune && git repack -Ad
     la = !git l --all
     l = "!. ~/.gitutils && gitlog"
+    mrebase = "!. ~/.gitutils && merge_rebase"
     pll = pull --rebase --all
     pullr = pull --rebase
     ra = !git la -20
