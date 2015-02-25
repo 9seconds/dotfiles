@@ -21,6 +21,9 @@ COMPLETION_WAITING_DOTS="true"
 # How many hundreds of seconds to wait before start to manage next keystroke
 KEYTIMEOUT=1
 
+# ZSH syntax highlighters
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor root)
+
 # Set proper TERM for tmux
 if [ -n "$TMUX" ]; then
     export TERM=screen-256color
@@ -30,7 +33,21 @@ fi
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-plugins=(docker pyenv python pip taskwarrior vagrant gitfast git-extras autojump colorize sudo command-not-found)
+plugins=(
+    docker
+    pyenv
+    python
+    pip
+    taskwarrior
+    vagrant
+    gitfast
+    git-extras
+    autojump
+    colorize
+    sudo
+    command-not-found
+    zsh-syntax-highlighting
+)
 
 source $ZSH/oh-my-zsh.sh
 
