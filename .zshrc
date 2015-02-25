@@ -23,6 +23,7 @@ KEYTIMEOUT=1
 
 # ZSH syntax highlighters
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor root)
+ZSH_HIGHLIGHT_PATTERNS+=('rm -rf *' 'fg=white,bold,bg=red')
 
 # Set proper TERM for tmux
 if [ -n "$TMUX" ]; then
@@ -35,15 +36,9 @@ fi
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 plugins=(
     docker
-    pyenv
-    python
-    pip
-    taskwarrior
     vagrant
     gitfast
-    git-extras
     autojump
-    colorize
     sudo
     command-not-found
     zsh-syntax-highlighting
@@ -229,7 +224,6 @@ unsetopt nomatch
 bindkey "^R" history-incremental-pattern-search-backward
 bindkey "^S" history-incremental-pattern-search-forward
 
-
 virtualenvwrapper='virtualenvwrapper.sh'
 if (( $+commands[$virtualenvwrapper] )); then
       source ${${virtualenvwrapper}:c}
@@ -240,7 +234,7 @@ fi
 # Aliases
 ###############################################################################
 
-alias catc="colorize"
+alias catc="pygmentize -g"
 alias df='df -ah --total'
 alias du='du -ahc'
 alias g=git
