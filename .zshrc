@@ -22,7 +22,7 @@ COMPLETION_WAITING_DOTS="true"
 KEYTIMEOUT=1
 
 # ZSH syntax highlighters
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor root)
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern root)
 ZSH_HIGHLIGHT_PATTERNS+=('rm -rf *' 'fg=white,bold,bg=red')
 
 # Set proper TERM for tmux
