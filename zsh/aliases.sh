@@ -1,33 +1,52 @@
 #!/usr/bin/env zsh
 
 # Common aliases
-alias catc="pygmentize -g"
 alias df="df -ah --total"
 alias du="du -ahc"
-alias gdf="g df"
-alias g=git
 alias grep=egrep
-alias gst="g st"
-alias h=ah
-alias hl="h l"
-alias hsg="h s -g"
-alias hs="h s"
-alias ht="h t --"
-alias htx="h t -x --"
-alias hty="h t -y --"
 alias mkdir="mkdir -pv"
 alias netstat="netstat -anp"
-alias nv=nvim
 alias pxargs="xargs -P $(cpu_count)"
 alias reset="reset && resource"
 alias resource="source $ZSHRC"
 alias tailf="tail -f"
-alias ta="t --all"
-alias t=tig
-alias vg="vim -g"
-alias vi=vim
-alias vless="vim -R -c "set number" -u /usr/share/vim/vim74/macros/less.vim"
-alias v=vim
+
+# Tool related aliases
+if which pygmentize > /dev/null; then
+    alias catc="pygmentize -g"
+fi
+
+if which ah > /dev/null; then
+    alias h=ah
+    alias hl="h l"
+    alias hsg="h s -g"
+    alias hs="h s"
+    alias ht="h t --"
+    alias htx="h t -x --"
+    alias hty="h t -y --"
+fi
+
+if which nvim > /dev/null; then
+    alias nv=nvim
+fi
+
+if which vim > /dev/null; then
+    alias v=vim
+    alias vi=vim
+    alias vg="vim -g"
+    alias vless="vim -R -c "set number" -u /usr/share/vim/vim74/macros/less.vim"
+fi
+
+if which git > /dev/null; then
+    alias g=git
+    alias gst="g st"
+    alias gdf="g df"
+fi
+
+if which tig > /dev/null; then
+    alias t=tig
+    alias ta="t --all"
+fi
 
 # Alises with color support
 if which dircolors > /dev/null; then
