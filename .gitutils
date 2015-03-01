@@ -49,5 +49,5 @@ merge_rebase() {
     fi
 
     git apply --index "${tempfile}"
-    git commit -a
+    rm -f "${tempfile}"
 }
