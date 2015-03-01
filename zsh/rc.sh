@@ -6,6 +6,9 @@ source $ZSH_CUSTOM_PATH/init.sh
 # Load custom functions
 source $ZSH_CUSTOM_PATH/functions.sh
 
+# Load aliases
+source $ZSH_CUSTOM_PATH/aliases.sh
+
 # Colorscheme
 source "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh"
 
