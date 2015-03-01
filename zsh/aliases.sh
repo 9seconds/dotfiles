@@ -4,6 +4,7 @@
 alias df="df -ah --total"
 alias du="du -ahc"
 alias grep=egrep
+alias makep="make -j $(cpu_count)"
 alias mkdir="mkdir -pv"
 alias netstat="netstat -anp"
 alias pxargs="xargs -P $(cpu_count)"

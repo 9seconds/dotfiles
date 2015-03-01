@@ -56,6 +56,10 @@ docker_images() {
     docker images | awk '!/REPOSITORY|<none>/ { if (!seen[$1]++) print $1}' | sort
 }
 
+docker_versions() {
+    docker images | awk 'NR > 1' | grep "$@" | awk '{print $2}' | sort
+}
+
 docker_update() {
     docker_images | xargs -P $(cpu_count) -n 1 docker pull -a
 }
