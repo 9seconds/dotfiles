@@ -1,0 +1,18 @@
+#!/usr/bin/env zsh
+
+# Initialize shell
+source $ZSH_CUSTOM_PATH/init.sh
+
+# Load custom functions
+source $ZSH_CUSTOM_PATH/functions.sh
+
+# Colorscheme
+source "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh"
+
+# Source ah autocompletion
+if which ah > /dev/null; then
+    source $DEVGOPATH/src/github.com/9seconds/ah/sourceit/zsh.sh
+fi
+
+# Private stuff I do not want to share
+[[ -f $HOME/.zshrc.private ]] && source $HOME/.zshrc.private
