@@ -6,6 +6,10 @@ cpu_count() {
     cat /proc/cpuinfo | awk '/processor/ {n++}; END {print n}'
 }
 
+clc() {
+    echo "$@" | bc -l
+}
+
 skip_first() {
     local how_many=${1:=1}
 
