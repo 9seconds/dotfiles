@@ -13,13 +13,7 @@ skip_first() {
 }
 
 tstamp () {
-    # Converts unix timestamp into the date
-    if [ $# -ne 1 ]
-    then
-        echo "Usage: tstamp <unix timestamp>"
-        return 1
-    fi
-    echo "$1" | gawk '{print strftime("%c", ( $0 + 500 ) / 1000 )}'
+    date -d @$1
 }
 
 find() {
@@ -28,13 +22,27 @@ find() {
 }
 
 ffind() {
-    # Find only files with some optimizations I generally use
-    find $@ -type f
+    local find_path="$1"
+    shift
+
+    local filename="$1"
+    shift
+
+    find "${find_path}" -name "${filename}" -type f $@
 }
 
 dfind() {
-    # Find only files with some optimizations I generally use
-    find $@ -type d
+    local find_path="$1"
+    shift
+
+    local filename="$1"
+    shift
+
+    find "${find_path}" -name "${filename}" -type d $@
+}
+
+dedup() {
+    awk '!NF || !seen[$0]++'
 }
 
 portu() {
@@ -45,6 +53,18 @@ portu() {
         return 1
     fi
     sudo netstat -lnp | ag "$1" | awk '{print $4,"\t",$7}'
+}
+
+filesu() {
+    lsof "$1" 2> /dev/null | awk 'BEGIN {OFS="\t"} NR > 1 {print $1, $2, $3}'
+}
+
+filesp() {
+    lsof -c "$1" 2> /dev/null | awk 'BEGIN {OFS="\t"} {print $2, $9}'
+}
+
+filespu() {
+    filesp "$1" | awk 'NR > 1 {print $2}' | sort -u
 }
 
 vim_cmd() {
@@ -78,8 +98,16 @@ docker_stop() {
     fi
 }
 
+docker_rm() {
+    local images="$(docker ps -a -q)"
+
+    if [ -n "${images}" ]; then
+        docker rm ${images}
+    fi
+}
+
 docker_clean() {
-    docker_stop
+    docker_stop && docker_rm
 
     local containers="$(docker ps -a -q)"
 
