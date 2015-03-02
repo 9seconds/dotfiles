@@ -6,6 +6,12 @@ cpu_count() {
     cat /proc/cpuinfo | awk '/processor/ {n++}; END {print n}'
 }
 
+skip_first() {
+    local how_many=${1:=1}
+
+    awk "NR > ${how_many}"
+}
+
 tstamp () {
     # Converts unix timestamp into the date
     if [ $# -ne 1 ]
@@ -53,11 +59,11 @@ vim_cmd() {
 ###############################################################################
 
 docker_images() {
-    docker images | awk '!/REPOSITORY|<none>/ { if (!seen[$1]++) print $1}' | sort
+    docker images | awk 'NR > 1 && $1 != "<none>" {print $1}' | sort -u
 }
 
 docker_versions() {
-    docker images | awk 'NR > 1' | grep "$@" | awk '{print $2}' | sort
+    docker images | skip_first | grep "$@" | awk '{print $2}' | sort
 }
 
 docker_update() {
@@ -81,7 +87,7 @@ docker_clean() {
         docker rm ${containers}
     fi
 
-    local images="$(docker images | awk '/<none>/ { if (!seen[$3]++) print $3 }')"
+    local images="$(docker images | awk '$1 == "<none>" { if (!seen[$3]++) print $3 }')"
     if [ -n "${images}" ]; then
         echo ${images} | xargs docker rmi
     fi
