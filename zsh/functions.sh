@@ -3,29 +3,83 @@
 ###############################################################################
 
 cpu_count() {
+    # Calculates how many cpus do I have on this machine.
+    #
+    # Example:
+    #     $ cpu_count
+    #     4
+
     cat /proc/cpuinfo | awk '/processor/ {n++}; END {print n}'
 }
 
 clc() {
+    # Just a small command line calculator.
+    #
+    # Args:
+    #     arg1 arg2 arg3...
+    #
+    # Example:
+    #     $clc 1 + 1 + sqrt(4)
+    #     4.000000000000000000
+
     echo "$@" | bc -l
 }
 
 skip_first() {
+    # Skips first N lines of the output.
+    #
+    # Args:
+    #     N
+    #
+    # Example:
+    #     $ echo "1\n2\n3" | skip_first 1
+    #     2
+    #     3
+
     local how_many=${1:=1}
 
     awk "NR > ${how_many}"
 }
 
 tstamp () {
-    date -d @$1
+    # Converts UNIX timestamp into local and UTC.
+    #
+    # Args:
+    #     timestamp
+    #
+    # Example:
+    #     $ tstamp 1425353494
+    #     Вт. марта  3 06:31:34 MSK 2015
+    #     Вт. марта  3 03:31:34 UTC 2015
+    #
+    #
+
+    date -d @$1 && date --utc -d @$1
 }
 
 find() {
-    # Some optimizations for find
+    # Just a small wrapper around find to enable some common optimizations.
+    #
+    # Args:
+    #     arg1 arg2 arg3
+    #
+    # Example:
+    #     $ find . -name "env.sh" -type d
+    #     ./env.sh
+
     /usr/bin/find -L -O3 $@
 }
 
 ffind() {
+    # Small wrapper to search files.
+    #
+    # Args:
+    #     path fileglob
+    #
+    # Example:
+    #     $ ffind . env.sh
+    #     ./env.sh
+
     local find_path="$1"
     shift
 
@@ -36,6 +90,15 @@ ffind() {
 }
 
 dfind() {
+    # Small wrapper to search directories.
+    #
+    # Args:
+    #     path fileglob
+    #
+    # Example:
+    #     $ dfind . oh-my-zsh
+    #     ./oh-my-zsh
+
     local find_path="$1"
     shift
 
@@ -46,32 +109,124 @@ dfind() {
 }
 
 dedup() {
+    # Removes duplicates from output keeping preserving empty lines.
+    #
+    # Should be used in pipes only.
+
     awk '!NF || !seen[$0]++'
 }
 
 portu() {
-    # Prints who occupied port
+    # Prints who occupies the port.
+    #
+    # Args:
+    #     port_number
+    #
+    # Example:
+    #     $ portu 25
+    #     tcp   0.0.0.0:25  1908/master
+
     if [ $# -ne 1 ]
     then
         echo "Usage: portu <port number>"
         return 1
     fi
-    sudo netstat -lnp | ag "$1" | awk '{print $4,"\t",$7}'
+
+    sudo netstat -lnp -A inet | \
+        awk -v OFS="\t" -v NUM=".?*$1"'$' 'NR > 2 && $4 ~ NUM {print $1,$4,$7}'
 }
 
 filesu() {
-    lsof "$1" 2> /dev/null | awk 'BEGIN {OFS="\t"} NR > 1 {print $1, $2, $3}'
+    # Prints who uses the given file.
+    #
+    # Args:
+    #     filepath
+    #
+    # Example:
+    #     $ filesu /dev/urandom
+    #     indicator 3519    nineseconds
+    #     python  3666    nineseconds
+    #     dropbox 3736    nineseconds
+    #     gvfs-afc-   3771    nineseconds
+    #     btsync-co   3798    nineseconds
+    #     firefox 3859    nineseconds
+    #     vim 4429    nineseconds
+    #     python2 4444    nineseconds
+    #     python2 4444    nineseconds
+
+    lsof "$1" 2> /dev/null | awk -v OFS="\t" 'NR > 1 {print $1, $2, $3}'
 }
 
 filesp() {
-    lsof -c "$1" 2> /dev/null | awk 'BEGIN {OFS="\t"} {print $2, $9}'
+    # Prints which files are used by processes with the given name.
+    #
+    # Args:
+    #     process_name
+    #
+    # Example:
+    #     $ filesp zsh
+    #     6886    /usr/lib/x86_64-linux-gnu/zsh/5.0.5/zsh/compctl.so
+    #     6886    /usr/lib/x86_64-linux-gnu/zsh/5.0.5/zsh/stat.so
+    #     6886    /usr/lib/x86_64-linux-gnu/zsh/5.0.5/zsh/complist.so
+    #     6886    /usr/lib/x86_64-linux-gnu/zsh/5.0.5/zsh/parameter.so
+    #     6886    /usr/lib/x86_64-linux-gnu/zsh/5.0.5/zsh/zutil.so
+    #     6886    /usr/lib/x86_64-linux-gnu/zsh/5.0.5/zsh/complete.so
+    #     6886    /usr/lib/x86_64-linux-gnu/zsh/5.0.5/zsh/zle.so
+    #     6886    /usr/lib/x86_64-linux-gnu/zsh/5.0.5/zsh/terminfo.so
+
+    lsof -c "$1" 2> /dev/null | awk OFS="\t" '{print $2, $9}'
 }
 
 filespu() {
+    # Prints the list of files for the given processes (unique).
+    #
+    # Args:
+    #     process_name
+    #
+    # Example:
+    #     $ filespu zsh
+    #     /
+    #     /bin/zsh5
+    #     /dev/pts/11
+    #     /dev/pts/3
+    #     /home/nineseconds/dev/pvt/dotfiles/zsh
+    #     /lib/x86_64-linux-gnu/ld-2.19.so
+    #     /lib/x86_64-linux-gnu/libc-2.19.so
+    #     /lib/x86_64-linux-gnu/libcap.so.2.24
+    #     /lib/x86_64-linux-gnu/libdl-2.19.so
+    #     /lib/x86_64-linux-gnu/libm-2.19.so
+    #     /lib/x86_64-linux-gnu/libnsl-2.19.so
+    #     /lib/x86_64-linux-gnu/libnss_compat-2.19.so
+    #     /lib/x86_64-linux-gnu/libnss_files-2.19.so
+    #     /lib/x86_64-linux-gnu/libnss_nis-2.19.so
+    #     /lib/x86_64-linux-gnu/libtinfo.so.5.9
+    #     pipe
+    #     /usr/lib/locale/locale-archive
+    #     /usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache
+    #     /usr/lib/x86_64-linux-gnu/zsh/5.0.5/zsh/compctl.so
+    #     /usr/lib/x86_64-linux-gnu/zsh/5.0.5/zsh/complete.so
+    #     /usr/lib/x86_64-linux-gnu/zsh/5.0.5/zsh/complist.so
+    #     /usr/lib/x86_64-linux-gnu/zsh/5.0.5/zsh/computil.so
+    #     /usr/lib/x86_64-linux-gnu/zsh/5.0.5/zsh/parameter.so
+    #     /usr/lib/x86_64-linux-gnu/zsh/5.0.5/zsh/stat.so
+    #     /usr/lib/x86_64-linux-gnu/zsh/5.0.5/zsh/terminfo.so
+    #     /usr/lib/x86_64-linux-gnu/zsh/5.0.5/zsh/zle.so
+    #     /usr/lib/x86_64-linux-gnu/zsh/5.0.5/zsh/zutil.so
+    #     /usr/share/zsh/functions/Completion/Unix.zwc
+    #     /usr/share/zsh/functions/Zle.zwc
+
     filesp "$1" | awk 'NR > 1 {print $2}' | sort -u
 }
 
 vim_cmd() {
+    # Executes VIM command without a VIM start.
+    #
+    # Args:
+    #     arg1 arg2 arg3
+    #
+    # Example:
+    #     $ vim_cmd "try | NeoBundleUpdate | finally | qall! | endtry"
+
     vim -N -u "$VIMRC" -c "$1" -U NONE -i NONE -V1 -e -s -X
     echo
 }
