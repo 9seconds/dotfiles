@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 
 # Common aliases
+alias clc="noglob clc"
 alias df="df -ah --total"
 alias du="du -ahc"
 alias grep=egrep

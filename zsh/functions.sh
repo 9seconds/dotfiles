@@ -238,18 +238,26 @@ vim_cmd() {
 ###############################################################################
 
 docker_images() {
+    # Just shows a list of docker images without a noise.
+
     docker images | awk 'NR > 1 && $1 != "<none>" {print $1}' | sort -u
 }
 
 docker_versions() {
-    docker images | skip_first | grep "$@" | awk '{print $2}' | sort
+    # Shows tags of docker images without a noise.
+
+    docker images | awk -v IMG="$1" 'NR > 1 && $1 == IMG {print $2}' | sort
 }
 
 docker_update() {
-    docker_images | xargs -P $(cpu_count) -n 1 docker pull -a
+    # Updates all existing docker images (all versions).
+
+    docker_images | xargs -P $(clc 2 \* $(cpu_count)) -n 1 docker pull -a
 }
 
 docker_stop() {
+    # Stops all running containers.
+
     local images="$(docker ps -a -q)"
 
     if [ -n "${images}" ]; then
@@ -258,21 +266,19 @@ docker_stop() {
 }
 
 docker_rm() {
-    local images="$(docker ps -a -q)"
-
-    if [ -n "${images}" ]; then
-        docker rm ${images}
-    fi
-}
-
-docker_clean() {
-    docker_stop && docker_rm
+    # Removes all running containers.
 
     local containers="$(docker ps -a -q)"
 
     if [ -n "${containers}" ]; then
         docker rm ${containers}
     fi
+}
+
+docker_clean() {
+    # Stops and removes all running containers. After it cleans stale images.
+
+    docker_stop && docker_rm
 
     local images="$(docker images | awk '$1 == "<none>" { if (!seen[$3]++) print $3 }')"
     if [ -n "${images}" ]; then
@@ -281,6 +287,14 @@ docker_clean() {
 }
 
 docker_rmi() {
+    # Removes images with all tags.
+    #
+    # Args:
+    #     repo1 repo2 repo3...
+    #
+    # Example:
+    #     $ docker_rmi ubuntu centos nineseconds/docker-vagrant
+
     local images="$(docker images)"
 
     for repo in "$@"; do
@@ -289,14 +303,31 @@ docker_rmi() {
 }
 
 docker_pull() {
-    echo -n "$@" | xargs -d ' ' -n 1 -P $(cpu_count) docker pull -a
+    # Pulls all tags for the repository.
+    #
+    # Args:
+    #     repo1 repo2 repo3...
+    #
+    # Example:
+    #     $ docker_pull ubuntu centos nineseconds/docker-vagrant
+
+    echo -n "$@" | xargs -d ' ' -n 1 -P $(clc 2 \* $(cpu_count)) docker pull -a
 }
 
 docker_search() {
+    # Searches for the docker image with at lease 1 star.
+    #
+    # Args:
+    #     search_pattern
+    #
+    # Example:
+    #     $ docker_search centos
+
+    local delimeter="☃"
     docker search -s 1 "$@" \
-        | sed "s/\s\{2,\}/_\t/g" | \
-        awk -F "_\t" 'NR > 1 && $2 !~ /^[0-9]+/ {print}' | \
-        column -xt -s _$'\t'
+        | sed "s/\s\{2,\}/${delimeter}/g" | \
+        awk -F "${delimeter}" 'NR > 1 && $2 !~ /^[0-9]+/ {print}' | \
+        column -xt -s "${delimeter}"
 }
 
 
@@ -306,6 +337,8 @@ docker_search() {
 ###############################################################################
 
 vagrant_halt() {
+    # Halts all running Vagrant machines.
+
     local awk_script='
         BEGIN {
             start = 0
@@ -332,6 +365,8 @@ vagrant_halt() {
 ###############################################################################
 
 aptg() {
+    # Updates APT packages.
+
     sudo apt-get -qq -y update && \
     sudo apt-get -y dist-upgrade && \
     sudo apt-get -qq -y autoremove && \
@@ -339,25 +374,37 @@ aptg() {
 }
 
 dockerup() {
+    # Updates docker and cleans everything.
+
     docker_update && docker_clean
 }
 
 pipup() {
+    # Upgrades pip packages.
+
     cat "$LISTDIR/pip.list" | xargs pip install --user --upgrade --no-cache-dir --disable-pip-version-check
 }
 
 vim_update() {
+    # Updates VIM packages (with NeoBundle).
+
     yes y | vim_cmd "try | NeoBundleUpdate | finally | qall! | endtry"
 }
 
 vim_clean() {
+    # Cleans VIM packages (with NeoBundle).
+
     yes y | vim_cmd "try | NeoBundleClean | finally | qall! | endtry"
 }
 
 vimup() {
+    # Updates and cleans VIM packages (with NeoBundle).
+
     vim_update && vim_clean
 }
 
 allup() {
+    # Upgrades the world.
+
     aptg && pipup && vimup && dockerup
 }
