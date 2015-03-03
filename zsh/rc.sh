@@ -9,6 +9,9 @@ source $ZSH_CUSTOM_PATH/functions.sh
 # Load aliases
 source $ZSH_CUSTOM_PATH/aliases.sh
 
+# Load key bindings
+source $ZSH_CUSTOM_PATH/binds.sh
+
 # Colorscheme
 source "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh"
 

@@ -47,9 +47,6 @@ unsetopt nomatch
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-bindkey "^R" history-incremental-pattern-search-backward
-bindkey "^S" history-incremental-pattern-search-forward
-
 virtualenvwrapper='virtualenvwrapper.sh'
 if (( $+commands[$virtualenvwrapper] )); then
       source ${${virtualenvwrapper}:c}

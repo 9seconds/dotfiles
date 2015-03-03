@@ -2,6 +2,12 @@
 # COMMON FUNCTIONS
 ###############################################################################
 
+awp() {
+    # Small shortcut for awk '{print $N}'. It is awp N for now. Literally.
+
+    awk '{print $'$1'}'
+}
+
 cpu_count() {
     # Calculates how many cpus do I have on this machine.
     #
