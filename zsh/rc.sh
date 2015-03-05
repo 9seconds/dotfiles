@@ -20,5 +20,8 @@ if which ah > /dev/null; then
     source $DEVGOPATH/src/github.com/9seconds/ah/sourceit/zsh.sh
 fi
 
+# Use GVM
+[[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"
+
 # Private stuff I do not want to share
 [[ -f $HOME/.zshrc.private ]] && source $HOME/.zshrc.private
