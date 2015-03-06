@@ -25,6 +25,7 @@
     pullr = pull --rebase
     ra = !git la -20
     r = !git l -20
+    rh = reset --hard
     st = status -s
     su = submodule update --init
 [push]
