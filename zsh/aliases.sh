@@ -15,7 +15,7 @@ alias tailf="tail -f"
 
 # Tool related aliases
 if which pygmentize > /dev/null; then
-    alias catc="pygmentize -g"
+    alias catc="pygmentize -f terminal256 -O style=native -g"
 fi
 
 if which ah > /dev/null; then

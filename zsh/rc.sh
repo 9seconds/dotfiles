@@ -21,7 +21,10 @@ if which ah > /dev/null; then
 fi
 
 # Use GVM
-[[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"
+if [[ -s "$HOME/.gvm/scripts/gvm" ]]; then
+    source "$HOME/.gvm/scripts/gvm"
+    export GOPATH="$DEVGOPATH:$GOPATH"
+fi
 
 # Private stuff I do not want to share
-[[ -f $HOME/.zshrc.private ]] && source $HOME/.zshrc.private
+[[ -f "$HOME/.zshrc.private" ]] && source "$HOME/.zshrc.private"
