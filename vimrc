@@ -55,6 +55,7 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'morhetz/gruvbox'
     NeoBundle 'osyo-manga/vim-over'
     NeoBundle 'scrooloose/nerdtree'
+    NeoBundle 'Shougo/neocomplcache.vim'
     NeoBundle 'Shougo/neomru.vim'
     NeoBundle 'Shougo/unite.vim'
     NeoBundle 'sirver/ultisnips'
@@ -536,6 +537,20 @@ function! s:unite_settings()
 
     nmap <buffer> <ESC> <Plug>(unite_exit)
 endfunction
+
+" NeoCompleteCache
+let g:neocomplcache_enable_at_startup = 1
+let g:neocomplcache_enable_smart_case = 1
+let g:neocomplcache_min_syntax_length = 2
+if !exists('g:neocomplcache_force_omni_patterns')
+    let g:neocomplcache_force_omni_patterns = {}
+endif
+let g:neocomplcache_force_omni_patterns.python = '[^. \t]\.\w*'
+
+autocmd FileType python setlocal omnifunc=jedi#completions
+
+" Jedi
+let g:jedi#auto_vim_configuration = 0
 
 " Rainbow parenthesis
 au VimEnter * RainbowParenthesesToggleAll
