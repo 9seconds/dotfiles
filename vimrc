@@ -55,7 +55,7 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'morhetz/gruvbox'
     NeoBundle 'osyo-manga/vim-over'
     NeoBundle 'scrooloose/nerdtree'
-    NeoBundle 'Shougo/neocomplcache.vim'
+    NeoBundle 'Shougo/neocomplete.vim'
     NeoBundle 'Shougo/neomru.vim'
     NeoBundle 'Shougo/unite.vim'
     NeoBundle 'sirver/ultisnips'
@@ -539,25 +539,40 @@ function! s:unite_settings()
 endfunction
 
 " NeoCompleteCache
-let g:neocomplcache_enable_at_startup = 1
-let g:neocomplcache_enable_smart_case = 1
-let g:neocomplcache_min_syntax_length = 2
-if !exists('g:neocomplcache_force_omni_patterns')
-    let g:neocomplcache_force_omni_patterns = {}
-endif
-let g:neocomplcache_force_omni_patterns.python = '[^. \t]\.\w*'
-
+let g:neocomplete#enable_at_startup = 1
+let g:neocomplete#disable_auto_complete = 1
+let g:neocomplete#enable_smart_case = 1
+let g:neocomplete#fallback_mappings = ["\<C-x>\<C-o>", "\<C-x>\<C-n>"]
 autocmd FileType python setlocal omnifunc=jedi#completions
 
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><C-y>  neocomplcache#close_popup()
-inoremap <expr><C-e>  neocomplcache#cancel_popup()
+if !exists('g:neocomplete#keyword_patterns')
+    let g:neocomplete#keyword_patterns = {}
+endif
+let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+if !exists('g:neocomplete#force_omni_input_patterns')
+    let g:neocomplete#force_omni_input_patterns = {}
+endif
+let g:neocomplete#force_omni_input_patterns.python =
+    \ '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
+
+function! s:check_back_space()
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" :
+                   \ <SID>check_back_space() ? "\<TAB>" :
+                   \ neocomplete#start_manual_complete()
+inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><C-y> neocomplete#close_popup()
+inoremap <expr><C-e> neocomplete#cancel_popup()
 
 " Jedi
-let g:jedi#auto_vim_configuration = 0
 let g:jedi#popup_on_dot = 0
+let g:jedi#popup_select_first = 0
+let g:jedi#auto_vim_configuration = 0
+let g:jedi#completions_enabled = 0
 
 " Rainbow parenthesis
 au VimEnter * RainbowParenthesesToggleAll
