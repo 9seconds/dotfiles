@@ -39,6 +39,7 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'airblade/vim-gitgutter'
     NeoBundle 'benmills/vimux'
     NeoBundle 'bps/vim-textobj-python'
+    NeoBundle 'davidhalter/jedi-vim'
     NeoBundle 'fatih/vim-go'
     NeoBundle 'hdima/python-syntax'
     NeoBundle 'honza/dockerfile.vim'
@@ -64,7 +65,6 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'tpope/vim-repeat'
     NeoBundle 'tpope/vim-surround'
     NeoBundle 'tpope/vim-unimpaired'
-    NeoBundle 'Valloric/YouCompleteMe'
 
     NeoBundle 'Shougo/vimproc.vim', {
         \ 'build' : {
@@ -325,9 +325,6 @@ map <silent> <F2> :NERDTreeTabsToggle<CR>
 " TagBar
 map <silent> <F3> :TagbarToggle<CR>
 
-" YCM traveller
-map <silent> <F4> :YcmCompleter GoToDefinitionElseDeclaration<cr>
-
 " Vimux
 map <silent> <F5> :VimuxPromptCommand<cr>
 map <silent> <F6> :VimuxZoomRunner<cr>
@@ -429,14 +426,6 @@ set formatprg=par
 " =====================================
 " ========== Plugin settings ==========
 " =====================================
-
-" " YouCompleteMe settings
-let g:ycm_confirm_extra_conf = 0
-let g:ycm_autoclose_preview_window_after_insertion = 1
-let g:ycm_autoclose_preview_window_after_completion = 0
-let g:ycm_add_preview_to_completeopt = 0
-let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
-let g:ycm_min_num_of_chars_for_completion = 2
 
 " Setup lightline
 let g:lightline = {
