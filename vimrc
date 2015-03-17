@@ -57,8 +57,8 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'scrooloose/nerdtree'
     NeoBundle 'Shougo/neocomplete.vim'
     NeoBundle 'Shougo/neomru.vim'
-    NeoBundle 'Shougo/unite.vim'
     NeoBundle 'Shougo/neosnippet'
+    NeoBundle 'Shougo/unite.vim'
     NeoBundle 'terryma/vim-expand-region'
     NeoBundle 'terryma/vim-multiple-cursors'
     NeoBundle 'tpope/vim-commentary'
@@ -66,6 +66,7 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'tpope/vim-repeat'
     NeoBundle 'tpope/vim-surround'
     NeoBundle 'tpope/vim-unimpaired'
+    NeoBundle 'Yggdroot/indentLine'
 
     NeoBundle 'Shougo/vimproc.vim', {
         \ 'build' : {
@@ -600,6 +601,12 @@ au VimEnter * RainbowParenthesesToggleAll
 au Syntax   * RainbowParenthesesLoadRound
 au Syntax   * RainbowParenthesesLoadSquare
 au Syntax   * RainbowParenthesesLoadBraces
+
+" IndentLine
+set list
+let &lcs = 'tab:| '
+let g:indentLine_leadingSpaceEnabled = 1
+let g:indentLine_leadingSpaceChar = '·'
 
 
 
