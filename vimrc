@@ -232,6 +232,14 @@ autocmd BufWritePre * :%s/\s\+$//e
 
 autocmd BufWritePost .vimrc source $MYVIMRC
 
+if exists('$TMUX')
+    let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+    let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+else
+    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+endif
+
 
 
 " ============================
@@ -318,6 +326,7 @@ map <leader>cd :cd %:p:h<cr>:pwd<cr>
 nnoremap <silent> <Leader>m  :Unite -buffer-name=recent -winheight=10 file_mru<cr>
 nnoremap <silent> <Leader>bl :Unite -buffer-name=buffers -winheight=10 buffer<cr>
 nnoremap <silent> <Leader>f  :Unite grep:.<cr>
+nnoremap <silent> <Leader>F  :UniteResume -buffer-name=grep<cr>
 nnoremap <silent> <C-p>      :Unite -start-insert -buffer-name=files -winheight=10 file_rec/async<cr>
 
 " NerdTree
@@ -514,6 +523,7 @@ call unite#custom#source('file_rec/async','sorters','sorter_rank')
 let g:unite_enable_start_insert = 1
 let g:unite_source_file_rec_max_cache_files = 0
 let g:unite_source_history_yank_enable = 1
+let g:unite_source_yank_history_save_clipboard = 1
 let g:unite_split_rule = "botright"
 let g:unite_force_overwrite_statusline = 0
 let g:unite_winheight = 10
