@@ -58,7 +58,7 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'Shougo/neocomplete.vim'
     NeoBundle 'Shougo/neomru.vim'
     NeoBundle 'Shougo/unite.vim'
-    NeoBundle 'sirver/ultisnips'
+    NeoBundle 'Shougo/neosnippet'
     NeoBundle 'terryma/vim-expand-region'
     NeoBundle 'terryma/vim-multiple-cursors'
     NeoBundle 'tpope/vim-commentary'
@@ -332,13 +332,6 @@ map <silent> <F6> :VimuxZoomRunner<cr>
 map <silent> <F7> :VimuxCloseRunner<cr>
 map <silent> <F8> :VimuxInterruptRunner<cr>
 
-" Ultisnips
-let g:UltiSnipsUsePythonVersion = 2
-let g:UltiSnipsExpandTrigger="<Space>q"
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-let g:UltiSnipsEditSplit="context"
-
 " Python Syntax
 let python_version_2 = 1
 let python_highlight_all = 1
@@ -538,17 +531,31 @@ function! s:unite_settings()
     nmap <buffer> <ESC> <Plug>(unite_exit)
 endfunction
 
+" NeoSnippet
+let g:neosnippet#enable_preview = 1
+let g:neosnippet#enable_snipmate_compatibility = 1
+let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
+
+let g:neosnippet#disable_runtime_snippets = {
+    \   '_' : 1,
+    \ }
+
+" For snippet_complete marker.
+if has('conceal')
+    set conceallevel=2 concealcursor=i
+endif
+
 " NeoCompleteCache
 let g:neocomplete#enable_at_startup = 1
 let g:neocomplete#disable_auto_complete = 1
 let g:neocomplete#enable_smart_case = 1
 let g:neocomplete#fallback_mappings = ["\<C-x>\<C-o>", "\<C-x>\<C-n>"]
-autocmd FileType python setlocal omnifunc=jedi#completions
 
 if !exists('g:neocomplete#keyword_patterns')
     let g:neocomplete#keyword_patterns = {}
 endif
 let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+
 if !exists('g:neocomplete#force_omni_input_patterns')
     let g:neocomplete#force_omni_input_patterns = {}
 endif
@@ -560,9 +567,11 @@ function! s:check_back_space()
     return !col || getline('.')[col - 1]  =~ '\s'
 endfunction
 
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" :
-                   \ <SID>check_back_space() ? "\<TAB>" :
-                   \ neocomplete#start_manual_complete()
+imap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+    \ "\<Plug>(neosnippet_expand_or_jump)"
+    \ : pumvisible() ? "\<C-n>" :
+    \ <SID>check_back_space() ? "\<TAB>" :
+    \ neocomplete#start_manual_complete()
 inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
 inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
 inoremap <expr><C-y> neocomplete#close_popup()
@@ -573,6 +582,8 @@ let g:jedi#popup_on_dot = 0
 let g:jedi#popup_select_first = 0
 let g:jedi#auto_vim_configuration = 0
 let g:jedi#completions_enabled = 0
+
+autocmd FileType python setlocal omnifunc=jedi#completions
 
 " Rainbow parenthesis
 au VimEnter * RainbowParenthesesToggleAll
