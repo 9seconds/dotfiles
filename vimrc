@@ -35,16 +35,21 @@ endif
 
 call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundleFetch 'Shougo/neobundle.vim'
+    NeoBundle 'Shougo/vimproc.vim', {
+        \ 'build' : {
+        \     'windows' : 'tools\\update-dll-mingw',
+        \     'cygwin' : 'make -f make_cygwin.mak',
+        \     'mac' : 'make -f make_mac.mak',
+        \     'unix' : g:make,
+        \    },
+        \ }
 
+    " Common plugins
     NeoBundle 'airblade/vim-gitgutter'
     NeoBundle 'benmills/vimux'
-    NeoBundle 'bps/vim-textobj-python'
-    NeoBundle 'davidhalter/jedi-vim'
     NeoBundle 'fatih/vim-go'
-    NeoBundle 'hdima/python-syntax'
     NeoBundle 'honza/dockerfile.vim'
     NeoBundle 'honza/vim-snippets'
-    NeoBundle 'hynek/vim-python-pep8-indent'
     NeoBundle 'itchyny/lightline.vim'
     NeoBundle 'jistr/vim-nerdtree-tabs'
     NeoBundle 'kana/vim-textobj-indent'
@@ -68,14 +73,23 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'tpope/vim-unimpaired'
     NeoBundle 'Yggdroot/indentLine'
 
-    NeoBundle 'Shougo/vimproc.vim', {
-        \ 'build' : {
-        \     'windows' : 'tools\\update-dll-mingw',
-        \     'cygwin' : 'make -f make_cygwin.mak',
-        \     'mac' : 'make -f make_mac.mak',
-        \     'unix' : g:make,
-        \    },
-        \ }
+    " Python plugins
+    NeoBundleLazy 'bps/vim-textobj-python', {
+                \ 'autoload': {'filetypes': ['python']} }
+    NeoBundleLazy 'davidhalter/jedi-vim', {
+                \ 'autoload': {'filetypes': ['python']} }
+    NeoBundleLazy 'hdima/python-syntax', {
+                \ 'autoload': {'filetypes': ['python']} }
+    NeoBundleLazy 'hynek/vim-python-pep8-indent', {
+                \ 'autoload': {'filetypes': ['python']} }
+
+    " JavaScript plugins
+    NeoBundleLazy 'pangloss/vim-javascript', {
+                \ 'autoload': {'filetypes': ['javascript']} }
+
+    " JSON
+    NeoBundleLazy 'elzr/vim-json', {'filetypes': 'json'}
+
 call neobundle#end()
 
 filetype plugin indent on
@@ -174,7 +188,8 @@ set splitright
 set splitbelow
 
 " Invisible characters
-set listchars=tab:▸\ ,eol:¬,trail:⋅,extends:❯,precedes:❮
+set list
+set listchars=tab:▸\ ,trail:⋅,extends:❯,precedes:❮
 set showbreak=↪
 
 " Show line numbers
@@ -241,6 +256,9 @@ else
     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 endif
 
+" Where the hell I can find modula 2?
+autocmd BufNewFile,BufReadPost *.md set filetype=markdown
+
 
 
 " ============================
@@ -301,8 +319,11 @@ nnoremap <C-l> <C-w>l
 " Disable Q since I really bad at fast typing
 map Q <nop>
 
+" Use common way to escape insert mode
+inoremap jj <ESC>
+
 " Disable highlight
-map <silent> <leader>h :silent nohlsearch<cr>
+map <silent> <leader>h :silent nohlsearch<cr><cr>
 
 " Remap VIM 0 to first non-blank character
 map 0 ^
@@ -351,8 +372,8 @@ let g:EasyMotion_smartcase = 1
 let g:EasyMotion_use_smartsign_us = 1
 nmap s <Plug>(easymotion-s2)
 nmap t <Plug>(easymotion-t2)
-map  / <Plug>(easymotion-sn)
-omap / <Plug>(easymotion-tn)
+map  / <Plug>(easymotion-sn)\v
+omap / <Plug>(easymotion-tn)\v
 map  n <Plug>(easymotion-next)
 map  N <Plug>(easymotion-prev)
 
@@ -593,6 +614,7 @@ let g:jedi#popup_on_dot = 0
 let g:jedi#popup_select_first = 0
 let g:jedi#auto_vim_configuration = 0
 let g:jedi#completions_enabled = 0
+let g:jedi#show_call_signatures = 2
 
 autocmd FileType python setlocal omnifunc=jedi#completions
 
@@ -603,8 +625,6 @@ au Syntax   * RainbowParenthesesLoadSquare
 au Syntax   * RainbowParenthesesLoadBraces
 
 " IndentLine
-set list
-let &lcs = 'tab:| '
 let g:indentLine_leadingSpaceEnabled = 1
 let g:indentLine_leadingSpaceChar = '·'
 
@@ -621,6 +641,8 @@ if has('gui_running')
     set guioptions-=r  " hide right scrollbar
     set guioptions-=L  " hide left scrollbar
     set guioptions-=m  " hide menu bar
+
+    set guifont=Meslo\ LG\ L\ DZ\ 9
 
     " Always fullscreen
     set lines=999
