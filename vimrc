@@ -644,10 +644,6 @@ if has('gui_running')
 
     set guifont=Meslo\ LG\ L\ DZ\ 9
 
-    " Always fullscreen
-    set lines=999
-    set columns=999
-
     set guitablabel=%M\ %t
     set ttimeoutlen=10
     augroup FastEscape
