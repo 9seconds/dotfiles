@@ -628,6 +628,18 @@ au Syntax   * RainbowParenthesesLoadBraces
 let g:indentLine_leadingSpaceEnabled = 1
 let g:indentLine_leadingSpaceChar = '·'
 
+" Go
+let g:go_snippet_engine = "neosnippet"
+let g:go_highlight_operators = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
+
+autocmd BufWritePre *.go :GoImports
+autocmd FileType go nmap K <Plug>(go-doc)
+autocmd FileType go nmap <leader>g <Plug>(go-def-tab)
+autocmd FileType go nmap <leader>n <Plug>(go-callers)
+autocmd FileType go nmap <leader>r <Plug>(go-rename)
 
 
 " =========================
