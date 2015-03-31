@@ -310,6 +310,16 @@ docker_stop() {
     fi
 }
 
+docker_run() {
+    # Runs docker container. If no second argument is set then bash
+    # would be executed.
+
+    local container="$1"
+    local cmd="${2:-bash}"
+
+    docker run -it --rm=true $container $cmd
+}
+
 docker_rm() {
     # Removes all running containers.
 
