@@ -316,8 +316,17 @@ docker_run() {
 
     local container="$1"
     local cmd="${2:-bash}"
+    local volumes=""
 
-    docker run -it --rm=true $container $cmd
+    if [[ "$#" -gt "2" ]]; then
+        shift 2
+
+        for mapping in "$@"; do
+            volumes="-v $mapping $volumes"
+        done
+    fi
+
+    eval docker run -it --rm=true $volumes $container $cmd
 }
 
 docker_rm() {
