@@ -56,16 +56,13 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'junegunn/limelight.vim'
     NeoBundle 'kana/vim-textobj-indent'
     NeoBundle 'kana/vim-textobj-user'
+    NeoBundle 'kien/ctrlp.vim'
     NeoBundle 'kien/rainbow_parentheses.vim'
     NeoBundle 'Lokaltog/vim-easymotion'
     NeoBundle 'majutsushi/tagbar'
     NeoBundle 'morhetz/gruvbox'
     NeoBundle 'osyo-manga/vim-over'
     NeoBundle 'scrooloose/nerdtree'
-    NeoBundle 'Shougo/neocomplete.vim'
-    NeoBundle 'Shougo/neomru.vim'
-    NeoBundle 'Shougo/neosnippet'
-    NeoBundle 'Shougo/unite.vim'
     NeoBundle 'terryma/vim-expand-region'
     NeoBundle 'terryma/vim-multiple-cursors'
     NeoBundle 'tpope/vim-commentary'
@@ -74,11 +71,10 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'tpope/vim-surround'
     NeoBundle 'tpope/vim-unimpaired'
     NeoBundle 'Yggdroot/indentLine'
+    NeoBundle 'Valloric/YouCompleteMe'
 
     " Python plugins
     NeoBundleLazy 'bps/vim-textobj-python', {
-                \ 'autoload': {'filetypes': ['python']} }
-    NeoBundleLazy 'davidhalter/jedi-vim', {
                 \ 'autoload': {'filetypes': ['python']} }
     NeoBundleLazy 'hdima/python-syntax', {
                 \ 'autoload': {'filetypes': ['python']} }
@@ -347,12 +343,6 @@ nnoremap <silent> <Leader>1 :set paste!<cr>
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
-nnoremap <silent> <Leader>m  :Unite -buffer-name=recent -winheight=10 file_mru<cr>
-nnoremap <silent> <Leader>bl :Unite -buffer-name=buffers -winheight=10 buffer<cr>
-nnoremap <silent> <Leader>f  :Unite grep:.<cr>
-nnoremap <silent> <Leader>F  :UniteResume -buffer-name=grep<cr>
-nnoremap <silent> <C-p>      :Unite -start-insert -buffer-name=files -winheight=10 file_rec/async<cr>
-
 " NerdTree
 map <silent> <F2> :NERDTreeTabsToggle<CR>
 
@@ -525,8 +515,6 @@ function! LightLineFileName()
     let fname = expand('%:t')
     if fname == '__Tagbar__'
         return g:lightline.fname
-    elseif &ft == 'unite'
-        return unite#get_status_string()
     elseif fname =~ 'NERD_tree'
         return ''
     elseif fname == ''
@@ -544,7 +532,6 @@ function! LightLineMode()
     let fname = expand('%:t')
     return fname == '__Tagbar__' ? 'Tagbar' :
         \ fname =~ 'NERD_tree' ? 'NERDTree' :
-        \ &ft == 'unite' ? 'Unite' :
         \ winwidth(0) > 60 ? lightline#mode() : ''
 endfunction
 
@@ -568,92 +555,12 @@ endfunction
 " https://github.com/ggreer/the_silver_searcher
 if executable('ag')
     set grepprg=ag\ --nogroup\ --nocolor
-    let g:unite_source_grep_command = 'ag'
-    let g:unite_source_grep_default_opts = '-S --nocolor --nogroup --column'
-    let g:unite_source_grep_recursive_opt = ''
-    let g:unite_source_rec_async_command= 'ag --nocolor --nogroup --hidden -g ""'
 endif
-
-" Unite
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-call unite#filters#sorter_default#use(['sorter_rank'])
-call unite#custom#source('file_rec/async','sorters','sorter_rank')
-
-let g:unite_enable_start_insert = 1
-let g:unite_source_file_rec_max_cache_files = 0
-let g:unite_source_history_yank_enable = 1
-let g:unite_source_yank_history_save_clipboard = 1
-let g:unite_split_rule = "botright"
-let g:unite_force_overwrite_statusline = 0
-let g:unite_winheight = 10
-let g:unite_candidate_icon="➜"
-
-autocmd FileType unite call s:unite_settings()
-function! s:unite_settings()
-    let b:SuperTabDisabled=1
-    imap <buffer> <C-j>   <Plug>(unite_select_next_line)
-    imap <buffer> <C-k>   <Plug>(unite_select_previous_line)
-    imap <silent><buffer><expr> <C-x> unite#do_action('split')
-    imap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
-    imap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
-
-    nmap <buffer> <ESC> <Plug>(unite_exit)
-endfunction
-
-" NeoSnippet
-let g:neosnippet#enable_preview = 1
-let g:neosnippet#enable_snipmate_compatibility = 1
-let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
-
-let g:neosnippet#disable_runtime_snippets = {
-    \   '_' : 1,
-    \ }
 
 " For snippet_complete marker.
 if has('conceal')
     set conceallevel=2 concealcursor=i
 endif
-
-" NeoCompleteCache
-let g:neocomplete#enable_at_startup = 1
-let g:neocomplete#disable_auto_complete = 1
-let g:neocomplete#enable_smart_case = 1
-let g:neocomplete#fallback_mappings = ["\<C-x>\<C-o>", "\<C-x>\<C-n>"]
-
-if !exists('g:neocomplete#keyword_patterns')
-    let g:neocomplete#keyword_patterns = {}
-endif
-let g:neocomplete#keyword_patterns['default'] = '\h\w*'
-
-if !exists('g:neocomplete#force_omni_input_patterns')
-    let g:neocomplete#force_omni_input_patterns = {}
-endif
-let g:neocomplete#force_omni_input_patterns.python =
-    \ '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
-
-function! s:check_back_space()
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
-endfunction
-
-imap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-    \ "\<Plug>(neosnippet_expand_or_jump)"
-    \ : pumvisible() ? "\<C-n>" :
-    \ <SID>check_back_space() ? "\<TAB>" :
-    \ neocomplete#start_manual_complete()
-inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-inoremap <expr><C-y> neocomplete#close_popup()
-inoremap <expr><C-e> neocomplete#cancel_popup()
-
-" Jedi
-let g:jedi#popup_on_dot = 0
-let g:jedi#popup_select_first = 0
-let g:jedi#auto_vim_configuration = 0
-let g:jedi#completions_enabled = 0
-let g:jedi#show_call_signatures = 2
-
-autocmd FileType python setlocal omnifunc=jedi#completions
 
 " Rainbow parenthesis
 au VimEnter * RainbowParenthesesToggleAll
@@ -677,6 +584,23 @@ autocmd FileType go nmap K <Plug>(go-doc)
 autocmd FileType go nmap <leader>g <Plug>(go-def-tab)
 autocmd FileType go nmap <leader>n <Plug>(go-callers)
 autocmd FileType go nmap <leader>r <Plug>(go-rename)
+
+" CtrlP
+let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
+    \ --ignore .git
+    \ --ignore .svn
+    \ --ignore .hg
+    \ --ignore .DS_Store
+    \ --ignore "**/*.pyc"
+    \ -g ""'
+
+" YouCompleteMe
+let g:ycm_path_to_python_interpreter = '/usr/bin/python2.7'
+let g:ycm_min_num_of_chars_for_completion = 2
+let g:ycm_auto_trigger = 0
+let g:ycm_autoclose_preview_window_after_insertion = 1
+
+nnoremap <silent> <leader>g :YcmCompleter GoTo<cr>
 
 
 " =========================
