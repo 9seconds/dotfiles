@@ -440,7 +440,7 @@ aptg() {
 dockerup() {
     # Updates docker and cleans everything.
 
-    docker_update && docker_clean
+    docker_update; docker_clean
 }
 
 pipup() {
