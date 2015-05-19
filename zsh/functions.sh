@@ -297,7 +297,7 @@ docker_versions() {
 docker_update() {
     # Updates all existing docker images (all versions).
 
-    docker_images | xargs -P $(clc 2 \* $(cpu_count)) -n 1 docker pull -a
+    docker_images | xargs -P $(cpu_count) -n 1 docker pull -a
 }
 
 docker_stop() {
@@ -375,7 +375,7 @@ docker_pull() {
     # Example:
     #     $ docker_pull ubuntu centos nineseconds/docker-vagrant
 
-    echo -n "$@" | xargs -d ' ' -n 1 -P $(clc 2 \* $(cpu_count)) docker pull -a
+    echo -n "$@" | xargs -d ' ' -n 1 -P $(cpu_count) docker pull -a
 }
 
 docker_search() {
@@ -470,5 +470,14 @@ vimup() {
 allup() {
     # Upgrades the world.
 
-    aptg && pipup && vimup && dockerup
+    if [[ "$1" == "s" ]]; then
+        aptg && pipup && vimup && dockerup
+    else
+        aptg &
+        pipup &
+        vimup &
+        dockerup &
+
+        wait
+    fi
 }
