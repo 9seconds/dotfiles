@@ -473,7 +473,7 @@ allup() {
     if [[ "$1" == "s" ]]; then
         aptg && pipup && vimup && dockerup
     else
-        aptg &
+        DEBIAN_FRONTEND=noninteractive aptg &
         pipup &
         vimup &
         dockerup &
