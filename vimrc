@@ -213,8 +213,8 @@ set mouse=a
 set mousehide
 if !has("nvim")
     set ttyfast
+    set ttymouse=xterm2
 endif
-set ttymouse=xterm2
 
 " 0 escape time
 set timeoutlen=1000
