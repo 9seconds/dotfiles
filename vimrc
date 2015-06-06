@@ -43,6 +43,12 @@ call neobundle#begin(expand('~/.vim/bundle'))
         \     'unix' : g:make,
         \    },
         \ }
+    NeoBundle 'Valloric/YouCompleteMe', {
+        \ 'build': {
+        \     'unix' : './install.sh --clang-completer',
+        \     'mac' : './install.sh --clang-completer',
+        \   },
+        \ }
 
     " Common plugins
     NeoBundle 'airblade/vim-gitgutter'
@@ -71,7 +77,6 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'tpope/vim-surround'
     NeoBundle 'tpope/vim-unimpaired'
     NeoBundle 'Yggdroot/indentLine'
-    NeoBundle 'Valloric/YouCompleteMe'
 
     " Python plugins
     NeoBundleLazy 'bps/vim-textobj-python', {
