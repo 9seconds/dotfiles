@@ -25,7 +25,7 @@ export GOPATH="$DEVGOPATH"
 export GOBIN="$GOPATH/bin"
 export WORKON_HOME="$DEVVIRTUALENVPATH"
 
-export EDITOR=vim
+export EDITOR=nvim
 export VIMRC="$HOME/.vimrc"
 export VIRTUALENVWRAPPER_PYTHON="/usr/bin/python"
 export VIRTUAL_ENV_DISABLE_PROMPT=1
