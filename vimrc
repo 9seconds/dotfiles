@@ -89,6 +89,7 @@ set modeline
 " Turn on WildMenu
 set wildmenu
 set wildignore=*.o,*~,*.pyc,*.pyo,.git\*,.hg\*,svn\*,idea\*,__pycache__\*
+set wildmode=full
 
 " Always show current position
 set ruler
