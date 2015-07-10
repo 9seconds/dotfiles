@@ -1,4 +1,3 @@
-#!/usr/bin/env zsh
 
 # Initialize shell
 source $ZSH_CUSTOM_PATH/init.sh
@@ -11,9 +10,6 @@ source $ZSH_CUSTOM_PATH/aliases.sh
 
 # Load key bindings
 source $ZSH_CUSTOM_PATH/binds.sh
-
-# Colorscheme
-source "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh"
 
 # Source ah autocompletion
 if which ah > /dev/null; then

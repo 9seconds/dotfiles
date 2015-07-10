@@ -28,15 +28,16 @@ if which ah > /dev/null; then
     alias hty="h t -y --"
 fi
 
-if which nvim > /dev/null; then
-    alias nv=nvim
-fi
-
 if which vim > /dev/null; then
     alias v=vim
     alias vi=vim
     alias vg="vim -g"
     alias vless="vim -R -c "set number" -u /usr/share/vim/vim74/macros/less.vim"
+fi
+
+if which nvim > /dev/null; then
+    alias nv=nvim
+    alias v=nvim
 fi
 
 if which git > /dev/null; then
