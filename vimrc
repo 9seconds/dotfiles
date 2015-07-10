@@ -19,10 +19,6 @@ filetype off      " Required by NeoBundle to start
 " ========== Plugins ==========
 " =============================
 
-" Enable Python support for Neovim
-if has('nvim')
-  runtime! python_setup.vim
-endif
 
 let g:make = 'gmake'  " Required for vimproc plugin
 if system('uname -o') =~ '^GNU/'
@@ -43,19 +39,12 @@ call neobundle#begin(expand('~/.vim/bundle'))
         \     'unix' : g:make,
         \    },
         \ }
-    NeoBundle 'Valloric/YouCompleteMe', {
-        \ 'build': {
-        \     'unix' : './install.sh --clang-completer',
-        \     'mac' : './install.sh --clang-completer',
-        \   },
-        \ }
 
     " Common plugins
     NeoBundle 'airblade/vim-gitgutter'
-    NeoBundle 'benmills/vimux'
+    NeoBundle 'davidhalter/jedi-vim'
     NeoBundle 'fatih/vim-go'
     NeoBundle 'honza/dockerfile.vim'
-    NeoBundle 'honza/vim-snippets'
     NeoBundle 'itchyny/lightline.vim'
     NeoBundle 'jistr/vim-nerdtree-tabs'
     NeoBundle 'junegunn/goyo.vim'
@@ -67,15 +56,12 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundle 'Lokaltog/vim-easymotion'
     NeoBundle 'majutsushi/tagbar'
     NeoBundle 'morhetz/gruvbox'
-    NeoBundle 'osyo-manga/vim-over'
     NeoBundle 'scrooloose/nerdtree'
     NeoBundle 'terryma/vim-expand-region'
     NeoBundle 'terryma/vim-multiple-cursors'
     NeoBundle 'tpope/vim-commentary'
-    NeoBundle 'tpope/vim-fugitive'
     NeoBundle 'tpope/vim-repeat'
     NeoBundle 'tpope/vim-surround'
-    NeoBundle 'tpope/vim-unimpaired'
     NeoBundle 'Yggdroot/indentLine'
 
     " Python plugins
@@ -84,6 +70,8 @@ call neobundle#begin(expand('~/.vim/bundle'))
     NeoBundleLazy 'hdima/python-syntax', {
                 \ 'autoload': {'filetypes': ['python']} }
     NeoBundleLazy 'hynek/vim-python-pep8-indent', {
+                \ 'autoload': {'filetypes': ['python']} }
+    NeoBundleLazy 'davidhalter/jedi-vim', {
                 \ 'autoload': {'filetypes': ['python']} }
 
     " JavaScript plugins
@@ -113,7 +101,7 @@ endtry
 set showcmd
 
 " Set 7 lines to the cursor when scrolling vertically
-set scrolloff=7
+set scrolloff=5
 
 " The same but for horizontal
 set sidescroll=1
@@ -216,10 +204,6 @@ set ffs=unix,dos,mac
 " Mouse settings
 set mouse=a
 set mousehide
-if !has("nvim")
-    set ttyfast
-    set ttymouse=xterm2
-endif
 
 " 0 escape time
 set timeoutlen=1000
@@ -233,7 +217,6 @@ set t_Co=256
 
 " Solarized
 set background=dark
-" let base16colorspace=256
 colorscheme gruvbox
 let g:gruvbox_italic = 0
 
@@ -326,13 +309,14 @@ map Q <nop>
 inoremap jj <ESC>
 
 " Disable highlight
-map <silent> <leader>h :silent nohlsearch<cr><cr>
+nnoremap <silent> <ESC> :noh<CR><ESC>
 
 " Remap VIM 0 to first non-blank character
 map 0 ^
 
 " Close the current buffer
-map <leader>bd :bdelete<cr>
+nnoremap <leader>bd :bdelete<cr>
+nnoremap <leader>bs :buffers<CR>:buf<Space>
 
 " Tab management
 map <leader>tn        :tabnew<cr>
@@ -381,8 +365,8 @@ let g:goyo_linenr = 0
 nnoremap <silent> <Leader>+ :Goyo<cr>
 
 function! s:goyo_enter()
-  silent !tmux set status off
-  Limelight
+    silent !tmux set status off
+    Limelight
 endfunction
 
 function! s:goyo_leave()
@@ -455,29 +439,45 @@ set foldmethod=indent
 set foldnestmax=10
 set foldlevel=1
 set nofoldenable
-
-let s:hidden_all = 0
-function! ToggleHiddenAll()
-    if s:hidden_all  == 0
-        let s:hidden_all = 1
-        set noshowmode
-        set noruler
-        set laststatus=0
-        set noshowcmd
-        set cmdheight=1
-    else
-        let s:hidden_all = 0
-        set showmode
-        set ruler
-        set laststatus=2
-        set showcmd
-        set cmdheight=2
-    endif
-endfunction
-
-nnoremap <silent> <Leader>\ :call ToggleHiddenAll()<cr>
-
 set formatprg=par
+
+" Autocomplete menu
+inoremap <expr> <Esc>      pumvisible() ? "\<C-e>" : "\<Esc>"
+inoremap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
+inoremap <expr> <Tab>      pumvisible() ? "\<C-y>" : "\<CR>"
+inoremap <expr> <C-j>      pumvisible() ? "\<C-n>" : "\<Down>"
+inoremap <expr> <C-k>      pumvisible() ? "\<C-p>" : "\<Up>"
+inoremap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
+inoremap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"<F37>
+
+
+" =====================================
+" ========== Neovim settings ==========
+" =====================================
+
+if has('nvim')
+    " Python support
+    runtime! python_setup.vim
+    let g:python_host_prog="/usr/bin/python2.7"
+
+    " Windows navigation
+    tnoremap <A-h> <C-\><C-n><C-w>h
+    tnoremap <A-j> <C-\><C-n><C-w>j
+    tnoremap <A-k> <C-\><C-n><C-w>k
+    tnoremap <A-l> <C-\><C-n><C-w>l
+    nnoremap <A-h> <C-w>h
+    nnoremap <A-j> <C-w>j
+    nnoremap <A-k> <C-w>k
+    nnoremap <A-l> <C-w>l
+
+    " Teminal
+    :tnoremap <A-q> <C-\><C-n>
+
+    let g:terminal_scrollback_buffer_size = 10000
+else
+    set ttyfast
+    set ttymouse=xterm2
+endif
 
 
 " =====================================
@@ -562,11 +562,6 @@ if executable('ag')
     set grepprg=ag\ --nogroup\ --nocolor
 endif
 
-" For snippet_complete marker.
-if has('conceal')
-    set conceallevel=2 concealcursor=i
-endif
-
 " Rainbow parenthesis
 au VimEnter * RainbowParenthesesToggleAll
 au Syntax   * RainbowParenthesesLoadRound
@@ -578,7 +573,6 @@ let g:indentLine_leadingSpaceEnabled = 1
 let g:indentLine_leadingSpaceChar = '·'
 
 " Go
-let g:go_snippet_engine = "neosnippet"
 let g:go_highlight_operators = 1
 let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
@@ -599,13 +593,14 @@ let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
     \ --ignore "**/*.pyc"
     \ -g ""'
 
-" YouCompleteMe
-let g:ycm_path_to_python_interpreter = '/usr/bin/python2.7'
-let g:ycm_min_num_of_chars_for_completion = 2
-let g:ycm_auto_trigger = 0
-let g:ycm_autoclose_preview_window_after_insertion = 1
+" Jedi
+let g:jedi#popup_on_dot = 0
+let g:jedi#show_call_signatures = 2
+let g:jedi#use_tabs_not_buffers = 1
 
-nnoremap <silent> <leader>g :YcmCompleter GoTo<cr>
+" NerdTree
+let g:nerdtree_tabs_open_on_gui_startup = 0
+let g:nerdtree_tabs_open_on_console_startup = 0
 
 
 " =========================
@@ -634,15 +629,4 @@ if has('gui_running')
     nnoremap <silent> y "+y
     vnoremap <silent> y "+y
     nnoremap <silent><Leader>p "+gP
-endif
-
-
-
-" ==========================
-" ========== MISC ==========
-" ==========================
-
-
-if has('nvim')
-  let g:python_host_prog="/usr/bin/python2.7"
 endif
