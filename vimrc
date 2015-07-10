@@ -275,7 +275,7 @@ map Q <nop>
 inoremap jj <ESC>
 
 " Disable highlight
-nnoremap <silent> <ESC> :noh<CR><ESC>
+nnoremap <silent> <ESC> :noh<CR><ESC><ESC>
 
 " Remap VIM 0 to first non-blank character
 map 0 ^
