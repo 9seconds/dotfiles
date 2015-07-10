@@ -4,14 +4,8 @@
 " this is more or less up to date version of vim I am working with
 " everyday
 
-
-
-" =======================================
-" ========== Preliminary stuff ==========
-" =======================================
-
 set nocompatible  " Remove compatibility with VIM
-filetype off      " Required by NeoBundle to start
+filetype off
 
 
 
@@ -25,66 +19,38 @@ if system('uname -o') =~ '^GNU/'
     let g:make = 'make'
 endif
 
-if has ('vim_starting')
-    set runtimepath+=~/.vim/bundle/neobundle.vim/
-endif
 
-call neobundle#begin(expand('~/.vim/bundle'))
-    NeoBundleFetch 'Shougo/neobundle.vim'
-    NeoBundle 'Shougo/vimproc.vim', {
-        \ 'build' : {
-        \     'windows' : 'tools\\update-dll-mingw',
-        \     'cygwin' : 'make -f make_cygwin.mak',
-        \     'mac' : 'make -f make_mac.mak',
-        \     'unix' : g:make,
-        \    },
-        \ }
-
-    " Common plugins
-    NeoBundle 'airblade/vim-gitgutter'
-    NeoBundle 'davidhalter/jedi-vim'
-    NeoBundle 'fatih/vim-go'
-    NeoBundle 'honza/dockerfile.vim'
-    NeoBundle 'itchyny/lightline.vim'
-    NeoBundle 'jistr/vim-nerdtree-tabs'
-    NeoBundle 'junegunn/goyo.vim'
-    NeoBundle 'junegunn/limelight.vim'
-    NeoBundle 'kana/vim-textobj-indent'
-    NeoBundle 'kana/vim-textobj-user'
-    NeoBundle 'kien/ctrlp.vim'
-    NeoBundle 'kien/rainbow_parentheses.vim'
-    NeoBundle 'Lokaltog/vim-easymotion'
-    NeoBundle 'majutsushi/tagbar'
-    NeoBundle 'morhetz/gruvbox'
-    NeoBundle 'scrooloose/nerdtree'
-    NeoBundle 'terryma/vim-expand-region'
-    NeoBundle 'terryma/vim-multiple-cursors'
-    NeoBundle 'tpope/vim-commentary'
-    NeoBundle 'tpope/vim-repeat'
-    NeoBundle 'tpope/vim-surround'
-    NeoBundle 'Yggdroot/indentLine'
-
-    " Python plugins
-    NeoBundleLazy 'bps/vim-textobj-python', {
-                \ 'autoload': {'filetypes': ['python']} }
-    NeoBundleLazy 'hdima/python-syntax', {
-                \ 'autoload': {'filetypes': ['python']} }
-    NeoBundleLazy 'hynek/vim-python-pep8-indent', {
-                \ 'autoload': {'filetypes': ['python']} }
-    NeoBundleLazy 'davidhalter/jedi-vim', {
-                \ 'autoload': {'filetypes': ['python']} }
-
-    " JavaScript plugins
-    NeoBundleLazy 'pangloss/vim-javascript', {
-                \ 'autoload': {'filetypes': ['javascript']} }
-
-    " JSON
-    NeoBundleLazy 'elzr/vim-json', {'filetypes': 'json'}
-
-call neobundle#end()
+call plug#begin('~/.vim/plugged')
+    Plug '29decibel/codeschool-vim-theme'
+    Plug 'airblade/vim-gitgutter'
+    Plug 'benekastah/neomake'
+    Plug 'davidhalter/jedi-vim', { 'for': 'python' }
+    Plug 'elzr/vim-json', { 'for': 'json' }
+    Plug 'fatih/vim-go', { 'for': 'go' }
+    Plug 'hdima/python-syntax', { 'for': 'python' }
+    Plug 'honza/dockerfile.vim', { 'for': 'Dockerfile' }
+    Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
+    Plug 'itchyny/lightline.vim'
+    Plug 'junegunn/goyo.vim'
+    Plug 'junegunn/limelight.vim'
+    Plug 'kana/vim-textobj-user' | Plug 'kana/vim-textobj-indent' | Plug 'bps/vim-textobj-python'
+    Plug 'kien/ctrlp.vim'
+    " Plug 'kien/rainbow_parentheses.vim'
+    Plug 'Lokaltog/vim-easymotion'
+    Plug 'majutsushi/tagbar'
+    Plug 'morhetz/gruvbox'
+    Plug 'pangloss/vim-javascript', { 'for': 'python' }
+    Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
+    Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+    Plug 'terryma/vim-expand-region'
+    Plug 'terryma/vim-multiple-cursors'
+    Plug 'tpope/vim-commentary'
+    Plug 'tpope/vim-repeat'
+    Plug 'tpope/vim-surround'
+    Plug 'Yggdroot/indentLine'
+call plug#end()
 
 filetype plugin indent on
-NeoBundleCheck
 
 
 
@@ -217,8 +183,8 @@ set t_Co=256
 
 " Solarized
 set background=dark
-colorscheme gruvbox
-let g:gruvbox_italic = 0
+colorscheme codeschool
+" let g:gruvbox_italic = 0
 
 " Disable welcome page
 set shortmess=I
@@ -563,10 +529,10 @@ if executable('ag')
 endif
 
 " Rainbow parenthesis
-au VimEnter * RainbowParenthesesToggleAll
-au Syntax   * RainbowParenthesesLoadRound
-au Syntax   * RainbowParenthesesLoadSquare
-au Syntax   * RainbowParenthesesLoadBraces
+" au VimEnter * RainbowParenthesesToggleAll
+" au Syntax   * RainbowParenthesesLoadRound
+" au Syntax   * RainbowParenthesesLoadSquare
+" au Syntax   * RainbowParenthesesLoadBraces
 
 " IndentLine
 let g:indentLine_leadingSpaceEnabled = 1
