@@ -449,33 +449,14 @@ pipup() {
     cat "$LISTDIR/pip.list" | xargs pip install --user --upgrade --no-cache-dir --disable-pip-version-check
 }
 
-vim_update() {
-    # Updates VIM packages (with NeoBundle).
-
-    yes y | vim_cmd "try | NeoBundleUpdate | finally | qall! | endtry"
-}
-
-vim_clean() {
-    # Cleans VIM packages (with NeoBundle).
-
-    yes y | vim_cmd "try | NeoBundleClean | finally | qall! | endtry"
-}
-
-vimup() {
-    # Updates and cleans VIM packages (with NeoBundle).
-
-    vim_update && vim_clean
-}
-
 allup() {
     # Upgrades the world.
 
     if [[ "$1" == "s" ]]; then
-        aptg && pipup && vimup && dockerup
+        aptg && pipup && dockerup
     else
         DEBIAN_FRONTEND=noninteractive aptg &
         pipup &
-        vimup &
         dockerup &
 
         wait
