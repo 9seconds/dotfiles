@@ -4,15 +4,17 @@
 " this is more or less up to date version of vim I am working with
 " everyday
 
+
+" # Header          =============================================== {{{
+" _____________________________________________________________________________
+
 set nocompatible  " Remove compatibility with VIM
 filetype off
 
 
-
-" =============================
-" ========== Plugins ==========
-" =============================
-
+" }}}
+" # Plugins         =============================================== {{{
+" _____________________________________________________________________________
 
 let g:make = 'gmake'  " Required for vimproc plugin
 if system('uname -o') =~ '^GNU/'
@@ -31,6 +33,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'honza/dockerfile.vim', { 'for': 'Dockerfile' }
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'itchyny/lightline.vim'
+    Plug 'jmcantrell/vim-virtualenv', { 'for': 'python' }
     Plug 'junegunn/goyo.vim'
     Plug 'junegunn/limelight.vim'
     Plug 'kana/vim-textobj-user' | Plug 'kana/vim-textobj-indent' | Plug 'bps/vim-textobj-python'
@@ -47,70 +50,89 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-surround'
-    Plug 'Yggdroot/indentLine'
+    " Plug 'Yggdroot/indentLine'
 call plug#end()
 
 filetype plugin indent on
 
 
-
-" =======================================
-" =========== Common settings ===========
-" =======================================
+" }}}
+" # Settings        =============================================== {{{
+" _____________________________________________________________________________
 
 try
     lang en_us
 catch
 endtry
 
+" _____________________________________________________________________________
+
 " Show the status of the current command in the status bar
 set showcmd
 
-" Set 7 lines to the cursor when scrolling vertically
-set scrolloff=5
+" _____________________________________________________________________________
 
-" The same but for horizontal
+" Scrolling
+set scrolloff=5
 set sidescroll=1
 set sidescrolloff=15
+
+" _____________________________________________________________________________
 
 " Set magic for regular expressions
 set magic
 
+" _____________________________________________________________________________
+
 " Set abandonned buffer as hidden
 set hidden
+
+" _____________________________________________________________________________
 
 " Autosave and autoread
 set autoread
 set autowriteall
 
+" _____________________________________________________________________________
+
 " Admit people's modelines
 set modeline
+
+" _____________________________________________________________________________
 
 " Turn on WildMenu
 set wildmenu
 set wildignore=*.o,*~,*.pyc,*.pyo,.git\*,.hg\*,svn\*,idea\*,__pycache__\*
 set wildmode=full
 
+" _____________________________________________________________________________
+
 " Always show current position
 set ruler
+
+" _____________________________________________________________________________
 
 " Height of the command bar
 set cmdheight=2
 
+" _____________________________________________________________________________
+
 " Ignore case when searching
 set ignorecase
-
-" When searching try to be smart about cases
 set smartcase
+
+" _____________________________________________________________________________
 
 " Highlight search results
 set hlsearch
-
-" Incremental search
 set incsearch
+
+" _____________________________________________________________________________
 
 " Don't redraw while executing macros (mostly for performance)
 set lazyredraw
+
+" _____________________________________________________________________________
 
 " No sounds on errors
 set noerrorbells
@@ -118,11 +140,15 @@ set novisualbell
 set t_vb=
 set tm=500
 
+" _____________________________________________________________________________
+
 " Set utf8 for everything
 set encoding=utf8
 set termencoding=utf8
 set fileencoding=utf8
 set fileencodings=utf8,cp1251,koi8r,ucs-2le
+
+" _____________________________________________________________________________
 
 " Turn VIM bullshit off
 set nobackup
@@ -130,76 +156,119 @@ set nowb
 set noswapfile
 set viminfo=
 
+" _____________________________________________________________________________
+
 " Set end of line always
 set eol
+
+" _____________________________________________________________________________
 
 " Explain VIM about backspaces
 set backspace=indent,eol,start
 
+" _____________________________________________________________________________
+
 " Prevents inserting two spaces after punctuation
 set nojoinspaces
+
+" _____________________________________________________________________________
 
 " New vertical split to the right
 set splitright
 
+" _____________________________________________________________________________
+
 " New horizontal split at the bottom
 set splitbelow
+
+" _____________________________________________________________________________
 
 " Invisible characters
 set list
 set listchars=tab:▸\ ,trail:⋅,extends:❯,precedes:❮
 set showbreak=↪
 
+" _____________________________________________________________________________
+
 " Show line numbers
 set number
+set relativenumber
+
+" _____________________________________________________________________________
 
 " Show what mode is active
 set showmode
 
+" _____________________________________________________________________________
+
 " Additional character for edit convenience
 set virtualedit=onemore
+
+" _____________________________________________________________________________
 
 " History size
 set history=1000
 
+" _____________________________________________________________________________
+
 " Always show statusline
 set laststatus=2
 
+" _____________________________________________________________________________
+
 " Use Unix as a default filetype
 set ffs=unix,dos,mac
+
+" _____________________________________________________________________________
 
 " Mouse settings
 set mouse=a
 set mousehide
 
+" _____________________________________________________________________________
+
 " 0 escape time
 set timeoutlen=1000
 set ttimeoutlen=0
 
+" _____________________________________________________________________________
+
 " Solid line for vsplit separator
 set fcs=vert:│
+
+" _____________________________________________________________________________
 
 " Terminal with 256 colors
 set t_Co=256
 
+" _____________________________________________________________________________
+
 " Solarized
 set background=dark
 colorscheme codeschool
-" let g:gruvbox_italic = 0
+
+" _____________________________________________________________________________
 
 " Disable welcome page
 set shortmess=I
 
-" I am in the boat
-set relativenumber
+" _____________________________________________________________________________
+
 
 " Resize splits if the window is resized
 au VimResized * exe "normal! \<c-w>="
 
+" _____________________________________________________________________________
+
 " Remote trailing whitespaces on save
 autocmd BufWritePre * :%s/\s\+$//e
 
+" _____________________________________________________________________________
+
+" Resource vimrc on save
 autocmd BufWritePost .vimrc source $MYVIMRC
+
+" _____________________________________________________________________________
 
 if exists('$TMUX')
     let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
@@ -209,14 +278,15 @@ else
     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 endif
 
+" _____________________________________________________________________________
+
 " Where the hell I can find modula 2?
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 
 
-
-" ============================
-" ========== Keymap ==========
-" ============================
+" }}}}
+" # Keymap          =============================================== {{{
+" _____________________________________________________________________________
 
 " No arrows :(
 noremap  <up>    <nop>
@@ -337,8 +407,8 @@ function! s:goyo_enter()
 endfunction
 
 function! s:goyo_leave()
-  silent !tmux set status on
-  Limelight!
+    silent !tmux set status on
+    Limelight!
 endfunction
 
 autocmd! User GoyoEnter
@@ -361,10 +431,10 @@ let g:limelight_default_coefficient = 0.7
 let g:limelight_paragraph_span = 1
 
 
+" }}}
+" # Code            =============================================== {{{
+" _____________________________________________________________________________
 
-" =========================
-" ========== Code==========
-" =========================
 
 " Enable filetype related settings
 filetype on
@@ -406,6 +476,8 @@ set foldmethod=indent
 set foldnestmax=10
 set foldlevel=1
 set nofoldenable
+
+" Format with par
 set formatprg=par
 
 " Autocomplete menu
@@ -418,9 +490,10 @@ inoremap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDow
 inoremap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"<F37>
 
 
-" =====================================
-" ========== Neovim settings ==========
-" =====================================
+" }}}
+" # Neovim settings =============================================== {{{
+" _____________________________________________________________________________
+
 
 if has('nvim')
     " Python support
@@ -447,11 +520,13 @@ else
 endif
 
 
-" =====================================
-" ========== Plugin settings ==========
-" =====================================
+" }}}
+" # Plugin settings =============================================== {{{
+" _____________________________________________________________________________
 
-" Setup lightline
+
+" Lightline {{{
+
 let g:lightline = {
     \     'colorscheme': 'Tomorrow_Night',
     \     'active': {
@@ -515,7 +590,9 @@ function! LightLineReadOnly()
     return &ft !~? 'help' && &readonly ? '' : ''
 endfunction
 
-" TagBar
+" }}}
+" TagBar {{{
+
 let g:tagbar_status_func = 'LightLineTagBarStatus'
 
 function! LightLineTagBarStatus(current, sort, fname, ...) abort
@@ -523,23 +600,15 @@ function! LightLineTagBarStatus(current, sort, fname, ...) abort
     return lightline#statusline(0)
 endfunction
 
-" Use AG for search
-" https://github.com/ggreer/the_silver_searcher
-if executable('ag')
-    set grepprg=ag\ --nogroup\ --nocolor
-endif
+" }}}
+" IndentLine {{{
 
-" Rainbow parenthesis
-" au VimEnter * RainbowParenthesesToggleAll
-" au Syntax   * RainbowParenthesesLoadRound
-" au Syntax   * RainbowParenthesesLoadSquare
-" au Syntax   * RainbowParenthesesLoadBraces
-
-" IndentLine
 let g:indentLine_leadingSpaceEnabled = 1
 let g:indentLine_leadingSpaceChar = '·'
 
-" Go
+" }}}
+" VimGo {{{
+
 let g:go_highlight_operators = 1
 let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
@@ -551,7 +620,9 @@ autocmd FileType go nmap <leader>g <Plug>(go-def-tab)
 autocmd FileType go nmap <leader>n <Plug>(go-callers)
 autocmd FileType go nmap <leader>r <Plug>(go-rename)
 
-" CtrlP
+" }}}
+" CtrlP {{{
+
 let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
     \ --ignore .git
     \ --ignore .svn
@@ -560,19 +631,26 @@ let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
     \ --ignore "**/*.pyc"
     \ -g ""'
 
-" Jedi
+" }}}
+" Jedi {{{
+
 let g:jedi#popup_on_dot = 0
 let g:jedi#show_call_signatures = 2
 let g:jedi#use_tabs_not_buffers = 1
 
-" NerdTree
+" }}}
+" NerdTree and NerdTreeTabs {{{
+
 let g:nerdtree_tabs_open_on_gui_startup = 0
 let g:nerdtree_tabs_open_on_console_startup = 0
 
+" }}}
 
-" =========================
-" ========== GUI ==========
-" =========================
+
+" }}}
+" # GUI             =============================================== {{{
+" _____________________________________________________________________________
+
 
 if has('gui_running')
     let g:gruvbox_italic = 1
@@ -597,3 +675,24 @@ if has('gui_running')
     vnoremap <silent> y "+y
     nnoremap <silent><Leader>p "+gP
 endif
+
+
+" }}}
+" # Misc            =============================================== {{{
+" _____________________________________________________________________________
+
+
+" Fold vimrc
+autocmd FileType vim setlocal foldmethod=marker
+autocmd FileType vim setlocal foldenable
+
+" _____________________________________________________________________________
+
+" Use AG for search
+" https://github.com/ggreer/the_silver_searcher
+if executable('ag')
+    set grepprg=ag\ --nogroup\ --nocolor
+endif
+
+
+" }}}
