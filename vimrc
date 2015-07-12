@@ -367,17 +367,6 @@ nnoremap <silent> <Leader>1 :set paste!<cr>
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
-" NerdTree
-map <silent> <F2> :NERDTreeTabsToggle<CR>
-
-" TagBar
-map <silent> <F3> :TagbarToggle<CR>
-
-" Vimux
-map <silent> <F5> :VimuxPromptCommand<cr>
-map <silent> <F6> :VimuxZoomRunner<cr>
-map <silent> <F7> :VimuxCloseRunner<cr>
-map <silent> <F8> :VimuxInterruptRunner<cr>
 
 nnoremap Q :call <SID>QuickfixToggle()<cr>
 
@@ -608,6 +597,8 @@ let g:jedi#use_tabs_not_buffers = 1
 let g:nerdtree_tabs_open_on_gui_startup = 0
 let g:nerdtree_tabs_open_on_console_startup = 0
 
+map <silent> <F2> :NERDTreeTabsToggle<CR>
+
 " }}}
 " Python Syntax {{{
 
@@ -664,7 +655,19 @@ let g:limelight_default_coefficient = 0.7
 let g:limelight_paragraph_span = 1
 
 " }}}
+" TagBar {{{
 
+map <silent> <F3> :TagbarToggle<CR>
+
+" }}}
+" Vimux {{{
+
+map <silent> <F5> :VimuxPromptCommand<cr>
+map <silent> <F6> :VimuxZoomRunner<cr>
+map <silent> <F7> :VimuxCloseRunner<cr>
+map <silent> <F8> :VimuxInterruptRunner<cr>
+
+" }}}
 
 " }}}
 " # GUI             =============================================== {{{
