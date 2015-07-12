@@ -339,9 +339,6 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
-" Disable Q since I really bad at fast typing
-map Q <nop>
-
 " Use common way to escape insert mode
 inoremap jj <ESC>
 
@@ -381,54 +378,20 @@ map <silent> <F6> :VimuxZoomRunner<cr>
 map <silent> <F7> :VimuxCloseRunner<cr>
 map <silent> <F8> :VimuxInterruptRunner<cr>
 
-" Python Syntax
-let python_version_2 = 1
-let python_highlight_all = 1
+nnoremap Q :call <SID>QuickfixToggle()<cr>
 
-" Easy Motion
-let g:EasyMotion_smartcase = 1
-let g:EasyMotion_use_smartsign_us = 1
-nmap s <Plug>(easymotion-s2)
-nmap t <Plug>(easymotion-t2)
-map  / <Plug>(easymotion-sn)\v
-omap / <Plug>(easymotion-tn)\v
-map  n <Plug>(easymotion-next)
-map  N <Plug>(easymotion-prev)
-
-" Goyo
-let g:goyo_margin_top = 1
-let g:goyo_width = 120
-let g:goyo_linenr = 0
-nnoremap <silent> <Leader>+ :Goyo<cr>
-
-function! s:goyo_enter()
-    silent !tmux set status off
-    Limelight
+let g:quickfix_is_open = 0
+function! s:QuickfixToggle()
+    if g:quickfix_is_open
+        cclose
+        let g:quickfix_is_open = 0
+        execute g:quickfix_return_to_window . "wincmd w"
+    else
+        let g:quickfix_return_to_window = winnr()
+        copen
+        let g:quickfix_is_open = 1
+    endif
 endfunction
-
-function! s:goyo_leave()
-    silent !tmux set status on
-    Limelight!
-endfunction
-
-autocmd! User GoyoEnter
-autocmd! User GoyoLeave
-autocmd  User GoyoEnter nested call <SID>goyo_enter()
-autocmd  User GoyoLeave nested call <SID>goyo_leave()
-
-" Limelight
-let g:limelight_conceal_ctermfg = 'gray'
-let g:limelight_conceal_ctermfg = 240
-
-" Color name (:help gui-colors) or RGB color
-let g:limelight_conceal_guifg = 'DarkGray'
-let g:limelight_conceal_guifg = '#777777'
-
-" Default: 0.5
-let g:limelight_default_coefficient = 0.7
-
-" Number of preceding/following paragraphs to include (default: 0)
-let g:limelight_paragraph_span = 1
 
 
 " }}}
@@ -643,6 +606,61 @@ let g:jedi#use_tabs_not_buffers = 1
 
 let g:nerdtree_tabs_open_on_gui_startup = 0
 let g:nerdtree_tabs_open_on_console_startup = 0
+
+" }}}
+" Python Syntax {{{
+
+let python_version_2 = 1
+let python_highlight_all = 1
+
+" }}}
+" Easy Motion {{{
+
+let g:EasyMotion_smartcase = 1
+let g:EasyMotion_use_smartsign_us = 1
+nmap s <Plug>(easymotion-s2)
+nmap t <Plug>(easymotion-t2)
+map  / <Plug>(easymotion-sn)\v
+omap / <Plug>(easymotion-tn)\v
+map  n <Plug>(easymotion-next)
+map  N <Plug>(easymotion-prev)
+
+" }}}
+" Goyo {{{
+let g:goyo_margin_top = 1
+let g:goyo_width = 120
+let g:goyo_linenr = 0
+nnoremap <silent> <Leader>+ :Goyo<cr>
+
+function! s:goyo_enter()
+    silent !tmux set status off
+    Limelight
+endfunction
+
+function! s:goyo_leave()
+    silent !tmux set status on
+    Limelight!
+endfunction
+
+autocmd! User GoyoEnter
+autocmd! User GoyoLeave
+autocmd  User GoyoEnter nested call <SID>goyo_enter()
+autocmd  User GoyoLeave nested call <SID>goyo_leave()
+
+" }}}
+" Limelight {{{
+let g:limelight_conceal_ctermfg = 'gray'
+let g:limelight_conceal_ctermfg = 240
+
+" Color name (:help gui-colors) or RGB color
+let g:limelight_conceal_guifg = 'DarkGray'
+let g:limelight_conceal_guifg = '#777777'
+
+" Default: 0.5
+let g:limelight_default_coefficient = 0.7
+
+" Number of preceding/following paragraphs to include (default: 0)
+let g:limelight_paragraph_span = 1
 
 " }}}
 

@@ -37,8 +37,12 @@ export PATH=":$HOME/.local/bin:$PATH"
 export PATH="$PATH:$GOBIN"
 export PATH="$HOME/.gem/ruby/current/bin:$PATH"
 
+export PATH="$HOME/.linuxbrew/bin:$PATH"
+export MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"
+export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
+
 export NVIM_TUI_ENABLE_TRUE_COLOR=1
-#export NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+# export NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 
 # Set proper TERM for tmux
 if [ -n "$TMUX" ]; then
