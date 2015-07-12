@@ -44,13 +44,14 @@ call plug#begin('~/.vim/plugged')
     Plug 'majutsushi/tagbar'
     Plug 'morhetz/gruvbox'
     Plug 'pangloss/vim-javascript', { 'for': 'python' }
+    Plug 'rust-lang/rust.vim', { 'for': 'rust' }
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
     Plug 'Shougo/vimproc.vim', { 'do': 'make' }
     Plug 'terryma/vim-expand-region'
     Plug 'terryma/vim-multiple-cursors'
     Plug 'tpope/vim-commentary'
-    Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-fugitive'
+    Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-surround'
     " Plug 'Yggdroot/indentLine'
 call plug#end()
