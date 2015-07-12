@@ -26,6 +26,7 @@ call plug#begin('~/.vim/plugged')
     Plug '29decibel/codeschool-vim-theme'
     Plug 'airblade/vim-gitgutter'
     Plug 'benekastah/neomake'
+    Plug 'benmills/vimux'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'elzr/vim-json', { 'for': 'json' }
     Plug 'fatih/vim-go', { 'for': 'go' }
