@@ -50,6 +50,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'terryma/vim-multiple-cursors'
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-repeat'
+    Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-surround'
     " Plug 'Yggdroot/indentLine'
 call plug#end()
@@ -485,10 +486,12 @@ let g:lightline = {
     \     'active': {
     \         'left': [
     \             ['mode', 'paste'],
-    \             ['readonly', 'filename', 'modified']
+    \             ['readonly', 'filename', 'modified'],
+    \             ['fugitive']
     \         ]
     \     },
     \     'component_function': {
+    \         'fugitive':     'fugitive#statusline',
     \         'fileencoding': 'LightLineFileEncoding',
     \         'fileformat':   'LightLineFileFormat',
     \         'filename':     'LightLineFileName',
@@ -706,6 +709,7 @@ endif
 
 " Fold vimrc
 autocmd FileType vim setlocal foldmethod=marker
+autocmd FileType vim setlocal foldlevel=0
 autocmd FileType vim setlocal foldenable
 
 " _____________________________________________________________________________
