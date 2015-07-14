@@ -370,7 +370,7 @@ nnoremap <silent> <Leader>1 :set paste!<cr>
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
 
-nnoremap Q :call <SID>QuickfixToggle()<cr>
+nnoremap <silent> Q :call <SID>QuickfixToggle()<cr>
 
 let g:quickfix_is_open = 0
 function! s:QuickfixToggle()
@@ -672,6 +672,7 @@ map <silent> <F7> :VimuxCloseRunner<cr>
 map <silent> <F8> :VimuxInterruptRunner<cr>
 
 " }}}
+
 
 " }}}
 " # GUI             =============================================== {{{
