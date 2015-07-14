@@ -34,6 +34,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'honza/dockerfile.vim', { 'for': 'Dockerfile' }
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'itchyny/lightline.vim'
+    Plug 'jceb/vim-orgmode', { 'for': 'org' }
     Plug 'jmcantrell/vim-virtualenv', { 'for': 'python' }
     Plug 'junegunn/goyo.vim'
     Plug 'junegunn/limelight.vim'
@@ -52,6 +53,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-repeat'
+    Plug 'tpope/vim-speeddating', { 'for': 'org' }
     Plug 'tpope/vim-surround'
     " Plug 'Yggdroot/indentLine'
 call plug#end()
