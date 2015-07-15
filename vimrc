@@ -306,6 +306,8 @@ inoremap <right> <nop>
 " Map Leader to the Space
 let mapleader = "\<Space>"
 let g:mapleader = "\<Space>"
+let maplocalleader = "\<Space>"
+let g:maplocalleader = "\<Space>"
 
 " Fast saving on Space+w
 nmap <leader>w :w!<cr>
