@@ -423,6 +423,29 @@ vagrant_halt() {
 }
 
 
+###############################################################################
+# LINUXBREW FUNCTIONS
+###############################################################################
+
+brew_update() {
+    # Updates kegs
+
+    brew update && brew upgrade --all
+}
+
+brew_clean() {
+    # Cleans outdated brew kegs
+
+    brew cleanup
+}
+
+brewup() {
+    # Maintains Linuxbrew
+
+    brew_update && brew_clean
+}
+
+
 
 ###############################################################################
 # UPDATE FUNCTIONS
@@ -453,10 +476,11 @@ allup() {
     # Upgrades the world.
 
     if [[ "$1" == "s" ]]; then
-        aptg && pipup && dockerup
+        aptg && pipup && brewup && dockerup
     else
         DEBIAN_FRONTEND=noninteractive aptg &
         pipup &
+        brewup &
         dockerup &
 
         wait
