@@ -43,6 +43,7 @@ export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
 
 export NVIM_TUI_ENABLE_TRUE_COLOR=1
 # export NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+export RUST_SRC_PATH=$HOME/dev/3pp/rust/src
 
 # Set proper TERM for tmux
 if [ -n "$TMUX" ]; then

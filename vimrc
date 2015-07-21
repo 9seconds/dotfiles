@@ -27,6 +27,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'airblade/vim-gitgutter'
     Plug 'benekastah/neomake'
     Plug 'benmills/vimux'
+    Plug 'phildawes/racer', { 'for': 'rust', 'do': 'cargo build --release' }
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'elzr/vim-json', { 'for': 'json' }
     Plug 'fatih/vim-go', { 'for': 'go' }
@@ -674,6 +675,11 @@ map <silent> <F5> :VimuxPromptCommand<cr>
 map <silent> <F6> :VimuxZoomRunner<cr>
 map <silent> <F7> :VimuxCloseRunner<cr>
 map <silent> <F8> :VimuxInterruptRunner<cr>
+
+" }}}
+" Racer {{{
+
+let g:racer_cmd = "~/.vim/plugged/racer/target/release/racer"
 
 " }}}
 
