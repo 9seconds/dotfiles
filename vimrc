@@ -56,6 +56,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-speeddating', { 'for': 'org' }
     Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-markdown', { 'for': 'markdown' }
     " Plug 'Yggdroot/indentLine'
 call plug#end()
 

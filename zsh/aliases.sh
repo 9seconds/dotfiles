@@ -38,6 +38,7 @@ fi
 if which nvim > /dev/null; then
     alias nv=nvim
     alias v=nvim
+    alias vim=nvim
 fi
 
 if which git > /dev/null; then
