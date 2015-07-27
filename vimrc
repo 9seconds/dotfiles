@@ -23,11 +23,9 @@ endif
 
 
 call plug#begin('~/.vim/plugged')
-    Plug '29decibel/codeschool-vim-theme'
     Plug 'airblade/vim-gitgutter'
     Plug 'benekastah/neomake'
     Plug 'benmills/vimux'
-    Plug 'phildawes/racer', { 'for': 'rust', 'do': 'cargo build --release' }
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'elzr/vim-json', { 'for': 'json' }
     Plug 'fatih/vim-go', { 'for': 'go' }
@@ -35,17 +33,17 @@ call plug#begin('~/.vim/plugged')
     Plug 'honza/dockerfile.vim', { 'for': 'Dockerfile' }
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'itchyny/lightline.vim'
-    Plug 'jceb/vim-orgmode', { 'for': 'org' }
     Plug 'jmcantrell/vim-virtualenv', { 'for': 'python' }
     Plug 'junegunn/goyo.vim'
     Plug 'junegunn/limelight.vim'
     Plug 'kana/vim-textobj-user' | Plug 'kana/vim-textobj-indent' | Plug 'bps/vim-textobj-python'
     Plug 'kien/ctrlp.vim'
-    " Plug 'kien/rainbow_parentheses.vim'
+    Plug 'kristijanhusak/vim-hybrid-material'
     Plug 'Lokaltog/vim-easymotion'
     Plug 'majutsushi/tagbar'
     Plug 'morhetz/gruvbox'
     Plug 'pangloss/vim-javascript', { 'for': 'python' }
+    Plug 'phildawes/racer', { 'for': 'rust', 'do': 'cargo build --release' }
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
     Plug 'Shougo/vimproc.vim', { 'do': 'make' }
@@ -53,11 +51,10 @@ call plug#begin('~/.vim/plugged')
     Plug 'terryma/vim-multiple-cursors'
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-fugitive'
-    Plug 'tpope/vim-repeat'
-    Plug 'tpope/vim-speeddating', { 'for': 'org' }
-    Plug 'tpope/vim-surround'
     Plug 'tpope/vim-markdown', { 'for': 'markdown' }
-    " Plug 'Yggdroot/indentLine'
+    Plug 'tpope/vim-repeat'
+    Plug 'tpope/vim-surround'
+    Plug 'Yggdroot/indentLine'
 call plug#end()
 
 filetype plugin indent on
@@ -252,7 +249,8 @@ set t_Co=256
 
 " Solarized
 set background=dark
-colorscheme codeschool
+let g:enable_bold_font = 1
+colorscheme hybrid_material
 
 " _____________________________________________________________________________
 
