@@ -16,13 +16,13 @@
     dfc = diff --cached --minimal
     df = diff --minimal
     fix = commit -a --amend
-    ftch = fetch --prune --all
-    gcc = !git gc --aggressive --prune && git repack -AFd
+    ftch = fetch --prune --all --recurse-submodules=yes
+    gcc = !git gc --aggressive --prune=all && git repack -AFd
     la = !git l --all
     l = "!. ~/.gitutils && gitlog"
     mrebase = "!. ~/.gitutils && merge_rebase"
-    pll = pull --rebase --all
-    pullr = pull --rebase
+    pll = pull --rebase --all --recurse-submodules=yes
+    pullr = pull --rebase --recurse-submodules=yes
     ra = !git la -20
     r = !git l -20
     rh = reset --hard
