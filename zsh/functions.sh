@@ -494,3 +494,22 @@ purgeoldkernels() {
 
     echo $(dpkg --list | grep linux-image | awk '{ print $2 }' | sort -V | sed -n '/'`uname -r`'/q;p') $(dpkg --list | grep linux-headers | awk '{ print $2 }' | sort -V | sed -n '/'"$(uname -r | sed "s/\([0-9.-]*\)-\([^0-9]\+\)/\1/")"'/q;p') | xargs sudo apt-get -y purge
 }
+
+update_git_repos() {
+    # Updates and gc's repositories.
+
+    local root_path="$(readlink -f $1)"
+    local repo_roots="$(find $root_path -name ".git" -type d | grep -v gopath | xargs -n 1 dirname)"
+    local last_path=$(pwd)
+
+    for repo in $(echo $repo_roots); do
+        cd $repo && \
+        echo "\n====== $repo ======" && \
+        git fetch --prune --all --recurse-submodules=yes && \
+        git gc --aggressive --prune=all && \
+        git repack -Ad && \
+        git submodule foreach git gc --aggressive --prune=all && \
+        git submodule foreach git repack -Ad
+    done
+    cd $last_path
+}
