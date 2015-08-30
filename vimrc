@@ -42,7 +42,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'Lokaltog/vim-easymotion'
     Plug 'majutsushi/tagbar'
     Plug 'morhetz/gruvbox'
-    Plug 'pangloss/vim-javascript', { 'for': 'python' }
+    Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
+    Plug 'mxw/vim-jsx', { 'for': 'javascript' }
     Plug 'phildawes/racer', { 'for': 'rust', 'do': 'cargo build --release' }
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
@@ -458,6 +459,9 @@ if has('nvim')
     " Python support
     runtime! python_setup.vim
     let g:python_host_prog="/usr/bin/python2.7"
+
+    " TUI support
+    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
     " Windows navigation
     tnoremap <A-h> <C-\><C-n><C-w>h
