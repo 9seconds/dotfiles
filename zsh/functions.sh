@@ -477,16 +477,7 @@ pipup() {
 allup() {
     # Upgrades the world.
 
-    if [[ "$1" == "s" ]]; then
-        aptg && pipup && brewup && dockerup
-    else
-        DEBIAN_FRONTEND=noninteractive aptg &
-        pipup &
-        brewup &
-        dockerup &
-
-        wait
-    fi
+    aptg && pipup && brewup && dockerup
 }
 
 purgeoldkernels() {
