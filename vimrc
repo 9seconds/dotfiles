@@ -25,6 +25,7 @@ endif
 call plug#begin('~/.vim/plugged')
     Plug 'airblade/vim-gitgutter'
     Plug 'benekastah/neomake'
+    Plug 'bling/vim-airline'
     Plug 'benmills/vimux'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'elzr/vim-json', { 'for': 'json' }
@@ -32,7 +33,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'hdima/python-syntax', { 'for': 'python' }
     Plug 'honza/dockerfile.vim', { 'for': 'Dockerfile' }
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
-    Plug 'itchyny/lightline.vim'
     Plug 'jmcantrell/vim-virtualenv', { 'for': 'python' }
     Plug 'junegunn/goyo.vim'
     Plug 'junegunn/limelight.vim'
@@ -488,82 +488,12 @@ endif
 " _____________________________________________________________________________
 
 
-" Lightline {{{
+" Airline {{{
 
-let g:lightline = {
-    \     'colorscheme': 'Tomorrow_Night',
-    \     'active': {
-    \         'left': [
-    \             ['mode', 'paste'],
-    \             ['readonly', 'filename', 'modified'],
-    \             ['fugitive']
-    \         ]
-    \     },
-    \     'component_function': {
-    \         'fugitive':     'fugitive#statusline',
-    \         'fileencoding': 'LightLineFileEncoding',
-    \         'fileformat':   'LightLineFileFormat',
-    \         'filename':     'LightLineFileName',
-    \         'filetype':     'LightLineFileType',
-    \         'mode':         'LightLineMode',
-    \         'modified':     'LightLineModified',
-    \         'readonly':     'LightLineReadOnly'
-    \     },
-    \     'subseparator': {
-    \         'left': '»',
-    \         'right': '«'
-    \     }
-    \ }
-
-function! LightLineFileEncoding()
-    return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
-endfunction
-
-function! LightLineFileFormat()
-    return winwidth(0) > 70 ? &fileformat : ''
-endfunction
-
-function! LightLineFileName()
-    let fname = expand('%:t')
-    if fname == '__Tagbar__'
-        return g:lightline.fname
-    elseif fname =~ 'NERD_tree'
-        return ''
-    elseif fname == ''
-        return '[noname]'
-    else
-        return fname
-    endif
-endfunction
-
-function! LightLineFileType()
-    return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
-endfunction
-
-function! LightLineMode()
-    let fname = expand('%:t')
-    return fname == '__Tagbar__' ? 'Tagbar' :
-        \ fname =~ 'NERD_tree' ? 'NERDTree' :
-        \ winwidth(0) > 60 ? lightline#mode() : ''
-endfunction
-
-function! LightLineModified()
-    return &ft =~ 'help' ? '' : &modified ? '✔' : &modifiable ? '' : '✖'
-endfunction
-
-function! LightLineReadOnly()
-    return &ft !~? 'help' && &readonly ? '' : ''
-endfunction
-
-" }}}
-" TagBar {{{
-
-let g:tagbar_status_func = 'LightLineTagBarStatus'
-
-function! LightLineTagBarStatus(current, sort, fname, ...) abort
-    let g:lightline.fname = a:fname
-    return lightline#statusline(0)
-endfunction
+let g:airline_left_sep = ''
+let g:airline_right_sep = ''
+let g:airline_theme = 'jellybeans'
+let g:airline_powerline_fonts = 0
 
 " }}}
 " IndentLine {{{
