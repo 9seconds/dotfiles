@@ -26,6 +26,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'airblade/vim-gitgutter'
     Plug 'benekastah/neomake'
     Plug 'bling/vim-airline'
+    Plug 'rking/ag.vim'
+    Plug 'chrisbra/NrrwRgn'
     Plug 'benmills/vimux'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'elzr/vim-json', { 'for': 'json' }
@@ -613,6 +615,11 @@ map <silent> <F8> :VimuxInterruptRunner<cr>
 " Racer {{{
 
 let g:racer_cmd = "~/.vim/plugged/racer/target/release/racer"
+
+" }}}
+" Ag {{{
+
+let g:ag_working_path_mode="r"
 
 " }}}
 
