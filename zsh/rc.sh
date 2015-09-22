@@ -22,5 +22,9 @@ if [[ -s "$HOME/.gvm/scripts/gvm" ]]; then
     export GOPATH="$DEVGOPATH:$GOPATH"
 fi
 
+# fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export FZF_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || ag -l -g "") 2> /dev/null'
+
 # Private stuff I do not want to share
 [[ -f "$HOME/.zshrc.private" ]] && source "$HOME/.zshrc.private"
