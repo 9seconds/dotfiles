@@ -28,6 +28,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'benmills/vimux'
     Plug 'bling/vim-airline'
     Plug 'chrisbra/NrrwRgn'
+    Plug 'christoomey/vim-tmux-navigator'
     Plug 'ciaranm/detectindent'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'elzr/vim-json', { 'for': 'json' }
