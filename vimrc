@@ -27,6 +27,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'benekastah/neomake'
     Plug 'benmills/vimux'
     Plug 'bling/vim-airline'
+    Plug 'junegunn/vim-pseudocl' | Plug 'junegunn/vim-oblique'
     Plug 'chrisbra/NrrwRgn'
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'ciaranm/detectindent'
@@ -39,8 +40,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'honza/vim-snippets'
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'jmcantrell/vim-virtualenv', { 'for': 'python' }
-    Plug 'junegunn/goyo.vim'
-    Plug 'junegunn/limelight.vim'
+    Plug 'junegunn/goyo.vim', { 'for': ['text', 'markdown'] }
+    Plug 'junegunn/limelight.vim', { 'for': ['text', 'markdown'] }
     Plug 'kana/vim-textobj-user' | Plug 'kana/vim-textobj-indent' | Plug 'bps/vim-textobj-python'
     Plug 'kien/ctrlp.vim'
     Plug 'kristijanhusak/vim-hybrid-material'
