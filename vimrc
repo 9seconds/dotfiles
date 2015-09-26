@@ -25,15 +25,17 @@ endif
 call plug#begin('~/.vim/plugged')
     Plug 'airblade/vim-gitgutter'
     Plug 'benekastah/neomake'
-    Plug 'bling/vim-airline'
-    Plug 'rking/ag.vim'
-    Plug 'chrisbra/NrrwRgn'
     Plug 'benmills/vimux'
+    Plug 'bling/vim-airline'
+    Plug 'chrisbra/NrrwRgn'
+    Plug 'ciaranm/detectindent'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'elzr/vim-json', { 'for': 'json' }
+    Plug 'ervandew/supertab'
     Plug 'fatih/vim-go', { 'for': 'go' }
     Plug 'hdima/python-syntax', { 'for': 'python' }
     Plug 'honza/dockerfile.vim', { 'for': 'Dockerfile' }
+    Plug 'honza/vim-snippets'
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'jmcantrell/vim-virtualenv', { 'for': 'python' }
     Plug 'junegunn/goyo.vim'
@@ -41,15 +43,16 @@ call plug#begin('~/.vim/plugged')
     Plug 'kana/vim-textobj-user' | Plug 'kana/vim-textobj-indent' | Plug 'bps/vim-textobj-python'
     Plug 'kien/ctrlp.vim'
     Plug 'kristijanhusak/vim-hybrid-material'
-    Plug 'Lokaltog/vim-easymotion'
     Plug 'majutsushi/tagbar'
     Plug 'morhetz/gruvbox'
-    Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
     Plug 'mxw/vim-jsx', { 'for': 'javascript' }
+    Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
     Plug 'phildawes/racer', { 'for': 'rust', 'do': 'cargo build --release' }
+    Plug 'rking/ag.vim'
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
     Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+    Plug 'SirVer/ultisnips'
     Plug 'terryma/vim-expand-region'
     Plug 'terryma/vim-multiple-cursors'
     Plug 'tpope/vim-commentary'
@@ -57,7 +60,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-markdown', { 'for': 'markdown' }
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-surround'
-    " Plug 'Yggdroot/indentLine'
 call plug#end()
 
 filetype plugin indent on
@@ -150,7 +152,9 @@ set tm=500
 " _____________________________________________________________________________
 
 " Set utf8 for everything
-set encoding=utf8
+if !has('nvim')
+    set encoding=utf8
+endif
 set termencoding=utf8
 set fileencoding=utf8
 set fileencodings=utf8,cp1251,koi8r,ucs-2le
@@ -442,16 +446,6 @@ set nofoldenable
 " Format with par
 set formatprg=par
 
-" Autocomplete menu
-inoremap <expr> <Esc>      pumvisible() ? "\<C-e>" : "\<Esc>"
-inoremap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
-inoremap <expr> <Tab>      pumvisible() ? "\<C-y>" : "\<CR>"
-inoremap <expr> <C-j>      pumvisible() ? "\<C-n>" : "\<Down>"
-inoremap <expr> <C-k>      pumvisible() ? "\<C-p>" : "\<Up>"
-inoremap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
-inoremap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"<F37>
-
-
 " }}}
 " # Neovim settings =============================================== {{{
 " _____________________________________________________________________________
@@ -498,10 +492,9 @@ let g:airline_theme = 'jellybeans'
 let g:airline_powerline_fonts = 0
 
 " }}}
-" IndentLine {{{
+" DetectIndent {{{
 
-let g:indentLine_leadingSpaceEnabled = 1
-let g:indentLine_leadingSpaceChar = '·'
+autocmd BufReadPost * :DetectIndent
 
 " }}}
 " VimGo {{{
@@ -521,10 +514,6 @@ autocmd FileType go nmap <leader>r <Plug>(go-rename)
 " CtrlP {{{
 
 let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
-    \ --ignore .git
-    \ --ignore .svn
-    \ --ignore .hg
-    \ --ignore .DS_Store
     \ --ignore "**/*.pyc"
     \ -g ""'
 
@@ -550,19 +539,8 @@ let python_version_2 = 1
 let python_highlight_all = 1
 
 " }}}
-" Easy Motion {{{
-
-let g:EasyMotion_smartcase = 1
-let g:EasyMotion_use_smartsign_us = 1
-nmap s <Plug>(easymotion-s2)
-nmap t <Plug>(easymotion-t2)
-map  / <Plug>(easymotion-sn)\v
-omap / <Plug>(easymotion-tn)\v
-map  n <Plug>(easymotion-next)
-map  N <Plug>(easymotion-prev)
-
-" }}}
 " Goyo {{{
+
 let g:goyo_margin_top = 1
 let g:goyo_width = 120
 let g:goyo_linenr = 0
@@ -604,6 +582,11 @@ let g:limelight_paragraph_span = 1
 map <silent> <F3> :TagbarToggle<CR>
 
 " }}}
+" Supertab {{{
+
+let g:SuperTabDefaultCompletionType = "<c-n>"
+
+" }}}
 " Vimux {{{
 
 map <silent> <F5> :VimuxPromptCommand<cr>
@@ -622,6 +605,15 @@ let g:racer_cmd = "~/.vim/plugged/racer/target/release/racer"
 let g:ag_working_path_mode="r"
 
 " }}}
+" UltiSnips {{{
+
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+let g:UltiSnipsEditSplit="vertical"
+
+" }}}
+
 
 
 " }}}
