@@ -44,7 +44,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'kien/ctrlp.vim'
     Plug 'kristijanhusak/vim-hybrid-material'
     Plug 'majutsushi/tagbar'
-    Plug 'morhetz/gruvbox'
     Plug 'mxw/vim-jsx', { 'for': 'javascript' }
     Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
     Plug 'phildawes/racer', { 'for': 'rust', 'do': 'cargo build --release' }
