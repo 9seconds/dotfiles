@@ -365,7 +365,6 @@ map 0 ^
 
 " Close the current buffer
 nnoremap <leader>bd :bdelete<cr>
-nnoremap <leader>bs :buffers<CR>:buf<Space>
 
 " Tab management
 map <leader>tn        :tabnew<cr>
@@ -517,6 +516,8 @@ autocmd FileType go nmap <leader>r <Plug>(go-rename)
 let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
     \ --ignore "**/*.pyc"
     \ -g ""'
+
+map <leader>bl :CtrlPBuffer<cr>
 
 " }}}
 " Jedi {{{
