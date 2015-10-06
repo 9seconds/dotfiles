@@ -515,6 +515,8 @@ autocmd FileType go nmap <leader>r <Plug>(go-rename)
 
 let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
     \ --ignore "**/*.pyc"
+    \ --ignore ".git"
+    \ --ignore ".svn"
     \ -g ""'
 
 map <leader>bl :CtrlPBuffer<cr>
