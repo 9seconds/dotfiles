@@ -43,7 +43,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/goyo.vim', { 'for': ['text', 'markdown'] }
     Plug 'junegunn/limelight.vim', { 'for': ['text', 'markdown'] }
     Plug 'kana/vim-textobj-user' | Plug 'kana/vim-textobj-indent' | Plug 'bps/vim-textobj-python'
-    Plug 'kien/ctrlp.vim'
+    Plug 'ctrlpvim/ctrlp.vim' | Plug 'tacahiroy/ctrlp-funky'
     Plug 'kristijanhusak/vim-hybrid-material'
     Plug 'majutsushi/tagbar'
     Plug 'mxw/vim-jsx', { 'for': 'javascript' }
@@ -513,13 +513,22 @@ autocmd FileType go nmap <leader>r <Plug>(go-rename)
 " }}}
 " CtrlP {{{
 
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+  \ 'file': '\v\.(pyc|pyo|exe|so|dll)$'
+  \ }
+
 let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
     \ --ignore "**/*.pyc"
     \ --ignore ".git"
     \ --ignore ".svn"
     \ -g ""'
 
+let g:ctrlp_funky_matchtype = 'path'
+let g:ctrlp_funky_syntax_highlight = 1
+
 map <leader>bl :CtrlPBuffer<cr>
+map <leader>bf :CtrlPFunky<cr>
 
 " }}}
 " Jedi {{{
