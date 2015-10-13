@@ -23,8 +23,9 @@ endif
 
 
 call plug#begin('~/.vim/plugged')
-    Plug 'airblade/vim-gitgutter'
     Plug 'benekastah/neomake'
+    Plug 'kshenoy/vim-signature'
+    Plug 'mhinz/vim-signify'
     Plug 'benmills/vimux'
     Plug 'bling/vim-airline'
     Plug 'junegunn/vim-pseudocl' | Plug 'junegunn/vim-oblique'
@@ -624,6 +625,12 @@ let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 let g:UltiSnipsEditSplit="vertical"
+
+" }}}
+" Signify
+
+let g:signify_vcs_list = [ 'git' ]
+let g:signify_update_on_bufenter = 1
 
 " }}}
 
