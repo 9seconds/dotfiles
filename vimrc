@@ -24,14 +24,12 @@ endif
 
 call plug#begin('~/.vim/plugged')
     Plug 'benekastah/neomake'
-    Plug 'kshenoy/vim-signature'
-    Plug 'mhinz/vim-signify'
     Plug 'benmills/vimux'
     Plug 'bling/vim-airline'
-    Plug 'junegunn/vim-pseudocl' | Plug 'junegunn/vim-oblique'
     Plug 'chrisbra/NrrwRgn'
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'ciaranm/detectindent'
+    Plug 'ctrlpvim/ctrlp.vim' | Plug 'tacahiroy/ctrlp-funky'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'elzr/vim-json', { 'for': 'json' }
     Plug 'ervandew/supertab'
@@ -43,10 +41,12 @@ call plug#begin('~/.vim/plugged')
     Plug 'jmcantrell/vim-virtualenv', { 'for': 'python' }
     Plug 'junegunn/goyo.vim', { 'for': ['text', 'markdown'] }
     Plug 'junegunn/limelight.vim', { 'for': ['text', 'markdown'] }
-    Plug 'kana/vim-textobj-user' | Plug 'kana/vim-textobj-indent' | Plug 'bps/vim-textobj-python'
-    Plug 'ctrlpvim/ctrlp.vim' | Plug 'tacahiroy/ctrlp-funky'
+    Plug 'junegunn/vim-pseudocl' | Plug 'junegunn/vim-oblique'
+    Plug 'kana/vim-textobj-user' | Plug 'kana/vim-textobj-indent' | Plug 'bps/vim-textobj-python' | Plug 'machakann/vim-textobj-delimited'
     Plug 'kristijanhusak/vim-hybrid-material'
+    Plug 'kshenoy/vim-signature'
     Plug 'majutsushi/tagbar'
+    Plug 'mhinz/vim-signify'
     Plug 'mxw/vim-jsx', { 'for': 'javascript' }
     Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
     Plug 'phildawes/racer', { 'for': 'rust', 'do': 'cargo build --release' }
@@ -631,10 +631,6 @@ let g:UltiSnipsEditSplit="vertical"
 
 let g:signify_vcs_list = [ 'git' ]
 let g:signify_update_on_bufenter = 1
-
-" }}}
-
-
 
 " }}}
 " # GUI             =============================================== {{{
