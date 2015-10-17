@@ -598,15 +598,17 @@ map <silent> <F3> :TagbarToggle<CR>
 " }}}
 " Supertab {{{
 
-let g:SuperTabDefaultCompletionType = "<c-n>"
+let g:SuperTabDefaultCompletionType = "context"
+let g:SuperTabDefaultCompletionType = "<c-x><c-o>"
+let g:SuperTabLongestEnhanced = 1
 
 " }}}
 " Vimux {{{
 
-map <silent> <F5> :VimuxPromptCommand<cr>
-map <silent> <F6> :VimuxZoomRunner<cr>
-map <silent> <F7> :VimuxCloseRunner<cr>
-map <silent> <F8> :VimuxInterruptRunner<cr>
+nnoremap <silent> <F5> :VimuxPromptCommand<cr>
+nnoremap <silent> <F6> :VimuxCloseRunner<cr>
+nnoremap <silent> <F7> :VimuxZoomRunner<cr>
+nnoremap <silent> <F8> :VimuxInterruptRunner<cr>
 
 " }}}
 " Racer {{{
@@ -627,10 +629,20 @@ let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 let g:UltiSnipsEditSplit="vertical"
 
 " }}}
-" Signify
+" Signify {{{
 
 let g:signify_vcs_list = [ 'git' ]
 let g:signify_update_on_bufenter = 1
+
+" }}}
+" Neomake {{{
+
+let g:neomake_python_enabled_makers = ['pep8', 'flake8', 'python']
+
+nnoremap <leader>m :Neomake<cr>
+
+" }}}
+
 
 " }}}
 " # GUI             =============================================== {{{
