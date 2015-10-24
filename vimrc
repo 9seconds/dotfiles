@@ -34,6 +34,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'elzr/vim-json', { 'for': 'json' }
     Plug 'ervandew/supertab'
     Plug 'fatih/vim-go', { 'for': 'go' }
+    Plug 'gavocanov/vim-js-indent', { 'for': 'javascript' }
     Plug 'hdima/python-syntax', { 'for': 'python' }
     Plug 'honza/dockerfile.vim', { 'for': 'Dockerfile' }
     Plug 'honza/vim-snippets'
@@ -47,8 +48,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'kshenoy/vim-signature'
     Plug 'majutsushi/tagbar'
     Plug 'mhinz/vim-signify'
-    Plug 'mxw/vim-jsx', { 'for': 'javascript' }
-    Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
+    Plug 'othree/yajs.vim', { 'for': 'javascript' } | Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
     Plug 'phildawes/racer', { 'for': 'rust', 'do': 'cargo build --release' }
     Plug 'rking/ag.vim'
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
