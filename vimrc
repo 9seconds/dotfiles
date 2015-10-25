@@ -92,6 +92,8 @@ set sidescrolloff=15
 
 " Set magic for regular expressions
 set magic
+" Use /g always
+set gdefault
 
 " _____________________________________________________________________________
 
@@ -656,8 +658,12 @@ if has('gui_running')
     set guioptions-=r  " hide right scrollbar
     set guioptions-=L  " hide left scrollbar
     set guioptions-=m  " hide menu bar
-
-    set guifont=Meslo\ LG\ L\ DZ\ 9
+    set guifont=Droid\ Sans\ Mono\ 10
+    if executable("wmctrl")
+        au GUIEnter * call system('wmctrl -i -b add,maximized_vert,maximized_horz -r '.v:windowid)
+    else
+        set lines=999 columns=999
+    endif
 
     set guitablabel=%M\ %t
     set ttimeoutlen=10
@@ -689,7 +695,7 @@ autocmd FileType vim setlocal foldenable
 " Use AG for search
 " https://github.com/ggreer/the_silver_searcher
 if executable('ag')
-    set grepprg=ag\ --nogroup\ --nocolor
+    set grepprg=ag\ --vimgrep
 endif
 
 
