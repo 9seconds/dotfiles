@@ -29,7 +29,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'chrisbra/NrrwRgn'
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'ciaranm/detectindent'
-    Plug 'ctrlpvim/ctrlp.vim' | Plug 'tacahiroy/ctrlp-funky'
+    " Plug 'ctrlpvim/ctrlp.vim' | Plug 'tacahiroy/ctrlp-funky'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'elzr/vim-json', { 'for': 'json' }
     Plug 'ervandew/supertab'
@@ -40,12 +40,14 @@ call plug#begin('~/.vim/plugged')
     Plug 'honza/vim-snippets'
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'jmcantrell/vim-virtualenv', { 'for': 'python' }
+    Plug 'junegunn/fzf', { 'dir': '~/.fzf' } | Plug 'junegunn/fzf.vim'
     Plug 'junegunn/goyo.vim', { 'for': ['text', 'markdown'] }
     Plug 'junegunn/limelight.vim', { 'for': ['text', 'markdown'] }
     Plug 'junegunn/vim-pseudocl' | Plug 'junegunn/vim-oblique'
     Plug 'kana/vim-textobj-user' | Plug 'kana/vim-textobj-indent' | Plug 'bps/vim-textobj-python' | Plug 'machakann/vim-textobj-delimited'
     Plug 'kristijanhusak/vim-hybrid-material'
     Plug 'kshenoy/vim-signature'
+    Plug 'ludovicchabant/vim-gutentags'
     Plug 'majutsushi/tagbar'
     Plug 'mhinz/vim-signify'
     Plug 'othree/yajs.vim', { 'for': 'javascript' } | Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
@@ -642,6 +644,54 @@ let g:signify_update_on_bufenter = 1
 let g:neomake_python_enabled_makers = ['pep8', 'flake8', 'python']
 
 nnoremap <leader>m :Neomake<cr>
+
+" }}}
+" FZF {{{
+
+let g:fzf_nvim_statusline = 0
+
+nnoremap <silent> <leader>f  :Files<cr>
+nnoremap <silent> <leader>b  :Buffers<cr>
+nnoremap <silent> <leader>tt :BTags<cr>
+nnoremap <silent> <leader>ta :Tags<cr>
+nnoremap <silent> <leader>/   :call SearchWordWithAg()<cr>
+vnoremap <silent> <leader>/   :call SearchVisualSelectionWithAg()<cr>
+
+function! SearchWordWithAg()
+    execute 'Ag' expand('<cword>')
+endfunction
+
+function! SearchVisualSelectionWithAg() range
+    let old_reg = getreg('"')
+    let old_regtype = getregtype('"')
+    let old_clipboard = &clipboard
+
+    set clipboard&
+    normal! ""gvy
+    let selection = getreg('"')
+    call setreg('"', old_reg, old_regtype)
+    let &clipboard = old_clipboard
+
+    execute 'Ag' selection
+endfunction
+
+
+" }}}
+" Gutentags {{{
+
+let g:gutentags_generate_on_missing = 0
+let g:gutentags_generate_on_write = 1
+let g:gutentags_generate_on_new = 0
+let g:gutentags_exclude = [
+    \ '*.min.js',
+    \ '*html*',
+    \ 'jquery*.js',
+    \ '*/node_modules/*',
+    \ '*.pyc',
+    \ '*.pyo'
+    \ ]
+
+nnoremap <leader>q :GutentagsUpdate!<cr>
 
 " }}}
 
