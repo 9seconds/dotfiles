@@ -374,15 +374,18 @@ map 0 ^
 nnoremap <leader>bd :bdelete<cr>
 
 " Tab management
-map <leader>tn        :tabnew<cr>
-map <leader>to        :tabonly<cr>
-map <leader>tc        :tabclose<cr>
-map <leader>tm        :tabmove<Space>
-map <leader>t<leader> :tabnext<Space>
-map <leader>te        :tabedit <c-r>=expand("%:p:h")<cr>/
+nnoremap <leader>tc        :tabclose<cr>
 
-" Toggle between paste mode
-nnoremap <silent> <Leader>1 :set paste!<cr>
+" Fast tab switch
+nnoremap <silent> <Leader>1 1gt<cr>
+nnoremap <silent> <Leader>2 2gt<cr>
+nnoremap <silent> <Leader>3 3gt<cr>
+nnoremap <silent> <Leader>4 4gt<cr>
+nnoremap <silent> <Leader>5 5gt<cr>
+nnoremap <silent> <Leader>6 6gt<cr>
+nnoremap <silent> <Leader>7 7gt<cr>
+nnoremap <silent> <Leader>8 8gt<cr>
+nnoremap <silent> <Leader>9 9gt<cr>
 
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
