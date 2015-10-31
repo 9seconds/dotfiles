@@ -41,8 +41,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'jmcantrell/vim-virtualenv', { 'for': 'python' }
     Plug 'junegunn/fzf', { 'dir': '~/.fzf' } | Plug 'junegunn/fzf.vim'
-    Plug 'junegunn/goyo.vim', { 'for': ['text', 'markdown'] }
-    Plug 'junegunn/limelight.vim', { 'for': ['text', 'markdown'] }
+    Plug 'junegunn/goyo.vim'
+    Plug 'junegunn/limelight.vim'
     Plug 'junegunn/vim-pseudocl' | Plug 'junegunn/vim-oblique'
     Plug 'kana/vim-textobj-user' | Plug 'kana/vim-textobj-indent' | Plug 'bps/vim-textobj-python' | Plug 'machakann/vim-textobj-delimited'
     Plug 'kristijanhusak/vim-hybrid-material'
