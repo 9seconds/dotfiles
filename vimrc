@@ -51,6 +51,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'majutsushi/tagbar'
     Plug 'mhinz/vim-signify'
     Plug 'othree/yajs.vim', { 'for': 'javascript' } | Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
+    Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
     Plug 'ternjs/tern_for_vim', { 'for': 'javascript', 'do': 'npm install' }
     Plug 'phildawes/racer', { 'for': 'rust', 'do': 'cargo build --release' }
     Plug 'rking/ag.vim'
