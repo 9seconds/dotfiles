@@ -50,15 +50,16 @@ call plug#begin('~/.vim/plugged')
     Plug 'ludovicchabant/vim-gutentags'
     Plug 'majutsushi/tagbar'
     Plug 'mhinz/vim-signify'
-    Plug 'othree/yajs.vim', { 'for': 'javascript' } | Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
+    Plug 'mkitt/tabline.vim'
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
-    Plug 'ternjs/tern_for_vim', { 'for': 'javascript', 'do': 'npm install' }
+    Plug 'othree/yajs.vim', { 'for': 'javascript' } | Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
     Plug 'phildawes/racer', { 'for': 'rust', 'do': 'cargo build --release' }
     Plug 'rking/ag.vim'
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
     Plug 'Shougo/vimproc.vim', { 'do': 'make' }
     Plug 'SirVer/ultisnips'
+    Plug 'ternjs/tern_for_vim', { 'for': 'javascript', 'do': 'npm install' }
     Plug 'terryma/vim-expand-region'
     Plug 'terryma/vim-multiple-cursors'
     Plug 'tpope/vim-commentary'
@@ -374,7 +375,7 @@ map 0 ^
 nnoremap <leader>bd :bdelete<cr>
 
 " Tab management
-nnoremap <leader>tc        :tabclose<cr>
+nnoremap <leader>tc :tabclose<cr>
 
 " Fast tab switch
 nnoremap <silent> <Leader>1 1gt<cr>
@@ -523,22 +524,22 @@ autocmd FileType go nmap <leader>r <Plug>(go-rename)
 " }}}
 " CtrlP {{{
 
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
-  \ 'file': '\v\.(pyc|pyo|exe|so|dll)$'
-  \ }
+" let g:ctrlp_custom_ignore = {
+"   \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+"   \ 'file': '\v\.(pyc|pyo|exe|so|dll)$'
+"   \ }
 
-let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
-    \ --ignore "**/*.pyc"
-    \ --ignore ".git"
-    \ --ignore ".svn"
-    \ -g ""'
+" let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
+"     \ --ignore "**/*.pyc"
+"     \ --ignore ".git"
+"     \ --ignore ".svn"
+"     \ -g ""'
 
-let g:ctrlp_funky_matchtype = 'path'
-let g:ctrlp_funky_syntax_highlight = 1
+" let g:ctrlp_funky_matchtype = 'path'
+" let g:ctrlp_funky_syntax_highlight = 1
 
-map <leader>bl :CtrlPBuffer<cr>
-map <leader>bf :CtrlPFunky<cr>
+" map <leader>bl :CtrlPBuffer<cr>
+" map <leader>bf :CtrlPFunky<cr>
 
 " }}}
 " Jedi {{{
@@ -546,6 +547,12 @@ map <leader>bf :CtrlPFunky<cr>
 let g:jedi#popup_on_dot = 0
 let g:jedi#show_call_signatures = 2
 let g:jedi#use_tabs_not_buffers = 1
+
+nnoremap <leader>jd :call jedi#goto()<cr>
+nnoremap <leader>jg :call jedi#goto_assignments()<cr>
+nnoremap <leader>jk :call jedi#show_documentation()<cr>
+nnoremap <leader>jr :call jedi#rename()<cr>
+nnoremap <leader>jn :call jedi#usages()<cr>
 
 " }}}
 " NerdTree and NerdTreeTabs {{{
