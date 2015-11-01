@@ -67,6 +67,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-markdown', { 'for': 'markdown' }
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-surround'
+    Plug 'Valloric/python-indent'
 call plug#end()
 
 filetype plugin indent on
