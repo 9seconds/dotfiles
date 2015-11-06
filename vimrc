@@ -398,7 +398,7 @@ nnoremap <silent> <Leader>9 9gt<cr>
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
-
+" QuickFix setup
 nnoremap <silent> Q :call <SID>QuickfixToggle()<cr>
 
 let g:quickfix_is_open = 0
@@ -413,6 +413,12 @@ function! s:QuickfixToggle()
         let g:quickfix_is_open = 1
     endif
 endfunction
+
+" Do not show color column in a quickfix for a greater good
+augroup qf_colorcolumn
+    autocmd!
+    autocmd FileType qf setlocal colorcolumn=
+augroup END
 
 
 " }}}
