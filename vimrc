@@ -327,9 +327,9 @@ inoremap <left>  <nop>
 inoremap <right> <nop>
 
 " Map Leader to the Space
-let mapleader = "\<Space>"
-let g:mapleader = "\<Space>"
-let maplocalleader = "\<Space>"
+let mapleader        = "\<Space>"
+let g:mapleader      = "\<Space>"
+let maplocalleader   = "\<Space>"
 let g:maplocalleader = "\<Space>"
 
 " Fast saving on Space+w
@@ -675,12 +675,12 @@ nnoremap <leader>m :Neomake<cr>
 
 let g:fzf_nvim_statusline = 0
 
-nnoremap <silent> <leader>f  :Files<cr>
-nnoremap <silent> <leader>b  :Buffers<cr>
-nnoremap <silent> <leader>tt :BTags<cr>
-nnoremap <silent> <leader>ta :Tags<cr>
-nnoremap <silent> <leader>/   :call SearchWordWithAg()<cr>
-vnoremap <silent> <leader>/   :call SearchVisualSelectionWithAg()<cr>
+nnoremap <silent> <leader>ff :Files<cr>
+nnoremap <silent> <leader>fb :Buffers<cr>
+nnoremap <silent> <leader>ft :BTags<cr>
+nnoremap <silent> <leader>fa :Tags<cr>
+nnoremap <silent> <leader>/  :call SearchWordWithAg()<cr>
+vnoremap <silent> <leader>/  :call SearchVisualSelectionWithAg()<cr>
 
 function! SearchWordWithAg()
     execute 'Ag' expand('<cword>')
