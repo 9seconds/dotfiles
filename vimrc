@@ -39,6 +39,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'elzr/vim-json', { 'for': 'json' }
     Plug 'ervandew/supertab'
+    Plug 'morhetz/gruvbox'
     Plug 'fatih/vim-go', { 'for': 'go' }
     Plug 'gavocanov/vim-js-indent', { 'for': 'javascript' }
     Plug 'hdima/python-syntax', { 'for': 'python' }
@@ -51,7 +52,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/limelight.vim'
     Plug 'junegunn/vim-pseudocl' | Plug 'junegunn/vim-oblique'
     Plug 'kana/vim-textobj-user' | Plug 'kana/vim-textobj-indent' | Plug 'bps/vim-textobj-python' | Plug 'machakann/vim-textobj-delimited'
-    Plug 'kristijanhusak/vim-hybrid-material'
+    " Plug 'kristijanhusak/vim-hybrid-material'
     Plug 'kshenoy/vim-signature'
     Plug 'ludovicchabant/vim-gutentags'
     Plug 'majutsushi/tagbar'
@@ -273,7 +274,9 @@ set t_Co=256
 " Solarized
 set background=dark
 let g:enable_bold_font = 1
-colorscheme hybrid_material
+let g:gruvbox_italic=1
+colorscheme gruvbox
+" colorscheme hybrid_material
 
 " _____________________________________________________________________________
 
@@ -512,7 +515,7 @@ endif
 
 let g:airline_left_sep = ''
 let g:airline_right_sep = ''
-let g:airline_theme = 'jellybeans'
+let g:airline_theme = 'gruvbox'
 let g:airline_powerline_fonts = 0
 
 " }}}
