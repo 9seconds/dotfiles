@@ -34,7 +34,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'bling/vim-airline'
     Plug 'chrisbra/NrrwRgn'
     Plug 'christoomey/vim-tmux-navigator'
-    Plug 'ciaranm/detectindent'
+    " Plug 'ciaranm/detectindent'
     " Plug 'ctrlpvim/ctrlp.vim' | Plug 'tacahiroy/ctrlp-funky'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'elzr/vim-json', { 'for': 'json' }
@@ -521,7 +521,7 @@ let g:airline_powerline_fonts = 0
 " }}}
 " DetectIndent {{{
 
-autocmd BufReadPost * :DetectIndent
+" autocmd BufReadPost * :DetectIndent
 
 " }}}
 " VimGo {{{
