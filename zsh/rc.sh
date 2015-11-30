@@ -22,6 +22,9 @@ if [[ -s "$HOME/.gvm/scripts/gvm" ]]; then
     export GOPATH="$DEVGOPATH:$GOPATH"
 fi
 
+# Apply Gruvbox palette
+source "$HOME/.config/nvim/plugged/gruvbox/gruvbox_256palette.sh"
+
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export FZF_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || ag -l -g "") 2> /dev/null'
