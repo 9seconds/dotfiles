@@ -41,6 +41,7 @@ source $ZSH/oh-my-zsh.sh
 ###############################################################################
 
 eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
 
 unsetopt nomatch
 

@@ -470,7 +470,7 @@ pipup() {
     # Upgrades pip packages.
 
     cat "$LISTDIR/pip.list" | xargs pip install --user --upgrade --no-cache-dir --disable-pip-version-check
-    pip3 install --user --upgrade neovim
+    pip3 install --upgrade neovim
     pip2 install --user --upgrade --force-reinstall pip
 }
 
