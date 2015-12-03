@@ -53,6 +53,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'ludovicchabant/vim-gutentags'
     Plug 'mhinz/vim-signify'
     Plug 'mkitt/tabline.vim'
+    Plug 'moll/vim-bbye'
     Plug 'morhetz/gruvbox'
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
     Plug 'othree/yajs.vim', { 'for': 'javascript' } | Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
@@ -391,7 +392,7 @@ nnoremap <silent> <ESC> :noh<CR><ESC><ESC>
 map 0 ^
 
 " Close the current buffer
-nnoremap <leader>bd :bdelete<cr>
+nnoremap <leader>bd :Bdelete<cr>
 
 " Tab management
 nnoremap <leader>tc :tabclose<cr>
@@ -407,11 +408,11 @@ nnoremap <silent> <Leader>7 7gt<cr>
 nnoremap <silent> <Leader>8 8gt<cr>
 nnoremap <silent> <Leader>9 9gt<cr>
 
-" Switch CWD to the directory of the open buffer
-" map <leader>cd :cd %:p:h<cr>:pwd<cr>
-
 " QuickFix setup
 nnoremap <silent> Q :call <SID>QuickfixToggle()<cr>
+
+" Faster window close
+nnoremap <silent> <Leader>q :q<cr>
 
 let g:quickfix_is_open = 0
 function! s:QuickfixToggle()
@@ -490,7 +491,6 @@ set formatprg=par
 if has('nvim')
     " Python support
     runtime! python_setup.vim
-    let g:python_host_prog="/usr/bin/python2.7"
 
     " TUI support
     let $NVIM_TUI_ENABLE_TRUE_COLOR=1
@@ -737,7 +737,7 @@ let g:gutentags_exclude = [
     \ '*.pyo'
     \ ]
 
-nnoremap <leader>q :GutentagsUpdate!<cr>
+nnoremap <leader>t :GutentagsUpdate!<cr>
 
 " }}}
 
