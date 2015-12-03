@@ -680,6 +680,8 @@ let g:neomake_python_enabled_makers = ['pep8', 'flake8', 'python']
 
 nnoremap <leader>m :Neomake<cr>
 
+autocmd BufWritePost *.py :Neomake
+
 " }}}
 " FZF {{{
 
