@@ -46,7 +46,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'jmcantrell/vim-virtualenv', { 'for': 'python' }
     Plug 'junegunn/fzf', { 'dir': '~/.fzf' } | Plug 'junegunn/fzf.vim'
-    Plug 'junegunn/vim-pseudocl' | Plug 'junegunn/vim-oblique'
+    Plug 'justinmk/vim-sneak'
     Plug 'kana/vim-textobj-user' | Plug 'kana/vim-textobj-indent' | Plug 'bps/vim-textobj-python' | Plug 'machakann/vim-textobj-delimited'
     Plug 'kshenoy/vim-signature'
     Plug 'ludovicchabant/vim-gutentags'
@@ -79,6 +79,7 @@ call plug#begin('~/.vim/plugged')
     " Plug 'ctrlpvim/ctrlp.vim' | Plug 'tacahiroy/ctrlp-funky'
     " Plug 'junegunn/goyo.vim'
     " Plug 'junegunn/limelight.vim'
+    " Plug 'junegunn/vim-pseudocl' | Plug 'junegunn/vim-oblique'
     " Plug 'kristijanhusak/vim-hybrid-material'
     " Plug 'majutsushi/tagbar'
     " }}}
