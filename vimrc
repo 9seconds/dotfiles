@@ -29,17 +29,15 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 call plug#begin('~/.vim/plugged')
+    " Active plugs {{{
     Plug 'benekastah/neomake'
     Plug 'benmills/vimux'
     Plug 'bling/vim-airline'
     Plug 'chrisbra/NrrwRgn'
     Plug 'christoomey/vim-tmux-navigator'
-    " Plug 'ciaranm/detectindent'
-    " Plug 'ctrlpvim/ctrlp.vim' | Plug 'tacahiroy/ctrlp-funky'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'elzr/vim-json', { 'for': 'json' }
     Plug 'ervandew/supertab'
-    Plug 'morhetz/gruvbox'
     Plug 'fatih/vim-go', { 'for': 'go' }
     Plug 'gavocanov/vim-js-indent', { 'for': 'javascript' }
     Plug 'hdima/python-syntax', { 'for': 'python' }
@@ -48,20 +46,18 @@ call plug#begin('~/.vim/plugged')
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'jmcantrell/vim-virtualenv', { 'for': 'python' }
     Plug 'junegunn/fzf', { 'dir': '~/.fzf' } | Plug 'junegunn/fzf.vim'
-    Plug 'junegunn/goyo.vim'
-    Plug 'junegunn/limelight.vim'
     Plug 'junegunn/vim-pseudocl' | Plug 'junegunn/vim-oblique'
     Plug 'kana/vim-textobj-user' | Plug 'kana/vim-textobj-indent' | Plug 'bps/vim-textobj-python' | Plug 'machakann/vim-textobj-delimited'
-    " Plug 'kristijanhusak/vim-hybrid-material'
     Plug 'kshenoy/vim-signature'
     Plug 'ludovicchabant/vim-gutentags'
-    Plug 'majutsushi/tagbar'
     Plug 'mhinz/vim-signify'
     Plug 'mkitt/tabline.vim'
+    Plug 'morhetz/gruvbox'
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
     Plug 'othree/yajs.vim', { 'for': 'javascript' } | Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
     Plug 'phildawes/racer', { 'for': 'rust', 'do': 'cargo build --release' }
     Plug 'rking/ag.vim'
+    Plug 'rstacruz/vim-closer'
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
     Plug 'Shougo/vimproc.vim', { 'do': 'make' }
@@ -70,11 +66,22 @@ call plug#begin('~/.vim/plugged')
     Plug 'terryma/vim-expand-region'
     Plug 'terryma/vim-multiple-cursors'
     Plug 'tpope/vim-commentary'
+    Plug 'tpope/vim-endwise'
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-markdown', { 'for': 'markdown' }
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-surround'
+    Plug 'unblevable/quick-scope'
     Plug 'Valloric/python-indent'
+    " }}}
+    " Disabled plugs {{{
+    " Plug 'ciaranm/detectindent'
+    " Plug 'ctrlpvim/ctrlp.vim' | Plug 'tacahiroy/ctrlp-funky'
+    " Plug 'junegunn/goyo.vim'
+    " Plug 'junegunn/limelight.vim'
+    " Plug 'kristijanhusak/vim-hybrid-material'
+    " Plug 'majutsushi/tagbar'
+    " }}}
 call plug#end()
 
 filetype plugin indent on
