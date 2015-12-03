@@ -23,7 +23,11 @@ if [[ -s "$HOME/.gvm/scripts/gvm" ]]; then
 fi
 
 # Apply Gruvbox palette
-source "$HOME/.config/nvim/plugged/gruvbox/gruvbox_256palette.sh"
+if [[ -f "$HOME/.config/nvim/plugged/gruvbox/gruvbox_256palette.sh" ]]; then
+    source "$HOME/.config/nvim/plugged/gruvbox/gruvbox_256palette.sh"
+else
+    source "$HOME/.vim/plugged/gruvbox/gruvbox_256palette.sh"
+fi
 
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
