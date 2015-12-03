@@ -30,6 +30,7 @@ endif
 
 call plug#begin('~/.vim/plugged')
     " Active plugs {{{
+    Plug 'airblade/vim-rooter'
     Plug 'benekastah/neomake'
     Plug 'benmills/vimux'
     Plug 'bling/vim-airline'
@@ -407,7 +408,7 @@ nnoremap <silent> <Leader>8 8gt<cr>
 nnoremap <silent> <Leader>9 9gt<cr>
 
 " Switch CWD to the directory of the open buffer
-map <leader>cd :cd %:p:h<cr>:pwd<cr>
+" map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
 " QuickFix setup
 nnoremap <silent> Q :call <SID>QuickfixToggle()<cr>
@@ -629,6 +630,12 @@ let g:limelight_default_coefficient = 0.7
 
 " Number of preceding/following paragraphs to include (default: 0)
 let g:limelight_paragraph_span = 1
+
+" }}}
+" Rooter {{{
+
+let g:rooter_use_lcd = 1
+let g:rooter_silent_chdir = 1
 
 " }}}
 " TagBar {{{
