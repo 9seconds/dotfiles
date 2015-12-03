@@ -596,40 +596,41 @@ let python_highlight_all = 1
 " }}}
 " Goyo {{{
 
-let g:goyo_margin_top = 1
-let g:goyo_width = 120
-let g:goyo_linenr = 0
-nnoremap <silent> <Leader>+ :Goyo<cr>
+" let g:goyo_margin_top = 1
+" let g:goyo_width = 120
+" let g:goyo_linenr = 0
+" nnoremap <silent> <Leader>+ :Goyo<cr>
 
-function! s:goyo_enter()
-    silent !tmux set status off
-    Limelight
-endfunction
+" function! s:goyo_enter()
+"     silent !tmux set status off
+"     Limelight
+" endfunction
 
-function! s:goyo_leave()
-    silent !tmux set status on
-    Limelight!
-endfunction
+" function! s:goyo_leave()
+"     silent !tmux set status on
+"     Limelight!
+" endfunction
 
-autocmd! User GoyoEnter
-autocmd! User GoyoLeave
-autocmd  User GoyoEnter nested call <SID>goyo_enter()
-autocmd  User GoyoLeave nested call <SID>goyo_leave()
+" autocmd! User GoyoEnter
+" autocmd! User GoyoLeave
+" autocmd  User GoyoEnter nested call <SID>goyo_enter()
+" autocmd  User GoyoLeave nested call <SID>goyo_leave()
 
 " }}}
 " Limelight {{{
-let g:limelight_conceal_ctermfg = 'gray'
-let g:limelight_conceal_ctermfg = 240
 
-" Color name (:help gui-colors) or RGB color
-let g:limelight_conceal_guifg = 'DarkGray'
-let g:limelight_conceal_guifg = '#777777'
+" let g:limelight_conceal_ctermfg = 'gray'
+" let g:limelight_conceal_ctermfg = 240
 
-" Default: 0.5
-let g:limelight_default_coefficient = 0.7
+" " Color name (:help gui-colors) or RGB color
+" let g:limelight_conceal_guifg = 'DarkGray'
+" let g:limelight_conceal_guifg = '#777777'
 
-" Number of preceding/following paragraphs to include (default: 0)
-let g:limelight_paragraph_span = 1
+" " Default: 0.5
+" let g:limelight_default_coefficient = 0.7
+
+" " Number of preceding/following paragraphs to include (default: 0)
+" let g:limelight_paragraph_span = 1
 
 " }}}
 " Rooter {{{
@@ -640,7 +641,7 @@ let g:rooter_silent_chdir = 1
 " }}}
 " TagBar {{{
 
-map <silent> <F3> :TagbarToggle<CR>
+" map <silent> <F3> :TagbarToggle<CR>
 
 " }}}
 " Supertab {{{
