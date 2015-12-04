@@ -49,3 +49,5 @@
 [pack]
 	compression = 9
 	threads = 8
+[gitreview]
+	username = sarkhipov
