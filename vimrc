@@ -23,9 +23,9 @@ endif
 
 " Autoinstall vim-plug if absent
 if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall | source $VIMRC
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall | source $VIMRC
 endif
 
 call plug#begin('~/.vim/plugged')
@@ -46,9 +46,13 @@ call plug#begin('~/.vim/plugged')
     Plug 'honza/vim-snippets'
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'jmcantrell/vim-virtualenv', { 'for': 'python' }
-    Plug 'junegunn/fzf', { 'dir': '~/.fzf' } | Plug 'junegunn/fzf.vim'
+    Plug 'junegunn/fzf', { 'dir': '~/.fzf' } |
+        \ Plug 'junegunn/fzf.vim'
     Plug 'justinmk/vim-sneak'
-    Plug 'kana/vim-textobj-user' | Plug 'kana/vim-textobj-indent' | Plug 'bps/vim-textobj-python' | Plug 'machakann/vim-textobj-delimited'
+    Plug 'kana/vim-textobj-user' |
+        \ Plug 'kana/vim-textobj-indent' |
+        \ Plug 'bps/vim-textobj-python' |
+        \ Plug 'machakann/vim-textobj-delimited'
     Plug 'kshenoy/vim-signature'
     Plug 'ludovicchabant/vim-gutentags'
     Plug 'mhinz/vim-signify'
@@ -56,12 +60,14 @@ call plug#begin('~/.vim/plugged')
     Plug 'moll/vim-bbye'
     Plug 'morhetz/gruvbox'
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
-    Plug 'othree/yajs.vim', { 'for': 'javascript' } | Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
+    Plug 'othree/yajs.vim', { 'for': 'javascript' } |
+        \ Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
     Plug 'phildawes/racer', { 'for': 'rust', 'do': 'cargo build --release' }
     Plug 'rking/ag.vim'
     Plug 'rstacruz/vim-closer'
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
-    Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
+    Plug 'scrooloose/nerdtree' |
+        \ Plug 'jistr/vim-nerdtree-tabs'
     Plug 'Shougo/vimproc.vim', { 'do': 'make' }
     Plug 'SirVer/ultisnips'
     Plug 'ternjs/tern_for_vim', { 'for': 'javascript', 'do': 'npm install' }
@@ -295,19 +301,15 @@ set shortmess=I
 
 " _____________________________________________________________________________
 
-
-" Resize splits if the window is resized
-au VimResized * exe "normal! \<c-w>="
-
-" _____________________________________________________________________________
-
-" Remote trailing whitespaces on save
-autocmd BufWritePre * :%s/\s\+$//e
-
-" _____________________________________________________________________________
-
-" Resource vimrc on save
-autocmd BufWritePost .vimrc source $MYVIMRC
+augroup VimDefault
+    autocmd!
+    " Resize splits if the window is resized
+    au VimResized * exe "normal! \<c-w>="
+    " Remote trailing whitespaces on save
+    autocmd BufWritePre * :%s/\s\+$//e
+    " Where the hell I can find modula 2?
+    autocmd BufNewFile,BufReadPost *.md set filetype=markdown
+augroup END
 
 " _____________________________________________________________________________
 
@@ -319,10 +321,6 @@ else
     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 endif
 
-" _____________________________________________________________________________
-
-" Where the hell I can find modula 2?
-autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 
 
 " }}}}
@@ -537,11 +535,14 @@ let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
 let g:go_highlight_structs = 1
 
-autocmd BufWritePre *.go :GoImports
-autocmd FileType go nmap K <Plug>(go-doc)
-autocmd FileType go nmap <leader>g <Plug>(go-def-tab)
-autocmd FileType go nmap <leader>n <Plug>(go-callers)
-autocmd FileType go nmap <leader>r <Plug>(go-rename)
+augroup Go
+    autocmd!
+    autocmd BufWritePre *.go :GoImports
+    autocmd FileType go nmap K <Plug>(go-doc)
+    autocmd FileType go nmap <leader>g <Plug>(go-def-tab)
+    autocmd FileType go nmap <leader>n <Plug>(go-callers)
+    autocmd FileType go nmap <leader>r <Plug>(go-rename)
+augroup END
 
 " }}}
 " CtrlP {{{
@@ -686,7 +687,9 @@ let g:neomake_python_enabled_makers = ['pep8', 'flake8', 'python']
 
 nnoremap <leader>m :Neomake<cr>
 
-autocmd BufWritePost *.py :Neomake
+augroup Python
+    autocmd BufWritePost *.py :Neomake
+augroup END
 
 " }}}
 " FZF {{{
@@ -752,14 +755,15 @@ if has('gui_running')
     set guioptions-=L  " hide left scrollbar
     set guioptions-=m  " hide menu bar
     set guifont=Droid\ Sans\ Mono\ 10
+    set guitablabel=%M\ %t
+    set ttimeoutlen=10
+
     if executable("wmctrl")
         au GUIEnter * call system('wmctrl -i -b add,maximized_vert,maximized_horz -r '.v:windowid)
     else
         set lines=999 columns=999
     endif
 
-    set guitablabel=%M\ %t
-    set ttimeoutlen=10
     augroup FastEscape
         autocmd!
         au InsertEnter * set timeoutlen=0
@@ -779,9 +783,12 @@ endif
 
 
 " Fold vimrc
-autocmd FileType vim setlocal foldmethod=marker
-autocmd FileType vim setlocal foldlevel=0
-autocmd FileType vim setlocal foldenable
+augroup VimFolds
+    autocmd!
+    autocmd FileType vim setlocal foldmethod=marker
+    autocmd FileType vim setlocal foldlevel=0
+    autocmd FileType vim setlocal foldenable
+augroup END
 
 " _____________________________________________________________________________
 
