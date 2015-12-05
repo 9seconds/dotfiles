@@ -346,11 +346,11 @@ let maplocalleader   = "\<Space>"
 let g:maplocalleader = "\<Space>"
 
 " Fast saving on Space+w
-nmap <leader>w :w!<cr>
+nnoremap <leader>w :w!<cr>
 
 " :W sudo saves the file
 " (useful for handling the permission-denied error)
-cmap w!! %!sudo tee % > /dev/null%
+cnoremap w!! %!sudo tee % > /dev/null%
 
 " Reselect visual block after indent or outdent
 vnoremap < <gv
@@ -360,7 +360,7 @@ vnoremap > >gv
 nnoremap j gj
 nnoremap k gk
 nnoremap $ g$
-noremap  0 g0
+nnoremap 0 ^
 
 " Keep search pattern at the center of the screen
 nnoremap <silent> n  nzz
@@ -386,10 +386,7 @@ nnoremap <C-l> <C-w>l
 inoremap jj <ESC>
 
 " Disable highlight
-nnoremap <silent> <ESC> :noh<CR><ESC><ESC>
-
-" Remap VIM 0 to first non-blank character
-map 0 ^
+nnoremap <silent>\ :nohl<cr>
 
 " Close the current buffer
 nnoremap <leader>bd :Bdelete<cr>
