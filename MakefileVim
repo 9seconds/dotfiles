@@ -1,0 +1,23 @@
+# This is a make file which installs vim with my config onto remote host
+
+all: init vimplug config plugins
+
+vimplug:
+	@curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+config:
+	@curl -fLo ~/.vimrc --create-dirs https://raw.githubusercontent.com/9seconds/dotfiles/master/vimrc
+
+plugins: init config
+	@cd ~/.vim/plugged && grep -P "^\s*Plug" ~/.vimrc \
+		| cut -d"'" -f2 - \
+		| sed 's?\(.*\)?https://github.com/\1.git?' \
+		| xargs -n 1 -P 4 git clone --recursive --depth 1 --quiet
+
+init: clean
+	@mkdir -p ~/.vim/autoload
+	@mkdir -p ~/.vim/plugged
+
+clean:
+	@rm -rf ~/.vim
+	@rm -f ~/.vimrc
