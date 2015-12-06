@@ -568,11 +568,28 @@ if !executable('fzf')
       \ 'file': '\v\.(pyc|pyo|exe|so|dll)$'
       \ }
 
-    let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
-        \ --ignore "**/*.pyc"
-        \ --ignore ".git"
-        \ --ignore ".svn"
-        \ -g ""'
+    if executable('ag')
+        let g:ctrlp_user_command = {
+            \ 'types': {
+                \ 1: ['.git', 'cd %s && git ls-files'],
+                \ 2: ['.hg', 'hg --cwd %s locate -I .'],
+                \ },
+            \ 'fallback': 'ag %s -i --nocolor --nogroup --hidden
+                \ --ignore "**/*.pyc"
+                \ --ignore ".git"
+                \ --ignore ".svn"
+                \ -g ""'
+        \ }
+        let g:ctrlp_use_caching = 0
+    else
+        let g:ctrlp_user_command = {
+            \ 'types': {
+                \ 1: ['.git', 'cd %s && git ls-files'],
+                \ 2: ['.hg', 'hg --cwd %s locate -I .'],
+                \ },
+            \ 'fallback': 'find %s type -f'
+        \ }
+    endif
 
     let g:ctrlp_map = ''
     let g:ctrlp_cmd = 'CtrlP'
