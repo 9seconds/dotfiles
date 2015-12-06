@@ -305,7 +305,6 @@ set background=dark
 let g:enable_bold_font = 1
 let g:gruvbox_italic=1
 colorscheme gruvbox
-" colorscheme hybrid_material
 
 " _____________________________________________________________________________
 
@@ -470,6 +469,9 @@ set smarttab
 
 " Indentation length
 set tabstop=4
+
+" But for yaml keep 2 characters, pls
+autocmd FileType yaml setlocal tabstop=2 shiftwidth=2
 
 " Backspace unindent
 set softtabstop=4
