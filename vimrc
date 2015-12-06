@@ -57,7 +57,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'justinmk/vim-sneak'
     Plug 'kana/vim-textobj-user' |
         \ Plug 'kana/vim-textobj-indent' |
-        \ Plug 'bps/vim-textobj-python' |
+        \ Plug 'bps/vim-textobj-python', { 'for': 'python' } |
         \ Plug 'machakann/vim-textobj-delimited'
     Plug 'kshenoy/vim-signature'
     Plug 'ludovicchabant/vim-gutentags'
@@ -89,12 +89,11 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-surround'
     Plug 'unblevable/quick-scope'
-    Plug 'Valloric/python-indent'
+    Plug 'Valloric/python-indent', { 'for': 'python' }
     Plug 'mhinz/vim-grepper'
     " }}}
     " Disabled plugs {{{
     " Plug 'ciaranm/detectindent'
-    " Plug 'ctrlpvim/ctrlp.vim' | Plug 'tacahiroy/ctrlp-funky'
     " Plug 'junegunn/goyo.vim'
     " Plug 'junegunn/limelight.vim'
     " Plug 'junegunn/vim-pseudocl' | Plug 'junegunn/vim-oblique'
@@ -777,6 +776,24 @@ let g:gutentags_exclude = [
 nnoremap <leader>t :GutentagsUpdate!<cr>
 
 " }}}
+" Grepper {{{
+
+let g:grepper = {
+    \ 'open':      1,
+    \ 'switch':    1,
+    \ 'jump':      0,
+    \ 'next_tool': '<tab>',
+\ }
+
+if executable('ag')
+    let g:grepper.tools = ['ag', 'git', 'grep']
+else
+    let g:grepper.tools = ['grep', 'ag']
+endif
+
+nnoremap <silent> <leader>G :Grepper!<cr>
+
+" }}}
 
 
 " }}}
@@ -826,16 +843,5 @@ augroup VimFolds
     autocmd FileType vim setlocal foldlevel=0
     autocmd FileType vim setlocal foldenable
 augroup END
-
-" _____________________________________________________________________________
-
-" Use AG for search
-" https://github.com/ggreer/the_silver_searcher
-if executable('ag')
-    command! -nargs=* -complete=file_in_path S Grepper! -tool ag -open -switch -query <args> | redraw!
-else
-    command! -nargs=* -complete=file_in_path S Grepper! -tool grep -open -switch -query <args> | redraw!
-endif
-
 
 " }}}
