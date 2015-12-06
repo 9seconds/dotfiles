@@ -71,9 +71,6 @@ call plug#begin('~/.vim/plugged')
     if executable('cargo')
         Plug 'phildawes/racer', { 'for': 'rust', 'do': 'cargo build --release' }
     endif
-    if executable('ag')
-        Plug 'rking/ag.vim'
-    endif
     Plug 'rstacruz/vim-closer'
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
     Plug 'scrooloose/nerdtree' |
@@ -93,6 +90,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-surround'
     Plug 'unblevable/quick-scope'
     Plug 'Valloric/python-indent'
+    Plug 'mhinz/vim-grepper'
     " }}}
     " Disabled plugs {{{
     " Plug 'ciaranm/detectindent'
@@ -834,7 +832,9 @@ augroup END
 " Use AG for search
 " https://github.com/ggreer/the_silver_searcher
 if executable('ag')
-    set grepprg=ag\ --vimgrep
+    command! -nargs=* -complete=file_in_path S Grepper! -tool ag -open -switch -query <args> | redraw!
+else
+    command! -nargs=* -complete=file_in_path S Grepper! -tool grep -open -switch -query <args> | redraw!
 endif
 
 
