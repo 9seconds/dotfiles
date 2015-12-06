@@ -46,8 +46,12 @@ call plug#begin('~/.vim/plugged')
     Plug 'honza/vim-snippets'
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'jmcantrell/vim-virtualenv', { 'for': 'python' }
-    Plug 'junegunn/fzf', { 'dir': '~/.fzf' } |
-        \ Plug 'junegunn/fzf.vim'
+    if executable('fzf')
+        Plug 'junegunn/fzf', { 'dir': '~/.fzf' } |
+            \ Plug 'junegunn/fzf.vim'
+    else
+        Plug 'ctrlpvim/ctrlp.vim'
+    endif
     Plug 'justinmk/vim-sneak'
     Plug 'kana/vim-textobj-user' |
         \ Plug 'kana/vim-textobj-indent' |
@@ -63,7 +67,9 @@ call plug#begin('~/.vim/plugged')
     Plug 'othree/yajs.vim', { 'for': 'javascript' } |
         \ Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
     Plug 'phildawes/racer', { 'for': 'rust', 'do': 'cargo build --release' }
-    Plug 'rking/ag.vim'
+    if executable('ag')
+        Plug 'rking/ag.vim'
+    endif
     Plug 'rstacruz/vim-closer'
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
     Plug 'scrooloose/nerdtree' |
@@ -547,22 +553,27 @@ augroup END
 " }}}
 " CtrlP {{{
 
-" let g:ctrlp_custom_ignore = {
-"   \ 'dir':  '\v[\/]\.(git|hg|svn)$',
-"   \ 'file': '\v\.(pyc|pyo|exe|so|dll)$'
-"   \ }
+if !executable('fzf')
+    let g:ctrlp_custom_ignore = {
+      \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+      \ 'file': '\v\.(pyc|pyo|exe|so|dll)$'
+      \ }
 
-" let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
-"     \ --ignore "**/*.pyc"
-"     \ --ignore ".git"
-"     \ --ignore ".svn"
-"     \ -g ""'
+    let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
+        \ --ignore "**/*.pyc"
+        \ --ignore ".git"
+        \ --ignore ".svn"
+        \ -g ""'
 
-" let g:ctrlp_funky_matchtype = 'path'
-" let g:ctrlp_funky_syntax_highlight = 1
+    let g:ctrlp_map = ''
+    let g:ctrlp_cmd = 'CtrlP'
 
-" map <leader>bl :CtrlPBuffer<cr>
-" map <leader>bf :CtrlPFunky<cr>
+    nnoremap <silent> <leader>ff :CtrlP<cr>
+    nnoremap <silent> <leader>fb :CtrlPBuffer<cr>
+    nnoremap <silent> <leader>ft :CtrlPBufTag<cr>
+    nnoremap <silent> <leader>fa :CtrlPTag<cr>
+endif
+
 
 " }}}
 " Jedi {{{
@@ -694,32 +705,34 @@ augroup END
 " }}}
 " FZF {{{
 
-let g:fzf_nvim_statusline = 0
+if executable('fzf')
+    let g:fzf_nvim_statusline = 0
 
-nnoremap <silent> <leader>ff :Files<cr>
-nnoremap <silent> <leader>fb :Buffers<cr>
-nnoremap <silent> <leader>ft :BTags<cr>
-nnoremap <silent> <leader>fa :Tags<cr>
-nnoremap <silent> <leader>/  :call SearchWordWithAg()<cr>
-vnoremap <silent> <leader>/  :call SearchVisualSelectionWithAg()<cr>
+    nnoremap <silent> <leader>ff :Files<cr>
+    nnoremap <silent> <leader>fb :Buffers<cr>
+    nnoremap <silent> <leader>ft :BTags<cr>
+    nnoremap <silent> <leader>fa :Tags<cr>
+    nnoremap <silent> <leader>/  :call SearchWordWithAg()<cr>
+    vnoremap <silent> <leader>/  :call SearchVisualSelectionWithAg()<cr>
 
-function! SearchWordWithAg()
-    execute 'Ag' expand('<cword>')
-endfunction
+    function! SearchWordWithAg()
+        execute 'Ag' expand('<cword>')
+    endfunction
 
-function! SearchVisualSelectionWithAg() range
-    let old_reg = getreg('"')
-    let old_regtype = getregtype('"')
-    let old_clipboard = &clipboard
+    function! SearchVisualSelectionWithAg() range
+        let old_reg = getreg('"')
+        let old_regtype = getregtype('"')
+        let old_clipboard = &clipboard
 
-    set clipboard&
-    normal! ""gvy
-    let selection = getreg('"')
-    call setreg('"', old_reg, old_regtype)
-    let &clipboard = old_clipboard
+        set clipboard&
+        normal! ""gvy
+        let selection = getreg('"')
+        call setreg('"', old_reg, old_regtype)
+        let &clipboard = old_clipboard
 
-    execute 'Ag' selection
-endfunction
+        execute 'Ag' selection
+    endfunction
+endif
 
 
 " }}}
