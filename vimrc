@@ -76,7 +76,9 @@ call plug#begin('~/.vim/plugged')
         \ Plug 'jistr/vim-nerdtree-tabs'
     Plug 'Shougo/vimproc.vim', { 'do': 'make' }
     Plug 'SirVer/ultisnips'
-    Plug 'ternjs/tern_for_vim', { 'for': 'javascript', 'do': 'npm install' }
+    if executable('node')
+        Plug 'ternjs/tern_for_vim', { 'for': 'javascript', 'do': 'npm install' }
+    endif
     Plug 'terryma/vim-expand-region'
     Plug 'terryma/vim-multiple-cursors'
     Plug 'tpope/vim-commentary'
