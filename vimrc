@@ -68,7 +68,9 @@ call plug#begin('~/.vim/plugged')
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
     Plug 'othree/yajs.vim', { 'for': 'javascript' } |
         \ Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
-    Plug 'phildawes/racer', { 'for': 'rust', 'do': 'cargo build --release' }
+    if executable('cargo')
+        Plug 'phildawes/racer', { 'for': 'rust', 'do': 'cargo build --release' }
+    endif
     if executable('ag')
         Plug 'rking/ag.vim'
     endif
@@ -131,6 +133,7 @@ set sidescrolloff=15
 
 " Set magic for regular expressions
 set magic
+
 " Use /g always
 set gdefault
 
