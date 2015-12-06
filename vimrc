@@ -39,7 +39,9 @@ call plug#begin('~/.vim/plugged')
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'elzr/vim-json', { 'for': 'json' }
     Plug 'ervandew/supertab'
-    Plug 'fatih/vim-go', { 'for': 'go' }
+    if executable('go')
+        Plug 'fatih/vim-go', { 'for': 'go' }
+    endif
     Plug 'gavocanov/vim-js-indent', { 'for': 'javascript' }
     Plug 'hdima/python-syntax', { 'for': 'python' }
     Plug 'honza/dockerfile.vim', { 'for': 'Dockerfile' }
