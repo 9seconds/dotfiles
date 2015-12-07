@@ -17,13 +17,13 @@ URL_VIMRC = https://raw.githubusercontent.com/9seconds/dotfiles/master/vimrc
 
 all: init vimplug config plugins
 
-vimplug:
+vimplug: init
 	@$(CURL) $(VIMDIR_AUTO)/plug.vim $(URL_VIMPLUG)
 
-config:
+config: init
 	@$(CURL) $(VIMRC) $(URL_VIMRC)
 
-plugins: init config
+plugins: config
 	@cd $(VIMDIR_PLUG) && grep -E "^[ \t\]*Plug\s+" $(VIMRC) \
 		| cut -d"'" -f2 - \
 		| sed 's?\(.*\)?https://github.com/\1.git?' \
