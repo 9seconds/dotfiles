@@ -11,10 +11,10 @@ VIMRC_URL="https://raw.githubusercontent.com/9seconds/dotfiles/master/MakefileVi
 
 # -----------------------------------------------------------------------------------
 
-which curl
-which git
-which sed
-which vim
+which curl > /dev/null
+which git > /dev/null
+which sed > /dev/null
+which vim > /dev/null
 
 # -----------------------------------------------------------------------------------
 

@@ -76,7 +76,9 @@ call plug#begin('~/.vim/plugged')
     Plug 'scrooloose/nerdtree' |
         \ Plug 'jistr/vim-nerdtree-tabs'
     Plug 'Shougo/vimproc.vim', { 'do': 'make' }
-    Plug 'SirVer/ultisnips'
+    if v:version >= 704
+        Plug 'SirVer/ultisnips'
+    endif
     if executable('node')
         Plug 'ternjs/tern_for_vim', { 'for': 'javascript', 'do': 'npm install' }
     endif
@@ -246,7 +248,9 @@ set showbreak=↪
 
 " Show line numbers
 set number
-set relativenumber
+if v:version >= 703
+    set relativenumber
+endif
 
 " _____________________________________________________________________________
 
@@ -432,10 +436,12 @@ function! s:QuickfixToggle()
 endfunction
 
 " Do not show color column in a quickfix for a greater good
-augroup qf_colorcolumn
-    autocmd!
-    autocmd FileType qf setlocal colorcolumn=
-augroup END
+if v:version >= 703
+    augroup qf_colorcolumn
+        autocmd!
+        autocmd FileType qf setlocal colorcolumn=
+    augroup END
+endif
 
 
 " }}}
@@ -452,7 +458,9 @@ filetype indent on
 syntax on
 
 " Set rulers
-let &colorcolumn="80,".join(range(120,999),",")
+if v:version >= 703
+    let &colorcolumn="80,".join(range(120,999),",")
+endif
 
 " Show matching brackets, parenthesis
 set showmatch
@@ -584,7 +592,7 @@ if !executable('fzf')
                 \ 1: ['.git', 'cd %s && git ls-files'],
                 \ 2: ['.hg', 'hg --cwd %s locate -I .'],
                 \ },
-            \ 'fallback': 'find %s type -f'
+            \ 'fallback': 'find %s -type f'
         \ }
     endif
 
