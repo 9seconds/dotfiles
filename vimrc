@@ -314,6 +314,14 @@ set shortmess=I
 
 " _____________________________________________________________________________
 
+" Set ag as a grep if it is available
+if executable('ag')
+    set grepprg=ag\ --vimgrep\ $*
+    set grepformat=%f:%l:%c:%m
+endif
+
+" _____________________________________________________________________________
+
 augroup VimDefault
     autocmd!
     " Resize splits if the window is resized
