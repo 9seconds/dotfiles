@@ -697,7 +697,6 @@ let g:rooter_silent_chdir = 1
 " Supertab {{{
 
 let g:SuperTabDefaultCompletionType = "context"
-let g:SuperTabDefaultCompletionType = "<c-x><c-o>"
 let g:SuperTabLongestEnhanced = 1
 
 " }}}
@@ -738,10 +737,6 @@ let g:signify_update_on_bufenter = 1
 let g:neomake_python_enabled_makers = ['pep8', 'flake8', 'python']
 
 nnoremap <leader>m :Neomake<cr>
-
-augroup Python
-    autocmd BufWritePost *.py :Neomake
-augroup END
 
 " }}}
 " FZF {{{
