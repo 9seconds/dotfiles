@@ -65,6 +65,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'mkitt/tabline.vim'
     Plug 'moll/vim-bbye'
     Plug 'morhetz/gruvbox'
+    Plug 'junegunn/vim-journal', { 'for': 'journal' }
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
     Plug 'othree/yajs.vim', { 'for': 'javascript' } |
         \ Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
@@ -336,6 +337,7 @@ augroup VimDefault
     autocmd BufWritePre * :%s/\s\+$//e
     " Where the hell I can find modula 2?
     autocmd BufNewFile,BufReadPost *.md set filetype=markdown
+    autocmd BufNewFile,BufReadPost *.journal set filetype=journal
 augroup END
 
 " _____________________________________________________________________________
