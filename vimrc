@@ -49,7 +49,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'jmcantrell/vim-virtualenv', { 'for': 'python' }
     if executable('fzf')
-        Plug 'junegunn/fzf', { 'dir': '~/.fzf' } |
+        Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' } |
             \ Plug 'junegunn/fzf.vim'
     else
         Plug 'ctrlpvim/ctrlp.vim'
@@ -81,6 +81,10 @@ call plug#begin('~/.vim/plugged')
     endif
     if executable('node')
         Plug 'ternjs/tern_for_vim', { 'for': 'javascript', 'do': 'npm install' }
+    endif
+    if executable('lein')
+        Plug 'tpope/vim-fireplace', { 'for': 'clojure' } |
+            \ Plug 'tpope/vim-salve', { 'for': 'clojure' }
     endif
     Plug 'terryma/vim-expand-region'
     Plug 'terryma/vim-multiple-cursors'
