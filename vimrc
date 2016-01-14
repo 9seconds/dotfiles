@@ -741,6 +741,7 @@ let g:signify_update_on_bufenter = 1
 " Neomake {{{
 
 let g:neomake_python_enabled_makers = ['pep8', 'flake8', 'python']
+let g:neomake_sh_enabled_makers = ['shellcheck']
 
 nnoremap <leader>m :Neomake<cr>
 
