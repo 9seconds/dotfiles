@@ -73,6 +73,7 @@ call plug#begin('~/.vim/plugged')
         Plug 'phildawes/racer', { 'for': 'rust', 'do': 'cargo build --release' }
     endif
     Plug 'rstacruz/vim-closer'
+    Plug 'wellle/visual-split.vim'
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
     Plug 'scrooloose/nerdtree' |
         \ Plug 'jistr/vim-nerdtree-tabs'
