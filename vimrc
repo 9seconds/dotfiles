@@ -70,7 +70,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'othree/yajs.vim', { 'for': 'javascript' } |
         \ Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
     if executable('cargo')
-        Plug 'phildawes/racer', { 'for': 'rust', 'do': 'cargo build --release' }
+        Plug 'phildawes/racer', { 'for': 'rust', 'do': 'git reset --hard && cargo build --release' }
     endif
     Plug 'rstacruz/vim-closer'
     Plug 'wellle/visual-split.vim'
