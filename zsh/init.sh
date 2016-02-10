@@ -43,6 +43,8 @@ source $ZSH/oh-my-zsh.sh
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
+unalias gb  # gb is gb, do not alias anything
+
 unsetopt nomatch
 
 # make less more friendly for non-text input files, see lesspipe(1)
