@@ -16,12 +16,6 @@ if which ah > /dev/null; then
     source $DEVGOPATH/src/github.com/9seconds/ah/sourceit/zsh.sh
 fi
 
-# Use GVM
-if [[ -s "$HOME/.gvm/scripts/gvm" ]]; then
-    source "$HOME/.gvm/scripts/gvm"
-    export GOPATH="$DEVGOPATH:$GOPATH"
-fi
-
 # Apply Gruvbox palette
 if [[ -f "$HOME/.config/nvim/plugged/gruvbox/gruvbox_256palette.sh" ]]; then
     source "$HOME/.config/nvim/plugged/gruvbox/gruvbox_256palette.sh"
