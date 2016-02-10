@@ -3,7 +3,6 @@
 # Common aliases
 alias clc="noglob clc"
 alias df="df -ah --total"
-alias du="du -ahc"
 alias grep=egrep
 alias makep="make -j $(cpu_count)"
 alias mkdir="mkdir -pv"
