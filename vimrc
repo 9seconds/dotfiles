@@ -29,7 +29,6 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 call plug#begin('~/.vim/plugged')
-    " Active plugs {{{
     Plug 'airblade/vim-rooter'
     Plug 'benekastah/neomake'
     Plug 'benmills/vimux'
@@ -88,8 +87,6 @@ call plug#begin('~/.vim/plugged')
         Plug 'tpope/vim-fireplace', { 'for': 'clojure' } |
             \ Plug 'tpope/vim-salve', { 'for': 'clojure' }
     endif
-    Plug 'terryma/vim-expand-region'
-    Plug 'terryma/vim-multiple-cursors'
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-endwise'
     Plug 'tpope/vim-fugitive'
@@ -99,15 +96,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'unblevable/quick-scope'
     Plug 'Valloric/python-indent', { 'for': 'python' }
     Plug 'mhinz/vim-grepper'
-    " }}}
-    " Disabled plugs {{{
-    " Plug 'ciaranm/detectindent'
-    " Plug 'junegunn/goyo.vim'
-    " Plug 'junegunn/limelight.vim'
-    " Plug 'junegunn/vim-pseudocl' | Plug 'junegunn/vim-oblique'
-    " Plug 'kristijanhusak/vim-hybrid-material'
-    " Plug 'majutsushi/tagbar'
-    " }}}
 call plug#end()
 
 filetype plugin indent on
@@ -433,6 +421,9 @@ nnoremap <silent> <Leader>7 7gt<cr>
 nnoremap <silent> <Leader>8 8gt<cr>
 nnoremap <silent> <Leader>9 9gt<cr>
 
+" Do not jump on star
+nnoremap * *``
+
 " QuickFix setup
 nnoremap <silent> Q :call <SID>QuickfixToggle()<cr>
 
@@ -577,11 +568,6 @@ let g:airline_theme = 'gruvbox'
 let g:airline_powerline_fonts = 0
 
 " }}}
-" DetectIndent {{{
-
-" autocmd BufReadPost * :DetectIndent
-
-" }}}
 " VimGo {{{
 
 let g:go_highlight_operators = 1
@@ -666,45 +652,6 @@ map <silent> <F2> :NERDTreeTabsToggle<CR>
 
 let python_version_2 = 1
 let python_highlight_all = 1
-
-" }}}
-" Goyo {{{
-
-" let g:goyo_margin_top = 1
-" let g:goyo_width = 120
-" let g:goyo_linenr = 0
-" nnoremap <silent> <Leader>+ :Goyo<cr>
-
-" function! s:goyo_enter()
-"     silent !tmux set status off
-"     Limelight
-" endfunction
-
-" function! s:goyo_leave()
-"     silent !tmux set status on
-"     Limelight!
-" endfunction
-
-" autocmd! User GoyoEnter
-" autocmd! User GoyoLeave
-" autocmd  User GoyoEnter nested call <SID>goyo_enter()
-" autocmd  User GoyoLeave nested call <SID>goyo_leave()
-
-" }}}
-" Limelight {{{
-
-" let g:limelight_conceal_ctermfg = 'gray'
-" let g:limelight_conceal_ctermfg = 240
-
-" " Color name (:help gui-colors) or RGB color
-" let g:limelight_conceal_guifg = 'DarkGray'
-" let g:limelight_conceal_guifg = '#777777'
-
-" " Default: 0.5
-" let g:limelight_default_coefficient = 0.7
-
-" " Number of preceding/following paragraphs to include (default: 0)
-" let g:limelight_paragraph_span = 1
 
 " }}}
 " Rooter {{{
