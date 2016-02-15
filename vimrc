@@ -625,7 +625,6 @@ if !executable('fzf')
     nnoremap <silent> <leader>fa :CtrlPTag<cr>
 endif
 
-
 " }}}
 " Jedi {{{
 
@@ -658,11 +657,6 @@ let python_highlight_all = 1
 
 let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
-
-" }}}
-" TagBar {{{
-
-" map <silent> <F3> :TagbarToggle<CR>
 
 " }}}
 " Supertab {{{
@@ -714,12 +708,11 @@ nnoremap <leader>m :Neomake<cr>
 " FZF {{{
 
 if executable('fzf')
-    let g:fzf_nvim_statusline = 0
-
     nnoremap <silent> <leader>ff :Files<cr>
     nnoremap <silent> <leader>fb :Buffers<cr>
     nnoremap <silent> <leader>ft :BTags<cr>
     nnoremap <silent> <leader>fa :Tags<cr>
+    nnoremap <silent> <leader>fl :Lines<cr>
     nnoremap <silent> <leader>/  :call SearchWordWithAg()<cr>
     vnoremap <silent> <leader>/  :call SearchVisualSelectionWithAg()<cr>
 
@@ -741,7 +734,6 @@ if executable('fzf')
         execute 'Ag' selection
     endfunction
 endif
-
 
 " }}}
 " Gutentags {{{
