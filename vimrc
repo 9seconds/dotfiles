@@ -32,7 +32,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'airblade/vim-rooter'
     Plug 'benekastah/neomake'
     Plug 'benmills/vimux'
-    Plug 'bling/vim-airline'
+    Plug 'vim-airline/vim-airline'
     Plug 'chrisbra/NrrwRgn'
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
