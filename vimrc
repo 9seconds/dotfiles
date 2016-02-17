@@ -565,6 +565,14 @@ let g:airline_right_sep = ''
 let g:airline_theme = 'gruvbox'
 let g:airline_powerline_fonts = 0
 
+let g:airline_extensions = [
+    \ 'hunks',
+    \ 'virtualenv',
+    \ 'nrrwrgn',
+    \ 'neomake'
+    \ ]
+
+
 " }}}
 " VimGo {{{
 
@@ -697,10 +705,16 @@ let g:signify_update_on_bufenter = 1
 " }}}
 " Neomake {{{
 
-let g:neomake_python_enabled_makers = ['pep8', 'flake8', 'python']
+let g:neomake_python_enabled_makers = [ 'flake8', 'python']
 let g:neomake_sh_enabled_makers = ['shellcheck']
+let g:neomake_verbose = -1
 
 nnoremap <leader>m :Neomake<cr>
+
+augroup NeoMake
+    au!
+    autocmd BufWritePost,BufEnter *.py,*.sh Neomake
+augroup END
 
 " }}}
 " FZF {{{
