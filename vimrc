@@ -684,11 +684,6 @@ nnoremap <silent> <F8> :VimuxInterruptRunner<cr>
 let g:racer_cmd = "~/.vim/plugged/racer/target/release/racer"
 
 " }}}
-" Ag {{{
-
-let g:ag_working_path_mode="r"
-
-" }}}
 " UltiSnips {{{
 
 let g:UltiSnipsExpandTrigger="<tab>"
@@ -707,13 +702,15 @@ let g:signify_update_on_bufenter = 1
 
 let g:neomake_python_enabled_makers = [ 'flake8', 'python']
 let g:neomake_sh_enabled_makers = ['shellcheck']
+let g:neomake_go_enabled_makers = ['golint']
+let g:neomake_javascript_enabled_makers = ['eslint']
 let g:neomake_verbose = -1
 
 nnoremap <leader>m :Neomake<cr>
 
 augroup NeoMake
     au!
-    autocmd BufWritePost,BufEnter *.py,*.sh Neomake
+    autocmd BufWritePost,BufEnter *.py,*.sh,*.js,*.go Neomake
 augroup END
 
 " }}}
