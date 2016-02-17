@@ -33,6 +33,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'benekastah/neomake'
     Plug 'benmills/vimux'
     Plug 'vim-airline/vim-airline'
+    Plug 'tweekmonster/braceless.vim'
     Plug 'chrisbra/NrrwRgn'
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
@@ -44,7 +45,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'gavocanov/vim-js-indent', { 'for': 'javascript' }
     Plug 'hdima/python-syntax', { 'for': 'python' }
     Plug 'honza/dockerfile.vim', { 'for': 'Dockerfile' }
-    Plug 'honza/vim-snippets'
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'jmcantrell/vim-virtualenv', { 'for': 'python' }
     if executable('fzf')
@@ -64,7 +64,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'mkitt/tabline.vim'
     Plug 'moll/vim-bbye'
     Plug 'morhetz/gruvbox'
-    Plug 'junegunn/vim-journal', { 'for': 'journal' }
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
     Plug 'othree/yajs.vim', { 'for': 'javascript' } |
         \ Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
@@ -78,7 +77,8 @@ call plug#begin('~/.vim/plugged')
         \ Plug 'jistr/vim-nerdtree-tabs'
     Plug 'Shougo/vimproc.vim', { 'do': 'make' }
     if v:version >= 704
-        Plug 'SirVer/ultisnips'
+        Plug 'SirVer/ultisnips' |
+            \ Plug 'honza/vim-snippets'
     endif
     if executable('node')
         Plug 'ternjs/tern_for_vim', { 'for': 'javascript', 'do': 'npm install' }
@@ -89,13 +89,11 @@ call plug#begin('~/.vim/plugged')
     endif
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-endwise'
-    Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-markdown', { 'for': 'markdown' }
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-surround'
     Plug 'unblevable/quick-scope'
     Plug 'Valloric/python-indent', { 'for': 'python' }
-    Plug 'mhinz/vim-grepper'
 call plug#end()
 
 filetype plugin indent on
@@ -428,7 +426,7 @@ nnoremap * *``
 nnoremap <silent> Q :call <SID>QuickfixToggle()<cr>
 
 " Faster window close
-nnoremap <silent> <Leader>q :q<cr>
+nnoremap <silent> <Leader>q :qa<cr>
 
 let g:quickfix_is_open = 0
 function! s:QuickfixToggle()
@@ -753,24 +751,6 @@ let g:gutentags_exclude = [
 nnoremap <leader>t :GutentagsUpdate!<cr>
 
 " }}}
-" Grepper {{{
-
-let g:grepper = {
-    \ 'open':      1,
-    \ 'switch':    1,
-    \ 'jump':      0,
-    \ 'next_tool': '<tab>',
-\ }
-
-if executable('ag')
-    let g:grepper.tools = ['ag', 'git', 'grep']
-else
-    let g:grepper.tools = ['grep', 'ag']
-endif
-
-nnoremap <silent> <leader>G :Grepper!<cr>
-
-" }}}
 
 
 " }}}
@@ -819,6 +799,13 @@ augroup VimFolds
     autocmd FileType vim setlocal foldmethod=marker
     autocmd FileType vim setlocal foldlevel=0
     autocmd FileType vim setlocal foldenable
+augroup END
+
+augroup Python
+    autocmd!
+
+    autocmd FileType python BracelessEnable +indent +highlight
+    highlight BracelessIndent guifg=#3c3836 cterm=reverse ctermfg=3 gui=reverse
 augroup END
 
 " }}}
