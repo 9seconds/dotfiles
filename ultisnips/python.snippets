@@ -1,0 +1,231 @@
+global !p
+
+def short_quote(value):
+	if not value:
+		return ""
+	return '"""'
+
+def long_quote(value, ending=""):
+	if not value:
+		return ""
+	return '"""\n' + ending
+endglobal
+
+
+snippet #! "Shebang header for python scripts" b
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+$0
+endsnippet
+
+
+snippet #!3 "Shebang header for python 3 scripts" b
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+$0
+endsnippet
+
+
+snippet __start "Start script" b
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+
+import os
+import sys
+
+
+def main():
+	${1:${VISUAL}}
+
+	return os.EX_OK
+
+if __name__ == "__main__":
+	sys.exit(main())
+endsnippet
+
+
+snippet imp "Import module by name" b
+import ${1:module}
+endsnippet
+
+
+snippet frimp "'from module import name' clause" b
+from ${1:.} import ${2:*}
+endsnippet
+
+
+snippet tryex "'try/except' clause" b
+try:
+	${1:${VISUAL}}
+except ${2:Exception} as ${3:exc}:
+	${4:pass}
+endsnippet
+
+
+snippet tryfi "'try/finally' clause'" b
+try:
+	${1:${VISUAL}}
+finally:
+	$2
+endsnippet
+
+
+snippet tryexfi "'try/except/finally' clause" b
+try:
+	${1:${VISUAL}}
+except ${2:Exception} as ${3:exc}:
+	${4:pass}
+finally:
+	$5
+endsnippet
+
+
+snippet def "Function definition" b
+def ${1:function}(${2:*args, **kwargs}):
+	${3:${VISUAL:pass}}
+endsnippet
+
+
+snippet for "For loop" b:
+for ${1:item} in ${2:items}:
+	${3:${VISUAL:pass}}
+endsnippet
+
+
+snippet if "If statement" b:
+if ${1:condition}:
+	${2:${VISUAL:pass}}
+endsnippet
+
+
+snippet ife "If statement" b:
+if ${1:condition}:
+	${2:${VISUAL:pass}}
+else:
+	${3:pass}
+endsnippet
+
+
+snippet with "with statement" b
+with ${1:expr}`!p snip.rv = " as " if t[2] else ""`${2:var}:
+	${3:${VISUAL:pass}}
+${0}
+endsnippet
+
+
+snippet const "Constant expression" b:
+${1:LOG} = ${2:expression}
+`!p snip.rv = short_quote(t[3])`${3:$1 description}`!p snip.rv = short_quote(t[3])`
+endsnippet
+
+
+snippet deco "Simple decorator" b
+def ${1:decorated}(${2:func}):
+	@${3:functools.wraps}($2)
+	def decorator(${4:*args, **kwargs}):
+		${5:return $2($4)}
+
+	return decorator
+endsnippet
+
+
+snippet decoco "Double nested decorator" b
+def ${1:decorated}(${2:*gargs, **gkwargs}):
+	def inner_decorator(${3:func}):
+		@${4:functools.wraps}($3):
+		def outer_decorator(${5:*args, **kwargs}):
+			${6:return $3($5)}
+
+		return outer_decorator
+	return inner_decorator
+endsnippet
+
+
+snippet propr "Read property" b
+@property
+def ${1:name}(self):
+	${2:${VISUAL}}
+endsnippet
+
+
+snippet propw "Read/write property" b
+@property
+def ${1:name}(self):
+	${2:${VISUAL}}
+
+@$1.setter
+def $1_setter(self, value):
+	${3}
+endsnippet
+
+
+snippet class "Generic class" b
+class ${1:ClassName}(${2:object}):
+	`!p snip.rv = long_quote(t[3], "\t")`${3:$1 docstring}
+	`!p snip.rv = long_quote(t[3])`
+	${4:pass}
+endsnippet
+
+
+snippet classi "Generic class with constructor" b
+class ${1:ClassName}(${2:object}):
+	`!p snip.rv = long_quote(t[3], "\t")`${3:$1 docstring}
+	`!p snip.rv = long_quote(t[3])`
+	def __init__(self`!p snip.rv = ", " if t[4] else ""`${4}):
+		super($1, self).__init__($4)
+		`!p snip >> 2
+value = None
+for value in t[4].split(","):
+	if value:
+		snip += "self.{0} = {0}".format(value.strip())
+if value:
+	snip += ""
+		`
+		${5}
+endsnippet
+
+snippet classistr "Generic class with str" b
+class ${1:ClassName}(${2:object}):
+	`!p snip.rv = long_quote(t[3], "\t")`${3:$1 docstring}
+	`!p snip.rv = long_quote(t[3])`
+	def __init__(self`!p snip.rv = ", " if t[4] else ""`${4}):
+		super($1, self).__init__($4)
+		`!p snip >> 2
+value = None
+for value in t[4].split(","):
+	if value:
+		snip += "self.{0} = {0}".format(value.strip())
+if value:
+	snip += ""
+		`
+		${5}
+
+	def __repr__(self):
+		return `!p
+params, args, idx = [], [], 0
+
+for value in t[4].split(","):
+	if not value:
+		continue
+
+	value = value.strip()
+
+	params.append("{0}={{{1}}}".format(value, idx))
+	args.append("self.{0}".format(value))
+
+	idx += 1
+
+params = ", ".join(params)
+args = ", ".join(args)
+
+snip.rv = '"<{0}({1})>".format({2})'.format(t[1], params, args)`
+
+	def __str__(self):
+		return "<$1>"
+
+	def __unicode__(self):
+		return str(self).encode("utf-8")
+endsnippet
