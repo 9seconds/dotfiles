@@ -29,6 +29,7 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 call plug#begin('~/.vim/plugged')
+    Plug 'Shougo/deoplete.nvim' | Plug 'zchee/deoplete-jedi'
     Plug 'airblade/vim-rooter'
     Plug 'benekastah/neomake'
     Plug 'benmills/vimux'
@@ -38,7 +39,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'elzr/vim-json', { 'for': 'json' }
-    Plug 'ervandew/supertab'
     if executable('go')
         Plug 'fatih/vim-go', { 'for': 'go' }
     endif
@@ -77,8 +77,7 @@ call plug#begin('~/.vim/plugged')
         \ Plug 'jistr/vim-nerdtree-tabs'
     Plug 'Shougo/vimproc.vim', { 'do': 'make' }
     if v:version >= 704
-        Plug 'SirVer/ultisnips' |
-            \ Plug 'honza/vim-snippets'
+        Plug 'SirVer/ultisnips'
     endif
     if executable('node')
         Plug 'ternjs/tern_for_vim', { 'for': 'javascript', 'do': 'npm install' }
@@ -94,6 +93,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-surround'
     Plug 'unblevable/quick-scope'
     Plug 'Valloric/python-indent', { 'for': 'python' }
+
 call plug#end()
 
 filetype plugin indent on
@@ -665,12 +665,6 @@ let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
 
 " }}}
-" Supertab {{{
-
-let g:SuperTabDefaultCompletionType = "context"
-let g:SuperTabLongestEnhanced = 1
-
-" }}}
 " Vimux {{{
 
 nnoremap <silent> <F5> :VimuxPromptCommand<cr>
@@ -686,10 +680,26 @@ let g:racer_cmd = "~/.vim/plugged/racer/target/release/racer"
 " }}}
 " UltiSnips {{{
 
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<c-j>"
-let g:UltiSnipsJumpBackwardTrigger="<c-k>"
-let g:UltiSnipsEditSplit="vertical"
+let g:UltiSnipsExpandTrigger = "<tab>"
+let g:UltiSnipsJumpForwardTrigger = "<c-j>"
+let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
+let g:UltiSnipsEditSplit = "vertical"
+
+let g:UltiSnipsSnippetsDir = "~/.ultisnips"
+let g:UltiSnipsSnippetDirectories=[$HOME.'/.ultisnips']
+
+" }}}
+" Deoplete {{{
+
+let g:deoplete#enable_at_startup = 1
+let g:deoplete#ignore_sources = {}
+let g:deoplete#ignore_sources._ = ['buffer']
+
+" Manually trigger completion and auto insert
+let g:deoplete#disable_auto_complete = 1
+inoremap <silent><expr> <leader><Tab> pumvisible() ? "\<C-n>" : deoplete#mappings#manual_complete()
+
+inoremap <expr><C-h> deoplete#mappings#smart_close_popup()."\<C-h>"
 
 " }}}
 " Signify {{{
@@ -708,10 +718,10 @@ let g:neomake_verbose = -1
 
 nnoremap <leader>m :Neomake<cr>
 
-augroup NeoMake
-    au!
-    autocmd BufWritePost,BufEnter *.py,*.sh,*.js,*.go Neomake
-augroup END
+" augroup NeoMake
+"     au!
+"     autocmd BufWritePost,BufEnter *.py,*.sh,*.js,*.go Neomake
+" augroup END
 
 " }}}
 " FZF {{{
