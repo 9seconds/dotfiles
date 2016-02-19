@@ -1,15 +1,44 @@
 global !p
 
-def short_quote(value):
+sentinel = object()
+
+def or_empty(value, print_value=sentinel, strip=False):
 	if not value:
 		return ""
-	return '"""'
+
+	to_print = print_value
+	if to_print is sentinel:
+		to_print = value
+
+	return to_print.strip() if strip else to_print
+
+def short_quote(value):
+	return or_empty(value, '"""')
 
 def long_quote(value, ending=""):
-	if not value:
-		return ""
-	return '"""\n' + ending
+	return or_empty(value, '"""\n' + ending)
+
 endglobal
+
+
+snippet #TD "TODO comment" b
+# TODO (`git config user.name || whoami`): ${1:${VISUAL}}
+endsnippet
+
+
+snippet #FX "FIXME comment" b
+# FIXME (`git config user.name || whoami`): ${1:${VISUAL}}
+endsnippet
+
+
+snippet #TMP "Temporary disable the block of code" b
+# FIXME (`git config user.name || whoami`): TEMPORARY DISABLED
+# FIXME (`git config user.name || whoami`): ${1:Reason}
+"""
+${2:${VISUAL}}
+"""
+# FIXME (`git config user.name || whoami`): END OF TEMPORARY DISABLED BLOCK
+endsnippet
 
 
 snippet #! "Shebang header for python scripts" b
@@ -28,9 +57,22 @@ $0
 endsnippet
 
 
-snippet __start "Start script" b
+snippet pdb "Put PDB tracing here" b
+from pdb import set_trace; set_trace()
+$0
+endsnippet
+
+
+snippet ipdb "Put iPDB tracing here" b
+from ipdb import set_trace; set_trace()
+$0
+endsnippet
+
+
+snippet __script "Start script" b
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+`!p snip.rv = short_quote(t[1])`${1:Script description}`!p snip.rv = short_quote(t[1])`
 
 
 import os
@@ -38,12 +80,19 @@ import sys
 
 
 def main():
-	${1:${VISUAL}}
+	${2:${VISUAL}}
 
 	return os.EX_OK
 
 if __name__ == "__main__":
 	sys.exit(main())
+endsnippet
+
+
+snippet __module "Start module" b
+# -*- coding: utf-8 -*-
+
+$0
 endsnippet
 
 
@@ -89,6 +138,26 @@ def ${1:function}(${2:*args, **kwargs}):
 endsnippet
 
 
+snippet defm "Method definition" b
+def ${1:method}(self`!p snip.rv = or_empty(t[2], ", ")`${2:*args, **kwargs}):
+	${3:${VISUAL:pass}}
+endsnippet
+
+
+snippet defmc "Class method definition" b
+@classmethod
+def ${1:method}(cls`!p snip.rv = or_empty(t[2], ", ")`${2:*args, **kwargs}):
+	${3:${VISUAL:pass}}
+endsnippet
+
+
+snippet defms "Class method definition" b
+@statismethod
+def ${1:method}(${2:*args, **kwargs}):
+	${3:${VISUAL:pass}}
+endsnippet
+
+
 snippet for "For loop" b:
 for ${1:item} in ${2:items}:
 	${3:${VISUAL:pass}}
@@ -110,15 +179,9 @@ endsnippet
 
 
 snippet with "with statement" b
-with ${1:expr}`!p snip.rv = " as " if t[2] else ""`${2:var}:
+with ${1:expr}`!p snip.rv = or_empty(t[2], " as ")`${2:var}:
 	${3:${VISUAL:pass}}
 ${0}
-endsnippet
-
-
-snippet const "Constant expression" b:
-${1:LOG} = ${2:expression}
-`!p snip.rv = short_quote(t[3])`${3:$1 description}`!p snip.rv = short_quote(t[3])`
 endsnippet
 
 
@@ -164,50 +227,50 @@ endsnippet
 
 snippet class "Generic class" b
 class ${1:ClassName}(${2:object}):
-	`!p snip.rv = long_quote(t[3], "\t")`${3:$1 docstring}
-	`!p snip.rv = long_quote(t[3])`
-	${4:pass}
+	${3:pass}
 endsnippet
 
 
 snippet classi "Generic class with constructor" b
 class ${1:ClassName}(${2:object}):
-	`!p snip.rv = long_quote(t[3], "\t")`${3:$1 docstring}
-	`!p snip.rv = long_quote(t[3])`
-	def __init__(self`!p snip.rv = ", " if t[4] else ""`${4}):
-		super($1, self).__init__($4)
-		`!p snip >> 2
+
+	def __init__(self`!p snip.rv = or_empty(t[3], ", ")`${3}):
+		super($1, self).__init__($3)
+		`!p
+snip >> 2
 value = None
-for value in t[4].split(","):
+
+for value in t[3].split(","):
 	if value:
 		snip += "self.{0} = {0}".format(value.strip())
+
 if value:
-	snip += ""
-		`
-		${5}
+	snip += ""`
+		${4}
 endsnippet
 
 snippet classistr "Generic class with str" b
 class ${1:ClassName}(${2:object}):
-	`!p snip.rv = long_quote(t[3], "\t")`${3:$1 docstring}
-	`!p snip.rv = long_quote(t[3])`
-	def __init__(self`!p snip.rv = ", " if t[4] else ""`${4}):
-		super($1, self).__init__($4)
-		`!p snip >> 2
+
+	def __init__(self`!p snip.rv = or_empty(t[3], ", ")`${3}):
+		super($1, self).__init__($3)
+		`!p
+snip >> 2
 value = None
-for value in t[4].split(","):
+
+for value in t[3].split(","):
 	if value:
 		snip += "self.{0} = {0}".format(value.strip())
+
 if value:
-	snip += ""
-		`
-		${5}
+	snip += ""`
+		${4}
 
 	def __repr__(self):
 		return `!p
 params, args, idx = [], [], 0
 
-for value in t[4].split(","):
+for value in t[3].split(","):
 	if not value:
 		continue
 
@@ -229,3 +292,5 @@ snip.rv = '"<{0}({1})>".format({2})'.format(t[1], params, args)`
 	def __unicode__(self):
 		return str(self).encode("utf-8")
 endsnippet
+
+
