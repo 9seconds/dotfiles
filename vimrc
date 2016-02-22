@@ -37,13 +37,9 @@ call plug#begin('~/.vim/plugged')
     Plug 'tweekmonster/braceless.vim'
     Plug 'chrisbra/NrrwRgn'
     Plug 'christoomey/vim-tmux-navigator'
-    Plug 'elzr/vim-json', { 'for': 'json' }
     if executable('go')
         Plug 'fatih/vim-go', { 'for': 'go' }
     endif
-    Plug 'gavocanov/vim-js-indent', { 'for': 'javascript' }
-    Plug 'hdima/python-syntax', { 'for': 'python' }
-    Plug 'honza/dockerfile.vim', { 'for': 'Dockerfile' }
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'jmcantrell/vim-virtualenv', { 'for': 'python' }
     if executable('fzf')
@@ -84,8 +80,9 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-markdown', { 'for': 'markdown' }
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-sleuth'
     Plug 'unblevable/quick-scope'
-    Plug 'Valloric/python-indent', { 'for': 'python' }
+    Plug 'sheerun/vim-polyglot'
 call plug#end()
 
 filetype plugin indent on
