@@ -29,7 +29,9 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 call plug#begin('~/.vim/plugged')
-    Plug 'Valloric/YouCompleteMe', {'do': 'git reset --hard && git submodule foreach git reset --hard && ./install.py --clang-completer --gocode-completer --tern-completer --racer-completer'}
+    Plug 'Valloric/YouCompleteMe', {'do': 'git reset --hard &&
+                \ git submodule foreach git reset --hard &&
+                \ ./install.py --clang-completer --gocode-completer --tern-completer --racer-completer'}
     Plug 'airblade/vim-rooter'
     Plug 'benekastah/neomake'
     Plug 'benmills/vimux'
