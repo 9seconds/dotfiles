@@ -40,7 +40,6 @@ call plug#begin('~/.vim/plugged')
     if executable('go')
         Plug 'fatih/vim-go', { 'for': 'go' }
     endif
-    Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'jmcantrell/vim-virtualenv', { 'for': 'python' }
     if executable('fzf')
         Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' } |
@@ -83,6 +82,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-sleuth'
     Plug 'unblevable/quick-scope'
     Plug 'sheerun/vim-polyglot'
+    Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
 call plug#end()
 
 filetype plugin indent on
@@ -353,7 +353,7 @@ nnoremap <leader>w :w!<cr>
 
 " :W sudo saves the file
 " (useful for handling the permission-denied error)
-cnoremap w!! %!sudo tee % > /dev/null%
+cnoremap w!! w !sudo tee > /dev/null %
 
 " Reselect visual block after indent or outdent
 vnoremap < <gv
@@ -393,9 +393,6 @@ nnoremap <silent>\ :nohl<cr>
 
 " Close the current buffer
 nnoremap <leader>bd :Bdelete<cr>
-
-" Tab management
-nnoremap <leader>tc :tabclose<cr>
 
 " Fast tab switch
 nnoremap <silent> <Leader>1 1gt<cr>
