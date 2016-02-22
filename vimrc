@@ -29,7 +29,7 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 call plug#begin('~/.vim/plugged')
-    Plug 'Shougo/deoplete.nvim' | Plug 'zchee/deoplete-jedi'
+    Plug 'Valloric/YouCompleteMe', {'do': 'git reset --hard && git submodule foreach git reset --hard && ./install.py --clang-completer --gocode-completer --tern-completer --racer-completer'}
     Plug 'airblade/vim-rooter'
     Plug 'benekastah/neomake'
     Plug 'benmills/vimux'
@@ -37,7 +37,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'tweekmonster/braceless.vim'
     Plug 'chrisbra/NrrwRgn'
     Plug 'christoomey/vim-tmux-navigator'
-    Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'elzr/vim-json', { 'for': 'json' }
     if executable('go')
         Plug 'fatih/vim-go', { 'for': 'go' }
@@ -67,9 +66,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
     Plug 'othree/yajs.vim', { 'for': 'javascript' } |
         \ Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
-    if executable('cargo')
-        Plug 'phildawes/racer', { 'for': 'rust', 'do': 'git reset --hard && cargo build --release' }
-    endif
     Plug 'rstacruz/vim-closer'
     Plug 'wellle/visual-split.vim'
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
@@ -78,9 +74,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'Shougo/vimproc.vim', { 'do': 'make' }
     if v:version >= 704
         Plug 'SirVer/ultisnips'
-    endif
-    if executable('node')
-        Plug 'ternjs/tern_for_vim', { 'for': 'javascript', 'do': 'npm install' }
     endif
     if executable('lein')
         Plug 'tpope/vim-fireplace', { 'for': 'clojure' } |
@@ -93,7 +86,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-surround'
     Plug 'unblevable/quick-scope'
     Plug 'Valloric/python-indent', { 'for': 'python' }
-
 call plug#end()
 
 filetype plugin indent on
@@ -632,25 +624,25 @@ if !executable('fzf')
 endif
 
 " }}}
-" Jedi {{{
-
-let g:jedi#popup_on_dot = 0
-let g:jedi#show_call_signatures = 2
-let g:jedi#use_tabs_not_buffers = 1
-
-nnoremap <leader>jd :call jedi#goto()<cr>
-nnoremap <leader>jg :call jedi#goto_assignments()<cr>
-nnoremap <leader>jk :call jedi#show_documentation()<cr>
-nnoremap <leader>jr :call jedi#rename()<cr>
-nnoremap <leader>jn :call jedi#usages()<cr>
-
-" }}}
 " NerdTree and NerdTreeTabs {{{
 
 let g:nerdtree_tabs_open_on_gui_startup = 0
 let g:nerdtree_tabs_open_on_console_startup = 0
 
 map <silent> <F2> :NERDTreeTabsToggle<CR>
+
+" }}}
+" YouCompleteMe {{{
+
+let g:ycm_rust_src_path = '~/dev/3pp/rust/src'
+let g:ycm_complete_in_strings = 0
+let g:ycm_collect_identifiers_from_tags_files = 1
+let g:ycm_autoclose_preview_window_after_insertion = 1
+
+nnoremap <leader>yg :YcmCompleter GoTo<CR>
+nnoremap <leader>yr :YcmCompleter GoToReferences<CR>
+nnoremap <leader>yd :YcmCompleter GetDoc<CR>
+nnoremap <leader>ys :YcmCompleter RestartServer<CR>
 
 " }}}
 " Python Syntax {{{
@@ -673,33 +665,15 @@ nnoremap <silent> <F7> :VimuxZoomRunner<cr>
 nnoremap <silent> <F8> :VimuxInterruptRunner<cr>
 
 " }}}
-" Racer {{{
-
-let g:racer_cmd = "~/.vim/plugged/racer/target/release/racer"
-
-" }}}
 " UltiSnips {{{
 
-let g:UltiSnipsExpandTrigger = "<tab>"
+let g:UltiSnipsExpandTrigger = "<c-j>"
 let g:UltiSnipsJumpForwardTrigger = "<c-j>"
 let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
 let g:UltiSnipsEditSplit = "vertical"
 
 let g:UltiSnipsSnippetsDir = "~/.ultisnips"
 let g:UltiSnipsSnippetDirectories=[$HOME.'/.ultisnips']
-
-" }}}
-" Deoplete {{{
-
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#ignore_sources = {}
-let g:deoplete#ignore_sources._ = ['buffer']
-
-" Manually trigger completion and auto insert
-let g:deoplete#disable_auto_complete = 1
-inoremap <silent><expr> <leader><Tab> pumvisible() ? "\<C-n>" : deoplete#mappings#manual_complete()
-
-inoremap <expr><C-h> deoplete#mappings#smart_close_popup()."\<C-h>"
 
 " }}}
 " Signify {{{
