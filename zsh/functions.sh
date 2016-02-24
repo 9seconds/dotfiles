@@ -5,7 +5,7 @@
 awp() {
     # Small shortcut for awk '{print $N}'. It is awp N for now. Literally.
 
-    awk '{print $'$1'}'
+    awk "{print \$$1}"
 }
 
 cpu_count() {
@@ -15,7 +15,7 @@ cpu_count() {
     #     $ cpu_count
     #     4
 
-    cat /proc/cpuinfo | awk '/processor/ {n++}; END {print n}'
+    grep -c processor /proc/cpuinfo
 }
 
 skip_first() {
@@ -29,9 +29,7 @@ skip_first() {
     #     2
     #     3
 
-    local how_many=${1:=1}
-
-    awk "NR > ${how_many}"
+    awk "NR > ${1:=1}"
 }
 
 tstamp () {
@@ -47,58 +45,7 @@ tstamp () {
     #
     #
 
-    date -d @$1 && date --utc -d @$1
-}
-
-find() {
-    # Just a small wrapper around find to enable some common optimizations.
-    #
-    # Args:
-    #     arg1 arg2 arg3
-    #
-    # Example:
-    #     $ find . -name "env.sh" -type d
-    #     ./env.sh
-
-    /usr/bin/find -L -O3 $@
-}
-
-ffind() {
-    # Small wrapper to search files.
-    #
-    # Args:
-    #     path fileglob
-    #
-    # Example:
-    #     $ ffind . env.sh
-    #     ./env.sh
-
-    local find_path="$1"
-    shift
-
-    local filename="$1"
-    shift
-
-    find "${find_path}" -name "${filename}" -type f $@
-}
-
-dfind() {
-    # Small wrapper to search directories.
-    #
-    # Args:
-    #     path fileglob
-    #
-    # Example:
-    #     $ dfind . oh-my-zsh
-    #     ./oh-my-zsh
-
-    local find_path="$1"
-    shift
-
-    local filename="$1"
-    shift
-
-    find "${find_path}" -name "${filename}" -type d $@
+    date -d "@$1" && date --utc -d "@$1"
 }
 
 dedup() {
@@ -221,49 +168,35 @@ man() {
         LESS_TERMCAP_so=$'\E[38;5;246m' \
         LESS_TERMCAP_ue=$'\E[0m' \
         LESS_TERMCAP_us=$'\E[04;38;5;146m' \
-    man $@
+    man "$@"
 }
-
-vim_cmd() {
-    # Executes VIM command without a VIM start.
-    #
-    # Args:
-    #     arg1 arg2 arg3
-    #
-    # Example:
-    #     $ vim_cmd "try | NeoBundleUpdate | finally | qall! | endtry"
-
-    vim -N -u "$VIMRC" -c "$1" -U NONE -i NONE -V1 -e -s -X
-    echo
-}
-
 
 wttr() {
     # fetch wttr for weather
 
-    curl -L "http://wttr.in/${1:-nizhny}"
+    curl -4L "http://wttr.in/${1:-nizhny}"
 }
 
 extract() {
     # Handy shortcut stolen from internetz.
     # Extracts archives.
 
-    if [ -f $1 ] ; then
-        case $1 in
-            *.tar.bz2)   tar xvjf $1;;
-            *.tar.gz)    tar xvzf $1;;
-            *.tar.xz)    tar xvJf $1;;
-            *.bz2)       bunzip2 $1;;
-            *.rar)       unrar x $1;;
-            *.gz)        gunzip $1;;
-            *.xz)        unxz $1;;
-            *.tar)       tar xvf $1;;
-            *.tbz2)      tar xvjf $1;;
-            *.tgz)       tar xvzf $1;;
-            *.zip)       unzip $1;;
-            *.Z)         uncompress $1;;
-            *.7z)        7z x $1;;
-            *)           echo "'$1' cannot be extracted via >extract<" ;;
+    if [ -f "$1" ] ; then
+        case "$1" in
+            *.tar.bz2)  tar xvjf    "$1";;
+            *.tar.gz)   tar xvzf    "$1";;
+            *.tar.xz)   tar xvJf    "$1";;
+            *.bz2)      bunzip2     "$1";;
+            *.rar)      unrar x     "$1";;
+            *.gz)       gunzip      "$1";;
+            *.xz)       unxz        "$1";;
+            *.tar)      tar xvf     "$1";;
+            *.tbz2)     tar xvjf    "$1";;
+            *.tgz)      tar xvzf    "$1";;
+            *.zip)      unzip       "$1";;
+            *.Z)        uncompress  "$1";;
+            *.7z)       7z x        "$1";;
+            *)          echo        "'$1' cannot be extracted via >extract<" ;;
         esac
     else
         echo "'$1' is not a valid file"
@@ -291,14 +224,15 @@ docker_versions() {
 docker_update() {
     # Updates all existing docker images (all versions).
 
-    docker_images | xargs -P $(cpu_count) -n 1 docker pull -a
+    docker_images | xargs -P "$(cpu_count)" -n 1 docker pull -a
 }
 
 docker_stop() {
     # Stops all running containers.
 
-    local images="$(docker ps -a -q)"
+    local images
 
+    images="$(docker ps -a -q)"
     if [ -n "${images}" ]; then
         docker stop ${images}
     fi
@@ -308,9 +242,13 @@ docker_run() {
     # Runs docker container. If no second argument is set then bash
     # would be executed.
 
-    local container="$1"
-    local cmd="${2:-bash}"
-    local volumes=""
+    local container
+    local cmd
+    local volumes
+
+    container="$1"
+    cmd="${2:-bash}"
+    volumes=""
 
     if [[ "$#" -gt "2" ]]; then
         shift 2
@@ -326,7 +264,8 @@ docker_run() {
 docker_rm() {
     # Removes all running containers.
 
-    local containers="$(docker ps -a -q)"
+    local containers
+    containers="$(docker ps -a -q)"
 
     if [ -n "${containers}" ]; then
         docker rm ${containers}
@@ -353,7 +292,9 @@ docker_rmi() {
     # Example:
     #     $ docker_rmi ubuntu centos nineseconds/docker-vagrant
 
-    local images="$(docker images)"
+    local images
+
+    images="$(docker images)"
 
     for repo in "$@"; do
         echo ${images} | grep "$repo" | awk '{print $2}' | xargs -n 1 -I {} docker rmi "$repo:{}"
@@ -369,7 +310,7 @@ docker_pull() {
     # Example:
     #     $ docker_pull ubuntu centos nineseconds/docker-vagrant
 
-    echo -n "$@" | xargs -d ' ' -n 1 -P $(cpu_count) docker pull -a
+    echo -n "$@" | xargs -d ' ' -n 1 -P "$(cpu_count)" docker pull -a
 }
 
 docker_search() {
@@ -381,7 +322,10 @@ docker_search() {
     # Example:
     #     $ docker_search centos
 
-    local delimeter="☃"
+    local delimeter
+
+    delimeter="☃"
+
     docker search -s 1 "$@" \
         | sed "s/\s\{2,\}/${delimeter}/g" | \
         awk -F "${delimeter}" 'NR > 1 && $2 !~ /^[0-9]+/ {print}' | \
@@ -413,7 +357,7 @@ vagrant_halt() {
             print $1
         }
     '
-    vagrant global-status | awk "$awk_script" | xargs -n 1 -P $(cpu_count) vagrant halt
+    vagrant global-status | awk "$awk_script" | xargs -n 1 -P "$(cpu_count)" vagrant halt
 }
 
 
@@ -495,5 +439,6 @@ update_git_repos() {
         git submodule foreach git gc --aggressive --prune=all && \
         git submodule foreach git repack -Ad
     done
+
     cd $last_path
 }
