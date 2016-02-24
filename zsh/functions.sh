@@ -18,19 +18,6 @@ cpu_count() {
     cat /proc/cpuinfo | awk '/processor/ {n++}; END {print n}'
 }
 
-clc() {
-    # Just a small command line calculator.
-    #
-    # Args:
-    #     arg1 arg2 arg3...
-    #
-    # Example:
-    #     $clc 1 + 1 + sqrt(4)
-    #     4.000000000000000000
-
-    echo "$@" | bc -l
-}
-
 skip_first() {
     # Skips first N lines of the output.
     #
@@ -248,6 +235,13 @@ vim_cmd() {
 
     vim -N -u "$VIMRC" -c "$1" -U NONE -i NONE -V1 -e -s -X
     echo
+}
+
+
+wttr() {
+    # fetch wttr for weather
+
+    curl -L "http://wttr.in/${1:-nizhny}"
 }
 
 extract() {
