@@ -690,10 +690,10 @@ let g:neomake_verbose = -1
 
 nnoremap <leader>m :Neomake<cr>
 
-augroup NeoMake
-    au!
-    autocmd BufWritePost,BufEnter *.py,*.sh,*.js,*.go Neomake
-augroup END
+" augroup NeoMake
+"     au!
+"     autocmd BufWritePost,BufEnter *.py,*.sh,*.js,*.go Neomake
+" augroup END
 
 " }}}
 " FZF {{{
