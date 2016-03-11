@@ -84,6 +84,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-sleuth'
     Plug 'unblevable/quick-scope'
+    Plug 'xolox/vim-misc' |
+        \ Plug 'xolox/vim-session'
     Plug 'sheerun/vim-polyglot'
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
 call plug#end()
@@ -743,6 +745,18 @@ let g:gutentags_exclude = [
     \ ]
 
 nnoremap <leader>t :GutentagsUpdate!<cr>
+
+" }}}
+" Session {{{
+
+set sessionoptions-=help,buffers,options
+
+let g:session_default_overwrite = 0
+let g:session_autosave = 'yes'
+let g:session_autosave_to = '__last__'
+let g:session_autosave_silent = 1
+let g:session_autosave_periodic = 1
+let g:session_command_aliases = 1
 
 " }}}
 
