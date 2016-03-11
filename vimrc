@@ -65,6 +65,7 @@ call plug#begin('~/.vim/plugged')
         \ Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
     Plug 'rstacruz/vim-closer'
     Plug 'wellle/visual-split.vim'
+    Plug 'wellle/targets.vim'
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
     Plug 'scrooloose/nerdtree' |
         \ Plug 'jistr/vim-nerdtree-tabs'
