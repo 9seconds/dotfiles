@@ -29,7 +29,7 @@ export FZF_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || ag -l -g "") 2> 
 
 # KeyChain
 if which keychain > /dev/null; then
-    eval $(keychain --nocolor --eval --agents ssh,gpg 2> /dev/null)
+    eval $(keychain --nocolor --eval --agents ssh,gpg id_rsa 2> /dev/null)
 fi
 
 # Private stuff I do not want to share

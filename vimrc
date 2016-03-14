@@ -645,6 +645,12 @@ nnoremap <leader>yr :YcmCompleter GoToReferences<CR>
 nnoremap <leader>yd :YcmCompleter GetDoc<CR>
 nnoremap <leader>ys :YcmCompleter RestartServer<CR>
 
+function! YcmCompleteVenvNames(arg_lead, cmd_line, cursor_pos)
+    return virtualenv#names(a:arg_lead)
+endfunction
+
+command! -bar -nargs=? -complete=customlist,YcmCompleteVenvNames Venv :call virtualenv#activate(<q-args>) | YcmRestartServer
+
 " }}}
 " Python Syntax {{{
 
@@ -812,7 +818,7 @@ augroup END
 augroup Python
     autocmd!
 
-    autocmd FileType python BracelessEnable +indent +highlight
+    autocmd FileType python BracelessEnable +highlight
     highlight BracelessIndent guifg=#3c3836 cterm=reverse ctermfg=3 gui=reverse
 augroup END
 
