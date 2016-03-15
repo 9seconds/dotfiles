@@ -799,7 +799,15 @@ if has('gui_running')
     nnoremap <silent> y "+y
     vnoremap <silent> y "+y
     nnoremap <silent><Leader>p "+gP
+
 endif
+
+" NeoVim QT {{{
+
+command -nargs=? Guifont call rpcnotify(0, 'Gui', 'SetFont', "<args>") | let g:Guifont="<args>"
+Guifont Fira Mono:h11
+
+" }}}
 
 
 " }}}

@@ -188,6 +188,11 @@ else:
 endsnippet
 
 
+snippet lamb "Lambda" is
+lambda ${1:x}: ${2:$1}
+endsnippet
+
+
 snippet with "with statement" b
 with ${1:expr}`!p snip.rv = or_empty(t[2], " as ")`${2:var}:
 	${3:${VISUAL:pass}}
