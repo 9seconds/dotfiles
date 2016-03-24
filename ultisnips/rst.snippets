@@ -1,0 +1,63 @@
+# Snippets for reStructured text
+
+
+snippet h1 "Heading 1 level" b
+${1:${VISUAL:Heading1}}
+`!p snip.rv = "=" * len(t[1])`
+
+$0
+endsnippet
+
+
+snippet h2 "Heading 2 level" b
+${1:${VISUAL:Heading2}}
+`!p snip.rv = "-" * len(t[1])`
+
+$0
+endsnippet
+
+
+
+snippet h3 "Heading 3 level" b
+${1:${VISUAL:Heading3}}
+`!p snip.rv = "~" * len(t[1])`
+
+$0
+endsnippet
+
+
+snippet h4 "Heading 4 level" b
+${1:${VISUAL:Heading4}}
+`!p snip.rv = "\"" * len(t[1])`
+
+$0
+endsnippet
+
+
+snippet b "Boldify text" is
+**${1:${VISUAL:Bold text}}**
+endsnippet
+
+
+snippet i "Italic text" is
+*${1:${VISUAL:Bold text}}*
+endsnippet
+
+
+snippet a "As is" is
+\`\`${1:${VISUAL:As is}}\`\`
+endsnippet
+
+
+snippet bl "Block" b
+.. ${1:block}:: ${2:modifier}
+
+	${3:${VISUAL:Content}}
+
+$0
+endsnippet
+
+
+snippet ref "Reference" is
+:ref:\`$1\`
+endsnippet
