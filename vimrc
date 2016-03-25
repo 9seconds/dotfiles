@@ -674,7 +674,7 @@ nnoremap <silent> <F8> :VimuxInterruptRunner<cr>
 " }}}
 " UltiSnips {{{
 
-let g:UltiSnipsExpandTrigger = "<c-j>"
+let g:UltiSnipsExpandTrigger = "<leader><Space>"
 let g:UltiSnipsJumpForwardTrigger = "<c-j>"
 let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
 let g:UltiSnipsEditSplit = "vertical"
