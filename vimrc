@@ -21,13 +21,6 @@ if system('uname -o') =~ '^GNU/'
     let g:make = 'make'
 endif
 
-" Autoinstall vim-plug if absent
-if empty(glob('~/.vim/autoload/plug.vim'))
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    autocmd VimEnter * PlugInstall | source $VIMRC
-endif
-
 call plug#begin('~/.vim/plugged')
     Plug 'Shougo/deoplete.nvim' |
         \ Plug 'zchee/deoplete-jedi'
