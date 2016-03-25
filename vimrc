@@ -29,65 +29,71 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 call plug#begin('~/.vim/plugged')
-    Plug 'Shougo/deoplete.nvim'
-    Plug 'zchee/deoplete-jedi'
+    Plug 'Shougo/deoplete.nvim' |
+        \ Plug 'zchee/deoplete-jedi'
+
     Plug 'airblade/vim-rooter'
     Plug 'benekastah/neomake'
     Plug 'benmills/vimux'
-    Plug 'vim-airline/vim-airline'
-    Plug 'tweekmonster/braceless.vim'
     Plug 'chrisbra/NrrwRgn'
     Plug 'christoomey/vim-tmux-navigator'
+    Plug 'davidhalter/jedi-vim', { 'for': 'python' }
+    Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
+    Plug 'jmcantrell/vim-virtualenv'
+    Plug 'justinmk/vim-sneak'
+    Plug 'kshenoy/vim-signature'
+    Plug 'ludovicchabant/vim-gutentags'
+    Plug 'mhinz/vim-signify'
+    Plug 'mkitt/tabline.vim'
+    Plug 'moll/vim-bbye'
+    Plug 'morhetz/gruvbox'
+    Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
+    Plug 'rstacruz/vim-closer'
+    Plug 'rust-lang/rust.vim', { 'for': 'rust' }
+    Plug 'sheerun/vim-polyglot'
+    Plug 'tpope/vim-commentary'
+    Plug 'tpope/vim-endwise'
+    Plug 'tpope/vim-markdown', { 'for': 'markdown' }
+    Plug 'tpope/vim-repeat'
+    Plug 'tpope/vim-sleuth'
+    Plug 'tpope/vim-surround'
+    Plug 'tweekmonster/braceless.vim'
+    Plug 'unblevable/quick-scope'
+    Plug 'vim-airline/vim-airline'
+    Plug 'wellle/targets.vim'
+    Plug 'wellle/visual-split.vim'
+    Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+
+    Plug 'kana/vim-textobj-user' |
+        \ Plug 'kana/vim-textobj-indent' |
+        \ Plug 'bps/vim-textobj-python', { 'for': 'python' } |
+        \ Plug 'machakann/vim-textobj-delimited'
+    Plug 'othree/yajs.vim', { 'for': 'javascript' } |
+        \ Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
+    Plug 'xolox/vim-misc' |
+        \ Plug 'xolox/vim-session'
+    Plug 'scrooloose/nerdtree' |
+        \ Plug 'jistr/vim-nerdtree-tabs'
+
     if executable('go')
         Plug 'fatih/vim-go', { 'for': 'go' }
     endif
-    Plug 'jmcantrell/vim-virtualenv', { 'for': 'python' }
+
     if executable('fzf')
         Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' } |
             \ Plug 'junegunn/fzf.vim'
     else
         Plug 'ctrlpvim/ctrlp.vim'
     endif
-    Plug 'justinmk/vim-sneak'
-    Plug 'kana/vim-textobj-user' |
-        \ Plug 'kana/vim-textobj-indent' |
-        \ Plug 'bps/vim-textobj-python', { 'for': 'python' } |
-        \ Plug 'machakann/vim-textobj-delimited'
-    Plug 'kshenoy/vim-signature'
-    Plug 'ludovicchabant/vim-gutentags'
-    Plug 'mhinz/vim-signify'
-    Plug 'mkitt/tabline.vim'
-    Plug 'davidhalter/jedi-vim', { 'for': 'python' }
-    Plug 'moll/vim-bbye'
-    Plug 'morhetz/gruvbox'
-    Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
-    Plug 'othree/yajs.vim', { 'for': 'javascript' } |
-        \ Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
-    Plug 'rstacruz/vim-closer'
-    Plug 'wellle/visual-split.vim'
-    Plug 'wellle/targets.vim'
-    Plug 'rust-lang/rust.vim', { 'for': 'rust' }
-    Plug 'scrooloose/nerdtree' |
-        \ Plug 'jistr/vim-nerdtree-tabs'
-    Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+
     if v:version >= 704
         Plug 'SirVer/ultisnips'
     endif
+
     if executable('lein')
         Plug 'tpope/vim-fireplace', { 'for': 'clojure' } |
             \ Plug 'tpope/vim-salve', { 'for': 'clojure' }
     endif
-    Plug 'tpope/vim-commentary'
-    Plug 'tpope/vim-endwise'
-    Plug 'tpope/vim-markdown', { 'for': 'markdown' }
-    Plug 'tpope/vim-repeat'
-    Plug 'tpope/vim-surround'
-    Plug 'tpope/vim-sleuth'
-    Plug 'unblevable/quick-scope'
-    Plug 'xolox/vim-misc' |
-        \ Plug 'xolox/vim-session'
-    Plug 'sheerun/vim-polyglot'
-    Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
 call plug#end()
 
 filetype plugin indent on
@@ -673,10 +679,14 @@ nnoremap <silent> <F6> :VimuxCloseRunner<cr>
 nnoremap <silent> <F7> :VimuxZoomRunner<cr>
 nnoremap <silent> <F8> :VimuxInterruptRunner<cr>
 
+let g:VimuxOrientation = "h"
+let g:VimuxHeight = "40"
+let g:VimuxPromptString = "tmux> "
+
 " }}}
 " UltiSnips {{{
 
-let g:UltiSnipsExpandTrigger = "JJ"
+let g:UltiSnipsExpandTrigger = "JK"
 let g:UltiSnipsJumpForwardTrigger = "<c-j>"
 let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
 let g:UltiSnipsEditSplit = "vertical"
