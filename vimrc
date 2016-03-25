@@ -29,9 +29,8 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 call plug#begin('~/.vim/plugged')
-    Plug 'Valloric/YouCompleteMe', {'do': 'git reset --hard &&
-                \ git submodule foreach git reset --hard &&
-                \ ./install.py --clang-completer --gocode-completer --tern-completer --racer-completer'}
+    Plug 'Shougo/deoplete.nvim'
+    Plug 'zchee/deoplete-jedi'
     Plug 'airblade/vim-rooter'
     Plug 'benekastah/neomake'
     Plug 'benmills/vimux'
@@ -58,6 +57,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'ludovicchabant/vim-gutentags'
     Plug 'mhinz/vim-signify'
     Plug 'mkitt/tabline.vim'
+    Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'moll/vim-bbye'
     Plug 'morhetz/gruvbox'
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
@@ -417,12 +417,14 @@ nnoremap * *``
 nnoremap <silent> Q :call <SID>QuickfixToggle()<cr>
 
 " Faster window close
-nnoremap <silent> <Leader>q :qa<cr>
+nnoremap <silent> <Leader>qq :q<cr>
+nnoremap <silent> <Leader>qa :qa<cr>
 
 let g:quickfix_is_open = 0
 function! s:QuickfixToggle()
     if g:quickfix_is_open
         cclose
+        lclose
         let g:quickfix_is_open = 0
         execute g:quickfix_return_to_window . "wincmd w"
     else
@@ -763,6 +765,22 @@ let g:session_autosave_to = '__last__'
 let g:session_autosave_silent = 1
 let g:session_autosave_periodic = 1
 let g:session_command_aliases = 1
+
+" }}}
+" Deoplete {{{
+
+let g:deoplete#enable_at_startup = 1
+let g:deoplete#max_list = 20
+
+" }}}
+" Jedi {{{
+
+let g:jedi#completions_enabled = 0
+
+let g:jedi#goto_command = "<leader>yg"
+let g:jedi#documentation_command = "<leader>yd"
+let g:jedi#usages_command = "<leader>yr"
+let g:jedi#rename_command = "<leader>yn"
 
 " }}}
 
