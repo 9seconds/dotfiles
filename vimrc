@@ -22,8 +22,10 @@ if system('uname -o') =~ '^GNU/'
 endif
 
 call plug#begin('~/.vim/plugged')
-    Plug 'Shougo/deoplete.nvim' |
-        \ Plug 'zchee/deoplete-jedi'
+    if has('nvim')
+        Plug 'Shougo/deoplete.nvim' |
+            \ Plug 'zchee/deoplete-jedi'
+    endif
 
     Plug 'airblade/vim-rooter'
     Plug 'benekastah/neomake'
@@ -807,7 +809,7 @@ if has('gui_running')
     set guioptions-=r  " hide right scrollbar
     set guioptions-=L  " hide left scrollbar
     set guioptions-=m  " hide menu bar
-    set guifont=Droid\ Sans\ Mono\ 10
+    set guifont=Fira\ Mono\ 11
     set guitablabel=%M\ %t
     set ttimeoutlen=10
 
@@ -832,8 +834,10 @@ endif
 
 " NeoVim QT {{{
 
-command -nargs=? Guifont call rpcnotify(0, 'Gui', 'SetFont', "<args>") | let g:Guifont="<args>"
-Guifont Fira Mono:h11
+if has('nvim')
+    command -nargs=? Guifont call rpcnotify(0, 'Gui', 'SetFont', "<args>") | let g:Guifont="<args>"
+    Guifont Fira Mono:h11
+endif
 
 " }}}
 
