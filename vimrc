@@ -287,11 +287,18 @@ set t_Co=256
 " _____________________________________________________________________________
 
 " Solarized
-set background=dark
+
 let g:enable_bold_font = 1
+let g:gruvbox_underline = 1
+let g:gruvbox_undercurl = 1
+let g:gruvbox_contrast_dark = "soft"
+let g:gruvbox_italicize_strings = 1
+
 if has('nvim')
-    let g:gruvbox_italic=1
+    let g:gruvbox_italic = 1
 endif
+
+set background=dark
 colorscheme gruvbox
 
 " _____________________________________________________________________________
