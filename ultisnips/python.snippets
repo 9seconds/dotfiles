@@ -1,3 +1,6 @@
+priority 10
+
+
 global !p
 
 sentinel = object()
@@ -18,26 +21,57 @@ def short_quote(value):
 def long_quote(value, ending=""):
 	return or_empty(value, '"""\n' + ending)
 
+def multiline_delimeter(text, delimeter="-", prefix=""):
+	max_length = 0
+
+	for line in text.splitlines():
+		line = line.lstrip()
+		if prefix and line.startswith(prefix):
+			line = line[len(prefix):]
+		max_length = max(max_length, len(line.strip()))
+
+	return delimeter * max_length
+
+def comment_out(text):
+	lines = [""] + text.splitlines()
+
+	if len(lines) > 1:
+		for line in lines:
+			snip.rv += "\n" + snip.mkline("# " + line.strip())
+
 endglobal
 
+snippet # "Comment" i
+  # $1
+endsnippet
 
-snippet #TD "TODO comment" b
-# TODO (`git config user.name || whoami`): ${1:${VISUAL}}
+snippet #T "TODO comment" b
+# TODO(${1:`git config user.name || whoami`})`!p snip.rv = or_empty(t[2], ": ")`$2`!p comment_out(snip.v.text)`
 endsnippet
 
 
-snippet #FX "FIXME comment" b
-# FIXME (`git config user.name || whoami`): ${1:${VISUAL}}
+snippet #F "FIXME comment" b
+# FIXME(${1:`git config user.name || whoami`})`!p snip.rv = or_empty(t[2], ": ")`$2`!p comment_out(snip.v.text)`
 endsnippet
 
 
-snippet #TMP "Temporary disable the block of code" b
-# FIXME (`git config user.name || whoami`): TEMPORARY DISABLED
-# FIXME (`git config user.name || whoami`): ${1:Reason}
-"""
-${2:${VISUAL}}
-"""
-# FIXME (`git config user.name || whoami`): END OF TEMPORARY DISABLED BLOCK
+snippet #H "HACK comment" b
+# HACK(${1:`git config user.name || whoami`})`!p snip.rv = or_empty(t[2], ": ")`$2`!p comment_out(snip.v.text)`
+endsnippet
+
+
+snippet #X "XXX comment" b
+# XXX(${1:`git config user.name || whoami`})`!p snip.rv = or_empty(t[2], ": ")`$2`!p comment_out(snip.v.text)`
+endsnippet
+
+
+snippet #D "Temporary disable the block of code" b
+# FIXME(${1:`git config user.name || whoami`}): TEMPORARY DISABLED
+#
+# ${2:Reason}`!p
+comment_out(snip.v.text)`
+#
+# FIXME($1): END OF TEMPORARY DISABLED BLOCK
 endsnippet
 
 
@@ -61,13 +95,11 @@ endsnippet
 
 snippet pdb "Put PDB tracing here" b
 from pdb import set_trace; set_trace()
-$0
 endsnippet
 
 
 snippet ipdb "Put iPDB tracing here" b
 from ipdb import set_trace; set_trace()
-$0
 endsnippet
 
 
@@ -113,7 +145,7 @@ endsnippet
 snippet tryex "'try/except' clause" b
 try:
 	${1:${VISUAL}}
-except ${2:Exception} as ${3:exc}:
+except ${2:Exception}`!p snip.rv = or_empty(t[3], " as ")`${3:exc}:
 	${4:pass}
 endsnippet
 
@@ -129,7 +161,7 @@ endsnippet
 snippet tryexfi "'try/except/finally' clause" b
 try:
 	${1:${VISUAL}}
-except ${2:Exception} as ${3:exc}:
+except ${2:Exception}`!p snip.rv = or_empty(t[3], " as ")`${3:exc}:
 	${4:pass}
 finally:
 	$5
@@ -156,14 +188,26 @@ endsnippet
 
 
 snippet defs "Class method definition" b
-@statismethod
+@staticmethod
 def ${1:method}(${2:*args, **kwargs}):
 	${3:${VISUAL:pass}}
 endsnippet
 
 
+snippet deft "Test method definition" b
+def test_${1:ok}(self):
+	${2:${VISUAL:pass}}
+endsnippet
+
+
+snippet defg "Magic method" b
+def __$1__(self`!p snip.rv = or_empty(t[2], ", ")`${2:*args, **kwargs}):
+	${3:${VISUAL:pass}}
+endsnippet
+
+
 snippet for "For loop" b:
-for ${1:item} in ${2:items}:
+for ${1:item} in ${2:$1s}:
 	${3:${VISUAL:pass}}
 endsnippet
 
@@ -200,18 +244,18 @@ ${0}
 endsnippet
 
 
-snippet [] "List comprehension" b
-[${3:$1} for ${1:x} in ${2:iterable}`!p snip.rv = or_empty(t[4], " if ")`${4:$1}]
+snippet [] "List comprehension" is
+[${1:${4:$2} for ${2:item} in ${3:$2s}}]
 endsnippet
 
 
-snippet {} "Dict comprehension" b
-{${4:$1}: ${5:$2} for ${1:k}, ${2:v} in ${3:iterable}`!p snip.rv = or_empty(t[6], " if ")`${6:$2}}
+snippet {} "Dict comprehension" is
+{${1:${5:$2}: ${6:$3} for ${2:k}, ${3:v} in ${4:iterable}}}
 endsnippet
 
 
-snippet {}d "Dict comprehension old-style" b
-dict((${4:$1}, ${5:$2}) for ${1:k}, ${2:v} in ${3:iterable}`!p snip.rv = or_empty(t[6], " if ")`${6:$2})
+snippet {}d "Dict comprehension old-style" is
+dict((${4:$1}, ${5:$2}) for ${1:k}, ${2:v} in ${3:iterable})
 endsnippet
 
 
@@ -324,3 +368,79 @@ snip.rv = '"<{0}({1})>".format({2})'.format(t[1], params, args)`
 endsnippet
 
 
+snippet sae. "self.assertEqual" b
+self.assertEqual(${1:one}, ${2:another})
+
+endsnippet
+
+
+snippet sane. "self.assertNotEqual" b
+self.assertNotEqual(${1:one}, ${2:another})
+
+endsnippet
+
+
+snippet sat. "self.assertTrue" b
+self.assertTrue(${1:expression})
+
+endsnippet
+
+
+snippet saf. "self.assertFalse" b
+self.assertFalse(${1:expression})
+
+endsnippet
+
+
+snippet sai. "self.assertIs" b
+self.assertIs(${1:one}, ${2:another})
+
+endsnippet
+
+
+snippet sai_. "self.assertIn" b
+self.assertIn(${1:object}, ${2:$1s})
+
+endsnippet
+
+
+snippet sain. "self.assertIsNot" b
+self.assertIsNot(${1:one}, ${2:another})
+
+endsnippet
+
+
+snippet sani. "self.assertNotIn" b
+self.assertNotIn(${1:object}, ${2:$1s})
+
+endsnippet
+
+
+snippet saine. "self.assertIsNone" b
+self.assertIsNone(${1:expression})
+
+endsnippet
+
+
+snippet sainne. "self.assertIsNotNone" b
+self.assertIsNotNone(${1:expression})
+
+endsnippet
+
+
+snippet saii. "self.assertIsInstance" b
+self.assertIsInstance(${1:object}, ${2:class})
+
+endsnippet
+
+
+snippet sanii. "self.assertNotIsInstance" b
+self.assertNotIsInstance(${1:object}, ${2:class})
+
+endsnippet
+
+
+snippet sars. "self.assertRaises" b
+self.assertRaises(${1:Exception}, ${2:function}`!p snip.rv = or_empty(t[3], ", ")`$3)
+
+endsnippet

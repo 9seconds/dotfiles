@@ -288,8 +288,6 @@ set t_Co=256
 
 " _____________________________________________________________________________
 
-" Solarized
-
 let g:enable_bold_font = 1
 let g:gruvbox_underline = 1
 let g:gruvbox_undercurl = 1
@@ -307,6 +305,9 @@ colorscheme gruvbox
 
 " Disable welcome page
 set shortmess=I
+
+" Disable preview on completeopt
+set completeopt-=preview
 
 " _____________________________________________________________________________
 
@@ -492,6 +493,9 @@ set softtabstop=4
 set autoindent
 set smartindent
 
+" http://vim.wikia.com/wiki/VimTip644
+inoremap # X<BS>#
+
 " Set line breaks
 set lbr
 set tw=500
@@ -504,6 +508,11 @@ set nofoldenable
 
 " Format with par
 set formatprg=par
+
+" Pythons
+let g:python_host_prog = '/usr/bin/python2.7'
+let g:python3_host_prog = '/usr/bin/python3.4'
+
 
 " }}}
 " # Neovim settings =============================================== {{{
@@ -645,21 +654,21 @@ map <silent> <F2> :NERDTreeTabsToggle<CR>
 " }}}
 " YouCompleteMe {{{
 
-let g:ycm_rust_src_path = '~/dev/3pp/rust/src'
-let g:ycm_complete_in_strings = 0
-let g:ycm_collect_identifiers_from_tags_files = 1
-let g:ycm_autoclose_preview_window_after_insertion = 1
+" let g:ycm_rust_src_path = '~/dev/3pp/rust/src'
+" let g:ycm_complete_in_strings = 0
+" let g:ycm_collect_identifiers_from_tags_files = 1
+" let g:ycm_autoclose_preview_window_after_insertion = 1
 
-nnoremap <leader>yg :YcmCompleter GoTo<CR>
-nnoremap <leader>yr :YcmCompleter GoToReferences<CR>
-nnoremap <leader>yd :YcmCompleter GetDoc<CR>
-nnoremap <leader>ys :YcmCompleter RestartServer<CR>
+" nnoremap <leader>yg :YcmCompleter GoTo<CR>
+" nnoremap <leader>yr :YcmCompleter GoToReferences<CR>
+" nnoremap <leader>yd :YcmCompleter GetDoc<CR>
+" nnoremap <leader>ys :YcmCompleter RestartServer<CR>
 
-function! YcmCompleteVenvNames(arg_lead, cmd_line, cursor_pos)
-    return virtualenv#names(a:arg_lead)
-endfunction
+" function! YcmCompleteVenvNames(arg_lead, cmd_line, cursor_pos)
+"     return virtualenv#names(a:arg_lead)
+" endfunction
 
-command! -bar -nargs=? -complete=customlist,YcmCompleteVenvNames Venv :call virtualenv#activate(<q-args>) | YcmRestartServer
+" command! -bar -nargs=? -complete=customlist,YcmCompleteVenvNames Venv :call virtualenv#activate(<q-args>) | YcmRestartServer
 
 " }}}
 " Python Syntax {{{
@@ -688,7 +697,7 @@ let g:VimuxPromptString = "tmux> "
 " }}}
 " UltiSnips {{{
 
-let g:UltiSnipsExpandTrigger = "JK"
+let g:UltiSnipsExpandTrigger = "<c-j>"
 let g:UltiSnipsJumpForwardTrigger = "<c-j>"
 let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
 let g:UltiSnipsEditSplit = "vertical"
