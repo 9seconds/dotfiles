@@ -690,9 +690,10 @@ nnoremap <silent> <F6> :VimuxCloseRunner<cr>
 nnoremap <silent> <F7> :VimuxZoomRunner<cr>
 nnoremap <silent> <F8> :VimuxInterruptRunner<cr>
 
-let g:VimuxOrientation = "h"
-let g:VimuxHeight = "40"
+" let g:VimuxOrientation = "h"
+" let g:VimuxHeight = "40"
 let g:VimuxPromptString = "tmux> "
+let g:VimuxRunnerType = "window"
 
 " }}}
 " UltiSnips {{{
