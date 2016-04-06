@@ -35,6 +35,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'jmcantrell/vim-virtualenv'
+    Plug 'junegunn/vim-easy-align'
     Plug 'justinmk/vim-sneak'
     Plug 'kshenoy/vim-signature'
     Plug 'ludovicchabant/vim-gutentags'
@@ -46,6 +47,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'rstacruz/vim-closer'
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
     Plug 'sheerun/vim-polyglot'
+    Plug 'Shougo/vimproc.vim', { 'do': 'make' }
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-endwise'
     Plug 'tpope/vim-markdown', { 'for': 'markdown' }
@@ -57,7 +59,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'vim-airline/vim-airline'
     Plug 'wellle/targets.vim'
     Plug 'wellle/visual-split.vim'
-    Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 
     Plug 'kana/vim-textobj-user' |
         \ Plug 'kana/vim-textobj-indent' |
@@ -686,14 +687,15 @@ let g:rooter_silent_chdir = 1
 " Vimux {{{
 
 nnoremap <silent> <F5> :VimuxPromptCommand<cr>
-nnoremap <silent> <F6> :VimuxCloseRunner<cr>
-nnoremap <silent> <F7> :VimuxZoomRunner<cr>
+nnoremap <silent> <F6> :VimuxRunLastCommand<cr>
+nnoremap <silent> <F7> :VimuxCloseRunner<cr>
 nnoremap <silent> <F8> :VimuxInterruptRunner<cr>
+nnoremap <silent> <F9> :VimuxZoomRunner<cr>
 
-" let g:VimuxOrientation = "h"
-" let g:VimuxHeight = "40"
+let g:VimuxOrientation = "h"
+let g:VimuxHeight = "45"
 let g:VimuxPromptString = "tmux> "
-let g:VimuxRunnerType = "window"
+let g:VimuxRunnerType = "pane"
 
 " }}}
 " UltiSnips {{{
@@ -805,6 +807,12 @@ let g:jedi#usages_command = "<leader>yr"
 let g:jedi#rename_command = "<leader>yn"
 
 " }}}
+" Easy Align {{{
+
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+
+" }}}
 
 
 " }}}
@@ -868,7 +876,7 @@ augroup END
 augroup Python
     autocmd!
 
-    autocmd FileType python BracelessEnable +highlight
+    autocmd FileType python BracelessEnable +highlight +indent
     highlight BracelessIndent guifg=#3c3836 cterm=reverse ctermfg=3 gui=reverse
 augroup END
 

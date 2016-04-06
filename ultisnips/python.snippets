@@ -170,39 +170,51 @@ endsnippet
 
 snippet def "Function definition" b
 def ${1:function}(${2:*args, **kwargs}):
-	${3:${VISUAL:pass}}
+	${3:${VISUAL:# here be dragons}}
+
+	return
 endsnippet
 
 
 snippet defm "Method definition" b
 def ${1:method}(self`!p snip.rv = or_empty(t[2], ", ")`${2:*args, **kwargs}):
-	${3:${VISUAL:pass}}
+	${3:${VISUAL:# here be dragons}}
+
+	return
 endsnippet
 
 
 snippet defc "Class method definition" b
 @classmethod
 def ${1:method}(cls`!p snip.rv = or_empty(t[2], ", ")`${2:*args, **kwargs}):
-	${3:${VISUAL:pass}}
+	${3:${VISUAL:# here be dragons}}
+
+	return
 endsnippet
 
 
 snippet defs "Class method definition" b
 @staticmethod
 def ${1:method}(${2:*args, **kwargs}):
-	${3:${VISUAL:pass}}
+	${3:${VISUAL:# here be dragons}}
+
+	return
 endsnippet
 
 
 snippet deft "Test method definition" b
 def test_${1:ok}(self):
-	${2:${VISUAL:pass}}
+	${2:${VISUAL:# here be dragons}}
+
+	return
 endsnippet
 
 
 snippet defg "Magic method" b
 def __$1__(self`!p snip.rv = or_empty(t[2], ", ")`${2:*args, **kwargs}):
-	${3:${VISUAL:pass}}
+	${3:${VISUAL:# here be dragons}}
+
+	return
 endsnippet
 
 
@@ -284,18 +296,24 @@ endsnippet
 snippet propr "Read property" b
 @property
 def ${1:name}(self):
-	${2:${VISUAL}}
+	${2:${VISUAL:# here be dragons}}
+
+	return
 endsnippet
 
 
 snippet propw "Read/write property" b
 @property
 def ${1:name}(self):
-	${2:${VISUAL}}
+	${2:${VISUAL:# here be dragons}}
+
+	return
 
 @$1.setter
 def $1_setter(self, value):
-	${3}
+	${3:# here be dragons}
+
+	return
 endsnippet
 
 
@@ -321,6 +339,8 @@ for value in t[3].split(","):
 if value:
 	snip += ""`
 		${4}
+
+		return
 endsnippet
 
 snippet classistr "Generic class with str" b
@@ -339,6 +359,8 @@ for value in t[3].split(","):
 if value:
 	snip += ""`
 		${4}
+
+		return
 
 	def __repr__(self):
 		return `!p
