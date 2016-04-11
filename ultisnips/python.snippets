@@ -218,6 +218,16 @@ def __$1__(self`!p snip.rv = or_empty(t[2], ", ")`${2:*args, **kwargs}):
 endsnippet
 
 
+snippet defgg "Magic method" b
+def __$1__(self`!p snip.rv = or_empty(t[2], ", ")`${2:*args, **kwargs}):
+	super(${4:ClassName}, self).__$1__($2)
+
+	${5:${VISUAL:# here be dragons}}
+
+	return
+endsnippet
+
+
 snippet for "For loop" b:
 for ${1:item} in ${2:$1s}:
 	${3:${VISUAL:pass}}

@@ -35,6 +35,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'jmcantrell/vim-virtualenv'
+    Plug 'lambdalisue/vim-pyenv'
     Plug 'junegunn/vim-easy-align'
     Plug 'justinmk/vim-sneak'
     Plug 'kshenoy/vim-signature'
@@ -813,6 +814,11 @@ xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
 " }}}
+" Braceless {{{
+
+let g:braceless_auto_dedent_gap = 2
+
+" }}}
 
 
 " }}}
@@ -876,7 +882,7 @@ augroup END
 augroup Python
     autocmd!
 
-    autocmd FileType python BracelessEnable +highlight +indent
+    autocmd FileType python BracelessEnable +highlight-cc +indent
     highlight BracelessIndent guifg=#3c3836 cterm=reverse ctermfg=3 gui=reverse
 augroup END
 
