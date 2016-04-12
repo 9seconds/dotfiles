@@ -407,7 +407,7 @@ dockerup() {
 pipup() {
     # Upgrades pip packages.
 
-    cat "$LISTDIR/pip.list" | xargs pip install --user --upgrade --no-cache-dir --disable-pip-version-check
+    cat "$LISTDIR/pip.list" | xargs pip install --user --upgrade
 }
 
 allup() {
