@@ -51,6 +51,11 @@ if which tig > /dev/null; then
     alias ta="t --all"
 fi
 
+if which xsel > /dev/null; then
+    alias ccopy="xsel --clipboard --input"
+    alias cpaste="xsel --clipboard --output -o"
+fi
+
 # Alises with color support
 if which dircolors > /dev/null; then
     alias ag="ag --color -fS"
