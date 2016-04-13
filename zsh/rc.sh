@@ -17,11 +17,11 @@ if which ah > /dev/null; then
 fi
 
 # Apply Gruvbox palette
-#if [[ -f "$HOME/.config/nvim/plugged/gruvbox/gruvbox_256palette.sh" ]]; then
-#    source "$HOME/.config/nvim/plugged/gruvbox/gruvbox_256palette.sh"
-#else
-#    source "$HOME/.vim/plugged/gruvbox/gruvbox_256palette.sh"
-#fi
+if [[ -f "$HOME/.config/nvim/plugged/gruvbox/gruvbox_256palette.sh" ]]; then
+    source "$HOME/.config/nvim/plugged/gruvbox/gruvbox_256palette.sh"
+else
+    source "$HOME/.vim/plugged/gruvbox/gruvbox_256palette.sh"
+fi
 
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
