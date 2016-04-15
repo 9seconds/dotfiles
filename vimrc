@@ -35,7 +35,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
-    Plug 'jmcantrell/vim-virtualenv'
+    " Plug 'jmcantrell/vim-virtualenv'
     Plug 'lambdalisue/vim-pyenv'
     Plug 'junegunn/vim-easy-align'
     Plug 'justinmk/vim-sneak'
