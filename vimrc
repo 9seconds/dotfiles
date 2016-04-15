@@ -42,6 +42,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'kshenoy/vim-signature'
     Plug 'ludovicchabant/vim-gutentags'
     Plug 'mhinz/vim-signify'
+    Plug 'takac/vim-hardtime'
     Plug 'mkitt/tabline.vim'
     Plug 'moll/vim-bbye'
     Plug 'morhetz/gruvbox'
@@ -818,6 +819,17 @@ nmap ga <Plug>(EasyAlign)
 " Braceless {{{
 
 let g:braceless_auto_dedent_gap = 2
+
+" }}}
+" {{{ HardTime
+
+nnoremap <F12> :HardTimeToggle<cr>
+
+let g:hardtime_default_on = 1
+let g:hardtime_ignore_buffer_patterns = ["NERD.*"]
+let g:hardtime_ignore_quickfix = 1
+let g:hardtime_allow_different_key = 1
+let g:hardtime_maxcount = 2
 
 " }}}
 
