@@ -410,10 +410,14 @@ pipup() {
     cat "$LISTDIR/pip.list" | xargs pip install --user --upgrade
 }
 
+npmup() {
+    npm -g update
+}
+
 allup() {
     # Upgrades the world.
 
-    aptg && pipup && brewup && dockerup
+    aptg && pipup && npmup && brewup && dockerup
 }
 
 purgeoldkernels() {

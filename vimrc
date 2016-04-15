@@ -24,7 +24,8 @@ endif
 call plug#begin('~/.vim/plugged')
     if has('nvim')
         Plug 'Shougo/deoplete.nvim' |
-            \ Plug 'zchee/deoplete-jedi'
+            \ Plug 'zchee/deoplete-jedi' |
+            \ Plug 'carlitux/deoplete-ternjs'
     endif
 
     Plug 'airblade/vim-rooter'
@@ -726,10 +727,10 @@ let g:neomake_verbose = -1
 
 nnoremap <leader>m :Neomake<cr>
 
-" augroup NeoMake
-"     au!
-"     autocmd BufWritePost,BufEnter *.py,*.sh,*.js,*.go Neomake
-" augroup END
+augroup NeoMake
+    au!
+    autocmd BufWritePost,BufEnter *.py,*.sh,*.js,*.go Neomake
+augroup END
 
 " }}}
 " FZF {{{
