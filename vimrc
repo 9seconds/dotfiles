@@ -5,15 +5,15 @@
 " everyday
 
 
-" # Header          =============================================== {{{
+" # Header          ===============================================
 " _____________________________________________________________________________
 
 set nocompatible  " Remove compatibility with VIM
 filetype off
 
 
-" }}}
-" # Plugins         =============================================== {{{
+"
+" # Plugins         ===============================================
 " _____________________________________________________________________________
 
 let g:make = 'gmake'  " Required for vimproc plugin
@@ -37,6 +37,7 @@ call plug#begin('~/.vim/plugged')
     " Plug 'jmcantrell/vim-virtualenv'
     Plug 'lambdalisue/vim-pyenv'
     Plug 'junegunn/vim-easy-align'
+    Plug 'junegunn/vim-peekaboo'
     Plug 'justinmk/vim-sneak'
     Plug 'kshenoy/vim-signature'
     Plug 'ludovicchabant/vim-gutentags'
@@ -97,8 +98,8 @@ call plug#end()
 filetype plugin indent on
 
 
-" }}}
-" # Settings        =============================================== {{{
+"
+" # Settings        ===============================================
 " _____________________________________________________________________________
 
 try
@@ -345,8 +346,8 @@ endif
 
 
 
-" }}}}
-" # Keymap          =============================================== {{{
+" }
+" # Keymap          ===============================================
 " _____________________________________________________________________________
 
 " No arrows :(
@@ -455,8 +456,8 @@ if v:version >= 703
 endif
 
 
-" }}}
-" # Code            =============================================== {{{
+"
+" # Code            ===============================================
 " _____________________________________________________________________________
 
 
@@ -517,8 +518,8 @@ let g:python_host_prog = '/usr/bin/python2.7'
 let g:python3_host_prog = '/usr/bin/python3.4'
 
 
-" }}}
-" # Neovim settings =============================================== {{{
+"
+" # Neovim settings ===============================================
 " _____________________________________________________________________________
 
 
@@ -566,18 +567,18 @@ else
 endif
 
 
-" }}}
-" # Plugin settings =============================================== {{{
+"
+" # Plugin settings ===============================================
 " _____________________________________________________________________________
 
 
-" Ag {{{
+" Ag
 
 let g:ag_working_path_mode="r"
 let g:agprg = "ag --vimgrep --nocolor -fS"
 
-" }}}
-" Airline {{{
+"
+" Airline
 
 let g:airline_left_sep = ''
 let g:airline_right_sep = ''
@@ -591,8 +592,8 @@ let g:airline_extensions = [
     \ ]
 
 
-" }}}
-" VimGo {{{
+"
+" VimGo
 
 let g:go_highlight_operators = 1
 let g:go_highlight_functions = 1
@@ -608,8 +609,8 @@ augroup Go
     autocmd FileType go nmap <leader>r <Plug>(go-rename)
 augroup END
 
-" }}}
-" CtrlP {{{
+"
+" CtrlP
 
 if !executable('fzf')
     let g:ctrlp_custom_ignore = {
@@ -649,8 +650,8 @@ if !executable('fzf')
     nnoremap <silent> <leader>fa :CtrlPTag<cr>
 endif
 
-" }}}
-" NerdTree and NerdTreeTabs {{{
+"
+" NerdTree and NerdTreeTabs
 
 let g:nerdtree_tabs_open_on_gui_startup = 0
 let g:nerdtree_tabs_open_on_console_startup = 0
@@ -659,8 +660,8 @@ let NERDTreeIgnore = ['\.py[co]$', '__pycache__']
 
 map <silent> <F2> :NERDTreeTabsToggle<CR>
 
-" }}}
-" YouCompleteMe {{{
+"
+" YouCompleteMe
 
 " let g:ycm_rust_src_path = '~/dev/3pp/rust/src'
 " let g:ycm_complete_in_strings = 0
@@ -678,20 +679,20 @@ map <silent> <F2> :NERDTreeTabsToggle<CR>
 
 " command! -bar -nargs=? -complete=customlist,YcmCompleteVenvNames Venv :call virtualenv#activate(<q-args>) | YcmRestartServer
 
-" }}}
-" Python Syntax {{{
+"
+" Python Syntax
 
 let python_version_2 = 1
 let python_highlight_all = 1
 
-" }}}
-" Rooter {{{
+"
+" Rooter
 
 let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
 
-" }}}
-" Vimux {{{
+"
+" Vimux
 
 nnoremap <silent> <F5> :VimuxPromptCommand<cr>
 nnoremap <silent> <F6> :VimuxRunLastCommand<cr>
@@ -704,8 +705,8 @@ let g:VimuxHeight = "45"
 let g:VimuxPromptString = "tmux> "
 let g:VimuxRunnerType = "pane"
 
-" }}}
-" UltiSnips {{{
+"
+" UltiSnips
 
 let g:UltiSnipsExpandTrigger = "<c-j>"
 let g:UltiSnipsJumpForwardTrigger = "<c-j>"
@@ -715,14 +716,14 @@ let g:UltiSnipsEditSplit = "vertical"
 let g:UltiSnipsSnippetsDir = "~/.ultisnips"
 let g:UltiSnipsSnippetDirectories=[$HOME.'/.ultisnips']
 
-" }}}
-" Signify {{{
+"
+" Signify
 
 let g:signify_vcs_list = [ 'git' ]
 let g:signify_update_on_bufenter = 1
 
-" }}}
-" Neomake {{{
+"
+" Neomake
 
 let g:neomake_python_enabled_makers = [ 'flake8', 'python']
 let g:neomake_sh_enabled_makers = ['shellcheck']
@@ -737,8 +738,8 @@ augroup NeoMake
     autocmd BufWritePost,BufEnter *.py,*.sh,*.js,*.go Neomake
 augroup END
 
-" }}}
-" FZF {{{
+"
+" FZF
 
 if executable('fzf')
     nnoremap <silent> <leader>ff :Files<cr>
@@ -748,8 +749,8 @@ if executable('fzf')
     nnoremap <silent> <leader>fl :Lines<cr>
 endif
 
-" }}}
-" Gutentags {{{
+"
+" Gutentags
 
 let g:gutentags_generate_on_missing = 0
 let g:gutentags_generate_on_write = 1
@@ -765,8 +766,8 @@ let g:gutentags_exclude = [
 
 nnoremap <leader>t :GutentagsUpdate!<cr>
 
-" }}}
-" Session {{{
+"
+" Session
 
 set sessionoptions-=help,buffers,options
 
@@ -777,14 +778,14 @@ let g:session_autosave_silent = 1
 let g:session_autosave_periodic = 1
 let g:session_command_aliases = 1
 
-" }}}
-" Deoplete {{{
+"
+" Deoplete
 
 let g:deoplete#enable_at_startup = 1
 let g:deoplete#max_list = 20
 
-" }}}
-" Jedi {{{
+"
+" Jedi
 
 let g:jedi#completions_enabled = 0
 
@@ -793,19 +794,19 @@ let g:jedi#documentation_command = "<leader>yd"
 let g:jedi#usages_command = "<leader>yr"
 let g:jedi#rename_command = "<leader>yn"
 
-" }}}
-" Easy Align {{{
+"
+" Easy Align
 
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
-" }}}
-" Braceless {{{
+"
+" Braceless
 
 let g:braceless_auto_dedent_gap = 2
 
-" }}}
-" {{{ HardTime
+"
+"  HardTime
 
 nnoremap <F12> :HardTimeToggle<cr>
 
@@ -815,11 +816,11 @@ let g:hardtime_ignore_quickfix = 1
 let g:hardtime_allow_different_key = 1
 let g:hardtime_maxcount = 2
 
-" }}}
+"
 
 
-" }}}
-" # GUI             =============================================== {{{
+"
+" # GUI             ===============================================
 " _____________________________________________________________________________
 
 
@@ -853,18 +854,18 @@ if has('gui_running')
 
 endif
 
-" NeoVim QT {{{
+" NeoVim QT
 
 if has('nvim')
     command -nargs=? Guifont call rpcnotify(0, 'Gui', 'SetFont', "<args>") | let g:Guifont="<args>"
     Guifont Fira Mono:h11
 endif
 
-" }}}
+"
 
 
-" }}}
-" # Misc            =============================================== {{{
+"
+" # Misc            ===============================================
 " _____________________________________________________________________________
 
 
@@ -883,4 +884,4 @@ augroup Python
     highlight BracelessIndent guifg=#3c3836 cterm=reverse ctermfg=3 gui=reverse
 augroup END
 
-" }}}
+"
