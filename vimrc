@@ -60,6 +60,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'vim-airline/vim-airline'
     Plug 'wellle/targets.vim'
     Plug 'wellle/visual-split.vim'
+    Plug 'wellle/tmux-complete.vim'
 
     Plug 'kana/vim-textobj-user' |
         \ Plug 'kana/vim-textobj-indent' |
