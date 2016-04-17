@@ -31,7 +31,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'airblade/vim-rooter'
     Plug 'benekastah/neomake'
     Plug 'benmills/vimux'
-    Plug 'chrisbra/NrrwRgn'
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
@@ -44,13 +43,11 @@ call plug#begin('~/.vim/plugged')
     Plug 'mhinz/vim-signify'
     Plug 'takac/vim-hardtime'
     Plug 'mkitt/tabline.vim'
-    Plug 'moll/vim-bbye'
     Plug 'morhetz/gruvbox'
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
     Plug 'rstacruz/vim-closer'
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
     Plug 'sheerun/vim-polyglot'
-    Plug 'Shougo/vimproc.vim', { 'do': 'make' }
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-endwise'
     Plug 'tpope/vim-markdown', { 'for': 'markdown' }
@@ -84,6 +81,8 @@ call plug#begin('~/.vim/plugged')
     else
         Plug 'ctrlpvim/ctrlp.vim'
     endif
+
+    Plug 'Numkil/ag.nvim'
 
     if v:version >= 704
         Plug 'SirVer/ultisnips'
@@ -572,6 +571,12 @@ endif
 " _____________________________________________________________________________
 
 
+" Ag {{{
+
+let g:ag_working_path_mode="r"
+let g:agprg = "ag --vimgrep --nocolor -fS"
+
+" }}}
 " Airline {{{
 
 let g:airline_left_sep = ''
@@ -582,7 +587,6 @@ let g:airline_powerline_fonts = 0
 let g:airline_extensions = [
     \ 'hunks',
     \ 'virtualenv',
-    \ 'nrrwrgn',
     \ 'neomake'
     \ ]
 
@@ -742,26 +746,6 @@ if executable('fzf')
     nnoremap <silent> <leader>ft :BTags<cr>
     nnoremap <silent> <leader>fa :Tags<cr>
     nnoremap <silent> <leader>fl :Lines<cr>
-    nnoremap <silent> <leader>/  :call SearchWordWithAg()<cr>
-    vnoremap <silent> <leader>/  :call SearchVisualSelectionWithAg()<cr>
-
-    function! SearchWordWithAg()
-        execute 'Ag' expand('<cword>')
-    endfunction
-
-    function! SearchVisualSelectionWithAg() range
-        let old_reg = getreg('"')
-        let old_regtype = getregtype('"')
-        let old_clipboard = &clipboard
-
-        set clipboard&
-        normal! ""gvy
-        let selection = getreg('"')
-        call setreg('"', old_reg, old_regtype)
-        let &clipboard = old_clipboard
-
-        execute 'Ag' selection
-    endfunction
 endif
 
 " }}}
