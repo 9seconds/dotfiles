@@ -1,0 +1,1 @@
+../9seconds-zsh-theme/9seconds.zsh-theme

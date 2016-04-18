@@ -9,6 +9,7 @@ export PATH="/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/
 
 export ZSH_CUSTOM_PATH="$HOME/.zsh"
 export ZSH="$ZSH_CUSTOM_PATH/oh-my-zsh"
+export ZSH_CUSTOM="$ZSH_CUSTOM_PATH/custom"
 export ZSHRC="$HOME/.zshrc"
 
 export DEVPATH="$HOME/dev"
