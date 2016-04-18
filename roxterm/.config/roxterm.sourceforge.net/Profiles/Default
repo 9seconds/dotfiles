@@ -6,3 +6,5 @@ colour_scheme=Roxterm-dark
 scroll_on_keystroke=1
 always_show_tabs=0
 show_add_tab_btn=0
+width=128
+height=32
