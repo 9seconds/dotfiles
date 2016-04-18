@@ -1,0 +1,8 @@
+[roxterm profile]
+font=Input Semi-Condensed 11
+saturation=0,980880
+cursor_blink_mode=1
+colour_scheme=Roxterm-dark
+scroll_on_keystroke=1
+always_show_tabs=0
+show_add_tab_btn=0
