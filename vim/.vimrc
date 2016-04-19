@@ -408,7 +408,7 @@ nnoremap <C-l> <C-w>l
 inoremap jj <ESC>
 
 " Disable highlight
-nnoremap <silent>\ :nohl<cr>
+nnoremap <silent>jk :nohl<cr>
 
 " Close the current buffer
 nnoremap <leader>bd :Bdelete<cr>
