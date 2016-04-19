@@ -748,6 +748,7 @@ if executable('fzf')
     nnoremap <silent> <leader>ft :BTags<cr>
     nnoremap <silent> <leader>fa :Tags<cr>
     nnoremap <silent> <leader>fl :Lines<cr>
+    nnoremap <silent> <leader>fm :Marks<cr>
 endif
 
 "
