@@ -78,7 +78,7 @@ call plug#begin('~/.vim/plugged')
     endif
 
     if executable('fzf')
-        Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' } |
+        Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' } |
             \ Plug 'junegunn/fzf.vim'
     else
         Plug 'ctrlpvim/ctrlp.vim'
