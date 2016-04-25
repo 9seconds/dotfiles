@@ -34,9 +34,9 @@ export HISTTIMEFORMAT="%d.%m.%y %H:%M:%S"
 export PYENV_ROOT="$HOME/.pyenv"
 
 export PATH="$PYENV_ROOT/bin:$PATH"
+export PATH="$HOME/.fzf/bin:$PATH"
 export PATH=":$HOME/.local/bin:$PATH"
 export PATH="$PATH:$GOBIN"
-export PATH="$HOME/.gem/ruby/current/bin:$PATH"
 
 export PATH="$HOME/.linuxbrew/bin:$PATH"
 export MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"
