@@ -362,30 +362,6 @@ vagrant_halt() {
 
 
 ###############################################################################
-# LINUXBREW FUNCTIONS
-###############################################################################
-
-brew_update() {
-    # Updates kegs
-
-    brew update && brew upgrade --all
-}
-
-brew_clean() {
-    # Cleans outdated brew kegs
-
-    brew cleanup
-}
-
-brewup() {
-    # Maintains Linuxbrew
-
-    brew_update && brew_clean
-}
-
-
-
-###############################################################################
 # UPDATE FUNCTIONS
 ###############################################################################
 
@@ -417,7 +393,7 @@ npmup() {
 allup() {
     # Upgrades the world.
 
-    aptg && pipup && npmup && brewup && dockerup
+    aptg && pipup && npmup && dockerup
 }
 
 purgeoldkernels() {
