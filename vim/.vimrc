@@ -38,7 +38,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'lambdalisue/vim-pyenv'
     Plug 'junegunn/vim-easy-align'
     Plug 'junegunn/vim-peekaboo'
-    Plug 'justinmk/vim-sneak'
+    " Plug 'justinmk/vim-sneak'
+    Plug 'easymotion/vim-easymotion'
     Plug 'kshenoy/vim-signature'
     Plug 'ludovicchabant/vim-gutentags'
     Plug 'mhinz/vim-signify'
@@ -818,6 +819,22 @@ let g:hardtime_ignore_buffer_patterns = ["NERD.*"]
 let g:hardtime_ignore_quickfix = 1
 let g:hardtime_allow_different_key = 1
 let g:hardtime_maxcount = 2
+
+"
+"  EasyMotion
+
+let g:EasyMotion_smartcase        = 1
+let g:EasyMotion_use_smartsign_us = 1
+let g:EasyMotion_startofline      = 0
+
+map  <Leader>l <Plug>(easymotion-lineforward)
+map  <Leader>j <Plug>(easymotion-j)
+map  <Leader>k <Plug>(easymotion-k)
+map  <Leader>h <Plug>(easymotion-linebackward)
+map  /         <Plug>(easymotion-sn)
+omap /         <Plug>(easymotion-tn)
+nmap s         <Plug>(easymotion-s2)
+nmap t         <Plug>(easymotion-t2)
 
 "
 
