@@ -1,33 +1,42 @@
 [user]
     email = nineseconds@yandex.ru
-    name = 9seconds
+    name  = 9seconds
 [alias]
-    a = add
-    aap = add --all --patch
-    ap = add --patch
-    bl = blame --minimal
-    br = branch
-    cl = clean -xfd
-    cma = commit -a -m
-    cm = commit -m
-    cob = checkout -b
-    co = checkout
-    cp = cherry-pick
-    dfc = diff --cached --minimal
-    df = diff --minimal
-    fix = commit -a --amend
-    ftch = fetch --prune --all --recurse-submodules=yes
-    gcc = !git gc --aggressive --prune=all && git repack -AFd
-    la = !git l --all
-    l = "!. ~/.gitutils && gitlog"
-    mrebase = "!. ~/.gitutils && merge_rebase"
-    pll = pull --rebase --all --recurse-submodules=yes
-    pullr = pull --rebase --recurse-submodules=yes
-    ra = !git la -20
-    r = !git l -20
-    rh = reset --hard
-    st = status -s
-    su = submodule update --init
+    a           = add
+    aap         = add --all --patch
+    ap          = add --patch
+    assumeall   = "!git st -s | awk {'print $2'} | xargs git assume"
+    assumed     = "!git ls-files -v | grep ^h | cut -c 3-"
+    assume      = update-index --assume-unchanged
+    bl          = blame --minimal
+    br          = branch
+    cl          = clean -xfd
+    cma         = commit -a -m
+    cm          = commit -m
+    cob         = checkout -b
+    co          = checkout
+    cp          = cherry-pick
+    dfc         = diff --cached --minimal
+    df          = diff --minimal
+    fb          = "!f() { git branch -a --contains $1; }; f"
+    fixa        = commit -a --amend --reuse-message=HEAD
+    fix         = commit -a --amend
+    ftch        = fetch --prune --all --recurse-submodules=yes
+    ft          = "!f() { git describe --always --contains $1; }; f"
+    gcc         = !git gc --aggressive --prune=all && git repack -AFd
+    la          = !git l --all
+    l           = "!. ~/.gitutils && gitlog"
+    ll          = log --pretty=format:"%C(yellow)%h%Cred%d\\ ->\\ %Creset%s%Cblue\\ (%cn)" --decorate --numstat
+    mrebase     = "!. ~/.gitutils && merge_rebase"
+    pll         = pull --rebase --all --recurse-submodules=yes
+    pullr       = pull --rebase --recurse-submodules=yes
+    ra          = !git la -20
+    retag       = "!r() { git tag -d $1 && git push origin :refs/tags/$1 && git tag $1; }; r"
+    rh          = reset --hard
+    s           = status -s
+    su          = submodule update --init
+    unassumeall = "!git assumed | xargs git update-index --no-assume-unchanged"
+    unassume    = update-index --no-assume-unchanged
 [push]
     default = simple
 [rerere]
@@ -35,19 +44,19 @@
 [color]
     ui = true
 [merge]
-	tool = p4merge
+    tool = p4merge
 [diff]
-	tool = diffmerge
+    tool = diffmerge
 [core]
-    pager = less -XSFR
-	preloadindex = true
+    pager        = less -XSFR
+    preloadindex = true
 [mergetool "p4merge"]
-    cmd = "/opt/p4merge/bin/p4merge $BASE $LOCAL $REMOTE $MERGED"
+    cmd             = "/opt/p4merge/bin/p4merge $BASE $LOCAL $REMOTE $MERGED"
     keepTemporaries = false
-    trustExitCode = false
-    keepBackup = false
+    trustExitCode   = false
+    keepBackup      = false
 [pack]
-	compression = 9
-	threads = 8
+    compression = 9
+    threads     = 8
 [gitreview]
-	username = sarkhipov
+    username = sarkhipov
