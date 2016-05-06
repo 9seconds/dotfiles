@@ -53,9 +53,9 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-sleuth'
     Plug 'tpope/vim-surround'
-    Plug 'tweekmonster/braceless.vim'
+    " Plug 'tweekmonster/braceless.vim'
     " Plug 'unblevable/quick-scope'
-    Plug 'vim-airline/vim-airline'
+    " Plug 'vim-airline/vim-airline'
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
@@ -66,8 +66,8 @@ call plug#begin('~/.vim/plugged')
         \ Plug 'machakann/vim-textobj-delimited'
     Plug 'othree/yajs.vim', { 'for': 'javascript' } |
         \ Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
-    Plug 'xolox/vim-misc' |
-        \ Plug 'xolox/vim-session'
+    " Plug 'xolox/vim-misc' |
+    "     \ Plug 'xolox/vim-session'
     Plug 'scrooloose/nerdtree' |
         \ Plug 'jistr/vim-nerdtree-tabs'
 
@@ -574,16 +574,16 @@ let g:agprg                = "ag --vimgrep --nocolor -fS"
 " }}}
 " Airline {{{
 
-let g:airline_left_sep        = ''
-let g:airline_right_sep       = ''
-let g:airline_theme           = 'gruvbox'
-let g:airline_powerline_fonts = 0
+" let g:airline_left_sep        = ''
+" let g:airline_right_sep       = ''
+" let g:airline_theme           = 'gruvbox'
+" let g:airline_powerline_fonts = 0
 
-let g:airline_extensions = [
-    \ 'hunks',
-    \ 'virtualenv',
-    \ 'neomake'
-    \ ]
+" let g:airline_extensions = [
+"     \ 'hunks',
+"     \ 'virtualenv',
+"     \ 'neomake'
+"     \ ]
 
 " }}}
 " VimGo {{{
@@ -719,7 +719,7 @@ let g:signify_update_on_bufenter = 1
 " }}}
 " Neomake {{{
 
-let g:neomake_python_enabled_makers     = [ 'flake8', 'python']
+let g:neomake_python_enabled_makers     = ['flake8']
 let g:neomake_sh_enabled_makers         = ['shellcheck']
 let g:neomake_go_enabled_makers         = ['golint']
 let g:neomake_javascript_enabled_makers = ['eslint']
