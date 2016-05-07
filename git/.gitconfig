@@ -24,13 +24,9 @@
     ftch        = fetch --prune --all --recurse-submodules=yes
     ft          = "!f() { git describe --always --contains $1; }; f"
     gcc         = !git gc --aggressive --prune=all && git repack -AFd
-    la          = !git l --all
-    l           = "!. ~/.gitutils && gitlog"
     ll          = log --pretty=format:"%C(yellow)%h%Cred%d\\ ->\\ %Creset%s%Cblue\\ (%cn)" --decorate --numstat
-    mrebase     = "!. ~/.gitutils && merge_rebase"
     pll         = pull --rebase --all --recurse-submodules=yes
     pullr       = pull --rebase --recurse-submodules=yes
-    ra          = !git la -20
     retag       = "!r() { git tag -d $1 && git push origin :refs/tags/$1 && git tag $1; }; r"
     rh          = reset --hard
     s           = status -s
