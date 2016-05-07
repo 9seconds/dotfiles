@@ -754,9 +754,10 @@ let g:gutentags_exclude = [
     \ '*.min.js',
     \ '*html*',
     \ 'jquery*.js',
-    \ '*/node_modules/*',
+    \ 'node_modules',
     \ '*.pyc',
-    \ '*.pyo'
+    \ '*.pyo',
+    \ '.tox',
     \ ]
 
 nnoremap <leader>t :GutentagsUpdate!<cr>

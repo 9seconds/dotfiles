@@ -64,6 +64,7 @@ ehthumbs.db
 ###################
 .git/
 .hg/
+.tox/
 .svn/
 
 # IDE and editor files #
