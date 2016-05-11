@@ -23,7 +23,7 @@
     fix         = commit -a --amend
     ftch        = fetch --prune --all --recurse-submodules=yes
     ft          = "!f() { git describe --always --contains $1; }; f"
-    gcc         = !git gc --aggressive --prune=all && git repack -AFd
+    gcc         = !git reflog expire --expire=all --stale-fix --all && git gc --prune=all && git gc --aggressive --prune=all && git repack -AFdfb --depth 250 --window 250
     le          = log --decorate --oneline --graph
     ll          = log --pretty=format:"%C(yellow)%h%Cred%d\\ ->\\ %Creset%s%Cblue\\ (%cn)" --decorate --numstat
     pulla       = pull --rebase --all --recurse-submodules=yes --prune
