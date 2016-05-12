@@ -887,11 +887,4 @@ augroup VimFolds
     autocmd FileType vim setlocal foldenable
 augroup END
 
-augroup Python
-    autocmd!
-
-    autocmd FileType python BracelessEnable +highlight-cc +indent
-    highlight BracelessIndent guifg=#3c3836 cterm=reverse ctermfg=3 gui=reverse
-augroup END
-
 " }}}

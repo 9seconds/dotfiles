@@ -26,6 +26,8 @@
     gcc         = !git reflog expire --expire=all --stale-fix --all && git gc --prune=all && git gc --aggressive --prune=all && git repack -AFdfb --depth 250 --window 250
     le          = log --decorate --oneline --graph
     ll          = log --pretty=format:"%C(yellow)%h%Cred%d\\ ->\\ %Creset%s%Cblue\\ (%cn)" --decorate --numstat
+    pshf        = !git push --atomic --all --prune --force && git push --tags --force
+    psh         = !git push --atomic --all --prune && git push --tags --prune
     pulla       = pull --rebase --all --recurse-submodules=yes --prune
     pullr       = pull --rebase --recurse-submodules=yes --prune
     retag       = "!r() { git tag -d $1 && git push origin :refs/tags/$1 && git tag $1; }; r"
