@@ -892,4 +892,7 @@ augroup VimFolds
     autocmd FileType vim setlocal foldenable
 augroup END
 
+" Changes in hilight
+hi StatusLine guibg=#7c6f64 guifg=#3c3836
+
 " }}}
