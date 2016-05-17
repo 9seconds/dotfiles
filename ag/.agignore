@@ -64,8 +64,12 @@ ehthumbs.db
 ###################
 .git/
 .hg/
-.tox/
 .svn/
+
+# Some misc directories #
+#########################
+.tox/
+*.egg-info/
 
 # IDE and editor files #
 ########################
