@@ -105,6 +105,11 @@ try
 catch
 endtry
 
+try
+    set termguicolors
+catch
+endtry
+
 " _____________________________________________________________________________
 
 " Show the status of the current command in the status bar
