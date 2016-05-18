@@ -398,10 +398,11 @@ nnoremap <C-f> <C-f>zz
 nnoremap <C-b> <C-b>zz
 
 " Fast window navigation by Alt+hjkl
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
+nnoremap <C-h>    <C-w>h
+nnoremap <C-j>    <C-w>j
+nnoremap <C-k>    <C-w>k
+nnoremap <C-l>    <C-w>l
+nnoremap <silent> <C-x> :resize<cr>:vertical resize<cr>
 
 " Use common way to escape insert mode
 inoremap jj <ESC>
