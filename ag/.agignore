@@ -69,7 +69,7 @@ ehthumbs.db
 # Some misc directories #
 #########################
 .tox/
-*.egg-info/
+*.egg-info/*
 
 # IDE and editor files #
 ########################
