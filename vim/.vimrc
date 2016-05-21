@@ -786,6 +786,9 @@ let g:session_command_aliases   = 1
 let g:deoplete#enable_at_startup = 1
 let g:deoplete#max_list          = 20
 
+inoremap <silent><expr> <Tab>   pumvisible() ? "\<C-n>" : deoplete#mappings#manual_complete()
+inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : deoplete#mappings#manual_complete()
+
 " }}}
 " Jedi {{{
 
