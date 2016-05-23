@@ -31,6 +31,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'benekastah/neomake'
     Plug 'benmills/vimux'
     Plug 'christoomey/vim-tmux-navigator'
+    Plug 'blueyed/vim-diminactive'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'easymotion/vim-easymotion'
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
@@ -836,6 +837,13 @@ map  /         <Plug>(easymotion-sn)
 omap /         <Plug>(easymotion-tn)
 nmap s         <Plug>(easymotion-s2)
 nmap t         <Plug>(easymotion-t2)
+
+" }}}
+" DimInactive {{{
+
+let g:diminactive_use_colorcolumn = 1
+let g:diminactive_use_syntax      = 1
+let g:diminactive_enable_focus    = 1
 
 " }}}
 
