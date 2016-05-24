@@ -2,7 +2,62 @@
 # vim: set ft=python:
 
 
+from datetime import datetime as dt  # noqa
 from pprint import pprint as pp  # noqa
+
+
+def _make_z():
+    import time
+    import datetime
+    import uuid
+    import random
+
+
+    class Z(object):
+
+        @property
+        def tf(self):
+            return time.time()
+
+        @property
+        def ti(self):
+            return int(self.tf)
+
+        @property
+        def now(self):
+            return dt.now()
+
+        @property
+        def utcnow(self):
+            return dt.utcnow()
+
+        @property
+        def uuid4(self):
+            return str(uuid.uuid4())
+
+        @property
+        def random(self):
+            lower = getattr(self, "rs", 0)
+            upper = getattr(self, "rf", 1)
+
+            return lower + upper * random.random()
+
+        @property
+        def randint(self):
+            lower = getattr(self, "rs", 0)
+            upper = getattr(self, "rf", 255)
+
+            return random.randint(lower, upper)
+
+        t = ti
+        u = uuid = u4 = uuid4
+        n = nn = now
+        un = unow = utcnow
+        r = random
+        ri = randint
+
+
+    return Z()
 
 
 def src(obj):
@@ -86,10 +141,18 @@ except Exception as exc:
     del os
 finally:
     del _install_completer
-    del _print
+
+
+try:
+    z = _make_z()
+finally:
+    del _make_z
 
 
 try:
     from see import see  # noqa
 except ImportError:
     see = dir
+
+
+del _print
