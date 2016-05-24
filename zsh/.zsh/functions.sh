@@ -94,7 +94,7 @@ filesu() {
     #     python2 4444    nineseconds
     #     python2 4444    nineseconds
 
-    lsof "$1" 2> /dev/null | awk -v OFS="\t" 'NR > 1 {print $1, $2, $3}'
+    lsof "$1" 2> /dev/null | awk 'NR > 1 {print $1"\t"$2"\t"$3}'
 }
 
 filesp() {
@@ -114,7 +114,7 @@ filesp() {
     #     6886    /usr/lib/x86_64-linux-gnu/zsh/5.0.5/zsh/zle.so
     #     6886    /usr/lib/x86_64-linux-gnu/zsh/5.0.5/zsh/terminfo.so
 
-    lsof -c "$1" 2> /dev/null | awk OFS="\t" '{print $2, $9}'
+    lsof -c "$1" 2> /dev/null | awk '{print $2"\t"$9}'
 }
 
 filespu() {
