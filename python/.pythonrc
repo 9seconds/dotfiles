@@ -1,0 +1,87 @@
+# -*- coding: utf-8 -*-
+
+
+from pprint import pprint as pp  # noqa
+
+
+def src(obj):
+    import inspect
+
+    source = inspect.getsource(obj)
+
+    try:
+        import pygments
+        import pygments.formatters
+        import pygments.lexers
+
+        lexer = pygments.lexers.PythonLexer()
+        formatter = pygments.formatters.TerminalFormatter()
+    except:
+        _print(source)
+    else:
+        _print(pygments.highlight(source, lexer, formatter))
+
+
+def pj(obj):
+    import json
+
+    _print(json.dumps(obj, sort_keys=True, indent=4))
+
+
+def _print(obj):
+    import sys
+
+    if sys.version_info.major == 2:
+        sys.stdout.write(obj)
+        sys.stdout.write("\n")
+    else:
+        print(obj)
+
+
+def _install_completer():
+    import atexit
+    import os
+    import os.path
+    import readline
+    import rlcompleter  # noqa
+    import sys
+
+    if sys.version_info.major < 3:
+        readline.parse_and_bind("tab: complete")
+
+    history_dir = os.path.join(os.path.expanduser("~"), ".pyhistory")
+    if not os.path.isdir(history_dir):
+        try:
+            os.makedirs(history_dir)
+        except:
+            return
+
+    executable_inode = os.stat(sys.executable).st_ino
+    history_file = os.path.join(history_dir, str(executable_inode))
+
+    if os.path.exists(history_file):
+        readline.read_history_file(history_file)
+
+    atexit.register(readline.write_history_file, history_file)
+
+
+try:
+    _install_completer()
+except Exception as exc:
+    import warnings
+    import os
+
+    message = "Cannot inititalize PYTHONSTARTUP file ({0}): {1}".format(
+        os.getenv("PYTHONSTARTUP"), exc)
+    warnings.warn(message, RuntimeWarning)
+
+    del warnings
+    del os
+finally:
+    del _install_completer
+
+
+try:
+    from see import see  # noqa
+except ImportError:
+    see = dir
