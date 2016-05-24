@@ -44,11 +44,17 @@ def _install_completer():
     import os
     import os.path
     import readline
-    import rlcompleter  # noqa
     import sys
 
-    if sys.version_info.major < 3:
-        readline.parse_and_bind("tab: complete")
+    try:
+        import jedi.utils
+    except ImportError:
+        if sys.version_info.major < 3:
+            import rlcompleter  # noqa
+
+            readline.parse_and_bind("tab: complete")
+    else:
+        jedi.utils.setup_readline()
 
     history_dir = os.path.join(os.path.expanduser("~"), ".pyhistory")
     if not os.path.isdir(history_dir):
@@ -80,6 +86,7 @@ except Exception as exc:
     del os
 finally:
     del _install_completer
+    del _print
 
 
 try:
