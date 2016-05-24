@@ -32,6 +32,7 @@ export VIRTUALENVWRAPPER_PYTHON="/usr/bin/python"
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 export HISTTIMEFORMAT="%d.%m.%y %H:%M:%S"
 export PYENV_ROOT="$HOME/.pyenv"
+export PYTHONSTARTUP="${HOME}/.pythonrc"
 
 export PATH="$PYENV_ROOT/bin:$PATH"
 export PATH="$HOME/.fzf/bin:$PATH"
