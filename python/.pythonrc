@@ -3,14 +3,41 @@
 
 
 from datetime import datetime as dt  # noqa
-from pprint import pprint as pp  # noqa
 
 
 def _make_z():
-    import time
+    import calendar
     import datetime
-    import uuid
+    import inspect
+    import json
+    import os
+    import pprint
     import random
+    import sys
+    import time
+    import uuid
+
+
+    def _print(obj):
+        if sys.version_info == 2:
+            sys.stdout.write(obj)
+            sys.stdout.write("\n")
+        else:
+            print(obj)
+
+
+    try:
+        import pygments
+        import pygments.formatters
+        import pygments.lexers
+
+        lexer = pygments.lexers.PythonLexer()
+        formatter = pygments.formatters.TerminalFormatter()
+    except:
+        src = inspect.getsource
+    else:
+        def src(obj):
+            return pygments.highlight(inspect.getsource(obj), lexer, formatter)
 
 
     class Z(object):
@@ -49,49 +76,57 @@ def _make_z():
 
             return random.randint(lower, upper)
 
+        @staticmethod
+        def tfdt(dtime):
+            if hasattr(dtime, "timestamp"):
+                return dtime.timestamp()
+
+            return time.mktime(dtime.timetuple())
+
+        @staticmethod
+        def tfudt(dtime):
+            return calendar.timegm(dtime.timetuple())
+
+        @staticmethod
+        def j(obj):
+            return json.dumps(obj, sort_keys=True)
+
+        @staticmethod
+        def pj(obj):
+            _print(json.dumps(obj, sort_keys=True, indent=4))
+
+        @staticmethod
+        def ps(obj):
+            _print(src(obj))
+
+        ct = ctime = staticmethod(time.ctime)
+        dtft = dt_f_t = staticmethod(dt.fromtimestamp)
+        udtft = u_dt_f_t = staticmethod(dt.utcfromtimestamp)
+        pf = staticmethod(pprint.pformat)
+        pp = staticmethod(pprint.pprint)
+        s = staticmethod(src)
+
         t = ti
         u = uuid = u4 = uuid4
         n = nn = now
         un = unow = utcnow
         r = random
         ri = randint
+        t_f_udt = tfudt
+        t_f_dt = tfdt
+
+        def __str__(self):
+            return "Various magic from PYTHONSTARTUP ({0})!".format(
+                os.getenv("PYTHONSTARTUP", "?"))
+
+        if sys.version_info.major == 2:
+            def __unicode__(self):
+                return str(self).decode("utf-8")
+
+        __repr__ = __str__
 
 
     return Z()
-
-
-def src(obj):
-    import inspect
-
-    source = inspect.getsource(obj)
-
-    try:
-        import pygments
-        import pygments.formatters
-        import pygments.lexers
-
-        lexer = pygments.lexers.PythonLexer()
-        formatter = pygments.formatters.TerminalFormatter()
-    except:
-        _print(source)
-    else:
-        _print(pygments.highlight(source, lexer, formatter))
-
-
-def pj(obj):
-    import json
-
-    _print(json.dumps(obj, sort_keys=True, indent=4))
-
-
-def _print(obj):
-    import sys
-
-    if sys.version_info.major == 2:
-        sys.stdout.write(obj)
-        sys.stdout.write("\n")
-    else:
-        print(obj)
 
 
 def _install_completer():
@@ -153,6 +188,3 @@ try:
     from see import see  # noqa
 except ImportError:
     see = dir
-
-
-del _print
