@@ -36,9 +36,10 @@ export PYTHONSTARTUP="${HOME}/.pythonrc"
 
 export PATH="$PYENV_ROOT/bin:$PATH"
 export PATH="$HOME/.fzf/bin:$PATH"
-export PATH=":$HOME/.local/bin:$PATH"
-export PATH="$PATH:$GOBIN"
-export PATH="$PATH:$HOME/.node_prefix/bin"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.bin:$PATH"
+export PATH="$HOME/.node_prefix/bin:$PATH"
+export PATH="$GOBIN:$PATH"
 
 export NVIM_TUI_ENABLE_TRUE_COLOR=1
 export NVIM_TUI_ENABLE_CURSOR_SHAPE=1
