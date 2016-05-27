@@ -1,0 +1,364 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+git-ask is a small script which traverse contributions on the given
+paths and tells you whom you have to address your question first. The
+list is sorted in reverse order so first guy in the list is the best
+choice to ask about.
+
+Example:
+
+You are examing new repository with a pallets of legacy code and you
+have a general question on "api/controllers/v1/models/views" directory
+contents. It is totally possible that you will dig into "git blame" and
+check a proper guy but as a rule, there might be a guy who has been
+maintaining this directory for years and knows answer better.
+
+This tool shows you a list of contributors which are the great choice to
+ask you questions.
+
+$ git ask -n 5 ../controllers/v1/models/views
+    Sergey Arkhipov <nineseconds@yandex.ru>
+    Linux Torvalds <torvalds@microsoft.com>
+"""
+
+
+from __future__ import print_function
+
+import argparse
+import collections
+import datetime
+import itertools
+import logging
+import os
+import os.path
+import subprocess
+import sys
+import time
+
+
+class TreeNode(object):
+    """
+    This is a generic class for generic trees.
+
+    It has 2 attributes: subnodes and authors. Subnodes are subnodes and
+    authors are mapping between Author instance and its counters for a
+    current tree node (directory or file - whatever).
+    """
+
+    __slots__ = ("subnodes", "authors")
+
+    def __init__(self):
+        self.subnodes = collections.defaultdict(TreeNode)
+        self.authors = collections.defaultdict(lambda: dict(add=0, delete=0))
+
+    @property
+    def counters(self):
+        """
+        Mapping between Author instance and 'counter' - numerical weight
+        of contribution.
+
+        Right now 'counter' is just a sum of lines add and deleted. This
+        is not a best choice but in most cases good enough metric.
+        """
+
+        counters = collections.defaultdict(int)
+
+        for author, stats in self.authors.items():
+            counters[author] = sum(stats.values())
+        for subnode in self.subnodes.values():
+            for author, counter in subnode.counters.items():
+                counters[author] += counter
+
+        return counters
+
+
+class Author(object):
+    """
+    Author model.
+
+    Basically this is required because names in Git are metric which
+    is not good enough. Email is better but sometimes you need to have
+    something which is namelike. So there.
+    """
+
+    def __init__(self, email):
+        self.nameset = set()
+        self.email = email
+
+    @property
+    def names(self):
+        return sorted(self.nameset)
+
+    def __hash__(self):
+        return hash(self.email)
+
+    def __str__(self):
+        return "{0} <{1}>".format(", ".join(self.names), self.email)
+
+    __repr__ = __str__
+
+
+class LogReader(object):
+    """
+    LogReader is a state machine to process output of `git log` command.
+    It parses output and creates proper TreeNode.
+    """
+
+    DEFAULT_NUMSTAT = 1  # != 0 because '-' is put for binaries.
+
+    @staticmethod
+    def parse_author(line):
+        parsed = line.rsplit("@", 2)
+        name = parsed[0]
+        email = "@".join(parsed[1:])
+        _, timestamp, name = name.split("/", 2)
+        timestamp = int(timestamp)
+
+        return name, email, timestamp
+
+    @classmethod
+    def numstat_to_int(cls, stat):
+        if stat.isdigit():
+            return int(stat)
+        return cls.DEFAULT_NUMSTAT
+
+    @classmethod
+    def parse_stat(cls, line):
+        chunks = line.split()
+        plus = cls.numstat_to_int(chunks[0])
+        minus = cls.numstat_to_int(chunks[1])
+        path = " ".join(chunks[2:])
+        path_chunks = path.split(os.sep)
+
+        return plus, minus, path_chunks
+
+    def __init__(self, filter_timestamp):
+        self.authors = collections.defaultdict(Author)
+        self.tree = TreeNode()
+        self.current_authors = set()
+        self.filter_timestamp = filter_timestamp
+
+        self.reset()
+
+    def read(self, line):
+        if not line:
+            self.reset()
+        elif line.startswith("/"):
+            self.read_author(line)
+        else:
+            self.read_stat(line)
+
+    def get_or_create(self, name, email):
+        author = self.authors.setdefault(email, Author(email))
+        author.nameset.add(name)
+
+        return author
+
+    def reset(self):
+        self.current_authors = set()
+
+    def read_author(self, line):
+        name, email, timestamp = self.parse_author(line)
+        author = self.get_or_create(name, email)
+
+        logging.info("READER: Parsed author %s from %s, %s",
+                     author, name, email)
+
+        if timestamp >= self.filter_timestamp:
+            self.current_authors.add(author)
+
+    def read_stat(self, line):
+        plus, minus, chunks = self.parse_stat(line)
+
+        logging.info("READER: Parsed stat line %s; %s; %s",
+                     plus, minus, chunks)
+
+        branch = self.tree
+        for chunk in chunks:
+            branch = branch.subnodes[chunk]
+
+        for author in self.current_authors:
+            branch.authors[author]["add"] += plus
+            branch.authors[author]["delete"] += minus
+
+
+def main():
+    """Main function to execute."""
+
+    options = get_options()
+    logging.basicConfig(
+        format="[%(levelname)-5s] %(message)s",
+        level=logging.DEBUG if options.debug else logging.ERROR)
+    logging.debug("Options are %s", options)
+
+    toplevel_path = get_toplevel_path()
+    paths_to_people = get_path_mapping(options.time_period)
+
+    for path in sorted(set(options.paths)):
+        logging.info("Start to process %s", path)
+
+        corrected_path = correct_path(path)
+        logging.debug("Corrected path %s", corrected_path)
+
+        people = find_people(corrected_path, toplevel_path, paths_to_people)
+        people = itertools.islice(people, options.show)
+        people = list(people)
+        logging.debug("Found %d people: %s", len(people), people)
+
+        print("* {0}".format(path))
+        if people:
+            for dev in people:
+                print("\t{0}".format(dev))
+        else:
+            print("\tN/A")
+        print("")
+
+    return os.EX_OK
+
+
+def git(*options):
+    """Iterator for given git command."""
+
+    proc = subprocess.Popen(["git"] + list(options),
+                            shell=False, universal_newlines=True,
+                            stdout=subprocess.PIPE)
+    for line in proc.stdout:
+        line = line.rstrip()
+        logging.info("GIT: %s", line)
+        yield line
+
+    stdout, _ = proc.communicate()
+    if stdout:
+        logging.info("GIT:%s", line)
+        yield stdout
+
+
+def get_toplevel_path():
+    """Returns path to current Git repository."""
+
+    path = next(git("rev-parse", "--show-toplevel"))
+    path = correct_path(path)
+
+    logging.info("GIT toplevel path: %s", path)
+
+    return path
+
+
+def get_path_mapping(timestamp):
+    """Returns parsed and filled TreeNode for repository."""
+
+    reader = LogReader(timestamp)
+    logoutput = git("log", "--numstat",
+                    '--pretty=format:/%at/%aN@%aE%n/%ct/%cN@%cE')
+
+    for line in logoutput:
+        logging.debug("READER: Start processing %s", line)
+        reader.read(line)
+        logging.debug("READER: Finish rocessing %s", line)
+
+    return reader.tree
+
+
+def find_people(path, toplevel_path, paths_to_people):
+    """Returns Author instances for given paths_to_people mapping and path."""
+
+    chunks = path.replace(toplevel_path, "").strip().strip("/").split(os.sep)
+    authors_met = set()
+    breadcrumb = [paths_to_people]
+
+    branch = paths_to_people
+    for chunk in chunks:
+        branch = branch.subnodes[chunk]
+        breadcrumb.append(branch)
+
+    for node in reversed(breadcrumb):
+        people = sorted(
+            node.counters.items(),
+            key=lambda item: item[-1], reverse=True)
+
+        for dev, _ in people:
+            if dev not in authors_met:
+                authors_met.add(dev)
+                yield dev
+
+
+def argparse_time_parser(value):
+    """Argparse type to parse short time period definitions."""
+
+    value = value.strip().upper()
+    current = datetime.datetime.now()
+
+    if value.isdigit():
+        start_at = current - datetime.timedelta(seconds=int(value))
+    else:
+        value, quantifier = int(value[:-1]), value[-1]
+        if quantifier == "S":
+            start_at = current - datetime.timedelta(seconds=value)
+        elif quantifier == "I":
+            start_at = current - datetime.timedelta(minutes=value)
+        elif quantifier == "H":
+            start_at = current - datetime.timedelta(hours=value)
+        elif quantifier == "D":
+            start_at = current - datetime.timedelta(days=value)
+        elif quantifier == "M":
+            start_at = current - datetime.timedelta(days=30 * value)
+        elif quantifier == "Y":
+            start_at = current - datetime.timedelta(days=365 * value)
+        else:
+            raise argparse.ArgumentTypeError(
+                "Unknown quantifier {0}".format(quantifier))
+
+    timestamp = time.mktime(start_at.timetuple())
+    timestamp = int(timestamp)
+
+    return timestamp
+
+
+def get_options():
+    """Commandline parsing routine."""
+
+    parser = argparse.ArgumentParser(
+        description=(
+            "This script checks contributions for given paths and show you "
+            "the list of people you need to ask about stuff. Script list "
+            "them in reverse order, so first developer is a guy you "
+            "definitely need to ask first."))
+
+    parser.add_argument(
+        "-d", "--debug",
+        help="Run in debug mode.",
+        action="store_true",
+        default=False)
+    parser.add_argument(
+        "-n", "--show",
+        help="How many people to show.",
+        type=int,
+        default=1)
+    parser.add_argument(
+        "-t", "--time-period",
+        help=(
+            "Time period to operate. You may put quantifiers here, "
+            "like seconds (1s or just 1), days (1d), minutes (1i), "
+            "months (1m), years (1y). Year is 365 days, month is "
+            "30 days. Default is no time filtering is performed."),
+        type=argparse_time_parser,
+        default=None)
+    parser.add_argument(
+        "paths",
+        help="Paths to ask help about.",
+        metavar="PATH",
+        nargs="+",
+        default=[])
+
+    return parser.parse_args()
+
+
+def correct_path(path):
+    """Returns real FS path."""
+
+    return os.path.realpath(os.path.abspath(path))
+
+
+if __name__ == "__main__":
+    sys.exit(main())
