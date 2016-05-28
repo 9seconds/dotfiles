@@ -1,0 +1,194 @@
+#!/bin/bash
+set -eu -o pipefail
+
+# -----------------------------------------------------------------------------
+
+MAIN_USER="johndoe"
+MAIN_HOMEDIR="$(getent passwd ${MAIN_USER} | cut -f 6 -d ':')"
+EXCLUDE_FILE="${MAIN_HOMEDIR}/.borg/exclude"
+REPOSITORY="/var/backups/mybackup/"
+REMOTE_SOURCE="/media/remotefs/backups/mybackup/"
+
+LOCK_WAIT=120
+CHECKPOINT_EVERY=120
+COMPRESSION="zlib"
+KEEP_WITHIN="3d"
+KEEP_DAILY="7"
+KEEP_WEEKLY="4"
+KEEP_MONTHLY="3"
+KEEP_YEARLY="1"
+
+LOCK_BLOCK="flock --exclusive --timeout ${LOCK_WAIT} ${REPOSITORY}"
+LOCK_NONBLOCK="flock --exclusive --nonblock ${REPOSITORY}"
+
+CMD="${LOCK_BLOCK} sudo -E -u ${MAIN_USER} -- borg"
+SYNC="${LOCK_NONBLOCK} rsync -av --no-whole-file --delete-excluded --delete-delay"
+PAGER="less -FX"
+DEFAULT_OPTS="--lock-wait ${LOCK_WAIT} --error"
+
+export LANG=en_US.UTF-8
+export BORG_PASSPHRASE=''
+export BORG_CACHE_DIR="${MAIN_HOMEDIR}/.cache/borg"
+
+# -----------------------------------------------------------------------------
+
+borg_create() {
+    local prefix="$1"
+    local source_path="$2"
+    local backup_name="${prefix}_$(date --utc '+%Y.%m.%d-%H')"
+
+    ${CMD} create ${DEFAULT_OPTS}                       \
+              --checkpoint-interval ${CHECKPOINT_EVERY} \
+              --compression         ${COMPRESSION}      \
+              --exclude-from        "${EXCLUDE_FILE}"   \
+              --exclude-if-present  ".duplicity-ignore" \
+              --one-file-system                         \
+              --exclude-caches                          \
+          "${REPOSITORY}::${backup_name}" "${source_path}" || :
+    fix_owner
+}
+
+borg_check() {
+    ${CMD} check ${DEFAULT_OPTS} "$REPOSITORY"
+    fix_owner
+}
+
+borg_list() {
+    ${CMD} list ${DEFAULT_OPTS} "${REPOSITORY}" | ${PAGER}
+}
+
+borg_delete() {
+    local target="$1"
+
+    ${CMD} delete ${DEFAULT_OPTS} \
+            --progress --stats \
+        "${REPOSITORY}::${target}"
+    fix_owner
+}
+
+borg_prune() {
+    local prefix="$1"
+    local keep_within="${2:-${KEEP_WITHIN}}"
+    local keep_daily="${3:-${KEEP_DAILY}}"
+    local keep_weekly="${4:-${KEEP_WEEKLY}}"
+    local keep_monthly="${5:-${KEEP_MONTHLY}}"
+    local keep_yearly="${6:-${KEEP_YEARLY}}"
+
+    ${CMD} prune ${DEFAULT_OPTS}             \
+            --prefix       "${prefix}"       \
+            --keep-within  "${keep_within}"  \
+            --keep-daily   "${keep_daily}"   \
+            --keep-weekly  "${keep_weekly}"  \
+            --keep-monthly "${keep_monthly}" \
+            --keep-yearly  "${keep_yearly}"  \
+        "${REPOSITORY}"
+    fix_owner
+}
+
+borg_info() {
+    local target="$1"
+
+    ${CMD} info ${DEFAULT_OPTS} "${REPOSITORY}::${target}" | ${PAGER}
+}
+
+borg_unlock() {
+    ${CMD} break-lock ${DEFAULT_OPTS} "${REPOSITORY}"
+}
+
+backup_sync() {
+    ${SYNC} "${REPOSITORY}" "${REMOTE_SOURCE}"
+}
+
+fix_owner() {
+    sudo chown -R ${MAIN_USER}:${MAIN_USER} "${REPOSITORY}"
+}
+
+print_help() {
+    echo "$(basename $0) is a small wrapper around Borg backup."
+    echo "https://borgbackup.readthedocs.io"
+    echo
+    echo "Commands available:"
+    echo "  doctor    Checks backup configuration."
+    echo "  create    Creates new archive in repository. Backups $HOME and /etc."
+    echo "  check     Checks repository for consistency."
+    echo "  list      List available snapshots."
+    echo "  delete    Removes a snapshot."
+    echo "              - the name of the snapshot."
+    echo "  prune     Prunes old snapshots."
+    echo "              - How long to keep all snapshots. Default is $KEEP_WITHIN."
+    echo "              - How many daily snapshots to keep. Default is $KEEP_DAILY."
+    echo "              - How many weekly snapshots to keep. Default is $KEEP_WEEKLY."
+    echo "              - How many monthly snapshots to keep. Default is $KEEP_MONTHLY."
+    echo "              - How many yearly snapshots to keep. Default is $KEEP_YEARLY."
+    echo "  info      Print information about snapshot."
+    echo "              - the name of the snapshot."
+    echo "  sync      Sync local backup with remote one."
+    echo "  unlock    Break repository and cache lock."
+    echo "  help      Print this message."
+}
+
+print_doctor() {
+    echo "Doctor for $(basename $0)"
+    echo
+    echo "SCRIPT           $(printf "%-40s (%s)" $0 $(readlink -ne "$0"))"
+    echo "MAIN_USER        $(printf "%-40s (%s)" "${MAIN_USER}" $(getent passwd | cut -f 1 -d ':' | grep -q "${MAIN_USER}" && echo -n "ok" || echo -n "not ok"))"
+    echo "MAIN_HOMEDIR     $(printf "%-40s (%s)" "${MAIN_HOMEDIR}" $([ -d "${MAIN_HOMEDIR}" ] && echo -n "ok" || echo -n "not ok"))"
+    echo "REPOSITORY       $(printf "%-40s (%s)" "${REPOSITORY}" $([ -d "${REPOSITORY}" ] && echo -n "ok" || echo -n "not ok"))"
+    echo "EXCLUDE_FILE     $(printf "%-40s (%s)" "${EXCLUDE_FILE}" $([ -r "${EXCLUDE_FILE}" ] && echo -n "ok" || echo -n "not ok"))"
+    echo "REMOTE_SOURCE    $(printf "%-40s (%s)" "${REMOTE_SOURCE}" $([ -d "${REMOTE_SOURCE}" ] && echo -n "ok" || echo -n "not ok"))"
+    echo "BORG_PASSPHRASE  $(printf "%-40s (%s)" " " $([ ! -z "${BORG_PASSPHRASE}" ] && echo -n "ok" || echo -n "not ok"))"
+}
+
+# -----------------------------------------------------------------------------
+
+if [[ $# -eq 0 ]] ; then
+    OPTION=""
+else
+    OPTION="$1"
+    shift
+fi
+
+case "${OPTION}" in
+    create)
+        borg_create home     "${MAIN_HOMEDIR}"
+        borg_create etc      /etc
+        borg_create usrlocal /usr/local
+        ;;
+    check)
+        borg_check "$@"
+        ;;
+    list)
+        borg_list "$@"
+        ;;
+    delete)
+        borg_delete "$@"
+        ;;
+    prune)
+        borg_prune home
+        borg_prune etc
+        borg_prune usrlocal
+        ;;
+    info)
+        borg_info "$@"
+        ;;
+    sync)
+        backup_sync "$@"
+        ;;
+    unlock)
+        borg_unlock "$@"
+        ;;
+    doctor)
+        print_doctor
+        ;;
+    -h|--help|help)
+        print_help
+        ;;
+    *)
+        print_help
+        exit 1
+        ;;
+esac
+
+# -----------------------------------------------------------------------------
+
+unset BORG_PASSPHRASE
