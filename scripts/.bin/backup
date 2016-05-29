@@ -3,11 +3,12 @@ set -eu -o pipefail
 
 # -----------------------------------------------------------------------------
 
-MAIN_USER="johndoe"
+. /etc/backup.conf
+
+# -----------------------------------------------------------------------------
+
 MAIN_HOMEDIR="$(getent passwd ${MAIN_USER} | cut -f 6 -d ':')"
 EXCLUDE_FILE="${MAIN_HOMEDIR}/.borg/exclude"
-REPOSITORY="/var/backups/mybackup/"
-REMOTE_SOURCE="/media/remotefs/backups/mybackup/"
 
 LOCK_WAIT=120
 CHECKPOINT_EVERY=120
@@ -27,7 +28,6 @@ PAGER="less -FX"
 DEFAULT_OPTS="--lock-wait ${LOCK_WAIT} --error"
 
 export LANG=en_US.UTF-8
-export BORG_PASSPHRASE=''
 export BORG_CACHE_DIR="${MAIN_HOMEDIR}/.cache/borg"
 
 # -----------------------------------------------------------------------------
