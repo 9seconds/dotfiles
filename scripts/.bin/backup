@@ -100,7 +100,8 @@ backup_sync() {
 }
 
 fix_owner() {
-    sudo chown -R ${MAIN_USER}:${MAIN_USER} "${REPOSITORY}"
+    sudo chown -R --preserve-root ${MAIN_USER}:${MAIN_USER} "${REPOSITORY}"
+    sudo chmod -R u+rw-x,g-rwx,o-rwx --preserve-root "${REPOSITORY}"
 }
 
 print_help() {
