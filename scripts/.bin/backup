@@ -48,11 +48,14 @@ KEEP_WEEKLY="4"
 KEEP_MONTHLY="3"
 KEEP_YEARLY="1"
 
-LOCK_BLOCK="flock --exclusive --timeout ${LOCK_WAIT} ${BORG_REPO}"
-LOCK_NONBLOCK="flock --exclusive --nonblock ${BORG_REPO}"
+LOCK_WRITE="flock --exclusive --timeout ${LOCK_WAIT}"
+LOCK_WRITE_REPO="${LOCK_WRITE} ${BORG_REPO}"
+LOCK_READ="flock --shared --nonblock"
+LOCK_READ_REPO="${LOCK_READ} ${BORG_REPO}"
 
-CMD="${LOCK_BLOCK} borg"
-SYNC="${LOCK_NONBLOCK} rsync -av --no-whole-file --delete-excluded --delete-delay"
+BORG_WRITE_CMD="${LOCK_WRITE_REPO} borg"
+BORG_READ_CMD="${LOCK_READ_REPO} borg"
+SYNC="rsync -av --no-whole-file --delete-excluded --delete-delay"
 PAGER="less -FX"
 DEFAULT_OPTS="--lock-wait ${LOCK_WAIT} --error"
 
@@ -66,7 +69,7 @@ borg_create() {
     local source_path="$2"
     local backup_name="${prefix}_$(date --utc '+%Y.%m.%d-%H')"
 
-    ${CMD} create ${DEFAULT_OPTS}                       \
+    ${BORG_WRITE_CMD} create ${DEFAULT_OPTS}            \
               --checkpoint-interval ${CHECKPOINT_EVERY} \
               --compression         ${COMPRESSION}      \
               --exclude-from        "${EXCLUDE_FILE}"   \
@@ -77,7 +80,7 @@ borg_create() {
 }
 
 borg_check() {
-    ${CMD} check ${DEFAULT_OPTS}
+    ${BORG_READ_CMD} check ${DEFAULT_OPTS}
 }
 
 borg_extract() {
@@ -85,29 +88,30 @@ borg_extract() {
     local path_to="$1"; shift
 
     mkdir -p "${path_to}" || :
-    cd "${path_to}" && ${CMD} extract ${DEFAULT_OPTS} "::${target}" "$@"
+    cd "${path_to}" && \
+        ${BORG_READ_CMD} extract ${DEFAULT_OPTS} "::${target}" "$@"
 }
 
 borg_examine() {
     local target="$1"
     local mount_to="$(mktemp -d -t "mount_${target}_XXXXX")"
 
-    ${CMD} mount ${DEFAULT_OPTS} "::${target}" "${mount_to}"
+    ${BORG_READ_CMD} mount ${DEFAULT_OPTS} "::${target}" "${mount_to}"
     echo "${mount_to}"
 }
 
 borg_list() {
     if [[ $# -eq 0 ]]; then
-        ${CMD} list ${DEFAULT_OPTS} | ${PAGER}
+        ${BORG_READ_CMD} list ${DEFAULT_OPTS} | ${PAGER}
     else
-        ${CMD} list ${DEFAULT_OPTS} "::$1" | ${PAGER}
+        ${BORG_READ_CMD} list ${DEFAULT_OPTS} "::$1" | ${PAGER}
     fi
 }
 
 borg_delete() {
     local target="$1"
 
-    ${CMD} delete ${DEFAULT_OPTS} --progress --stats "::${target}"
+    ${BORG_WRITE_CMD} delete ${DEFAULT_OPTS} --progress --stats "::${target}"
 }
 
 borg_prune() {
@@ -118,7 +122,7 @@ borg_prune() {
     local keep_monthly="${5:-${KEEP_MONTHLY}}"
     local keep_yearly="${6:-${KEEP_YEARLY}}"
 
-    ${CMD} prune ${DEFAULT_OPTS}             \
+    ${BORG_WRITE_CMD} prune ${DEFAULT_OPTS} \
             --prefix       "${prefix}"       \
             --keep-within  "${keep_within}"  \
             --keep-daily   "${keep_daily}"   \
@@ -130,15 +134,16 @@ borg_prune() {
 borg_info() {
     local target="$1"
 
-    ${CMD} info ${DEFAULT_OPTS} "::${target}" | ${PAGER}
+    ${BORG_READ_CMD} info ${DEFAULT_OPTS} "::${target}" | ${PAGER}
 }
 
 borg_unlock() {
-    ${CMD} break-lock ${DEFAULT_OPTS}
+    ${LOCK_WRITE_REPO} break-lock ${DEFAULT_OPTS}
 }
 
 backup_sync() {
-    ${SYNC} "${BORG_REPO}" "${REMOTE_SOURCE}"
+    ${LOCK_READ_REPO} ${LOCK_WRITE} "${REMOTE_SOURCE}" \
+        ${SYNC} "${BORG_REPO}" "${REMOTE_SOURCE}"
 }
 
 print_help() {
@@ -181,7 +186,7 @@ print_doctor() {
 
 # -----------------------------------------------------------------------------
 
-if [[ $# -eq 0 ]] ; then
+if [[ $# -eq 0 ]]; then
     OPTION=""
 else
     OPTION="$1"
