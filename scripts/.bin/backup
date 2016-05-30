@@ -87,13 +87,23 @@ borg_extract() {
     local path_to="$1"; shift
 
     mkdir -p "${path_to}" || :
-    cd "${path_to}" && \
-        ${CMD} extract ${DEFAULT_OPTS} "::${target}" "$@" && \
-        cd -
+    cd "${path_to}" && ${CMD} extract ${DEFAULT_OPTS} "::${target}" "$@"
+}
+
+borg_examine() {
+    local target="$1"
+    local mount_to="$(mktemp -d -t "mount_${target}_XXXXX")"
+
+    ${CMD} mount ${DEFAULT_OPTS} "::${target}" "${mount_to}"
+    echo "${mount_to}"
 }
 
 borg_list() {
-    ${CMD} list ${DEFAULT_OPTS} | ${PAGER}
+    if [[ $# -eq 0 ]]; then
+        ${CMD} list ${DEFAULT_OPTS} | ${PAGER}
+    else
+        ${CMD} list ${DEFAULT_OPTS} "::$1" | ${PAGER}
+    fi
 }
 
 borg_delete() {
@@ -149,6 +159,7 @@ print_help() {
     echo "  create    Creates new archive in repository. Backups $HOME and /etc."
     echo "  extract   Extracts a files to given path."
     echo "  check     Checks repository for consistency."
+    echo "  examine   Mount backup and go into."
     echo "  list      List available snapshots."
     echo "  delete    Removes a snapshot."
     echo "              - the name of the snapshot."
@@ -194,6 +205,9 @@ case "${OPTION}" in
         ;;
     extract)
         borg_extract "$@"
+        ;;
+    examine)
+        borg_examine "$@"
         ;;
     check)
         borg_check "$@"
