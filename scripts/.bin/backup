@@ -29,11 +29,11 @@ set -eu -o pipefail
 # -----------------------------------------------------------------------------
 
 . /etc/backup.conf
-# BORG_PASSPHRASE
-# COMPRESSION
-# MAIN_USER
-# REMOTE_SOURCE
-# REPOSITORY
+# BORG_PASSPHRASE - check docs
+# BORG_REPO       - check docs
+# COMPRESSION     - what compression is used here
+# MAIN_USER       - main username
+# REMOTE_SOURCE   - where to sync, path
 
 # -----------------------------------------------------------------------------
 
@@ -42,15 +42,14 @@ EXCLUDE_FILE="${MAIN_HOMEDIR}/.borg/exclude"
 
 LOCK_WAIT=120
 CHECKPOINT_EVERY=120
-COMPRESSION="zlib"
 KEEP_WITHIN="3d"
 KEEP_DAILY="7"
 KEEP_WEEKLY="4"
 KEEP_MONTHLY="3"
 KEEP_YEARLY="1"
 
-LOCK_BLOCK="flock --exclusive --timeout ${LOCK_WAIT} ${REPOSITORY}"
-LOCK_NONBLOCK="flock --exclusive --nonblock ${REPOSITORY}"
+LOCK_BLOCK="flock --exclusive --timeout ${LOCK_WAIT} ${BORG_REPO}"
+LOCK_NONBLOCK="flock --exclusive --nonblock ${BORG_REPO}"
 
 CMD="${LOCK_BLOCK} sudo -E -u ${MAIN_USER} -- borg"
 SYNC="${LOCK_NONBLOCK} rsync -av --no-whole-file --delete-excluded --delete-delay"
@@ -74,25 +73,23 @@ borg_create() {
               --exclude-if-present  ".duplicity-ignore" \
               --one-file-system                         \
               --exclude-caches                          \
-          "${REPOSITORY}::${backup_name}" "${source_path}" || :
+          "$::${backup_name}" "${source_path}" || :
     fix_owner
 }
 
 borg_check() {
-    ${CMD} check ${DEFAULT_OPTS} "$REPOSITORY"
+    ${CMD} check ${DEFAULT_OPTS}
     fix_owner
 }
 
 borg_list() {
-    ${CMD} list ${DEFAULT_OPTS} "${REPOSITORY}" | ${PAGER}
+    ${CMD} list ${DEFAULT_OPTS} | ${PAGER}
 }
 
 borg_delete() {
     local target="$1"
 
-    ${CMD} delete ${DEFAULT_OPTS} \
-            --progress --stats \
-        "${REPOSITORY}::${target}"
+    ${CMD} delete ${DEFAULT_OPTS} --progress --stats "::${target}"
     fix_owner
 }
 
@@ -110,28 +107,27 @@ borg_prune() {
             --keep-daily   "${keep_daily}"   \
             --keep-weekly  "${keep_weekly}"  \
             --keep-monthly "${keep_monthly}" \
-            --keep-yearly  "${keep_yearly}"  \
-        "${REPOSITORY}"
+            --keep-yearly  "${keep_yearly}"
     fix_owner
 }
 
 borg_info() {
     local target="$1"
 
-    ${CMD} info ${DEFAULT_OPTS} "${REPOSITORY}::${target}" | ${PAGER}
+    ${CMD} info ${DEFAULT_OPTS} "::${target}" | ${PAGER}
 }
 
 borg_unlock() {
-    ${CMD} break-lock ${DEFAULT_OPTS} "${REPOSITORY}"
+    ${CMD} break-lock ${DEFAULT_OPTS}
 }
 
 backup_sync() {
-    ${SYNC} "${REPOSITORY}" "${REMOTE_SOURCE}"
+    ${SYNC} "${BORG_REPO}" "${REMOTE_SOURCE}"
 }
 
 fix_owner() {
-    sudo chown -R --preserve-root ${MAIN_USER}:${MAIN_USER} "${REPOSITORY}"
-    find "${REPOSITORY}" -type f -print0 | xargs --null sudo chmod u+rw-x,g-rwx,o-rwx
+    sudo chown -R --preserve-root ${MAIN_USER}:${MAIN_USER} "${BORG_REPO}"
+    find "${BORG_REPO}" -type f -print0 | xargs --null sudo chmod u+rw-x,g-rwx,o-rwx
 }
 
 print_help() {
@@ -164,7 +160,7 @@ print_doctor() {
     echo "SCRIPT           $(printf "%-40s (%s)" $0 $(readlink -ne "$0"))"
     echo "MAIN_USER        $(printf "%-40s (%s)" "${MAIN_USER}" $(getent passwd | cut -f 1 -d ':' | grep -q "${MAIN_USER}" && echo -n "ok" || echo -n "not ok"))"
     echo "MAIN_HOMEDIR     $(printf "%-40s (%s)" "${MAIN_HOMEDIR}" $([ -d "${MAIN_HOMEDIR}" ] && echo -n "ok" || echo -n "not ok"))"
-    echo "REPOSITORY       $(printf "%-40s (%s)" "${REPOSITORY}" $([ -d "${REPOSITORY}" ] && echo -n "ok" || echo -n "not ok"))"
+    echo "BORG_REPO        $(printf "%-40s (%s)" "${BORG_REPO}" $([ -d "${BORG_REPO}" ] && echo -n "ok" || echo -n "not ok"))"
     echo "EXCLUDE_FILE     $(printf "%-40s (%s)" "${EXCLUDE_FILE}" $([ -r "${EXCLUDE_FILE}" ] && echo -n "ok" || echo -n "not ok"))"
     echo "REMOTE_SOURCE    $(printf "%-40s (%s)" "${REMOTE_SOURCE}" $([ -d "${REMOTE_SOURCE}" ] && echo -n "ok" || echo -n "not ok"))"
     echo "BORG_PASSPHRASE  $(printf "%-40s (%s)" " " $([ ! -z "${BORG_PASSPHRASE}" ] && echo -n "ok" || echo -n "not ok"))"
