@@ -141,6 +141,16 @@ borg_unlock() {
     ${LOCK_WRITE_REPO} break-lock ${DEFAULT_OPTS}
 }
 
+backup_cachedir_tag() {
+    # http://www.brynosaurus.com/cachedir/spec.html
+
+    local path="$1/CACHEDIR.TAG"
+
+    if [[ ! -f "$path" || ! -s "$path" || ! -r "$path" ]]; then
+        echo "Signature: 8a477f597d28d172789f06886806bc55" > "$path"
+    fi
+}
+
 backup_sync() {
     ${LOCK_READ_REPO} ${LOCK_WRITE} "${REMOTE_SOURCE}" \
         ${SYNC} "${BORG_REPO}" "${REMOTE_SOURCE}"
@@ -155,6 +165,7 @@ print_help() {
     echo "  create    Creates new archive in repository. Backups $HOME and /etc."
     echo "  extract   Extracts a files to given path."
     echo "  check     Checks repository for consistency."
+    echo "  cachedir  Put CACHEDIR.TAG into given path."
     echo "  examine   Mount backup and go into."
     echo "  list      List available snapshots."
     echo "  delete    Removes a snapshot."
@@ -207,6 +218,9 @@ case "${OPTION}" in
         ;;
     check)
         borg_check "$@"
+        ;;
+    cachedir)
+        backup_cachedir_tag "$@"
         ;;
     list)
         borg_list "$@"
