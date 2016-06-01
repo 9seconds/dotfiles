@@ -422,3 +422,52 @@ update_git_repos() {
 
     cd $last_path
 }
+
+
+###############################################################################
+# MISC HELPERS
+###############################################################################
+
+encode_to_ipad() {
+    # This function encodes videofile to my iPad Air trying to minify it as
+    # much as possible. Basically I do not neet max quality, but gonna try
+    # to put as much movies as possible.
+    #
+    # Output has to be used with VLC for iOS.
+
+    local input="$(readlink -ne "$1")"
+    local output="$(readlink -nm "$2")"
+    local sound_stream="${3:=1}"
+    local tmpdir="$(mktemp -d)"
+
+    cd "$tmpdir" && \
+        _encode_to_ipad_ffmpeg "$sound_stream" 1 "$input" "/dev/null" && \
+        _encode_to_ipad_ffmpeg "$sound_stream" 2 "$input" "$output"
+    cd - && rm -rf "$tmpdir"
+}
+
+_encode_to_ipad_ffmpeg() {
+    # Helper function for `encode_to_ipad`
+
+    local sound_stream="$1"
+    local pass="$2"
+    local input="$3"
+    local output="$4"
+
+    ffmpeg -y -i "$input" \
+        -map 0:0 -map 0:$sound_stream \
+        -c:v libx264 \
+        -profile:v high \
+        -level 4.2 \
+        -preset veryslow \
+        -b:v 512k \
+        -maxrate 512k \
+        -bufsize 1000k \
+        -c:a libmp3lame \
+        -q:a 2 \
+        -ar 44100 \
+        -f mp4 \
+        -threads 0 \
+        -pass "$pass" \
+        "$output"
+}
