@@ -438,11 +438,12 @@ encode_to_ipad() {
     local input="$(readlink -ne "$1")"
     local output="$(readlink -nm "$2")"
     local sound_stream="${3:=1}"
+    local video_bitrate="${4:=512k}"
     local tmpdir="$(mktemp -d)"
 
     cd "$tmpdir" && \
-        _encode_to_ipad_ffmpeg "$sound_stream" 1 "$input" "/dev/null" && \
-        _encode_to_ipad_ffmpeg "$sound_stream" 2 "$input" "$output"
+        _encode_to_ipad_ffmpeg "$sound_stream" "$video_bitrate" 1 "$input" "/dev/null" && \
+        _encode_to_ipad_ffmpeg "$sound_stream" "$video_bitrate" 2 "$input" "$output"
     cd - && rm -rf "$tmpdir"
 }
 
@@ -450,9 +451,10 @@ _encode_to_ipad_ffmpeg() {
     # Helper function for `encode_to_ipad`
 
     local sound_stream="$1"
-    local pass="$2"
-    local input="$3"
-    local output="$4"
+    local video_bitrate="$2"
+    local pass="$3"
+    local input="$4"
+    local output="$5"
 
     ffmpeg -y -i "$input" \
         -map 0:0 -map 0:$sound_stream \
@@ -460,9 +462,10 @@ _encode_to_ipad_ffmpeg() {
         -profile:v high \
         -level 4.2 \
         -preset veryslow \
-        -b:v 512k \
-        -maxrate 512k \
+        -b:v "$video_bitrate" \
+        -maxrate "$video_bitrate" \
         -bufsize 1000k \
+        -vf scale=-1:576 \
         -c:a libmp3lame \
         -q:a 2 \
         -ar 44100 \
