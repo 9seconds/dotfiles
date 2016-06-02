@@ -156,6 +156,10 @@ backup_sync() {
         ${SYNC} "${BORG_REPO}" "${REMOTE_SOURCE}"
 }
 
+backup_size() {
+    du -sh "${BORG_REPO}" | awk 'NR == 1 {print $1}'
+}
+
 print_help() {
     echo "$(basename $0) is a small wrapper around Borg backup."
     echo "https://borgbackup.readthedocs.io"
@@ -179,6 +183,7 @@ print_help() {
     echo "  info      Print information about snapshot."
     echo "              - the name of the snapshot."
     echo "  sync      Sync local backup with remote one."
+    echo "  size      Printout total size of backup."
     echo "  unlock    Break repository and cache lock."
     echo "  help      Print this message."
 }
@@ -238,6 +243,9 @@ case "${OPTION}" in
         ;;
     sync)
         backup_sync "$@"
+        ;;
+    size)
+        backup_size "$@"
         ;;
     unlock)
         borg_unlock "$@"
