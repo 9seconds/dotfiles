@@ -67,7 +67,6 @@ export BORG_CACHE_DIR="${MAIN_HOMEDIR}/.cache/borg"
 borg_create() {
     local prefix="$1"
     local source_path="$2"
-    local backup_name="${prefix}_$(date --utc '+%Y.%m.%d-%H')"
 
     ${BORG_WRITE_CMD} create ${DEFAULT_OPTS}            \
               --checkpoint-interval ${CHECKPOINT_EVERY} \
@@ -76,7 +75,7 @@ borg_create() {
               --exclude-if-present  ".duplicity-ignore" \
               --one-file-system                         \
               --exclude-caches                          \
-          "::${backup_name}" "${source_path}" || :
+          "::${prefix}_{utcnow:%Y.%m.%d-%H}" "${source_path}" || :
 }
 
 borg_check() {
