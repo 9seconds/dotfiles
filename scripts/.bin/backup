@@ -191,13 +191,15 @@ print_help() {
 print_doctor() {
     echo "Doctor for $(basename $0)"
     echo
+    echo "EXECUTABLE       $(printf "%-40s (%s)" $(command -v borg 2> /dev/null) $(command -v borg 2>&1 > /dev/null && echo -n "ok" || echo -n "not ok"))"
     echo "SCRIPT           $(printf "%-40s (%s)" $0 $(readlink -ne "$0"))"
-    echo "MAIN_USER        $(printf "%-40s (%s)" "${MAIN_USER}" $(getent passwd | cut -f 1 -d ':' | grep -q "${MAIN_USER}" && echo -n "ok" || echo -n "not ok"))"
-    echo "MAIN_HOMEDIR     $(printf "%-40s (%s)" "${MAIN_HOMEDIR}" $([ -d "${MAIN_HOMEDIR}" ] && echo -n "ok" || echo -n "not ok"))"
+    echo
+    echo "BORG_PASSPHRASE  $(printf "%-40s (%s)" " " $([ ! -z "${BORG_PASSPHRASE}" ] && echo -n "ok" || echo -n "not ok"))"
     echo "BORG_REPO        $(printf "%-40s (%s)" "${BORG_REPO}" $([ -d "${BORG_REPO}" ] && echo -n "ok" || echo -n "not ok"))"
     echo "EXCLUDE_FILE     $(printf "%-40s (%s)" "${EXCLUDE_FILE}" $([ -r "${EXCLUDE_FILE}" ] && echo -n "ok" || echo -n "not ok"))"
+    echo "MAIN_HOMEDIR     $(printf "%-40s (%s)" "${MAIN_HOMEDIR}" $([ -d "${MAIN_HOMEDIR}" ] && echo -n "ok" || echo -n "not ok"))"
+    echo "MAIN_USER        $(printf "%-40s (%s)" "${MAIN_USER}" $(getent passwd | cut -f 1 -d ':' | grep -q "${MAIN_USER}" && echo -n "ok" || echo -n "not ok"))"
     echo "REMOTE_SOURCE    $(printf "%-40s (%s)" "${REMOTE_SOURCE}" $([ -d "${REMOTE_SOURCE}" ] && echo -n "ok" || echo -n "not ok"))"
-    echo "BORG_PASSPHRASE  $(printf "%-40s (%s)" " " $([ ! -z "${BORG_PASSPHRASE}" ] && echo -n "ok" || echo -n "not ok"))"
 }
 
 # -----------------------------------------------------------------------------
