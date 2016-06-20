@@ -61,6 +61,7 @@ DEFAULT_OPTS="--lock-wait ${LOCK_WAIT} --error"
 
 export LANG=en_US.UTF-8
 export BORG_CACHE_DIR="${MAIN_HOMEDIR}/.cache/borg"
+export BORG_RELOCATED_REPO_ACCESS_IS_OK="yes"
 
 # -----------------------------------------------------------------------------
 
