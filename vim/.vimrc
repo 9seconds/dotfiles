@@ -31,6 +31,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'benekastah/neomake'
     Plug 'benmills/vimux'
     Plug 'christoomey/vim-tmux-navigator'
+    Plug 'xolox/vim-misc' | Plug 'xolox/vim-notes'
     Plug 'blueyed/vim-diminactive'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'easymotion/vim-easymotion'
@@ -844,6 +845,11 @@ nmap t         <Plug>(easymotion-t2)
 let g:diminactive_use_colorcolumn = 1
 let g:diminactive_use_syntax      = 1
 let g:diminactive_enable_focus    = 1
+
+" }}}
+" Notes {{{
+
+let g:notes_directories = ['~/Sync/Main/notes']
 
 " }}}
 
