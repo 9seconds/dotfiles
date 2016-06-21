@@ -30,14 +30,13 @@ call plug#begin('~/.vim/plugged')
     Plug 'airblade/vim-rooter'
     Plug 'benekastah/neomake'
     Plug 'benmills/vimux'
-    Plug 'christoomey/vim-tmux-navigator'
-    Plug 'xolox/vim-misc' | Plug 'xolox/vim-notes'
     Plug 'blueyed/vim-diminactive'
+    Plug 'christoomey/vim-tmux-navigator'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
-    Plug 'easymotion/vim-easymotion'
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'junegunn/vim-easy-align'
     Plug 'junegunn/vim-peekaboo'
+    Plug 'justinmk/vim-sneak'
     Plug 'kshenoy/vim-signature'
     Plug 'lambdalisue/vim-pyenv'
     Plug 'ludovicchabant/vim-gutentags'
@@ -55,12 +54,10 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-sleuth'
     Plug 'tpope/vim-surround'
-    " Plug 'tweekmonster/braceless.vim'
-    " Plug 'unblevable/quick-scope'
-    " Plug 'vim-airline/vim-airline'
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
+    Plug 'xolox/vim-misc' | Plug 'xolox/vim-notes'
 
     Plug 'kana/vim-textobj-user' |
         \ Plug 'kana/vim-textobj-indent' |
@@ -826,18 +823,18 @@ let g:hardtime_maxcount               = 2
 " }}}
 " EasyMotion {{{
 
-let g:EasyMotion_smartcase        = 1
-let g:EasyMotion_use_smartsign_us = 1
-let g:EasyMotion_startofline      = 0
+" let g:EasyMotion_smartcase        = 1
+" let g:EasyMotion_use_smartsign_us = 1
+" let g:EasyMotion_startofline      = 0
 
-map  <Leader>l <Plug>(easymotion-lineforward)
-map  <Leader>j <Plug>(easymotion-j)
-map  <Leader>k <Plug>(easymotion-k)
-map  <Leader>h <Plug>(easymotion-linebackward)
-map  /         <Plug>(easymotion-sn)
-omap /         <Plug>(easymotion-tn)
-nmap s         <Plug>(easymotion-s2)
-nmap t         <Plug>(easymotion-t2)
+" map  <Leader>l <Plug>(easymotion-lineforward)
+" map  <Leader>j <Plug>(easymotion-j)
+" map  <Leader>k <Plug>(easymotion-k)
+" map  <Leader>h <Plug>(easymotion-linebackward)
+" map  /         <Plug>(easymotion-sn)
+" omap /         <Plug>(easymotion-tn)
+" nmap s         <Plug>(easymotion-s2)
+" nmap t         <Plug>(easymotion-t2)
 
 " }}}
 " DimInactive {{{
@@ -850,6 +847,12 @@ let g:diminactive_enable_focus    = 1
 " Notes {{{
 
 let g:notes_directories = ['~/Sync/Main/notes']
+
+" }}}
+" Sneak {{{
+
+let g:sneak#streak     = 1
+let g:sneak#use_ic_scs = 1
 
 " }}}
 
