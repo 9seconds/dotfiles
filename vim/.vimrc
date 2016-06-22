@@ -30,7 +30,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'airblade/vim-rooter'
     Plug 'benekastah/neomake'
     Plug 'benmills/vimux'
-    Plug 'blueyed/vim-diminactive'
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
@@ -57,7 +56,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
-    Plug 'xolox/vim-misc' | Plug 'xolox/vim-notes'
+    Plug 'xolox/vim-misc' | Plug 'xolox/vim-notes' | Plug 'xolox/vim-session'
 
     Plug 'kana/vim-textobj-user' |
         \ Plug 'kana/vim-textobj-indent' |
@@ -275,6 +274,11 @@ set ffs=unix,dos,mac
 " Mouse settings
 set mouse=a
 set mousehide
+
+" -----------------------------------------------------------------------------
+
+" Session settings
+set sessionoptions-=options
 
 " _____________________________________________________________________________
 
@@ -770,14 +774,14 @@ nnoremap <leader>t :GutentagsUpdate!<cr>
 " }}}
 " Session {{{
 
-set sessionoptions-=help,buffers,options
-
-let g:session_default_overwrite = 0
-let g:session_autosave          = 'yes'
-let g:session_autosave_to       = '__last__'
-let g:session_autosave_silent   = 1
+let g:session_autoload          = "no"
 let g:session_autosave_periodic = 1
+let g:session_autosave_silent   = 1
+let g:session_autosave_to       = "__last__"
+let g:session_autosave          = "yes"
 let g:session_command_aliases   = 1
+let g:session_default_overwrite = 0
+let g:session_extension         = ".session"
 
 " }}}
 " Deoplete {{{
@@ -835,13 +839,6 @@ let g:hardtime_maxcount               = 2
 " omap /         <Plug>(easymotion-tn)
 " nmap s         <Plug>(easymotion-s2)
 " nmap t         <Plug>(easymotion-t2)
-
-" }}}
-" DimInactive {{{
-
-let g:diminactive_use_colorcolumn = 1
-let g:diminactive_use_syntax      = 1
-let g:diminactive_enable_focus    = 1
 
 " }}}
 " Notes {{{
