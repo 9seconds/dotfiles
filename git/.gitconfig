@@ -37,6 +37,7 @@
     unassumeall = "!git assumed | xargs git update-index --no-assume-unchanged"
     unassume    = update-index --no-assume-unchanged
     wip         = "!git commit --all -n -m WIP-$(date +%Y-%m-%d_%H-%M-%S)"
+    up          = "!git ftch && git pulla && git su"
 [push]
     default = simple
 [rerere]
