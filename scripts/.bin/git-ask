@@ -367,7 +367,7 @@ def get_options():
             "months (1m), years (1y). Year is 365 days, month is "
             "30 days. Default is no time filtering is performed."),
         type=argparse_time_parser,
-        default=None)
+        default=None)=`=jedi=0, =`=  (*args, *_***kwargs*_*) =`=jedi=`=
     parser.add_argument(
         "paths",
         help="Paths to ask help about.",
