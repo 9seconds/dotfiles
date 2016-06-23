@@ -53,6 +53,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-sleuth'
     Plug 'tpope/vim-surround'
+    " Plug 'tpope/vim-vinegar'
+    " Plug 'justinmk/vim-dirvish'
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
@@ -64,10 +66,6 @@ call plug#begin('~/.vim/plugged')
         \ Plug 'machakann/vim-textobj-delimited'
     Plug 'othree/yajs.vim', { 'for': 'javascript' } |
         \ Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
-    " Plug 'xolox/vim-misc' |
-    "     \ Plug 'xolox/vim-session'
-    Plug 'scrooloose/nerdtree' |
-        \ Plug 'jistr/vim-nerdtree-tabs'
 
     if executable('go')
         Plug 'fatih/vim-go', { 'for': 'go' }
@@ -326,6 +324,43 @@ if executable('ag')
     set grepprg=ag\ --vimgrep\ $*
     set grepformat=%f:%l:%c:%m
 endif
+
+" -----------------------------------------------------------------------------
+
+" netrw settings
+let g:netrw_liststyle    = 3
+let g:netrw_browse_split = 4
+let g:netrw_altv         = 1
+let g:netrw_winsize      = 25
+let g:netrw_banner       = 0
+
+function! VexToggle(dir)
+  if exists("t:vex_buf_nr")
+    call VexClose()
+  else
+    call VexOpen(a:dir)
+  endif
+endfunction
+
+function! VexOpen(dir)
+  execute "Vexplore " . a:dir
+  let t:vex_buf_nr = bufnr("%")
+  wincmd H
+endfunction
+
+function! VexClose()
+  let cur_win_nr = winnr()
+  let target_nr = (cur_win_nr == 1 ? winnr("#") : cur_win_nr)
+
+  1wincmd w
+  close
+  unlet t:vex_buf_nr
+
+  execute (target_nr - 1) . "wincmd w"
+endfunction
+
+map <silent> <F2> :call VexToggle(getcwd())<cr>
+map <silent> <F3> :call VexToggle("")<cr>
 
 " _____________________________________________________________________________
 
@@ -655,13 +690,13 @@ endif
 " }}}
 " NerdTree and NerdTreeTabs {{{
 
-let g:nerdtree_tabs_open_on_gui_startup     = 0
-let g:nerdtree_tabs_open_on_console_startup = 0
+" let g:nerdtree_tabs_open_on_gui_startup     = 0
+" let g:nerdtree_tabs_open_on_console_startup = 0
 
-let NERDTreeIgnore = ['\.py[co]$', '__pycache__']
+" let NERDTreeIgnore = ['\.py[co]$', '__pycache__']
 
-map <silent> <F2> :NERDTreeTabsToggle<CR>
-map <silent> <F3> :NERDTreeFind<CR>
+" map <silent> <F2> :NERDTreeTabsToggle<CR>
+" map <silent> <F3> :NERDTreeFind<CR>
 
 " }}}
 " YouCompleteMe {{{
