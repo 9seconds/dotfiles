@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # This is free and unencumbered software released into the public domain.
 #
@@ -98,7 +98,9 @@ def main():
         if commit is None:
             json_ending = "\n"
             continue
-        print(json.dumps(commit, indent=4), end=json_ending)
+        json.dump(commit, sys.stdout,
+                  sort_keys=True, ensure_ascii=True, indent=4)
+        sys.stdout.write(json_ending)
     print("]")
 
     return os.EX_OK
@@ -162,8 +164,9 @@ def parse_people(lines):
 
 
 def parse_refs(lines):
-    refs = lines[14].split(", ")
-    refs = itertools.chain.from_iterable(ref.split(" -> ") for ref in refs)
+    refs = lines[14].split(",")
+    refs = itertools.chain.from_iterable(ref.split("->") for ref in refs)
+    refs = (ref.strip() for ref in refs)
     refs = ifilter(None, refs)
     refs = list(refs)
 
@@ -174,8 +177,7 @@ def parse_message(lines):
     message = {
         "subject": {
             "full": lines[15],
-            "sanitized": lines[16]
-        },
+            "sanitized": lines[16]},
         "body": "\n".join(lines[20:]).strip()}
     message["raw"] = message["subject"]["full"] + "\n" + message["body"]
     message["raw"] = message["raw"].strip()
@@ -210,7 +212,7 @@ def parse_teammate(commit_name, mailmap_name, commit_mail, mailmap_mail,
             "mailmap": mailmap_name},
         "email": {
             "commit": commit_mail,
-            "mailmap": mailmap_name},
+            "mailmap": mailmap_mail},
         "date": {
             "unix": timestamp,
             "iso_local": local_datetime.isoformat(),
