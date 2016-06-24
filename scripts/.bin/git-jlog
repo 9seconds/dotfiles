@@ -28,17 +28,25 @@
 
 from __future__ import absolute_import, print_function, unicode_literals
 
+import codecs
 import datetime
+import io
 import itertools
+import json
 import os
+import platform
 import subprocess
 import sys
 
-try:
-    import simplejson as json
-except ImportError:
-    import json
 
+if platform.python_implementation() == "CPython":
+    try:
+        import ujson as json
+    except ImportError:
+        try:
+            import simplejson as json
+        except ImportError:
+            pass
 
 if sys.version_info.major == 2:
     ifilter = itertools.ifilter
@@ -74,7 +82,7 @@ COMMIT_FORMAT = "%n".join(
         "%f",  #  16 | sanitazed subject
         "%GS",  # 17 | name of signer
         "%GK",  # 18 | key for signing
-        "%G?",  # 19 | 'G' for good, "B" for bad, "U" for good untrusted, "N" - no
+        "%G?",  # 19 | 'G' - good, "B" - bad, "U" - good untrusted, "N" - no
         "%b",  #  20 | message body
         COMMIT_FINISH_FORMAT
     ]
@@ -117,6 +125,7 @@ def fetch_commits(options):
 
 def parse(lines):
     finish_line = lines.index(COMMIT_FINISH)
+
     commit_data = parse_commit(lines[:finish_line])
     commit_data["changes"] = parse_numstat(lines[finish_line + 1:])
 
@@ -181,8 +190,8 @@ def parse_numstat(lines):
         if line:
             add, delete, filename = line.split("\t", 2)
             result = {
-                "add": int(add),
-                "delete": int(delete),
+                "add": int(add) if add != "-" else None,
+                "delete": int(delete) if delete != "-" else None,
                 "filename": filename}
             numstat.append(result)
 
@@ -217,6 +226,8 @@ def parse_sign(name, key, status):
 
 
 def filter_options(options):
+    """Remove formatting options for git log."""
+
     options = ifilter(
         lambda opt: not opt.startswith(("--oneline", "--pretty", "--format")),
         options)
@@ -231,12 +242,22 @@ def git(*options):
         ["git"] + list(options),
         shell=False, universal_newlines=True, stdout=subprocess.PIPE)
 
-    for line in proc.stdout:
+    # This is a workaround for PyPy. PyPy returns raw bytes here instead of
+    # correct TextIOWrapper which manages encodings. So CPython spits unicode
+    # and PyPy - strs here.
+    stream = proc.stdout
+    if not isinstance(stream, io.TextIOBase):
+        reader = codecs.getreader("utf-8")
+        stream = reader(stream, errors="replace")
+
+    for line in stream:
         yield line.rstrip()
 
     stdout, _ = proc.communicate()
+    if hasattr(stdout, "decode"):
+        stdout = stdout.decode("utf-8")
     for line in stdout.split():
-        yield stdout
+        yield line
 
 
 if __name__ == "__main__":
