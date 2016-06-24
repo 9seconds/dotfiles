@@ -53,25 +53,27 @@ COMMIT_FINISH_FORMAT = "%x00"
 COMMIT_FORMAT = "%n".join(
     [
         COMMIT_START_FORMAT,
-        "%H",  # full commit hash
-        "%h",  # abbrev commit hash
-        "%P",  # full parent hashes, space separated
-        "%p",  # abbrev parent hashes, space separated
-        "%aN",  # author name
-        "%ae",  # set author email
-        "%aE",  # author email, mapped by mailmap
-        "%at",  # author date in timestamp
-        "%cN",  # comitter name
-        "%ce",  # comitter email
-        "%cE",  # comitter email, mapped by mailmap
-        "%ct",  # comitter date in timestamp
-        "%D",  # ref names, comma separated
-        "%s",  # subject
-        "%f",  # sanitazed subject
-        "%GS",  # name of signer
-        "%GK",  # key for signing
-        "%G?",  # 'G' for good, "B" for bad, "U" for good untrusted, "N" - no
-        "%b",  # message body
+        "%H",  #   0 | full commit hash
+        "%h",  #   1 | 1abbrev commit hash
+        "%P",  #   2 | full parent hashes, space separated
+        "%p",  #   3 | abbrev parent hashes, space separated
+        "%an",  #  4 | commit author name
+        "%aN",  #  5 | mailmap author name
+        "%ae",  #  6 | commit author email
+        "%aE",  #  7 | mailmap author email
+        "%at",  #  8 | author date in timestamp
+        "%cn",  #  9 | commit committer name
+        "%cN",  # 10 | mailmap comitter name
+        "%ce",  # 11 | commit comitter email
+        "%cE",  # 12 | mailmap comitter email
+        "%ct",  # 13 | comitter date in timestamp
+        "%D",  #  14 | ref names, comma separated
+        "%s",  #  15 | subject
+        "%f",  #  16 | sanitazed subject
+        "%GS",  # 17 | name of signer
+        "%GK",  # 18 | key for signing
+        "%G?",  # 19 | 'G' for good, "B" for bad, "U" for good untrusted, "N" - no
+        "%b",  #  20 | message body
         COMMIT_FINISH_FORMAT
     ]
 )
@@ -146,15 +148,16 @@ def parse_parents(lines):
 
 def parse_people(lines):
     return {
-        "author": parse_teammate(*lines[4:8]),
-        "committer": parse_teammate(*lines[8:12]),
-        "signer": parse_sign(*lines[15:18])}
+        "author": parse_teammate(*lines[4:9]),
+        "committer": parse_teammate(*lines[9:14]),
+        "signer": parse_sign(*lines[17:20])}
 
 
 def parse_refs(lines):
-    refs = lines[12].split(", ")
+    refs = lines[14].split(", ")
     refs = itertools.chain.from_iterable(ref.split(" -> ") for ref in refs)
     refs = filter(None, refs)
+    refs = list(refs)
 
     return refs
 
@@ -162,11 +165,12 @@ def parse_refs(lines):
 def parse_message(lines):
     message = {
         "subject": {
-            "full": lines[13],
-            "sanitized": lines[14]
+            "full": lines[15],
+            "sanitized": lines[16]
         },
-        "body": "\n".join(lines[13:]).strip()}
+        "body": "\n".join(lines[20:]).strip()}
     message["raw"] = message["subject"]["full"] + "\n" + message["body"]
+    message["raw"] = message["raw"].strip()
 
     return message
 
@@ -176,7 +180,7 @@ def parse_numstat(lines):
 
     for line in lines:
         if line:
-            add, delete, filename = line.split()
+            add, delete, filename = line.split("\t", 2)
             result = {
                 "add": int(add),
                 "delete": int(delete),
@@ -186,16 +190,19 @@ def parse_numstat(lines):
     return numstat
 
 
-def parse_teammate(name, commit_mail, real_mail, timestamp):
+def parse_teammate(commit_name, mailmap_name, commit_mail, mailmap_mail,
+                   timestamp):
     timestamp = int(timestamp)
     local_datetime = datetime.datetime.fromtimestamp(timestamp)
     utc_timestamp = datetime.datetime.utcfromtimestamp(timestamp)
 
     return {
-        "name": name,
+        "name": {
+            "commit": commit_name,
+            "mailmap": mailmap_name},
         "email": {
             "commit": commit_mail,
-            "real_mail": real_mail},
+            "mailmap": mailmap_name},
         "date": {
             "unix": timestamp,
             "iso_local": local_datetime.isoformat(),
