@@ -26,7 +26,7 @@
 # For more information, please refer to <http://unlicense.org/>
 
 
-from __future__ import print_function
+from __future__ import absolute_import, print_function, unicode_literals
 
 import datetime
 import itertools
@@ -41,9 +41,11 @@ except ImportError:
 
 
 if sys.version_info.major == 2:
-    zip_longest = itertools.izip_longest
+    ifilter = itertools.ifilter
+    izip = itertools.izip
 else:
-    zip_longest = itertools.zip_longest
+    ifilter = filter
+    izip = zip
 
 
 COMMIT_START = "\x01"
@@ -115,9 +117,6 @@ def fetch_commits(options):
 
 def parse(lines):
     finish_line = lines.index(COMMIT_FINISH)
-    commit_lines = lines[:finish_line]
-    numstat_lines = lines[finish_line + 1:]
-
     commit_data = parse_commit(lines[:finish_line])
     commit_data["changes"] = parse_numstat(lines[finish_line + 1:])
 
@@ -140,7 +139,7 @@ def parse_commitsha(lines):
 def parse_parents(lines):
     parents = []
 
-    for full, abbrev in zip_longest(lines[2].split(), lines[3].split()):
+    for full, abbrev in izip(lines[2].split(), lines[3].split()):
         parents.append({"full": full, "abbrev": abbrev})
 
     return parents
@@ -156,7 +155,7 @@ def parse_people(lines):
 def parse_refs(lines):
     refs = lines[14].split(", ")
     refs = itertools.chain.from_iterable(ref.split(" -> ") for ref in refs)
-    refs = filter(None, refs)
+    refs = ifilter(None, refs)
     refs = list(refs)
 
     return refs
@@ -218,7 +217,7 @@ def parse_sign(name, key, status):
 
 
 def filter_options(options):
-    options = filter(
+    options = ifilter(
         lambda opt: not opt.startswith(("--oneline", "--pretty", "--format")),
         options)
 
