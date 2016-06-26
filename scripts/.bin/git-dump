@@ -343,6 +343,8 @@ class SQLiteDumper(Dumper):
         self.connection.row_factory = sqlite3.Row
         self.child_parents = {}
         self.commit_ids = {}
+        self.cache_developer = {}
+        self.cache_signer = {}
 
         self.create_db()
 
@@ -394,36 +396,38 @@ class SQLiteDumper(Dumper):
 
     def dump_developer(self, data):
         cursor = self.connection.cursor()
+        key = data["name"]["mailmap"], data["email"]["mailmap"]
 
-        cursor.execute(
-            "SELECT id FROM developer WHERE name = ? AND email = ?",
-            (data["name"]["mailmap"], data["email"]["mailmap"]))
-        checked = cursor.fetchone()
-        if checked:
-            return checked[0]
+        cached = self.cache_developer.get(key)
+        if cached is not None:
+            return cached
 
-        cursor.execute(
-            "INSERT INTO developer (name, email) VALUES (?, ?)",
-            (data["name"]["mailmap"], data["email"]["mailmap"]))
+        cursor.execute("INSERT INTO developer (name, email) VALUES (?, ?)",
+                       key)
+        self.cache_developer[key] = cursor.lastrowid
 
-        return cursor.lastrowid
+        return self.cache_developer[key]
 
     def dump_signature(self, data):
         if not data["key"]:
             return None
 
         cursor = self.connection.cursor()
-        cursor.execute(
-            "UPDATE OR IGNORE signature SET name = ? WHERE key = ?",
-            (data["name"], data["key"]))
+
+        cached = self.cache_signer.get(data["key"])
+        if cached is not None:
+            cursor.execute(
+                "UPDATE OR IGNORE signature SET name = ? WHERE key = ?",
+                (data["name"], data["key"]))
+
+            return cached
+
         cursor.execute(
             "INSERT OR IGNORE INTO signature (name, key) VALUES (?, ?)",
             (data["name"], data["key"]))
-        cursor.execute(
-            "SELECT id FROM signature WHERE key = ?",
-            (data["key"],))
+        self.cache_signer[data["key"]] = cursor.lastrowid
 
-        return cursor.fetchone()["id"]
+        return self.cache_signer[data["key"]]
 
     def dump_refspecs(self, patch_id, refs):
         cursor = self.connection.cursor()
