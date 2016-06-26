@@ -127,22 +127,26 @@ COMMIT_FORMAT = "%n".join(
 SQLITE3_SCHEMA = """
 DROP TABLE IF EXISTS patch;
 CREATE TABLE patch (
-    id                INTEGER PRIMARY KEY,
-    sha_full          TEXT    NOT NULL UNIQUE,
-    sha_abbrev        TEXT    NOT NULL UNIQUE,
-    author_id         INTEGER NOT NULL,
-    author_date       INTEGER NOT NULL,
-    committer_id      INTEGER NOT NULL,
-    committer_date    INTEGER NOT NULL,
-    subject           TEXT    NOT NULL,
-    subject_sanitized TEXT    NOT NULL,
-    sign_id           INTEGER,
-    sign_status       TEXT    NOT NULL,
-    message           TEXT    NOT NULL,
+    id                   INTEGER PRIMARY KEY,
+    sha_full             TEXT    NOT NULL UNIQUE,
+    sha_abbrev           TEXT    NOT NULL UNIQUE,
+    author_id            INTEGER NOT NULL,
+    mailmap_author_id    INTEGER NOT NULL,
+    author_date          INTEGER NOT NULL,
+    committer_id         INTEGER NOT NULL,
+    mailmap_committer_id INTEGER NOT NULL,
+    committer_date       INTEGER NOT NULL,
+    subject              TEXT    NOT NULL,
+    subject_sanitized    TEXT    NOT NULL,
+    sign_id              INTEGER,
+    sign_status          TEXT    NOT NULL,
+    message              TEXT    NOT NULL,
 
-    FOREIGN KEY(author_id)    REFERENCES developer(id),
-    FOREIGN KEY(committer_id) REFERENCES developer(id),
-    FOREIGN KEY(sign_id)      REFERENCES signature(id)
+    FOREIGN KEY(author_id)            REFERENCES developer(id),
+    FOREIGN KEY(mailmap_author_id)    REFERENCES developer(id),
+    FOREIGN KEY(committer_id)         REFERENCES developer(id),
+    FOREIGN KEY(mailmap_committer_id) REFERENCES developer(id),
+    FOREIGN KEY(sign_id)              REFERENCES signature(id)
 );
 
 DROP TABLE IF EXISTS developer;
@@ -354,6 +358,7 @@ class SQLiteDumper(Dumper):
     @commit_after
     def create_db(self):
         self.connection.executescript(SQLITE3_SCHEMA)
+        self.connection.execute("VACUUM")
 
     def dump(self, commits):
         super(SQLiteDumper, self).dump(commits)
@@ -361,24 +366,36 @@ class SQLiteDumper(Dumper):
 
     @commit_after
     def dump_commit(self, commit):
-        author_id = self.dump_developer(commit["developers"]["author"])
-        committer_id = self.dump_developer(commit["developers"]["committer"])
+        author_id = self.dump_developer(
+            commit["developers"]["author"]["name"]["commit"],
+            commit["developers"]["author"]["email"]["commit"])
+        mailmap_author_id = self.dump_developer(
+            commit["developers"]["author"]["name"]["mailmap"],
+            commit["developers"]["author"]["email"]["mailmap"])
+        committer_id = self.dump_developer(
+            commit["developers"]["committer"]["name"]["commit"],
+            commit["developers"]["committer"]["email"]["commit"])
+        mailmap_committer_id = self.dump_developer(
+            commit["developers"]["committer"]["name"]["mailmap"],
+            commit["developers"]["committer"]["email"]["mailmap"])
         sign_id = self.dump_signature(commit["developers"]["signer"])
 
         cursor = self.connection.cursor()
-
         cursor.execute(
             (
                 "INSERT INTO patch (sha_full, sha_abbrev, author_id, "
-                "author_date, committer_id, committer_date, subject, "
+                "mailmap_author_id, author_date, committer_id, "
+                "mailmap_committer_id,  committer_date, subject, "
                 "subject_sanitized, sign_id, sign_status, message) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"),
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"),
             (
                 commit["commitsha"]["full"],
                 commit["commitsha"]["abbrev"],
                 author_id,
+                mailmap_author_id,
                 commit["developers"]["author"]["date"]["unix"],
                 committer_id,
+                mailmap_committer_id,
                 commit["developers"]["committer"]["date"]["unix"],
                 commit["message"]["subject"]["full"],
                 commit["message"]["subject"]["sanitized"],
@@ -394,9 +411,9 @@ class SQLiteDumper(Dumper):
         self.dump_refspecs(patch_id, commit["refspecs"])
         self.dump_changes(patch_id, commit["changes"])
 
-    def dump_developer(self, data):
+    def dump_developer(self, name, email):
         cursor = self.connection.cursor()
-        key = data["name"]["mailmap"], data["email"]["mailmap"]
+        key = name, email
 
         cached = self.cache_developer.get(key)
         if cached is not None:
