@@ -225,13 +225,13 @@ class Progress(object):
         self.size_length = len(str(count))
 
     def update(self):
-        self.current += 1
         self.stream.write("\r")
         self.stream.write(self.current_message)
+        self.current += 1
 
     @property
     def current_message(self):
-        return "{0} / {1} ({2}%)".format(
+        return "{0} / {1} ({2:.1f}%)".format(
             self.current, self.size, 100 * float(self.current) / self.size)
 
 
@@ -246,14 +246,12 @@ class Dumper(object):
     def __init__(self, own_options, progress):
         self.output = own_options.output
         self.progress = progress
-        self.commit_counter = 0
 
     def dump(self, commits):
         for commit in commits:
             if commit is None:
                 self.dump_none()
             else:
-                self.commit_counter += 1
                 self.dump_commit(commit)
                 self.progress.update()
 
@@ -446,7 +444,7 @@ class SQLiteDumper(Dumper):
         self.dump_refspecs(commit_id, commit["refspecs"])
         self.dump_changes(commit_id, commit["changes"])
 
-        if self.commit_counter % self.DUMP_EVERY_COMMITS == 0:
+        if self.progress.current % self.DUMP_EVERY_COMMITS == 0:
             self.connection.commit()
 
     def dump_developer(self, name, email):
@@ -536,7 +534,7 @@ def main():
         dumper = SQLiteDumper
 
     dumper = dumper(own_options,
-                    progress(sys.stderr, 1 + commit_count(git_options)))
+                    progress(sys.stderr, commit_count(git_options)))
     dumper.dump(fetch_commits(git_options))
 
     return os.EX_OK
@@ -566,8 +564,6 @@ def fetch_commits(options):
 
 
 def commit_count(options):
-    cmdline = ["git", "--pretty=format:"] + list(options)
-
     gitlog_proc = subprocess.Popen(
         ["git", "log", "--pretty=format:"] + list(options),
         shell=False, universal_newlines=True, stdout=subprocess.PIPE)
