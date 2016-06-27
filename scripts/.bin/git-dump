@@ -47,6 +47,7 @@ import functools
 import io
 import itertools
 import json
+import logging
 import os
 import platform
 import sqlite3
@@ -204,9 +205,11 @@ def commit_after(func):
         try:
             result = func(self, *args, **kwargs)
         except:
+            logging.warning("COMMIT AFTER: Commit")
             self.connection.rollback()
             raise
         else:
+            logging.debug("COMMIT AFTER: Commit")
             self.connection.commit()
             return result
 
@@ -480,6 +483,11 @@ class SQLiteDumper(Dumper):
 
 def main():
     own_options, git_options = get_options()
+
+    logging.basicConfig(
+        format="[%(levelname)-5s] %(message)s",
+        level=logging.DEBUG if own_options.debug else logging.ERROR)
+
     if own_options.format == "json":
         dumper = JSONDumper
     elif own_options.format == "xml":
@@ -500,11 +508,15 @@ def fetch_commits(options):
 
     for line in iterator:
         if line == COMMIT_START:
+            logging.debug("FETCH COMMITs: Start detected")
             if lines:
                 yield parse(lines)
                 lines = []
         else:
+            logging.debug("FETCH COMMITS: Add line to buffer")
             lines.append(line)
+
+    logging.debug("FETCH COMMITS: Output exhausted")
 
     yield None
 
@@ -514,9 +526,10 @@ def fetch_commits(options):
 
 def parse(lines):
     finish_line = lines.index(COMMIT_FINISH)
-
     commit_data = parse_commit(lines[:finish_line])
     commit_data["changes"] = parse_numstat(lines[finish_line + 1:])
+
+    logging.debug("PARSE: %s", commit_data)
 
     return commit_data
 
@@ -525,7 +538,7 @@ def parse_commit(lines):
     return {
         "commitsha": parse_commitsha(lines),
         "parents": parse_parents(lines),
-        "developers": parse_develoeprs(lines),
+        "developers": parse_developers(lines),
         "refspecs": parse_refs(lines),
         "message": parse_message(lines)}
 
@@ -543,7 +556,7 @@ def parse_parents(lines):
     return parents
 
 
-def parse_develoeprs(lines):
+def parse_developers(lines):
     return {
         "author": parse_teammate(*lines[4:9]),
         "committer": parse_teammate(*lines[9:14]),
@@ -626,9 +639,11 @@ def filter_git_options(options):
 def git(*options):
     """Iterator for given git command."""
 
+    cmdline = ["git"] + list(options)
+    logging.debug("GIT: Execute %r", subprocess.list2cmdline(cmdline))
+
     proc = subprocess.Popen(
-        ["git"] + list(options),
-        shell=False, universal_newlines=True, stdout=subprocess.PIPE)
+        cmdline, shell=False, universal_newlines=True, stdout=subprocess.PIPE)
 
     # This is a workaround for PyPy. PyPy returns raw bytes here instead of
     # correct TextIOWrapper which manages encodings. So CPython spits unicode
@@ -638,13 +653,15 @@ def git(*options):
         reader = codecs.getreader("utf-8")
         stream = reader(stream, errors="replace")
 
-    for line in stream:
-        yield line.rstrip()
+    for line in (line.rstrip() for line in stream):
+        logging.debug("GIT: Read %r", line)
+        yield line
 
     stdout, _ = proc.communicate()
     if hasattr(stdout, "decode"):
         stdout = stdout.decode("utf-8")
-    for line in stdout.split():
+    for line in (line.rstrip() for line in stdout.split()):
+        logging.debug("GIT: Read %r", line)
         yield line
 
 
