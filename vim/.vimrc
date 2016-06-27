@@ -46,7 +46,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'rstacruz/vim-closer'
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
     Plug 'sheerun/vim-polyglot'
-    Plug 'takac/vim-hardtime'
+    " Plug 'takac/vim-hardtime'
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-endwise'
     Plug 'tpope/vim-markdown', { 'for': 'markdown' }
@@ -59,6 +59,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
     Plug 'xolox/vim-misc' | Plug 'xolox/vim-notes' | Plug 'xolox/vim-session'
+    Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
 
     Plug 'kana/vim-textobj-user' |
         \ Plug 'kana/vim-textobj-indent' |
@@ -359,8 +360,8 @@ function! VexClose()
   execute (target_nr - 1) . "wincmd w"
 endfunction
 
-map <silent> <F2> :call VexToggle(getcwd())<cr>
-map <silent> <F3> :call VexToggle("")<cr>
+" map <silent> <F2> :call VexToggle(getcwd())<cr>
+" map <silent> <F3> :call VexToggle("")<cr>
 
 " _____________________________________________________________________________
 
@@ -690,13 +691,13 @@ endif
 " }}}
 " NerdTree and NerdTreeTabs {{{
 
-" let g:nerdtree_tabs_open_on_gui_startup     = 0
-" let g:nerdtree_tabs_open_on_console_startup = 0
+let g:nerdtree_tabs_open_on_gui_startup     = 0
+let g:nerdtree_tabs_open_on_console_startup = 0
 
-" let NERDTreeIgnore = ['\.py[co]$', '__pycache__']
+let NERDTreeIgnore = ['\.py[co]$', '__pycache__']
 
-" map <silent> <F2> :NERDTreeTabsToggle<CR>
-" map <silent> <F3> :NERDTreeFind<CR>
+map <silent> <F2> :NERDTreeTabsToggle<CR>
+map <silent> <F3> :NERDTreeFind<CR>
 
 " }}}
 " YouCompleteMe {{{
