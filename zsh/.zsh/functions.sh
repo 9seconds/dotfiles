@@ -277,10 +277,7 @@ docker_clean() {
 
     docker_stop && docker_rm
 
-    local images="$(docker images | awk '$1 == "<none>" { if (!seen[$3]++) print $3 }')"
-    if [ -n "${images}" ]; then
-        echo ${images} | xargs docker rmi
-    fi
+    docker rmi $(docker images -f "dangling=true" -q)
 }
 
 docker_rmi() {
