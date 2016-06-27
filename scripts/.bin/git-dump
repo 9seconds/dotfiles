@@ -178,22 +178,22 @@ CREATE TABLE log (
 
 DROP TABLE IF EXISTS refspecs;
 CREATE TABLE refspecs (
-    name     TEXT    PRIMARY KEY,
-    patch_id INTEGER NOT NULL,
+    name      TEXT    PRIMARY KEY,
+    commit_id INTEGER NOT NULL,
 
-    FOREIGN KEY(patch_id) REFERENCES commits(id)
+    FOREIGN KEY(commit_id) REFERENCES commits(id)
 );
 
 DROP TABLE IF EXISTS changes;
 CREATE TABLE changes (
     id           INTEGER PRIMARY KEY,
-    patch_id     INTEGER NOT NULL,
+    commit_id    INTEGER NOT NULL,
     lines_add    INTEGER,
     lines_delete INTEGER,
     filename     TEXT NOT NULL,
 
-    UNIQUE(patch_id, filename),
-    FOREIGN KEY(patch_id) REFERENCES commits(id)
+    UNIQUE(commit_id, filename),
+    FOREIGN KEY(commit_id) REFERENCES commits(id)
 );
 """.strip()
 """Schema of SQLite database."""
@@ -216,17 +216,46 @@ def commit_after(func):
     return decorator
 
 
+class Progress(object):
+
+    def __init__(self, stream, count):
+        self.stream = stream
+        self.size = count
+        self.current = 0
+        self.size_length = len(str(count))
+
+    def update(self):
+        self.current += 1
+        self.stream.write("\r")
+        self.stream.write(self.current_message)
+
+    @property
+    def current_message(self):
+        return "{0} / {1} ({2}%)".format(
+            self.current, self.size, 100 * float(self.current) / self.size)
+
+
+class HideProgress(Progress):
+
+    def update(self):
+        pass
+
+
 class Dumper(object):
 
-    def __init__(self, own_options):
+    def __init__(self, own_options, progress):
         self.output = own_options.output
+        self.progress = progress
+        self.commit_counter = 0
 
     def dump(self, commits):
         for commit in commits:
             if commit is None:
                 self.dump_none()
             else:
+                self.commit_counter += 1
                 self.dump_commit(commit)
+                self.progress.update()
 
     def dump_none(self):
         pass
@@ -237,8 +266,8 @@ class Dumper(object):
 
 class JSONDumper(Dumper):
 
-    def __init__(self, options):
-        super(JSONDumper, self).__init__(options)
+    def __init__(self, options, progress):
+        super(JSONDumper, self).__init__(options, progress)
 
         self.line_ending = ",\n"
         if self.output == "-" or self.output is None:
@@ -261,8 +290,8 @@ class JSONDumper(Dumper):
 
 class XMLDumper(Dumper):
 
-    def __init__(self, options):
-        super(XMLDumper, self).__init__(options)
+    def __init__(self, options, progress):
+        super(XMLDumper, self).__init__(options, progress)
 
         if self.output == "-" or self.output is None:
             self.stream = sys.stdout
@@ -340,9 +369,10 @@ class XMLDumper(Dumper):
 class SQLiteDumper(Dumper):
 
     DEFAULT_FILENAME = "dump.sqlite"
+    DUMP_EVERY_COMMITS = 25
 
-    def __init__(self, options):
-        super(SQLiteDumper, self).__init__(options)
+    def __init__(self, options, progress):
+        super(SQLiteDumper, self).__init__(options, progress)
 
         self.connection = sqlite3.connect(self.output or self.DEFAULT_FILENAME)
         self.connection.row_factory = sqlite3.Row
@@ -363,9 +393,13 @@ class SQLiteDumper(Dumper):
 
     def dump(self, commits):
         super(SQLiteDumper, self).dump(commits)
+
+        self.connection.commit()
         self.dump_log()
 
-    @commit_after
+        self.connection.execute("VACUUM")
+        self.connection.commit()
+
     def dump_commit(self, commit):
         author_id = self.dump_developer(
             commit["developers"]["author"]["name"]["commit"],
@@ -403,14 +437,17 @@ class SQLiteDumper(Dumper):
                 sign_id,
                 commit["developers"]["signer"]["status"],
                 commit["message"]["body"]))
-        patch_id = cursor.lastrowid
+        commit_id = cursor.lastrowid
 
-        self.commit_ids[commit["commitsha"]["abbrev"]] = patch_id
+        self.commit_ids[commit["commitsha"]["abbrev"]] = commit_id
         self.child_parents[commit["commitsha"]["abbrev"]] = [
             cmt["abbrev"] for cmt in commit["parents"]]
 
-        self.dump_refspecs(patch_id, commit["refspecs"])
-        self.dump_changes(patch_id, commit["changes"])
+        self.dump_refspecs(commit_id, commit["refspecs"])
+        self.dump_changes(commit_id, commit["changes"])
+
+        if self.commit_counter % self.DUMP_EVERY_COMMITS == 0:
+            self.connection.commit()
 
     def dump_developer(self, name, email):
         cursor = self.connection.cursor()
@@ -447,12 +484,12 @@ class SQLiteDumper(Dumper):
 
         return self.cache_signer[data["key"]]
 
-    def dump_refspecs(self, patch_id, refs):
+    def dump_refspecs(self, commit_id, refs):
         cursor = self.connection.cursor()
 
         cursor.executemany(
-            "INSERT INTO refspecs (name, patch_id) VALUES (?, ?)",
-            [(ref, patch_id) for ref in refs])
+            "INSERT INTO refspecs (name, commit_id) VALUES (?, ?)",
+            [(ref, commit_id) for ref in refs])
 
     @commit_after
     def dump_log(self):
@@ -469,15 +506,14 @@ class SQLiteDumper(Dumper):
                 "INSERT INTO log (child, parent) VALUES (?, ?)",
                 log_entries)
 
-    @commit_after
-    def dump_changes(self, patch_id, changes):
+    def dump_changes(self, commit_id, changes):
         cursor = self.connection.cursor()
 
         cursor.executemany(
             (
-                "INSERT INTO changes (patch_id, lines_add, "
+                "INSERT INTO changes (commit_id, lines_add, "
                 "lines_delete, filename) VALUES (?, ?, ?, ?)"),
-            [(patch_id, chng["add"], chng["delete"], chng["filename"])
+            [(commit_id, chng["add"], chng["delete"], chng["filename"])
              for chng in changes])
 
 
@@ -488,6 +524,10 @@ def main():
         format="[%(levelname)-5s] %(message)s",
         level=logging.DEBUG if own_options.debug else logging.ERROR)
 
+    progress = HideProgress
+    if not own_options.debug and own_options.progress:
+        progress = Progress
+
     if own_options.format == "json":
         dumper = JSONDumper
     elif own_options.format == "xml":
@@ -495,7 +535,8 @@ def main():
     else:
         dumper = SQLiteDumper
 
-    dumper = dumper(own_options)
+    dumper = dumper(own_options,
+                    progress(sys.stderr, 1 + commit_count(git_options)))
     dumper.dump(fetch_commits(git_options))
 
     return os.EX_OK
@@ -522,6 +563,23 @@ def fetch_commits(options):
 
     if lines:
         yield parse(lines)
+
+
+def commit_count(options):
+    cmdline = ["git", "--pretty=format:"] + list(options)
+
+    gitlog_proc = subprocess.Popen(
+        ["git", "log", "--pretty=format:"] + list(options),
+        shell=False, universal_newlines=True, stdout=subprocess.PIPE)
+    wcl_proc = subprocess.Popen(
+        ["wc", "-l"],
+        shell=False, universal_newlines=True,
+        stdin=gitlog_proc.stdout, stdout=subprocess.PIPE)
+    gitlog_proc.stdout.close()
+
+    stdout, _ = wcl_proc.communicate()
+
+    return int(stdout.strip())
 
 
 def parse(lines):
@@ -672,6 +730,11 @@ def get_options():
     parser.add_argument(
         "-d", "--debug",
         help="Run in debug mode",
+        action="store_true",
+        default=False)
+    parser.add_argument(
+        "-p", "--progress",
+        help="Show simple progress indicator.",
         action="store_true",
         default=False)
     parser.add_argument(
