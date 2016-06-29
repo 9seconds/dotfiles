@@ -316,18 +316,6 @@ set shortmess=I
 " Disable preview on completeopt
 set completeopt-=preview
 
-" _____________________________________________________________________________
-
-" Set ag as a grep if it is available
-if executable('ag')
-    set grepprg=ag\ --vimgrep\ $*
-    set grepformat=%f:%l:%c:%m
-
-    nnoremap <silent> gs :execute "grep! " . shellescape(expand("<cword>"))<cr>:redraw!<cr>:copen<cr>
-else
-    nnoremap <silent> gs :execute "grep! -Rni " . shellescape(expand("<cword>")) . " ."<cr>:redraw!<cr>:copen<cr>
-endif
-
 " -----------------------------------------------------------------------------
 
 " netrw settings
@@ -475,6 +463,11 @@ nnoremap <silent> Q :call <SID>QuickfixToggle()<cr>
 nnoremap <silent> <Leader>qq :q<cr>
 nnoremap <silent> <Leader>qa :qa<cr>
 
+" Grep function
+nnoremap <Leader>gp :Grep<space>
+
+" _____________________________________________________________________________
+
 let g:quickfix_is_open = 0
 function! s:QuickfixToggle()
     if g:quickfix_is_open
@@ -495,6 +488,19 @@ if v:version >= 703
         autocmd!
         autocmd FileType qf setlocal colorcolumn=
     augroup END
+endif
+
+" _____________________________________________________________________________
+
+if executable('ag')
+    set grepprg=ag\ --vimgrep\ $*
+    set grepformat=%f:%l:%c:%m
+
+    command! -nargs=* -complete=file -bar Grep silent! grep! <args>|cwindow|redraw!
+    nnoremap <silent> gs :execute "grep! " . shellescape(expand("<cword>"))<cr>:redraw!<cr>:copen<cr>
+else
+    command! -nargs=* -complete=file -bar Grep silent! grep! -Rni <args> .|cwindow|redraw!
+    nnoremap <silent> gs :execute "grep! -Rni " . shellescape(expand("<cword>")) . " ."<cr>:redraw!<cr>:copen<cr>
 endif
 
 
@@ -777,6 +783,8 @@ augroup END
 " FZF {{{
 
 if executable('fzf')
+    command! -nargs=* -complete=file -bar Grep silent! Ag <args>
+
     nnoremap <silent> <leader>ff :Files<cr>
     nnoremap <silent> <leader>fb :Buffers<cr>
     nnoremap <silent> <leader>ft :BTags<cr>
