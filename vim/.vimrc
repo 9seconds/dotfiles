@@ -79,8 +79,6 @@ call plug#begin('~/.vim/plugged')
         Plug 'ctrlpvim/ctrlp.vim'
     endif
 
-    Plug 'Numkil/ag.nvim'
-
     if v:version >= 704
         Plug 'SirVer/ultisnips'
     endif
@@ -324,6 +322,10 @@ set completeopt-=preview
 if executable('ag')
     set grepprg=ag\ --vimgrep\ $*
     set grepformat=%f:%l:%c:%m
+
+    nnoremap <silent> gs :execute "grep! " . shellescape(expand("<cword>"))<cr>:redraw!<cr>:copen<cr>
+else
+    nnoremap <silent> gs :execute "grep! -Rni " . shellescape(expand("<cword>")) . " ."<cr>:redraw!<cr>:copen<cr>
 endif
 
 " -----------------------------------------------------------------------------
@@ -611,12 +613,6 @@ endif
 " # Plugin settings =============================================== {{{
 " _____________________________________________________________________________
 
-" Ag {{{
-
-let g:ag_working_path_mode = "r"
-let g:agprg                = "ag --vimgrep --nocolor -fS"
-
-" }}}
 " Airline {{{
 
 " let g:airline_left_sep        = ''
@@ -787,6 +783,7 @@ if executable('fzf')
     nnoremap <silent> <leader>fa :Tags<cr>
     nnoremap <silent> <leader>fl :Lines<cr>
     nnoremap <silent> <leader>fm :Marks<cr>
+    nnoremap <silent> gs         :execute "Ag " . expand("<cword>")<cr>
 endif
 
 " }}}
