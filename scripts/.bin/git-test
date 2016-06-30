@@ -1,0 +1,1450 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# vim: set expandtab foldmethod=marker foldenable shiftwidth=4:
+# License {{{
+# Copyright (c) 2016 Sergey Arkhipov
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# }}}
+# Documentation {{{
+"""
+git-test is an way of unify testing of your project.
+
+Basically, it follows the same ideas as `tox
+<https://testrun.org/tox/latest/>`_ or `testr
+<https://testrepository.readthedocs.io/en/latest/>`_ in Python/OpenStack
+world: to give the same way of testing for every project that you are
+managing. Currently projects follow different test practices and users
+usually have a lot of questions how to execute tests. Test setup is
+crumbersome and sometimes require setting up whole test environment:
+servers, networks etc. Just to verify that your program sums 2+2
+correctly. This sucks.
+
+tox gave us a light: it manages test virtual environments for us, takes
+care on base routines and gives us an ability to unify testing across
+projects in the same way. Usually, all that CI systems do is executing
+tox. And if you are Python guy, then you know: if project root has
+.tox.ini file, it means that all you need to do to execute test is to
+type 'tox' and click Enter. Also, it reduces the difference between your
+developer machine and CI system: all tests are executed in the same way,
+with different Python versions.
+
+tox doing good for Python, git-test is a good companion for that. All it
+does, it stores *test results* in your git repository. The basic idea as
+is: you are running tests with different commits and you need to store
+test results somewhere, to differ good and bad commits. Some of us use
+tags, bug tagging bring clutter: in such systems almost every commit is
+tagged. It is a mess. Sometimes, output of test tool matter. git-test
+comes here: all it does, it can run your test tool on a commit, collect
+results and store them in the same repository. Yes, you always can check
+output, executor and test result using plain Git.
+
+testrepository is OK, but it seem awkward to me to store information
+about tests in certain commits in Git tree, not in Git objects.
+
+Oh, long story short: git-test is just a convenient wrapper for 'git
+notes'. This was done intentionally, to allow access to test results
+even without this script.
+
+Let's check how it works.
+
+First, you need a setup. git-test stores its settings in the root of
+repository, in .gittest file.
+
+Example of such file:
+
+    {
+        "default": {
+            "command": "ls -la"
+        },
+        "tox": {
+            "command": "tox"
+        }
+    }
+
+We have 2 test tools set up there: 'default' and 'tox'. Right now test
+setup configuration if limited: just a command to execute.
+
+You can create your setup file with 'git test setup init'. It will bring
+small wizard to help you to create such file. If you want to check your
+setup, execute 'git test setup show':
+
+    ➜ git test setup show
+    default
+        Command: ls -la
+    tox
+        Command: find .
+
+Now let's run 'default' test configuration (ls -la):
+
+    ➜ git test run
+    # -------
+    # default
+    # -------
+    $ ls -la
+    итого 180
+    drwxrwxr-x 16 sergey sergey  4096 июл  4 11:42 .
+    drwxrwxr-x 16 sergey sergey  4096 июн 22 17:06 ..
+    drwxrwxr-x  2 sergey sergey  4096 май 17 13:28 ag
+    drwxrwxr-x  3 sergey sergey  4096 апр 29 12:50 aria2
+    drwxrwxr-x  2 sergey sergey  4096 июн 27 10:58 ctags
+    drwxrwxr-x  2 sergey sergey  4096 май 28 14:07 git
+    drwxrwxr-x 10 sergey sergey  4096 июл  4 11:05 .git
+    -rw-rw-r--  1 sergey sergey     5 апр 18 11:27 .gitignore
+    -rw-rw-r--  1 sergey sergey   222 апр 19 09:05 .gitmodules
+    -rw-rw-r--  1 sergey sergey   103 июн 30 10:51 .gittest
+    -rw-rw-r--  1 sergey sergey  1279 апр 21 09:05 gnome_terminal.dconf
+    -rwxrwxr-x  1 sergey sergey   722 дек  7  2015 install_vim.sh
+    -rw-rw-r--  1 sergey sergey  1081 ноя 24  2015 LICENSE
+    -rw-rw-r--  1 sergey sergey    85 июн 24 08:46 .mailmap
+    -rw-rw-r--  1 sergey sergey   984 май  5 09:21 Makefile
+    -rw-rw-r--  1 sergey sergey  1000 дек  7  2015 MakefileVim.mk
+    drwxrwxr-x  2 sergey sergey  4096 апр 25 08:28 nodejs
+    drwxrwxr-x  3 sergey sergey  4096 апр 20 09:02 pip
+    drwxrwxr-x  2 sergey sergey  4096 май 25 09:00 python
+    -rw-rw-r--  1 sergey sergey    14 ноя 24  2015 README.md
+    drwxrwxr-x  3 sergey sergey  4096 апр 19 09:05 roxterm
+    drwxrwxr-x  3 sergey sergey  4096 июн 23 15:09 scripts
+    -rw-rw-r--  1 sergey sergey 77293 июл  4 11:42 tags
+    drwxrwxr-x  2 sergey sergey  4096 май 18 08:26 tmux
+    drwxrwxr-x  3 sergey sergey  4096 июн 29 15:21 vim
+    drwxrwxr-x  3 sergey sergey  4096 май 16 17:18 weechat
+    drwxrwxr-x  3 sergey sergey  4096 май 28 14:07 zsh
+
+Holla! Test passed. Let's run, doing actual storing of result:
+
+    ➜ git test run -s
+    # -------
+    # default
+    # -------
+    $ ls -la
+    итого 180
+    drwxrwxr-x 16 sergey sergey  4096 июл  4 11:43 .
+    drwxrwxr-x 16 sergey sergey  4096 июн 22 17:06 ..
+    drwxrwxr-x  2 sergey sergey  4096 май 17 13:28 ag
+    drwxrwxr-x  3 sergey sergey  4096 апр 29 12:50 aria2
+    drwxrwxr-x  2 sergey sergey  4096 июн 27 10:58 ctags
+    drwxrwxr-x  2 sergey sergey  4096 май 28 14:07 git
+    drwxrwxr-x 10 sergey sergey  4096 июл  4 11:05 .git
+    -rw-rw-r--  1 sergey sergey     5 апр 18 11:27 .gitignore
+    -rw-rw-r--  1 sergey sergey   222 апр 19 09:05 .gitmodules
+    -rw-rw-r--  1 sergey sergey   103 июн 30 10:51 .gittest
+    -rw-rw-r--  1 sergey sergey  1279 апр 21 09:05 gnome_terminal.dconf
+    -rwxrwxr-x  1 sergey sergey   722 дек  7  2015 install_vim.sh
+    -rw-rw-r--  1 sergey sergey  1081 ноя 24  2015 LICENSE
+    -rw-rw-r--  1 sergey sergey    85 июн 24 08:46 .mailmap
+    -rw-rw-r--  1 sergey sergey   984 май  5 09:21 Makefile
+    -rw-rw-r--  1 sergey sergey  1000 дек  7  2015 MakefileVim.mk
+    drwxrwxr-x  2 sergey sergey  4096 апр 25 08:28 nodejs
+    drwxrwxr-x  3 sergey sergey  4096 апр 20 09:02 pip
+    drwxrwxr-x  2 sergey sergey  4096 май 25 09:00 python
+    -rw-rw-r--  1 sergey sergey    14 ноя 24  2015 README.md
+    drwxrwxr-x  3 sergey sergey  4096 апр 19 09:05 roxterm
+    drwxrwxr-x  3 sergey sergey  4096 июн 23 15:09 scripts
+    -rw-rw-r--  1 sergey sergey 77293 июл  4 11:43 tags
+    drwxrwxr-x  2 sergey sergey  4096 май 18 08:26 tmux
+    drwxrwxr-x  3 sergey sergey  4096 июн 29 15:21 vim
+    drwxrwxr-x  3 sergey sergey  4096 май 16 17:18 weechat
+    drwxrwxr-x  3 sergey sergey  4096 май 28 14:07 zsh
+
+Let's check what we have now:
+
+    ➜ git test list
+    # -------
+    # default
+    # -------
+    2016-07-04T11:43:54.910000  a7caaa76e579899ff025b0f0e10fd138db0056e7  passed
+
+Timestamp, commit and a mark that test is passed. Btw, the list if
+reverse sorted by time
+
+Let's check test result:
+
+    ➜ g test show a7caaa76e579899ff025b0f0e10fd138db0056e7
+    # -------
+    # default
+    # -------
+    Test command: ls -la
+    Exit code:    0
+    Start at:     Mon Jul  4 11:43:54 2016 (1467621834.91)
+    Finish at:    Mon Jul  4 11:43:54 2016 (1467621834.91)
+    Duration:     0 seconds
+    Hostname:     andromeda
+    User:         sergey
+    Environment:
+                          HISTTIMEFORMAT: %d.%m.%y %H:%M:%S
+                                    LESS: -R
+                          UPSTART_EVENTS: xsession started
+                        XDG_SESSION_TYPE: x11
+    ...
+                            GDM_LANG: ru
+                        LC_TELEPHONE: ru_RU.UTF-8
+                               SHLVL: 2
+                                 PWD: /home/sergey/dev/pvt/dotfiles
+
+    итого 180
+    drwxrwxr-x 16 sergey sergey  4096 июл  4 11:43 .
+    drwxrwxr-x 16 sergey sergey  4096 июн 22 17:06 ..
+    drwxrwxr-x  2 sergey sergey  4096 май 17 13:28 ag
+    drwxrwxr-x  3 sergey sergey  4096 апр 29 12:50 aria2
+    drwxrwxr-x  2 sergey sergey  4096 июн 27 10:58 ctags
+    drwxrwxr-x  2 sergey sergey  4096 май 28 14:07 git
+    drwxrwxr-x 10 sergey sergey  4096 июл  4 11:05 .git
+    -rw-rw-r--  1 sergey sergey     5 апр 18 11:27 .gitignore
+    -rw-rw-r--  1 sergey sergey   222 апр 19 09:05 .gitmodules
+    -rw-rw-r--  1 sergey sergey   103 июн 30 10:51 .gittest
+    -rw-rw-r--  1 sergey sergey  1279 апр 21 09:05 gnome_terminal.dconf
+    -rwxrwxr-x  1 sergey sergey   722 дек  7  2015 install_vim.sh
+    -rw-rw-r--  1 sergey sergey  1081 ноя 24  2015 LICENSE
+    -rw-rw-r--  1 sergey sergey    85 июн 24 08:46 .mailmap
+    -rw-rw-r--  1 sergey sergey   984 май  5 09:21 Makefile
+    -rw-rw-r--  1 sergey sergey  1000 дек  7  2015 MakefileVim.mk
+    drwxrwxr-x  2 sergey sergey  4096 апр 25 08:28 nodejs
+    drwxrwxr-x  3 sergey sergey  4096 апр 20 09:02 pip
+    drwxrwxr-x  2 sergey sergey  4096 май 25 09:00 python
+    -rw-rw-r--  1 sergey sergey    14 ноя 24  2015 README.md
+    drwxrwxr-x  3 sergey sergey  4096 апр 19 09:05 roxterm
+    drwxrwxr-x  3 sergey sergey  4096 июн 23 15:09 scripts
+    -rw-rw-r--  1 sergey sergey 77293 июл  4 11:43 tags
+    drwxrwxr-x  2 sergey sergey  4096 май 18 08:26 tmux
+    drwxrwxr-x  3 sergey sergey  4096 июн 29 15:21 vim
+    drwxrwxr-x  3 sergey sergey  4096 май 16 17:18 weechat
+    drwxrwxr-x  3 sergey sergey  4096 май 28 14:07 zsh
+
+Okay, let's push:
+
+    ➜ git test push
+    # ------
+    # origin
+    # ------
+    To git@github.com:9seconds/dotfiles.git
+            refs/notes/test_default:refs/notes/test_default a3304b1..7cce95d
+    Done
+
+We've pushed test results to Git repository. Test results are stored
+along with code now.
+
+To fetch test results, you may use following:
+
+    ➜ git test pull
+    # ------
+    # origin
+    # ------
+
+Also, if you do not want to do that explicitly all the time (as I),
+please execute following:
+
+    ➜ git config --local --add remote.origin.fetch \
+          "+refs/notes/test*:refs/notes/test*"
+
+This will update your .git/config and now you will fetch test results on
+'git fetch'.
+"""
+# }}}
+
+# Imports {{{
+
+
+from __future__ import print_function, unicode_literals, absolute_import
+
+import argparse
+import binascii
+import codecs
+import contextlib
+import datetime
+import getpass
+import io
+import itertools
+import json
+import logging
+import os
+import os.path
+import platform
+import posixpath
+import re
+import readline
+import shlex
+import subprocess
+import sys
+import tempfile
+import time
+import zlib
+
+
+# }}}
+# Constants {{{
+
+
+TEST_TYPE_DEFAULT = "default"
+"""Default test type name."""
+
+TEST_TYPE_ALL = "all"
+"""Special test type for 'all' known test types."""
+
+CONFIG_FILENAME = ".gittest"
+"""Filename of the test config."""
+
+TEST_REFNS = "test"
+"""Prefix of refspec namespace for git-test."""
+
+
+# }}}
+# Python 2/3 compatibility {{{
+
+if sys.version_info.major == 2:
+    imap = itertools.imap
+else:
+    imap = map
+    basestring = str,
+
+# }}}
+
+# Classes {{{
+
+# Exceptions {{{
+
+
+class GitTestError(Exception):
+    """Base class for git-test exceptions."""
+
+
+class ProcessError(GitTestError):
+    """Base exception for problems in git processes."""
+
+
+class ReturnCodeProcessError(ProcessError):
+    """Problem in git with known exit code."""
+
+    def __init__(self, return_code):
+        super(ProcessError, self).__init__(
+            "Return code: {0}".format(return_code))
+        self.return_code = return_code
+
+
+class StdErrorProcessError(ProcessError):
+    """Exception which is raised on anything in git's stderr."""
+
+
+# }}}
+# Command classes {{{
+
+# Abstract command {{{
+
+
+class Command(object):
+    """
+    Base class for git-test subcommands.
+
+    This class contains routines, required by each subcommand: reading
+    config file, printing the same header etc.
+    """
+
+    DELIMITER = "-"
+    """Delimiter char for header."""
+
+    def __init__(self, options):
+        self.cli_options = options
+        self.debug = bool(options.debug)
+        self.git = Git()
+        self.config_raw = None
+
+        os.chdir(self.git.toplevel_path)
+
+    @property
+    def config_path(self):
+        """Returns path to git-test config. This is absolute path."""
+
+        return os.path.join(self.git.toplevel_path, CONFIG_FILENAME)
+
+    @property
+    def config(self):
+        """
+        Returns k/v mapping of the config.
+
+        Key is the name of the configuration, value is a dict of config
+        k/v pairs.
+        """
+
+        if self.config_raw:
+            return self.config_raw
+
+        try:
+            with open(self.config_path, "r") as resource:
+                return json.load(resource)
+        except Exception as exc:
+            logging.warning("Cannot read %r: %s", self.config_path, exc)
+            return {}
+
+    def print_header(self, header):
+        """Just prints header for the section."""
+
+        print("# {0}".format(self.DELIMITER * len(header)))
+        print("# {0}".format(header))
+        print("# {0}".format(self.DELIMITER * len(header)))
+
+    def get_test_types(self, test_type):
+        """Returns a dict of test types to operate on."""
+
+        if test_type == TEST_TYPE_ALL:
+            return self.config
+
+        return {k: v for k, v in self.config.items() if k == test_type}
+
+    def run(self):
+        """Main method."""
+
+        raise NotImplementedError
+
+
+# }}}
+# Setup {{{
+
+
+class SetupCommand(Command):
+    """Command for git test setup."""
+
+    def __init__(self, options):
+        super(SetupCommand, self).__init__(options)
+
+        self.action = options.action
+
+    def run(self):
+        if self.action == "show":
+            return self.run_show()
+
+        return self.run_init()
+
+    def run_show(self):
+        """This method is responsible for git setup show."""
+
+        for name, data in self.config.items():
+            print(name)
+            print("    Command: {0}".format(data["command"]))
+
+    def run_init(self):
+        """This method is responsible for git setup init."""
+
+        test_configurations = dict(self.ask_configurations())
+
+        if not test_configurations:
+            return os.EX_OK
+        if not self.valid_configurations(test_configurations):
+            return os.EX_DATAERR
+
+        self.write_config(test_configurations)
+
+    def ask_configurations(self):
+        """This method requests configuration."""
+
+        try:
+            while True:
+                print(
+                    "Enter test configuration (Ctrl+D to cancel and proceed "
+                    "next). Default configuration "
+                    "is '{0}':".format(TEST_TYPE_DEFAULT))
+                name = self.ask_name()
+                command = self.ask_command(name)
+
+                yield name, command
+
+                print("")
+        except EOFError:
+            print("")
+            raise StopIteration
+
+    def ask_name(self):
+        """This method requests configuration name."""
+
+        while True:
+            name = raw_input("Name of configuration ([a-z0-9_]): ")  # NOQA
+            name = name.strip()
+
+            if re.match(r"[a-z0-9_]", name):
+                return name
+            print("-- Incorrect name '{0}'".format(name))
+
+        return name
+
+    def ask_command(self, name):
+        """This method requests test command to execute."""
+
+        while True:
+            name = raw_input("Test command for '{0}': ".format(name))  # NOQA
+            name = name.strip()
+
+            if name:
+                return name
+            print("-- Command should not be empty")
+
+    def valid_configurations(self, configs):
+        """This method validates configs and asks for user confirmation."""
+
+        print("\n" + "-" * 20, end="")
+
+        for name, command in configs.items():
+            print("")
+            print("Name:    {0}".format(name))
+            print("Command: {0}".format(command))
+
+        print("-" * 20)
+        while True:
+            answer = raw_input("Are configurations valid? [Y/N]: ")  # NOQA
+            answer = answer.strip().upper()
+
+            if answer in ("Y", "N"):
+                return answer == "Y"
+
+    def write_config(self, configurations):
+        """This method writes configuration to config file."""
+
+        configs = {
+            name: {"command": command}
+            for name, command in configurations.items()}
+        with open(self.config_path, "w") as resource:
+            json.dump(configs, resource, sort_keys=True, indent=4)
+
+
+# }}}
+# Run {{{
+
+
+class RunCommand(Command):
+    """This is a command for git test run."""
+
+    @staticmethod
+    def execute_command(command, file_tee_to):
+        """
+        Executes a test command. 2 argument is a filename where
+        mixed streams will be written.
+
+        Main requirement: command stdout and stderr streams should be
+        kept for git test stdout/stderr, but also mirrored into the file
+        with a given name.
+        """
+
+        stdout_tee_process = subprocess.Popen(
+            ["tee", "-a", file_tee_to],
+            stdin=subprocess.PIPE, stdout=sys.stdout,
+            shell=False, universal_newlines=True)
+        stderr_tee_process = subprocess.Popen(
+            ["tee", "-a", file_tee_to],
+            stdin=subprocess.PIPE, stdout=sys.stderr,
+            shell=False, universal_newlines=True)
+        main_process = subprocess.Popen(
+            command,
+            shell=False,
+            stdout=stderr_tee_process.stdin,
+            stderr=stderr_tee_process.stdin,
+            universal_newlines=True)
+
+        main_process.communicate()
+        stdout_tee_process.terminate()
+        stderr_tee_process.terminate()
+        stdout_tee_process.wait()
+        stderr_tee_process.wait()
+
+        exit_code = main_process.returncode
+        if exit_code < 0:
+            return 128 - exit_code  # common practice in UNIX, 128 + sig number
+        return exit_code
+
+    def __init__(self, options):
+        super(RunCommand, self).__init__(options)
+
+        self.if_no_result = bool(options.if_no_result)
+        self.store = bool(options.store)
+        self.test_types = self.get_test_types(options.test_type)
+        self.strict_mode = self.store or bool(options.strict)
+        self.exclude_env = options.exclude_env
+
+    @property
+    def strict_mode_ok(self):
+        """
+        Checks if command can be run in strict mode.
+
+        Strict mode means that no untracked files are present and no
+        uncommited modifications of tracked files were done. This is a
+        situation right after git checkout.
+        """
+
+        if not self.strict_mode:
+            return True
+
+        return not bool(self.git.status())
+
+    def run(self):
+        if not self.strict_mode_ok:
+            return "Your index is not clean or you have untracked files."
+
+        for name, command in sorted(self.test_types.items()):
+            self.run_test(name, command)
+
+    def run_test(self, type_name, command):
+        """Runs a command of the given test configuration."""
+
+        self.print_header(type_name)
+        print("$ {0}".format(command["command"]))
+
+        if self.if_no_result:
+            if self.has_note(type_name, self.git.current_commit_sha):
+                return
+
+        with tmpfile() as output_filename:
+            metadata = self.execute(command["command"], output_filename)
+
+            if self.store:
+                with open(output_filename, "rt") as offp:
+                    itercontent = itertools.chain(
+                        metadata.to_strings(),
+                        ("\n",),
+                        imap(lambda line: line.rstrip(), offp))
+                    self.git.add_note(type_name, itercontent)
+
+    def execute(self, command, outputfile):
+        """Executes command and builds metadata."""
+
+        time_start = time.time()
+        exit_code = self.execute_command(shlex.split(command), outputfile)
+        time_finish = time.time()
+
+        meta = Metadata()
+        meta.command = command
+        meta.time_start = time_start
+        meta.time_finish = time_finish
+        meta.exit_code = exit_code
+        meta.hostname = platform.node()
+        meta.user = getpass.getuser()
+        meta.git_directory = self.git.toplevel_path
+        meta.unserialized_env = self.vault_env(os.environ)
+
+        return meta
+
+    def vault_env(self, dictobj):
+        """Removes unwanted environmnent variables for the dict."""
+
+        return {k: v for k, v in dictobj.items() if k not in self.exclude_env}
+
+
+# }}}
+# List {{{
+
+
+class ListCommand(Command):
+    """This command is responsible for git test list."""
+
+    def __init__(self, options):
+        super(ListCommand, self).__init__(options)
+
+        self.no_good = bool(options.no_good)
+        self.no_bad = bool(options.no_bad)
+        self.test_types = self.get_test_types(options.test_type)
+
+    def run(self):
+        for type_name in sorted(self.test_types):
+            self.show(type_name)
+
+    def show(self, type_name):
+        """Shows test results for the given test configuration."""
+
+        self.print_header(type_name)
+
+        metadatas = []
+        for note in self.git.list_notes(type_name):
+            metadata, _ = self.git.show_note(type_name, note["commit"])
+            if metadata.exit_code == os.EX_OK and self.no_good:
+                continue
+            if metadata.exit_code != os.EX_OK and self.no_bad:
+                continue
+            metadatas.append((note["commit"], metadata))
+
+        metadatas.sort(key=lambda item: metadata.time_start, reverse=True)
+
+        for commit, metadata in metadatas:
+            self.show_metadata(commit, metadata)
+
+        print("")
+
+    def show_metadata(self, commit, metadata):
+        """This command prints metadata in the list format."""
+
+        line = "{0}\t{1}\t{2}".format(
+            datetime.datetime.fromtimestamp(metadata.time_start).isoformat(),
+            commit,
+            ("passed" if metadata.exit_code == os.EX_OK else "failed"))
+        print(line)
+
+
+# }}}
+# Show {{{
+
+
+class ShowCommand(Command):
+    """This command is responsible for git test show."""
+
+    def __init__(self, options):
+        super(ShowCommand, self).__init__(options)
+
+        self.no_metadata = bool(options.no_metadata)
+        self.no_test_output = bool(options.no_test_output)
+        self.exit_code = bool(options.exit_code)
+        self.test_types = self.get_test_types(options.test_type)
+        self.commit_sha = options.commit
+
+    def run(self):
+        exit_code = os.EX_OK
+
+        for name in sorted(self.test_types):
+            exit_code = max(exit_code, self.show_result(name))
+
+        return exit_code
+
+    def show_result(self, type_name):
+        """Shows result of test command execution."""
+
+        try:
+            metadata, output = self.git.show_note(type_name, self.commit_sha)
+        except ValueError:
+            return os.EX_OK
+
+        self.print_header(type_name)
+
+        if not self.no_metadata:
+            self.show_metadata(metadata)
+
+        if not self.no_test_output:
+            if not self.no_metadata:
+                print("")
+            print(output)
+            if not self.no_metadata:
+                print("")
+
+        if self.exit_code:
+            return metadata.exit_code
+
+        return os.EX_OK
+
+    def show_metadata(self, metadata):
+        """Prints metadata in details."""
+
+        start_datetime = datetime.datetime.fromtimestamp(metadata.time_start)
+        finish_datetime = datetime.datetime.fromtimestamp(metadata.time_finish)
+
+        print("Test command: {0}".format(metadata.command))
+        print("Exit code:    {0}".format(metadata.exit_code))
+        print("Start at:     {0} ({1})".format(
+            start_datetime.strftime("%c"), metadata.time_start))
+        print("Finish at:    {0} ({1})".format(
+            finish_datetime.strftime("%c"), metadata.time_finish))
+        print("Duration:     {0}".format(
+            self.format_timedelta(finish_datetime - start_datetime)))
+        print("Hostname:     {0}".format(metadata.hostname))
+        print("User:         {0}".format(metadata.user))
+        print("Environment:")
+
+        max_key_length = max(len(key) for key in metadata.unserialized_env)
+        env_key_formatter = "    {0:>%d}: " % max_key_length
+
+        for key, value in metadata.unserialized_env.items():
+            print(env_key_formatter.format(key) + value)
+
+    def format_timedelta(self, delta):
+        """Pretty prints datetime.timedelta."""
+
+        seconds = int(delta.total_seconds())
+        days, rest = divmod(seconds, 60 * 60 * 24)
+        hours, rest = divmod(seconds, 60 * 60)
+        minutes, seconds = divmod(rest, 60)
+
+        format_str = ["{0} seconds".format(seconds)]
+        if minutes:
+            format_str.append("{0} minutes".format(minutes))
+        if hours:
+            format_str.append("{0} hours".format(hours))
+        if days:
+            format_str.append("{0} days".format(days))
+        format_str = ", ".join(reversed(format_str))
+
+        return format_str
+
+
+# }}}
+# Remove {{{
+
+
+class RemoveCommand(Command):
+    """This command is responsible for 'git test remove'."""
+
+    def __init__(self, options):
+        super(RemoveCommand, self).__init__(options)
+
+        self.test_types = self.get_test_types(options.test_type)
+        self.commits = set(options.commit)
+
+    def run(self):
+        exit_code = os.EX_OK
+
+        for type_name in sorted(self.test_types):
+            exit_code = max(exit_code, self.remove(type_name))
+
+        return exit_code
+
+    def remove(self, type_name):
+        """Does removing for the given test configuration."""
+
+        self.print_header(type_name)
+
+        result = self.git.remove_note(type_name, self.commits)
+
+        return result
+
+
+# }}}
+# Prune {{{
+
+
+class PruneCommand(Command):
+    """This command is responsible for 'git test prune'."""
+
+    def __init__(self, options):
+        super(PruneCommand, self).__init__(options)
+
+        self.test_types = self.get_test_types(options.test_type)
+        self.dry_run = options.dry_run
+
+    def run(self):
+        for type_name in sorted(self.test_types):
+            self.prune(type_name)
+
+    def prune(self, type_name):
+        """Does pruning for the given test configuration."""
+
+        self.print_header(type_name)
+
+        for item in self.git.prune_notes(type_name, self.dry_run):
+            print(item)
+
+
+# }}}
+# Push {{{
+
+
+class PushCommand(Command):
+    """This command is responsible for 'git test push'."""
+
+    REFSPEC = posixpath.join("refs", "notes", TEST_REFNS + "_*")
+    """Refspec to push (git push $REFSPEC)."""
+
+    GIT_COMMAND = ["push", "--porcelain", "--atomic"]
+    """Git command to use for push."""
+
+    def __init__(self, options):
+        super(PushCommand, self).__init__(options)
+
+        self.remotes = sorted(set(options.remote))
+
+    def run(self):
+        for remote in self.remotes:
+            self.process(remote)
+
+    def process(self, remote):
+        """Does git push action."""
+
+        self.print_header(remote)
+
+        command = self.GIT_COMMAND + [remote, self.REFSPEC]
+        for line in self.git.output(*command):
+            print(line)
+
+
+# }}}
+# Pull {{{
+
+
+class PullCommand(PushCommand):
+    """This command is responsible for 'git test pull'."""
+
+    GIT_COMMAND = ["fetch"]
+    REFSPEC = "{0}:{0}".format(PushCommand.REFSPEC)
+
+
+# }}}
+
+# }}}
+# Metadata {{{
+
+
+class Metadata(object):
+    """
+    This class encapsulates all logic, related to metadata.
+
+    The main intention of that class is to have an encapsulation of
+    field ordering at one place.
+    """
+
+    @classmethod
+    def sniff(cls, iterable):
+        """
+        This method build metadata using an iterable. Iterable, usually,
+        is an output of 'git notes show' command.
+        """
+
+        meta = cls()
+        iterable = iter(iterable)
+
+        meta.exit_code = int(cls.sniff_shift(iterable))
+        meta.time_start = float(cls.sniff_shift(iterable))
+        meta.time_finish = float(cls.sniff_shift(iterable))
+        meta.command = cls.sniff_shift(iterable)
+        meta.hostname = cls.sniff_shift(iterable)
+        meta.user = cls.sniff_shift(iterable)
+        meta.git_directory = cls.sniff_shift(iterable)
+        meta.serialized_env = cls.sniff_shift(iterable)
+
+        return meta
+
+    @classmethod
+    def sniff_shift(cls, iterable):
+        """Small wrapper for iterating. Doing rstrip under the hood."""
+
+        data = next(iterable)
+        data = data.rstrip()
+
+        return data
+
+    def __init__(self):
+        self.command = ""
+        self.time_start = 0
+        self.time_finish = 0
+        self.exit_code = 0
+        self.hostname = ""
+        self.user = ""
+        self.git_directory = ""
+        self._serialized_env = ""
+
+    @property
+    def serialized_env(self):
+        """
+        This property returns 'serialized' env to store in git notes.
+
+        Serialized means: PyObject -> Base64 string.
+        """
+
+        return self._serialized_env
+
+    @serialized_env.setter
+    def serialized_env(self, value):
+        self._serialized_env = value
+
+    @property
+    def unserialized_env(self):
+        """
+        This property returns 'unserialized' env.
+
+        Base64 -> PyObject.
+        """
+        return base64_to_dict(self._serialized_env)
+
+    @unserialized_env.setter
+    def unserialized_env(self, value):
+        self._serialized_env = dict_to_base64(value)
+
+    def to_strings(self):
+        """
+        Just an iterator, which returns metadata strings in an order,
+        applicable for storing in git notes.
+        """
+
+        yield str(self.exit_code)
+        yield str(self.time_start)
+        yield str(self.time_finish)
+        yield self.command
+        yield self.hostname
+        yield self.user
+        yield self.git_directory
+        yield self.serialized_env
+
+    def __str__(self):
+        return "\n".join(self.to_strings())
+
+# }}}
+# Git wrapper {{{
+
+
+class Git(object):
+    """A wrapper for a Git CLI."""
+
+    def __init__(self):
+        self._toplevel_path = ""
+        self._current_commit_sha = ""
+
+    @property
+    def toplevel_path(self):
+        """Property, which returns root of the repository we are working in."""
+
+        if not self._toplevel_path:
+            self._toplevel_path = next(
+                self.output("rev-parse", "--show-toplevel"))
+            self._toplevel_path = os.path.abspath(self._toplevel_path)
+
+        return self._toplevel_path
+
+    @property
+    def current_commit_sha(self):
+        """Propery which returns current commit SHA."""
+
+        if not self._current_commit_sha:
+            commit_sha = next(self.output("rev-parse", "HEAD"))
+            self._current_commit_sha = commit_sha.strip()
+
+        return self._current_commit_sha
+
+    def ref_for(self, type_name):
+        """
+        Returns the name of the Git reference namespace for a given
+        test configuration.
+        """
+
+        return "{0}_{1}".format(TEST_REFNS, type_name)
+
+    def add_note(self, type_name, itercontent):
+        """
+        Adds a git note for a test configuration. itercontent is an
+        iterable with a strings.
+        """
+
+        process = self.git_process(
+            "notes", "--ref", self.ref_for(type_name),
+            "add", "-F", "-", self.current_commit_sha)
+
+        for line in itercontent:
+            process.stdin.write(line)
+            process.stdin.write("\n")
+
+        process.communicate()
+
+        return process.returncode
+
+    def remove_note(self, type_name, commits):
+        """
+        Removes a notes for given commit hashes
+        """
+
+        process = self.git_process(
+            "notes", "--ref", self.ref_for(type_name),
+            "remove", "--ignore-missing", *list(commits))
+        process.communicate()
+
+        return process.returncode
+
+    def list_notes(self, type_name):
+        """
+        Returns a list of notes for the given reference namespace.
+
+        Returns a list of dicts. Dict has {"note", "commit"} keys. "note"
+        is a SHA1 hash of note itself, "commit" - SHA1 of the commit,
+        note is attached to.
+        """
+
+        notes = []
+
+        for note in self.output("notes", "--ref",
+                                self.ref_for(type_name), "list"):
+            if not note:
+                continue
+            notes_obj, annotated_obj = note.split(" ", 1)
+            notes.append({"note": notes_obj, "commit": annotated_obj})
+
+        return notes
+
+    def has_note(self, type_name, commit_sha):
+        """
+        Checks if given commit has a test result in given reference namespace.
+        """
+
+        output = self.output("notes", "--ref", self.ref_for(type_name), "list",
+                             commit_sha)
+        output = next(output)
+
+        return output != ""
+
+    def show_note(self, type_name, commit_sha):
+        """
+        Returns a tuple of metadata and test tool output for the given
+        commit SHA1 in test reference namespace.
+        """
+
+        if not self.has_note(type_name, commit_sha):
+            raise ValueError
+
+        output = self.output("notes", "--ref", self.ref_for(type_name), "show",
+                             commit_sha)
+        metadata = Metadata.sniff(output)
+        next(output)
+        output = "\n".join(output)
+
+        return metadata, output
+
+    def prune_notes(self, type_name, dry_run):
+        """
+        Prunes orphan notes in the given test reference namespace.
+        """
+
+        command = ["notes", "--ref", self.ref_for(type_name), "prune", "-v"]
+        if dry_run:
+            command.append("--dry-run")
+
+        return self.output(*command)
+
+    def status(self):
+        """
+        Returns a content of the git status.
+        """
+
+        entries = {}
+
+        for line in self.output("status", "--porcelain"):
+            status = line[:2].strip()
+            filename = line[2:].strip()
+            entries[filename] = status
+
+        return entries
+
+    def output(self, *options, **kwargs):
+        """
+        Returns an iterator for the git command output.
+
+        If iterator exists ok, it means that git has finished with
+        status code 0. Otherwise, an exception will be raised.
+        """
+
+        process = self.git_process(*options)
+
+        stream = process.stdout
+        if not isinstance(stream, io.TextIOBase):  # required for PyPy
+            reader = codecs.getreader("utf-8")
+            stream = reader(stream, errors="replace")
+
+        for line in (line.rstrip() for line in stream):
+            logging.debug("GIT: Read %r", line)
+            yield line
+
+            symbol = process.stderr.read(1)
+            if symbol:
+                logging.error("GIT: %s", symbol + process.stderr.read())
+                raise StdErrorProcessError
+
+        stdout, stderr = process.communicate()
+        if hasattr(stdout, "decode"):
+            stdout = stdout.decode("utf-8")
+        if hasattr(stderr, "decode"):
+            stderr = stderr.decode("utf-8")
+
+        if process.returncode != os.EX_OK:
+            if stderr:
+                logging.error("GIT: %s", stderr.strip())
+
+            raise ReturnCodeProcessError(process.returncode)
+
+        for line in (line.rstrip() for line in stdout.split("\n")):
+            logging.debug("GIT: Read %r", line)
+            yield line
+
+    def git_process(self, *options):
+        """Returns prepaired git process. All streams are piped."""
+
+        cmdline = ["git"] + list(options)
+
+        logging.debug("GIT: Execute %r", subprocess.list2cmdline(cmdline))
+
+        return subprocess.Popen(
+            cmdline, shell=False, universal_newlines=True,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
+
+
+# }}}
+
+# }}}
+# Functions {{{
+
+
+def main():
+    """Main entry point of the program."""
+
+    readline.parse_and_bind("tab: complete")
+    readline.parse_and_bind("set editing-mode emacs")
+
+    options = get_options()
+    logging.basicConfig(
+        format="[%(levelname)-5s] %(message)s",
+        level=logging.DEBUG if options.debug else logging.ERROR)
+    logging.debug("Options: %s", options)
+
+    try:
+        return options.command(options).run()
+    except ReturnCodeProcessError as exc:
+        return exc.return_code
+    except ProcessError:
+        return os.EX_SOFTWARE
+
+
+def get_options():
+    """CLI configuration."""
+
+    parser = argparse.ArgumentParser(
+        description="Unified way to test your application.")
+
+    parser.add_argument(
+        "-d", "--debug",
+        help="Run in debug mode.",
+        action="store_true",
+        default=False)
+
+    subparsers = parser.add_subparsers()
+
+    setup_cmd = subparsers.add_parser(
+        "setup",
+        description="Helps to setup git-test.",
+        help="Helps to setup git-test")
+    setup_cmd.add_argument(
+        "action",
+        help=(
+            "Action to do. By default, 'show' is used. Valid "
+            "options are 'show' and 'init'."),
+        metavar="ACTION",
+        nargs=argparse.OPTIONAL,
+        choices=("show", "init"),
+        default="show")
+    setup_cmd.set_defaults(command=SetupCommand)
+
+    run_cmd = subparsers.add_parser(
+        "run",
+        description="Run defined test commands.",
+        help="Run tests")
+    run_cmd.add_argument(
+        "-n", "--if-no-result",
+        help="Run test only if no stored result for a checkedout commit",
+        action="store_true",
+        default=False)
+    run_cmd.add_argument(
+        "-s", "--store",
+        help="Store results of test",
+        action="store_true",
+        default=False)
+    run_cmd.add_argument(
+        "-e", "--strict",
+        help=(
+            "Run in strict mode. Usually it means, that test won't be "
+            "executed if git has untracked or modified files. Storing "
+            "results implies strict mode."),
+        action="store_true",
+        default=False)
+    run_cmd.add_argument(
+        "-x", "--exclude-env",
+        help=(
+            "Excludes environment variable from storing with test result. "
+            "Comma-separated list."),
+        type=lambda value: set(value.split(",")),
+        default=set())
+    run_cmd.add_argument(
+        "test_type",
+        metavar="TEST_TYPE",
+        nargs=argparse.OPTIONAL,
+        help=(
+            "The type of test to use. By default {0} is used. Use '{1}' "
+            "to run all known test types").format(TEST_TYPE_DEFAULT,
+                                                  TEST_TYPE_ALL),
+        default=TEST_TYPE_DEFAULT)
+    run_cmd.set_defaults(command=RunCommand)
+
+    list_tested_cmd = subparsers.add_parser(
+        "list",
+        description="List commits with their test results.",
+        help="List results of tested commits")
+    list_tested_cmd_type_group = list_tested_cmd.add_mutually_exclusive_group()
+    list_tested_cmd_type_group.add_argument(
+        "-g", "--no-good",
+        help="Do not show commits with good test results",
+        action="store_true",
+        default=False)
+    list_tested_cmd_type_group.add_argument(
+        "-b", "--no-bad",
+        help="Do not show commits with bad test results",
+        action="store_true",
+        default=False)
+    list_tested_cmd.add_argument(
+        "test_type",
+        metavar="TEST_TYPE",
+        nargs=argparse.OPTIONAL,
+        help=(
+            "The type of test to use. By default {0} is used. Use '{1}' "
+            "to run all known test types").format(TEST_TYPE_DEFAULT,
+                                                  TEST_TYPE_ALL),
+        default=TEST_TYPE_DEFAULT)
+    list_tested_cmd.set_defaults(command=ListCommand)
+
+    show_result_cmd = subparsers.add_parser(
+        "show",
+        description="Show a test result for a commit.",
+        help="Show a certain result.")
+    show_result_cmd.add_argument(
+        "-m", "--no-metadata",
+        help="Do not show metadata for test result",
+        action="store_true",
+        default=False)
+    show_result_cmd.add_argument(
+        "-n", "--no-test-output",
+        help="Do not show output of test tool",
+        action="store_true",
+        default=False)
+    show_result_cmd.add_argument(
+        "-e", "--exit-code",
+        help="Finish command with the same exit code as test",
+        action="store_true",
+        default=False)
+    show_result_cmd.add_argument(
+        "-t", "--test_type",
+        metavar="TEST_TYPE",
+        help=(
+            "The type of test to use. By default {0} is used. Use '{1}' "
+            "to run all known test types").format(TEST_TYPE_DEFAULT,
+                                                  TEST_TYPE_ALL),
+        default=TEST_TYPE_DEFAULT)
+    show_result_cmd.add_argument(
+        "commit",
+        metavar="COMMIT",
+        nargs=argparse.OPTIONAL,
+        help="Commit SHA of the test. By default HEAD is used",
+        default="HEAD")
+    show_result_cmd.set_defaults(command=ShowCommand)
+
+    remove_result_cmd = subparsers.add_parser(
+        "remove",
+        description="Removes the result of the test",
+        help="Removes a certain test result")
+    remove_result_cmd.add_argument(
+        "-t", "--test_type",
+        help=(
+            "The type of test to use. By default {0} is used. Use '{1}' "
+            "to run all known test types").format(TEST_TYPE_DEFAULT,
+                                                  TEST_TYPE_ALL),
+        default=TEST_TYPE_DEFAULT)
+    remove_result_cmd.add_argument(
+        "commit",
+        metavar="COMMIT",
+        nargs=argparse.ONE_OR_MORE,
+        help="Commit SHA of the test")
+    remove_result_cmd.set_defaults(command=RemoveCommand)
+
+    prune_cmd = subparsers.add_parser(
+        "prune",
+        description="Removes orphan test results.",
+        help="Remove orphan test results")
+    prune_cmd.add_argument(
+        "-n", "--dry-run",
+        help="Do not prune, just print tests results are going to be pruned.",
+        action="store_true",
+        default=False)
+    prune_cmd.add_argument(
+        "test_type",
+        metavar="TEST_TYPE",
+        nargs=argparse.OPTIONAL,
+        help=(
+            "The type of test to use. By default {0} is used. Use '{1}' "
+            "to run all known test types").format(TEST_TYPE_DEFAULT,
+                                                  TEST_TYPE_ALL),
+        default=TEST_TYPE_DEFAULT)
+    prune_cmd.set_defaults(command=PruneCommand)
+
+    push_cmd = subparsers.add_parser(
+        "push",
+        description="Pushes test results into remote repository.",
+        help="Pushes test results into remote repository")
+    push_cmd.add_argument(
+        "remote",
+        help="Remote repository name",
+        nargs=argparse.ZERO_OR_MORE,
+        default=["origin"])
+    push_cmd.set_defaults(command=PushCommand)
+
+    pull_cmd = subparsers.add_parser(
+        "pull",
+        description="Pulls test results into remote repository.",
+        help="Pulls test results into remote repository")
+    pull_cmd.add_argument(
+        "remote",
+        help="Remote repository name",
+        metavar="REMOTE",
+        nargs=argparse.ZERO_OR_MORE,
+        default=["origin"])
+    pull_cmd.set_defaults(command=PullCommand)
+
+    return parser.parse_args()
+
+
+@contextlib.contextmanager
+def tmpfile():
+    """Allocates temporary file. Removes after context is collapsed."""
+
+    descriptor, filename = tempfile.mkstemp()
+    os.close(descriptor)
+
+    logging.debug("TMPFILE: Create temporary file %s", filename)
+
+    try:
+        yield filename
+    finally:
+        logging.debug("TMPFILE: Remove file %s", filename)
+
+        try:
+            os.remove(filename)
+        except Exception:
+            logging.warning("TMPFILE: Cannot remove file %s", filename)
+
+
+def dict_to_base64(data):
+    """Stores Python datastructure into Base64 encoding."""
+
+    if not isinstance(data, dict):
+        data = data.copy() if hasattr(data, "copy") else dict(data)
+
+    data = json.dumps(data, separators=(",", ":"))
+    data = zlib.compress(data)
+    data = binascii.b2a_base64(data)
+    data = data.rstrip()
+
+    return data
+
+
+def base64_to_dict(data):
+    """Restores Python datastructure from Base64 encoding."""
+
+    data = binascii.a2b_base64(data + "\n")
+    data = zlib.decompress(data)
+    data = json.loads(data)
+
+    return data
+
+
+# }}}
+
+if __name__ == "__main__":
+    sys.exit(main())
