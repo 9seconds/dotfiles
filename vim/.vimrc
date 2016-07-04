@@ -433,11 +433,8 @@ nnoremap <C-k>    <C-w>k
 nnoremap <C-l>    <C-w>l
 nnoremap <silent> <C-x> :resize<cr>:vertical resize<cr>
 
-" Use common way to escape insert mode
-inoremap jj <ESC>
-
 " Disable highlight
-nnoremap <silent>jk :nohl<cr>
+nnoremap <Leader>h :nohl<cr>
 
 " Close the current buffer
 nnoremap <leader>bd :Bdelete<cr>
