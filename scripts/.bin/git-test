@@ -1432,8 +1432,16 @@ def dict_to_base64(data):
         data = data.copy() if hasattr(data, "copy") else dict(data)
 
     data = json.dumps(data, separators=(",", ":"))
+
+    if not isinstance(data, bytes):
+        data = data.encode("utf-8")
+
     data = zlib.compress(data)
     data = binascii.b2a_base64(data)
+
+    if not isinstance(data, basestring):
+        data = data.decode("utf-8")
+
     data = data.rstrip()
 
     return data
@@ -1444,6 +1452,10 @@ def base64_to_dict(data):
 
     data = binascii.a2b_base64(data + "\n")
     data = zlib.decompress(data)
+
+    if not isinstance(data, basestring):  # bytes
+        data = data.decode("utf-8")
+
     data = json.loads(data)
 
     return data
