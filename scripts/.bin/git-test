@@ -310,8 +310,10 @@ TEST_REFNS = "test"
 
 if sys.version_info.major == 2:
     imap = itertools.imap
+    iteritems = lambda dictobj: dictobj.iteritems()
 else:
     imap = map
+    iteritems = lambda dictobj: dictobj.items()
     basestring = str,
 
 # }}}
@@ -405,7 +407,7 @@ class Command(object):
         if test_type == TEST_TYPE_ALL:
             return self.config
 
-        return {k: v for k, v in self.config.items() if k == test_type}
+        return {k: v for k, v in iteritems(self.config) if k == test_type}
 
     def run(self):
         """Main method."""
@@ -434,7 +436,7 @@ class SetupCommand(Command):
     def run_show(self):
         """This method is responsible for git setup show."""
 
-        for name, data in self.config.items():
+        for name, data in iteritems(self.config):
             print(name)
             print("    Command: {0}".format(data["command"]))
 
@@ -498,7 +500,7 @@ class SetupCommand(Command):
 
         print("\n" + "-" * 20, end="")
 
-        for name, command in configs.items():
+        for name, command in iteritems(configs):
             print("")
             print("Name:    {0}".format(name))
             print("Command: {0}".format(command))
@@ -516,7 +518,7 @@ class SetupCommand(Command):
 
         configs = {
             name: {"command": command}
-            for name, command in configurations.items()}
+            for name, command in iteritems(configurations)}
         with open(self.config_path, "w") as resource:
             json.dump(configs, resource, sort_keys=True, indent=4)
 
@@ -593,7 +595,7 @@ class RunCommand(Command):
         if not self.strict_mode_ok:
             return "Your index is not clean or you have untracked files."
 
-        for name, command in sorted(self.test_types.items()):
+        for name, command in sorted(iteritems(self.test_types)):
             self.run_test(name, command)
 
     def run_test(self, type_name, command):
@@ -636,10 +638,10 @@ class RunCommand(Command):
 
         return meta
 
-    def vault_env(self, dictobj):
+    def vault_env(self, obj):
         """Removes unwanted environmnent variables for the dict."""
 
-        return {k: v for k, v in dictobj.items() if k not in self.exclude_env}
+        return {k: v for k, v in iteritems(obj) if k not in self.exclude_env}
 
 
 # }}}
@@ -761,7 +763,7 @@ class ShowCommand(Command):
         max_key_length = max(len(key) for key in metadata.unserialized_env)
         env_key_formatter = "    {0:>%d}: " % max_key_length
 
-        for key, value in metadata.unserialized_env.items():
+        for key, value in iteritems(metadata.unserialized_env):
             print(env_key_formatter.format(key) + value)
 
     def format_timedelta(self, delta):
