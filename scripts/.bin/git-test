@@ -1120,6 +1120,9 @@ class Git(object):
         entries = {}
 
         for line in self.output("status", "--porcelain"):
+            if not line:
+                continue
+
             status = line[:2].strip()
             filename = line[2:].strip()
             entries[filename] = status

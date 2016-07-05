@@ -1,0 +1,5 @@
+{
+    "default": {
+        "command": "ls -la"
+    }
+}
