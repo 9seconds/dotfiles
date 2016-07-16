@@ -138,7 +138,7 @@ borg_info() {
 }
 
 borg_unlock() {
-    ${LOCK_WRITE_REPO} break-lock ${DEFAULT_OPTS}
+    ${BORG_WRITE_CMD} break-lock ${DEFAULT_OPTS} "${BORG_REPO}"
 }
 
 backup_cachedir_tag() {
