@@ -74,7 +74,8 @@ call plug#begin('~/.vim/plugged')
 
     if executable('fzf')
         Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' } |
-            \ Plug 'junegunn/fzf.vim'
+            \ Plug 'junegunn/fzf.vim' |
+            \ Plug 'tweekmonster/fzf-filemru'
     else
         Plug 'ctrlpvim/ctrlp.vim'
     endif
@@ -682,6 +683,7 @@ if !executable('fzf')
     let g:ctrlp_cmd = 'CtrlP'
 
     nnoremap <silent> <leader>ff :CtrlP<cr>
+    nnoremap <silent> <leader>fp :CtrlP<cr>
     nnoremap <silent> <leader>fb :CtrlPBuffer<cr>
     nnoremap <silent> <leader>ft :CtrlPBufTag<cr>
     nnoremap <silent> <leader>fa :CtrlPTag<cr>
@@ -782,7 +784,8 @@ augroup END
 if executable('fzf')
     command! -nargs=* -complete=file -bar Grep silent! Ag <args>
 
-    nnoremap <silent> <leader>ff :Files<cr>
+    nnoremap <silent> <leader>ff :FilesMru --tiebreak=end<cr>
+    nnoremap <silent> <leader>fp :ProjectMru<cr>
     nnoremap <silent> <leader>fb :Buffers<cr>
     nnoremap <silent> <leader>ft :BTags<cr>
     nnoremap <silent> <leader>fa :Tags<cr>
