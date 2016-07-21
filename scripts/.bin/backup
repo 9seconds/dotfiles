@@ -156,6 +156,18 @@ backup_sync() {
         ${SYNC} "${BORG_REPO}" "${REMOTE_SOURCE}"
 }
 
+backup_syncstatus() {
+    case "${SYNC_TOOL}" in
+        yandex-disk)
+            backup_syncstatus_yandexdisk "$@"
+            ;;
+    esac
+}
+
+backup_syncstatus_yandexdisk() {
+    yandex-disk status | awk -v 'RS=\n\n' '1;{exit}'
+}
+
 backup_size() {
     du -sh "${BORG_REPO}" | awk 'NR == 1 {print $1}'
 }
@@ -165,27 +177,28 @@ print_help() {
     echo "https://borgbackup.readthedocs.io"
     echo
     echo "Commands available:"
-    echo "  cachedir  Put CACHEDIR.TAG into given path."
-    echo "  check     Checks repository for consistency."
-    echo "  create    Creates new archive in repository. Backups $HOME and /etc."
-    echo "  delete    Removes a snapshot."
-    echo "              - the name of the snapshot."
-    echo "  doctor    Checks backup configuration."
-    echo "  extract   Extracts a files to given path."
-    echo "  help      Print this message."
-    echo "  info      Print information about snapshot."
-    echo "              - the name of the snapshot."
-    echo "  list      List available snapshots."
-    echo "  mount     Mount backup and go into."
-    echo "  prune     Prunes old snapshots."
-    echo "              - How long to keep all snapshots. Default is $KEEP_WITHIN."
-    echo "              - How many daily snapshots to keep. Default is $KEEP_DAILY."
-    echo "              - How many monthly snapshots to keep. Default is $KEEP_MONTHLY."
-    echo "              - How many weekly snapshots to keep. Default is $KEEP_WEEKLY."
-    echo "              - How many yearly snapshots to keep. Default is $KEEP_YEARLY."
-    echo "  size      Printout total size of backup."
-    echo "  sync      Sync local backup with remote one."
-    echo "  unlock    Break repository and cache lock."
+    echo "  cachedir    Put CACHEDIR.TAG into given path."
+    echo "  check       Checks repository for consistency."
+    echo "  create      Creates new archive in repository. Backups $HOME and /etc."
+    echo "  delete      Removes a snapshot."
+    echo "                - the name of the snapshot."
+    echo "  doctor      Checks backup configuration."
+    echo "  extract     Extracts a files to given path."
+    echo "  help        Print this message."
+    echo "  info        Print information about snapshot."
+    echo "                - the name of the snapshot."
+    echo "  list        List available snapshots."
+    echo "  mount       Mount backup and go into."
+    echo "  prune       Prunes old snapshots."
+    echo "                - How long to keep all snapshots. Default is $KEEP_WITHIN."
+    echo "                - How many daily snapshots to keep. Default is $KEEP_DAILY."
+    echo "                - How many monthly snapshots to keep. Default is $KEEP_MONTHLY."
+    echo "                - How many weekly snapshots to keep. Default is $KEEP_WEEKLY."
+    echo "                - How many yearly snapshots to keep. Default is $KEEP_YEARLY."
+    echo "  size        Printout total size of backup."
+    echo "  sync        Sync local backup with remote one."
+    echo "  syncstatus  Printout a status of sync if supported."
+    echo "  unlock      Break repository and cache lock."
 }
 
 print_doctor() {
@@ -245,6 +258,9 @@ case "${OPTION}" in
         ;;
     sync)
         backup_sync "$@"
+        ;;
+    syncstatus)
+        backup_syncstatus "$@"
         ;;
     size)
         backup_size "$@"
