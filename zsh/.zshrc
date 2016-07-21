@@ -1,4 +1,3 @@
-
 # Initialize shell
 source "$ZSH_CUSTOM_PATH/init.sh"
 

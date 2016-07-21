@@ -48,7 +48,7 @@ export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=gasp'
 
 # Set proper TERM for tmux
 if [ -n "$TMUX" ]; then
-    export TERM=screen-256color
+    export TERM=tmux-256color
 else
     export TERM=xterm-256color
 fi
