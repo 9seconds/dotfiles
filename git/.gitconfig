@@ -10,6 +10,7 @@
     assume      = update-index --assume-unchanged
     bl          = blame --minimal
     br          = branch
+    brd         = "!f() { git br -D $1 && git push origin :$1; }; f"
     cl          = clean -xfd
     cma         = commit -a -m
     cm          = commit -m
