@@ -46,15 +46,13 @@ call plug#begin('~/.vim/plugged')
     Plug 'rstacruz/vim-closer'
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
     Plug 'sheerun/vim-polyglot'
-    " Plug 'takac/vim-hardtime'
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-endwise'
     Plug 'tpope/vim-markdown', { 'for': 'markdown' }
     Plug 'tpope/vim-repeat'
+    Plug 'janko-m/vim-test'
     Plug 'tpope/vim-sleuth'
     Plug 'tpope/vim-surround'
-    " Plug 'tpope/vim-vinegar'
-    " Plug 'justinmk/vim-dirvish'
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
@@ -810,7 +808,22 @@ let g:gutentags_exclude = [
     \ '.tox',
     \ ]
 
-nnoremap <leader>t :GutentagsUpdate!<cr>
+nnoremap <leader>e :GutentagsUpdate!<cr>
+
+" }}}
+" Vim-test {{{
+
+nmap <silent> <leader>tn :TestNearest<CR>
+nmap <silent> <leader>tf :TestFile<CR>
+nmap <silent> <leader>ts :TestSuite<CR>
+nmap <silent> <leader>tl :TestLast<CR>
+nmap <silent> <leader>tv :TestVisit<CR>
+
+if !empty($TMUX)
+    let test#strategy = "vimux"
+else
+    let test#strategy = "neovim"
+endif
 
 " }}}
 " Session {{{
