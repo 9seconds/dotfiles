@@ -15,11 +15,6 @@ filetype off
 " # Plugins         =============================================== {{{
 " _____________________________________________________________________________
 
-let g:make = 'gmake'  " Required for vimproc plugin
-if system('uname -o') =~ '^GNU/'
-    let g:make = 'make'
-endif
-
 call plug#begin('~/.vim/plugged')
     if has('nvim')
         Plug 'Shougo/deoplete.nvim' |
@@ -28,7 +23,8 @@ call plug#begin('~/.vim/plugged')
     endif
 
     Plug 'airblade/vim-rooter'
-    Plug 'benekastah/neomake'
+    Plug 'neomake/neomake'
+    Plug 'editorconfig/editorconfig-vim'
     Plug 'benmills/vimux'
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
@@ -115,14 +111,6 @@ set showcmd
 set scrolloff=5
 set sidescroll=1
 set sidescrolloff=15
-
-" _____________________________________________________________________________
-
-" Set magic for regular expressions
-set magic
-
-" Use /g always
-set gdefault
 
 " _____________________________________________________________________________
 
@@ -324,34 +312,6 @@ let g:netrw_altv         = 1
 let g:netrw_winsize      = 25
 let g:netrw_banner       = 0
 
-function! VexToggle(dir)
-  if exists("t:vex_buf_nr")
-    call VexClose()
-  else
-    call VexOpen(a:dir)
-  endif
-endfunction
-
-function! VexOpen(dir)
-  execute "Vexplore " . a:dir
-  let t:vex_buf_nr = bufnr("%")
-  wincmd H
-endfunction
-
-function! VexClose()
-  let cur_win_nr = winnr()
-  let target_nr = (cur_win_nr == 1 ? winnr("#") : cur_win_nr)
-
-  1wincmd w
-  close
-  unlet t:vex_buf_nr
-
-  execute (target_nr - 1) . "wincmd w"
-endfunction
-
-" map <silent> <F2> :call VexToggle(getcwd())<cr>
-" map <silent> <F3> :call VexToggle("")<cr>
-
 " _____________________________________________________________________________
 
 augroup VimDefault
@@ -395,11 +355,19 @@ let maplocalleader   = "\<Space>"
 let g:maplocalleader = "\<Space>"
 
 " Fast saving on Space+w
-nnoremap <leader>w :w!<cr>
+nnoremap <silent> <leader>w :update<cr>
 
 " :W sudo saves the file
 " (useful for handling the permission-denied error)
 cnoremap w!! w !sudo tee > /dev/null %
+
+" Put /v everywhere on search
+nnoremap / /\v
+vnoremap / /\v
+cnoremap %s/ %smagic/
+cnoremap \>s/ \>smagic/
+nnoremap :g/ :g/\v
+nnoremap :g// :g//
 
 " Reselect visual block after indent or outdent
 vnoremap < <gv
@@ -615,20 +583,6 @@ endif
 " # Plugin settings =============================================== {{{
 " _____________________________________________________________________________
 
-" Airline {{{
-
-" let g:airline_left_sep        = ''
-" let g:airline_right_sep       = ''
-" let g:airline_theme           = 'gruvbox'
-" let g:airline_powerline_fonts = 0
-
-" let g:airline_extensions = [
-"     \ 'hunks',
-"     \ 'virtualenv',
-"     \ 'neomake'
-"     \ ]
-
-" }}}
 " VimGo {{{
 
 let g:go_highlight_operators = 1
@@ -697,25 +651,6 @@ let NERDTreeIgnore = ['\.py[co]$', '__pycache__']
 
 map <silent> <F2> :NERDTreeTabsToggle<CR>
 map <silent> <F3> :NERDTreeFind<CR>
-
-" }}}
-" YouCompleteMe {{{
-
-" let g:ycm_rust_src_path = '~/dev/3pp/rust/src'
-" let g:ycm_complete_in_strings = 0
-" let g:ycm_collect_identifiers_from_tags_files = 1
-" let g:ycm_autoclose_preview_window_after_insertion = 1
-
-" nnoremap <leader>yg :YcmCompleter GoTo<CR>
-" nnoremap <leader>yr :YcmCompleter GoToReferences<CR>
-" nnoremap <leader>yd :YcmCompleter GetDoc<CR>
-" nnoremap <leader>ys :YcmCompleter RestartServer<CR>
-
-" function! YcmCompleteVenvNames(arg_lead, cmd_line, cursor_pos)
-"     return virtualenv#names(a:arg_lead)
-" endfunction
-
-" command! -bar -nargs=? -complete=customlist,YcmCompleteVenvNames Venv :call virtualenv#activate(<q-args>) | YcmRestartServer
 
 " }}}
 " Python Syntax {{{
@@ -878,23 +813,6 @@ let g:hardtime_ignore_quickfix        = 1
 let g:hardtime_allow_different_key    = 1
 let g:hardtime_maxcount               = 2
 
-" }}}
-" EasyMotion {{{
-
-" let g:EasyMotion_smartcase        = 1
-" let g:EasyMotion_use_smartsign_us = 1
-" let g:EasyMotion_startofline      = 0
-
-" map  <Leader>l <Plug>(easymotion-lineforward)
-" map  <Leader>j <Plug>(easymotion-j)
-" map  <Leader>k <Plug>(easymotion-k)
-" map  <Leader>h <Plug>(easymotion-linebackward)
-" map  /         <Plug>(easymotion-sn)
-" omap /         <Plug>(easymotion-tn)
-" nmap s         <Plug>(easymotion-s2)
-" nmap t         <Plug>(easymotion-t2)
-
-" }}}
 " Notes {{{
 
 let g:notes_directories = ['~/Sync/Main/notes']
@@ -945,8 +863,8 @@ endif
 " NeoVim QT {{{
 
 if has('nvim')
+    let g:Guifont="Fira Mono:h11"
     command -nargs=? Guifont call rpcnotify(0, 'Gui', 'SetFont', "<args>") | let g:Guifont="<args>"
-    Guifont Fira Mono:h11
 endif
 
 " }}}
