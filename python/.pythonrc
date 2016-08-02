@@ -5,6 +5,25 @@
 from datetime import datetime as dt  # noqa
 
 
+def _install_pprint_displayhook():
+    import sys
+    import pprint
+
+    try:
+        import __builtin__ as builtins
+    except ImportError:
+        import builtins
+
+    def displayhook(value):
+        """Pretty print stuff by default."""
+
+        if value is not None:
+            builtins._ = value
+            pprint.pprint(value)
+
+    sys.displayhook = displayhook
+
+
 def _make_z():
     import calendar
     import datetime
@@ -188,3 +207,9 @@ try:
     from see import see  # noqa
 except ImportError:
     see = dir
+
+
+try:
+    _install_pprint_displayhook()
+finally:
+    del _install_pprint_displayhook
