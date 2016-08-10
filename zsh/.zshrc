@@ -26,6 +26,9 @@ fi
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export FZF_DEFAULT_COMMAND='(ag --nocolor --nogroup -l -g "") 2> /dev/null'
 
+# rustup
+[ -f $HOME/.cargo/env ] && source $HOME/.cargo/env
+
 # KeyChain
 if which keychain > /dev/null; then
     eval "$(keychain --nocolor --eval --agents ssh,gpg id_rsa 2> /dev/null)"
