@@ -49,6 +49,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'janko-m/vim-test'
     Plug 'tpope/vim-sleuth'
     Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-unimpaired'
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
@@ -58,7 +59,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'kana/vim-textobj-user' |
         \ Plug 'kana/vim-textobj-indent' |
         \ Plug 'bps/vim-textobj-python', { 'for': 'python' } |
-        \ Plug 'machakann/vim-textobj-delimited'
+        \ Plug 'machakann/vim-textobj-delimited' |
+        \ Plug 'coderifous/textobj-word-column.vim'
     Plug 'othree/yajs.vim', { 'for': 'javascript' } |
         \ Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
 
