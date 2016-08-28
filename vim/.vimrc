@@ -55,6 +55,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'wellle/visual-split.vim'
     Plug 'xolox/vim-misc' | Plug 'xolox/vim-notes' | Plug 'xolox/vim-session'
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
+    Plug 'equalsraf/neovim-gui-shim'
 
     Plug 'kana/vim-textobj-user' |
         \ Plug 'kana/vim-textobj-indent' |
@@ -861,16 +862,6 @@ if has('gui_running')
     nnoremap <silent><Leader>p "+gP
 
 endif
-
-" NeoVim QT {{{
-
-if has('nvim')
-    let g:Guifont="Fira Mono:h11"
-    command -nargs=? Guifont call rpcnotify(0, 'Gui', 'SetFont', "<args>") | let g:Guifont="<args>"
-endif
-
-" }}}
-
 
 " }}}
 " # Misc            =============================================== {{{
