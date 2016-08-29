@@ -32,6 +32,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/vim-easy-align'
     Plug 'junegunn/vim-peekaboo'
     Plug 'justinmk/vim-sneak'
+    Plug 'jiangmiao/auto-pairs'
     Plug 'kshenoy/vim-signature'
     Plug 'lambdalisue/vim-pyenv'
     Plug 'ludovicchabant/vim-gutentags'
@@ -39,7 +40,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'mkitt/tabline.vim'
     Plug 'morhetz/gruvbox'
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
-    Plug 'rstacruz/vim-closer'
+    " Plug 'rstacruz/vim-closer'
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
     Plug 'sheerun/vim-polyglot'
     Plug 'tpope/vim-commentary'
