@@ -506,6 +506,11 @@ set tabstop=4
 " But for yaml keep 2 characters, pls
 autocmd FileType yaml setlocal tabstop=2 shiftwidth=2
 
+" Smarter cursorline
+set cursorline
+autocmd InsertLeave,WinEnter * set cursorline
+autocmd InsertEnter,WinLeave * set nocursorline
+
 " Backspace unindent
 set softtabstop=4
 
