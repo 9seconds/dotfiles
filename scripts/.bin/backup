@@ -80,7 +80,7 @@ borg_create() {
 }
 
 borg_check() {
-    ${BORG_READ_CMD} check ${DEFAULT_OPTS}
+    ${BORG_WRITE_CMD} check ${DEFAULT_OPTS} --repair
 }
 
 borg_extract() {
