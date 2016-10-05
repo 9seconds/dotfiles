@@ -230,12 +230,7 @@ docker_update() {
 docker_stop() {
     # Stops all running containers.
 
-    local images
-
-    images="$(docker ps -a -q)"
-    if [ -n "${images}" ]; then
-        docker stop ${images}
-    fi
+    docker ps -a -q | xargs --no-run-if-empty docker stop
 }
 
 docker_run() {
@@ -264,12 +259,8 @@ docker_run() {
 docker_rm() {
     # Removes all running containers.
 
-    local containers
-    containers="$(docker ps -a -q)"
-
-    if [ -n "${containers}" ]; then
-        docker rm ${containers}
-    fi
+    docker_stop
+    docker ps -a -q | xargs --no-run-if-empty docker rm -v -f
 }
 
 docker_clean() {
@@ -277,7 +268,7 @@ docker_clean() {
 
     docker_stop && docker_rm
 
-    docker rmi $(docker images -f "dangling=true" -q)
+    docker images -f "dangling=true" -q | xargs --no-run-if-empty docker rmi -f
 }
 
 docker_rmi() {
@@ -365,10 +356,10 @@ vagrant_halt() {
 aptg() {
     # Updates APT packages.
 
-    sudo apt-get -qq -y update && \
-    sudo apt-get -y dist-upgrade && \
-    sudo apt-get -qq -y autoremove && \
-    sudo apt-get -qq clean
+    sudo apt -qq -y update && \
+    sudo apt -y full-upgrade && \
+    sudo apt -qq -y autoremove && \
+    sudo apt -qq clean
 }
 
 dockerup() {
