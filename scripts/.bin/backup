@@ -40,7 +40,7 @@ set -eu -o pipefail
 MAIN_HOMEDIR="$(getent passwd ${MAIN_USER} | cut -f 6 -d ':')"
 EXCLUDE_FILE="${MAIN_HOMEDIR}/.borg/exclude"
 
-LOCK_WAIT=120
+LOCK_WAIT=0
 CHECKPOINT_EVERY=120
 KEEP_WITHIN="3d"
 KEEP_DAILY="7"
