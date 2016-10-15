@@ -224,6 +224,12 @@ set list
 set listchars=tab:▸\ ,trail:⋅,extends:❯,precedes:❮
 set showbreak=↪
 
+" -----------------------------------------------------------------------------
+
+" Break indentation
+set breakindent
+set breakindentopt=shift:2
+
 " _____________________________________________________________________________
 
 " Show line numbers
