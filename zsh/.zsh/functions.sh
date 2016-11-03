@@ -411,6 +411,16 @@ update_git_repos() {
     cd $last_path
 }
 
+disable_kvm() {
+    sudo /sbin/rmmod kvm_intel
+    sudo /sbin/rmmod kvm
+}
+
+enable_kvm() {
+    sudo /sbin/insmod "/lib/modules/$(uname -r)/kernel/arch/x86/kvm/kvm.ko"
+    sudo /sbin/insmod "/lib/modules/$(uname -r)/kernel/arch/x86/kvm/kvm-intel.ko"
+}
+
 
 ###############################################################################
 # MISC HELPERS
