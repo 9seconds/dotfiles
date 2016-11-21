@@ -328,6 +328,8 @@ augroup VimDefault
     autocmd BufWritePre            *         :%s/\s\+$//e
     autocmd BufNewFile,BufReadPost *.md      set filetype=markdown
     autocmd BufNewFile,BufReadPost *.journal set filetype=journal
+    autocmd FileType               yaml      set sw=2
+    autocmd FileType               make      set noet
 augroup END
 
 " _____________________________________________________________________________
