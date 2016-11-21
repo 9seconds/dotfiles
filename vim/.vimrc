@@ -440,6 +440,10 @@ nnoremap <silent> <Leader>qa :qa<cr>
 " Grep function
 nnoremap <Leader>gp :Grep<space>
 
+" Esc!
+inoremap jk <esc>
+
+
 " _____________________________________________________________________________
 
 let g:quickfix_is_open = 0
