@@ -55,7 +55,7 @@ LOCK_READ_REPO="${LOCK_READ} ${BORG_REPO}"
 
 BORG_WRITE_CMD="${LOCK_WRITE_REPO} borg"
 BORG_READ_CMD="${LOCK_READ_REPO} borg"
-SYNC="rsync -av --no-whole-file --delete-excluded --delete-delay"
+SYNC="timeout -k 10s -s TERM 2h rsync -av --no-whole-file --delete-excluded --delete-delay"
 PAGER="less -FX"
 DEFAULT_OPTS="--lock-wait ${LOCK_WAIT} --error"
 
