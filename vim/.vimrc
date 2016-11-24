@@ -324,12 +324,9 @@ let g:netrw_banner       = 0
 
 augroup VimDefault
     autocmd!
-    autocmd VimResized             *         exe "normal! \<c-w>="
-    autocmd BufWritePre            *         :%s/\s\+$//e
-    autocmd BufNewFile,BufReadPost *.md      set filetype=markdown
-    autocmd BufNewFile,BufReadPost *.journal set filetype=journal
-    autocmd FileType               yaml      set sw=2
-    autocmd FileType               make      set noet
+    autocmd VimResized             *            exe "normal! \<c-w>="
+    autocmd BufWritePre            *            :%s/\s\+$//e
+    autocmd BufNewFile,BufReadPost *.md         set filetype=markdown
 augroup END
 
 " _____________________________________________________________________________
@@ -513,13 +510,13 @@ set smarttab
 " Indentation length
 set tabstop=4
 
-" But for yaml keep 2 characters, pls
-autocmd FileType yaml setlocal tabstop=2 shiftwidth=2
-
 " Smarter cursorline
 set cursorline
-autocmd InsertLeave,WinEnter * set cursorline
-autocmd InsertEnter,WinLeave * set nocursorline
+augroup VimCursorLine
+    autocmd!
+    autocmd InsertLeave,WinEnter * set cursorline
+    autocmd InsertEnter,WinLeave * set nocursorline
+augroup END
 
 " Backspace unindent
 set softtabstop=4
@@ -883,12 +880,13 @@ endif
 " # Misc            =============================================== {{{
 " _____________________________________________________________________________
 
-" Fold vimrc
-augroup VimFolds
+augroup VimFileTypesSettings
     autocmd!
-    autocmd FileType vim setlocal foldmethod=marker
-    autocmd FileType vim setlocal foldlevel=0
-    autocmd FileType vim setlocal foldenable
+    autocmd FileType vim          setlocal foldmethod=marker
+    autocmd FileType vim          setlocal foldlevel=0
+    autocmd FileType vim          setlocal foldenable
+    autocmd FileType ansible,yaml setlocal ts=2 sw=2 sts=2 expandtab
+    autocmd FileType make         setlocal noexpandtab
 augroup END
 
 " Changes in hilight
