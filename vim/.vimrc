@@ -32,6 +32,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/vim-easy-align'
     Plug 'junegunn/vim-peekaboo'
     Plug 'justinmk/vim-sneak'
+    Plug 'dhruvasagar/vim-table-mode', { 'for': 'rst' }
     Plug 'jiangmiao/auto-pairs'
     Plug 'kshenoy/vim-signature'
     Plug 'lambdalisue/vim-pyenv'
@@ -838,6 +839,12 @@ let g:notes_directories = ['~/Sync/Main/notes']
 
 let g:sneak#streak     = 1
 let g:sneak#use_ic_scs = 1
+
+" }}}
+" TableMode {{{
+
+let g:table_mode_corner_corner="+"
+let g:table_mode_header_fillchar="="
 
 " }}}
 
