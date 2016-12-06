@@ -46,8 +46,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-endwise'
     Plug 'tpope/vim-markdown', { 'for': 'markdown' }
-    Plug 'tpope/vim-repeat'
     Plug 'janko-m/vim-test'
+    Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-sleuth'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-unimpaired'
@@ -292,10 +292,10 @@ set t_Co=256
 " _____________________________________________________________________________
 
 let g:enable_bold_font          = 1
-let g:gruvbox_underline         = 1
-let g:gruvbox_undercurl         = 1
 let g:gruvbox_contrast_dark     = "soft"
 let g:gruvbox_italicize_strings = 1
+let g:gruvbox_undercurl         = 1
+let g:gruvbox_underline         = 1
 
 if has('nvim')
     let g:gruvbox_italic = 1
@@ -440,6 +440,9 @@ nnoremap <Leader>gp :Grep<space>
 
 " Esc!
 inoremap jk <esc>
+
+" Sort output
+vnoremap <silent> s :!sort<cr>
 
 
 " _____________________________________________________________________________
