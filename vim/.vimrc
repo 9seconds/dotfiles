@@ -573,7 +573,8 @@ if has('nvim')
     nnoremap <A-l> <C-w>l
 
     " Teminal
-    :tnoremap <A-q> <C-\><C-n>
+    tnoremap <A-q> <C-\><C-n>
+    tnoremap <A-]> <C-\><C-n>:q!<cr>
 
     let g:terminal_color_0  = '#2e3436'
     let g:terminal_color_1  = '#cc0000'
@@ -593,6 +594,16 @@ if has('nvim')
     let g:terminal_color_15 = '#eeeeec'
 
     let g:terminal_scrollback_buffer_size = 10000
+    highlight TermCursor ctermfg=gray guifg=gray
+
+    augroup TerminalNiceties
+        autocmd!
+        autocmd BufEnter,WinEnter term://* startinsert
+        autocmd BufLeave term://* stopinsert
+    augroup END
+
+    nnoremap <silent> <leader>] :vsplit term://bash<cr>
+    nnoremap <silent> <leader>[ :split term://bash<cr>
 else
     set ttyfast
     set ttymouse=xterm2
@@ -884,6 +895,9 @@ if has('gui_running')
     vnoremap <silent> y "+y
     nnoremap <silent><Leader>p "+gP
 
+    if !exists('g:GuiLoaded')
+        Guifont Fira\ Mono:h11
+    endif
 endif
 
 " }}}
