@@ -56,6 +56,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'wellle/visual-split.vim'
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
     Plug 'equalsraf/neovim-gui-shim'
+    Plug 'junegunn/vim-slash'
 
     Plug 'kana/vim-textobj-user' |
         \ Plug 'kana/vim-textobj-indent' |
@@ -844,6 +845,7 @@ let g:hardtime_ignore_quickfix        = 1
 let g:hardtime_allow_different_key    = 1
 let g:hardtime_maxcount               = 2
 
+" }}}
 " Notes {{{
 
 let g:notes_directories = ['~/Sync/Main/notes']
