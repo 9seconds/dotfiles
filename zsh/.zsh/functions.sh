@@ -349,6 +349,25 @@ vagrant_halt() {
 }
 
 
+vagrant_boxclean() {
+    vagrant box prune
+}
+
+vagrant_boxup() {
+    vagrant box list | cut -f 1 -d ' ' | sort -u | xargs -r -n 1 -I {} vagrant box update --box "{}"
+}
+
+
+vagrant_plugup() {
+    vagrant plugin update
+}
+
+
+vagrantup() {
+    vagrant_plugup && vagrant_boxup && vagrant_boxclean
+}
+
+
 ###############################################################################
 # UPDATE FUNCTIONS
 ###############################################################################
@@ -371,7 +390,7 @@ dockerup() {
 pipup() {
     # Upgrades pip packages.
 
-    cat "$LISTDIR/pip.list" | xargs pip install --user --upgrade
+    cat "$LISTDIR/pip.list" | xargs -r pip install --user --upgrade
 }
 
 npmup() {
@@ -381,7 +400,7 @@ npmup() {
 allup() {
     # Upgrades the world.
 
-    aptg && pipup && npmup && dockerup
+    aptg && pipup && npmup && vagrantup
 }
 
 purgeoldkernels() {
