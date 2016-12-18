@@ -18,8 +18,8 @@ filetype off
 call plug#begin('~/.vim/plugged')
     if has('nvim')
         Plug 'Shougo/deoplete.nvim' |
-            \ Plug 'zchee/deoplete-jedi' |
-            \ Plug 'carlitux/deoplete-ternjs'
+            \ Plug 'zchee/deoplete-jedi', { 'for': 'python' } |
+            \ Plug 'carlitux/deoplete-ternjs', { 'for': ['json', 'javascript'] }
     endif
 
     Plug 'airblade/vim-rooter'
