@@ -269,6 +269,7 @@ docker_clean() {
     docker_stop && docker_rm
 
     docker images -f "dangling=true" -q | xargs --no-run-if-empty docker rmi -f
+    docker volume ls -q -f "dangling=true" | xargs --no-run-if-empty docker volume rm
 }
 
 docker_rmi() {

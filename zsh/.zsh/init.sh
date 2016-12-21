@@ -30,6 +30,7 @@ plugins=(
     sudo
     command-not-found
     zsh-syntax-highlighting
+    tmuxinator
 )
 
 source $ZSH/oh-my-zsh.sh

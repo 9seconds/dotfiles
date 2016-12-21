@@ -734,6 +734,7 @@ let g:neomake_python_enabled_makers     = ['flake8']
 let g:neomake_sh_enabled_makers         = ['shellcheck']
 let g:neomake_go_enabled_makers         = ['golint']
 let g:neomake_javascript_enabled_makers = ['eslint']
+let g:neomake_yaml_enabled_makers       = ['yamllint']
 let g:neomake_verbose                   = -1
 
 nnoremap <leader>m :Neomake<cr>
