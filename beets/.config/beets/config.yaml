@@ -1,0 +1,33 @@
+directory: ~/Music/Music
+library: ~/Music/beets.blb
+per_disc_numbering: yes
+asciify_paths: yes
+
+plugins: chroma convert edit embedart fetchart lyrics ftintitle inline lastgenre play replaygain scrub info
+
+ui:
+  color: yes
+
+import:
+  write: yes
+  copy: yes
+  move: no
+  link: no
+  resume: no
+
+paths:
+  default: Albums/$albumartist/$year - $album%aunique{}/%if{$multidisc,CD$disc/}$track. $title
+  singleton: Non-Album/$artist/$title
+  comp: Compilations/$album ($year)%aunique{}/%if{$multidisc,CD$disc/}$track. $title
+
+item_fields:
+  multidisc: 1 if disctotal > 1 else 0
+
+lastgenre:
+  separator: ' / '
+
+replaygain:
+  backend: gstreamer
+
+zero:
+  fields: comments
