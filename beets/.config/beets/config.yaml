@@ -3,7 +3,7 @@ library: /media/Music/beets.blb
 per_disc_numbering: yes
 asciify_paths: yes
 
-plugins: chroma convert edit embedart fetchart lyrics ftintitle inline lastgenre play replaygain scrub info badfiles
+plugins: chroma convert edit embedart fetchart lyrics ftintitle inline lastgenre play replaygain scrub info badfiles acousticbrainz
 
 ui:
   color: yes
