@@ -1,5 +1,5 @@
-directory: ~/Music/Music
-library: ~/Music/beets.blb
+directory: /media/Music/Music
+library: /media/Music/beets.blb
 per_disc_numbering: yes
 asciify_paths: yes
 
