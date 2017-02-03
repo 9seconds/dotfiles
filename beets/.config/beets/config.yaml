@@ -51,8 +51,20 @@ convert:
       command: ffmpeg -i $source -y -codec:a libmp3lame -q:a 2 $dest
       extension: mp3
     mp3_v4:
-      command: ffmpeg -i $source -y codec:a libmp3lame -q:a 4 $dest
+      command: ffmpeg -i $source -y -codec:a libmp3lame -q:a 4 $dest
       extension: mp3
     mp3_v6:
-      command: ffmpeg -i $source -y codec:a libmp3lame -q:a 6 $dest
+      command: ffmpeg -i $source -y -codec:a libmp3lame -q:a 6 $dest
       extension: mp3
+    ogg_q5:
+      command: ffmpeg -i $source -y -codec:a libvorbis -qscale:a 5 $dest
+      extension: ogg
+    ogg_q6:
+      command: ffmpeg -i $source -y -codec:a libvorbis -qscale:a 6 $dest
+      extension: ogg
+    ogg_q7:
+      command: ffmpeg -i $source -y -codec:a libvorbis -qscale:a 7 $dest
+      extension: ogg
+    ogg_max:
+      command: ffmpeg -i $source -y -codec:a libvorbis -qscale:a 10 $dest
+      extension: ogg
