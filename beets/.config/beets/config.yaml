@@ -38,6 +38,7 @@ badfiles:
     mp3: mp3val
 
 convert:
+  never_convert_lossy_files: yes
   format: mp3_v0
   formats:
     mp3_320k:
