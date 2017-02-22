@@ -34,5 +34,8 @@ if which keychain > /dev/null; then
     eval "$(keychain --nocolor --eval --agents ssh,gpg id_rsa 2> /dev/null)"
 fi
 
+# gvm
+[[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"
+
 # Private stuff I do not want to share
 [[ -f "$HOME/.zshrc.private" ]] && source "$HOME/.zshrc.private"
