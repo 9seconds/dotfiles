@@ -46,6 +46,8 @@ export NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 export RUST_SRC_PATH=$HOME/dev/3pp/rust/src
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=gasp'
 
+export VAGRANT_DEFAULT_PROVIDER=libvirt
+
 # Set proper TERM for tmux
 if [ -n "$TMUX" ]; then
     export TERM=tmux-256color
