@@ -26,8 +26,8 @@ export GOPATH="$DEVGOPATH"
 export GOBIN="$GOPATH/bin"
 export WORKON_HOME="$DEVVIRTUALENVPATH"
 
-export EDITOR=nvim
-export VIMRC="$HOME/.vimrc"
+export EDITOR=emacsclient --alternate-editor='' -t
+export VIMRC=/dev/null
 export VIRTUALENVWRAPPER_PYTHON="/usr/bin/python"
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 export HISTTIMEFORMAT="%d.%m.%y %H:%M:%S"

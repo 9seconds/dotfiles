@@ -27,19 +27,6 @@ if which ah > /dev/null; then
     alias hty="h t -y --"
 fi
 
-if which vim > /dev/null; then
-    alias v=vim
-    alias vi=vim
-    alias vg="vim -g"
-    alias vless="vim -R -c "set number" -u /usr/share/vim/vim74/macros/less.vim"
-fi
-
-if which nvim > /dev/null; then
-    alias nv=nvim
-    alias v=nvim
-    alias vim=nvim
-fi
-
 if which git > /dev/null; then
     alias g=git
     alias gst="g st"

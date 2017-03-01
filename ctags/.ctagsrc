@@ -6,7 +6,6 @@
 
 --java-kinds=-p
 --python-kinds=-i
---vim-kinds=-mav
 --php-kinds=-j
 
 --langdef=Coffee

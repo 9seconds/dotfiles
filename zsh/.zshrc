@@ -15,13 +15,6 @@ if which ah > /dev/null; then
     source "$DEVGOPATH/src/github.com/9seconds/ah/sourceit/zsh.sh"
 fi
 
-# Apply Gruvbox palette
-if [[ -f "$HOME/.config/nvim/plugged/gruvbox/gruvbox_256palette.sh" ]]; then
-    source "$HOME/.config/nvim/plugged/gruvbox/gruvbox_256palette.sh"
-else
-    source "$HOME/.vim/plugged/gruvbox/gruvbox_256palette.sh"
-fi
-
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export FZF_DEFAULT_COMMAND='(ag --nocolor --nogroup -l -g "") 2> /dev/null'
