@@ -90,7 +90,6 @@ filesu() {
     #     gvfs-afc-   3771    nineseconds
     #     btsync-co   3798    nineseconds
     #     firefox 3859    nineseconds
-    #     vim 4429    nineseconds
     #     python2 4444    nineseconds
     #     python2 4444    nineseconds
 

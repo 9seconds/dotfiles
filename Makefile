@@ -17,17 +17,10 @@ PACKAGE_INSTALL := $(APT_GET) -qq install -y
 # Global targets
 #------------------------------------------------------------------------------
 
-all: stow neovim vimplug
+all: stow
 
 stow: install_stow
-	stow -t $(HOME) -R ag git roxterm tmux zsh vim
+	stow -t $(HOME) -R ag git roxterm tmux zsh
 
 install_stow:
 	$(PACKAGE_INSTALL) stow
-
-neovim:
-	ln -sf $(HOME)/.vim $(HOME)/.config/nvim && \
-	ln -sf $(HOME)/.vimrc $(HOME)/.config/nvim/init.vim
-
-vimplug:
-	make -f $(ROOT_DIR)/MakefileVim.mk vimplug

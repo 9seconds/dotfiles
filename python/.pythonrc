@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# vim: set ft=python:
 
 
 from datetime import datetime as dt  # noqa
