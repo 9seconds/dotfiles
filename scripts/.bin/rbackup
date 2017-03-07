@@ -35,6 +35,7 @@ set -eu -o pipefail
 # RESTIC_REPOSITORY    - repository for Restic backup
 # RESTIC_EXCLUDE_FILE  - path to the exclude file of Restic backup
 # RESTIC_PASSWORD_FILE - password for Restic backup
+# RESTIC_DIRECTORIES   - directories to backup. Space separated list
 # MAIN_USER            - username of the main user for backup
 
 # -----------------------------------------------------------------------------
@@ -80,7 +81,7 @@ backup_cmd() {
 }
 
 backup_create() {
-    backup_create_dir "/etc" "/usr/local" "${MAIN_HOMEDIR}"
+    backup_create_dir ${RESTIC_DIRECTORIES}
 }
 
 backup_create_dir() {
