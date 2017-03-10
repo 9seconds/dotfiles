@@ -74,6 +74,7 @@ print_help() {
   echo "  size           Printout total size of backup."
   echo "  unlock         Remove all locks in repository."
   echo "  update-restic  Updates Restic in place"
+  echo "  ?              Check if restic is running."
 }
 
 backup_cmd() {
@@ -124,6 +125,10 @@ backup_unlock() {
     ${RESTIC_TOOL} unlock --remove-all
 }
 
+backup_works() {
+    pidof -ns restic >/dev/null 2>&1 && echo "Works: $(pidof -ns restic)" || echo "not working"
+}
+
 update_restic() {
     local url="$1"
 
@@ -165,6 +170,9 @@ case "${OPTION}" in
         ;;
     unlock)
         backup_unlock "$@"
+        ;;
+    ?)
+        backup_works "$@"
         ;;
     -h|--help|help)
         print_help "$@"
