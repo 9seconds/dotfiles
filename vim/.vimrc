@@ -19,7 +19,8 @@ call plug#begin('~/.vim/plugged')
     if has('nvim')
         Plug 'Shougo/deoplete.nvim' |
             \ Plug 'zchee/deoplete-jedi', { 'for': 'python' } |
-            \ Plug 'carlitux/deoplete-ternjs', { 'for': ['json', 'javascript'] }
+            \ Plug 'carlitux/deoplete-ternjs', { 'for': ['json', 'javascript'] } |
+            \ Plug 'zchee/deoplete-go', { 'for': 'go' }
     endif
 
     Plug 'airblade/vim-rooter'
@@ -67,7 +68,7 @@ call plug#begin('~/.vim/plugged')
         \ Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
 
     if executable('go')
-        Plug 'fatih/vim-go', { 'for': 'go' }
+        Plug 'fatih/vim-go'
     endif
 
     if executable('fzf')
@@ -622,13 +623,20 @@ let g:go_highlight_functions = 1
 let g:go_highlight_methods   = 1
 let g:go_highlight_structs   = 1
 
+let g:go_bin_path = expand("~/.gotools")
+
 augroup Go
     autocmd!
     autocmd BufWritePre *.go :GoImports
-    autocmd FileType    go   nmap K         <Plug>(go-doc)
-    autocmd FileType    go   nmap <leader>g <Plug>(go-def-tab)
-    autocmd FileType    go   nmap <leader>n <Plug>(go-callers)
-    autocmd FileType    go   nmap <leader>r <Plug>(go-rename)
+    autocmd FileType    go   nmap <leader>gcs <Plug>(go-doc)
+    autocmd FileType    go   nmap <leader>gcv <Plug>(go-doc-vertical)
+    autocmd FileType    go   nmap <leader>gdt <Plug>(go-def-tab)
+    autocmd FileType    go   nmap <leader>gds <Plug>(go-def-split)
+    autocmd FileType    go   nmap <leader>gdv <Plug>(go-def-vertical)
+    autocmd FileType    go   nmap <leader>gl  <Plug>(go-callers)
+    autocmd FileType    go   nmap <leader>gi  <Plug>(go-implements)
+    autocmd FileType    go   nmap <leader>gm  <Plug>(go-imports)
+    autocmd FileType    go   nmap <leader>gr  <Plug>(go-rename)
 augroup END
 
 " }}}
