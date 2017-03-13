@@ -624,19 +624,19 @@ let g:go_highlight_methods   = 1
 let g:go_highlight_structs   = 1
 
 let g:go_bin_path = expand("~/.gotools")
+let g:go_auto_type_info = 1
 
 augroup Go
     autocmd!
-    autocmd BufWritePre *.go :GoImports
-    autocmd FileType    go   nmap <leader>gcs <Plug>(go-doc)
-    autocmd FileType    go   nmap <leader>gcv <Plug>(go-doc-vertical)
-    autocmd FileType    go   nmap <leader>gdt <Plug>(go-def-tab)
-    autocmd FileType    go   nmap <leader>gds <Plug>(go-def-split)
-    autocmd FileType    go   nmap <leader>gdv <Plug>(go-def-vertical)
-    autocmd FileType    go   nmap <leader>gl  <Plug>(go-callers)
-    autocmd FileType    go   nmap <leader>gi  <Plug>(go-implements)
-    autocmd FileType    go   nmap <leader>gm  <Plug>(go-imports)
-    autocmd FileType    go   nmap <leader>gr  <Plug>(go-rename)
+    autocmd FileType go nmap <leader>gcs <Plug>(go-doc)
+    autocmd FileType go nmap <leader>gcv <Plug>(go-doc-vertical)
+    autocmd FileType go nmap <leader>gdt <Plug>(go-def-tab)
+    autocmd FileType go nmap <leader>gds <Plug>(go-def-split)
+    autocmd FileType go nmap <leader>gdv <Plug>(go-def-vertical)
+    autocmd FileType go nmap <leader>gl  <Plug>(go-callers)
+    autocmd FileType go nmap <leader>gi  <Plug>(go-implements)
+    autocmd FileType go nmap <leader>gm  <Plug>(go-imports)
+    autocmd FileType go nmap <leader>gr  <Plug>(go-rename)
 augroup END
 
 " }}}
@@ -818,6 +818,9 @@ let g:session_extension         = ".session"
 
 let g:deoplete#enable_at_startup = 1
 let g:deoplete#max_list          = 20
+
+let g:deoplete#sources#go#gocode_binary = expand("~/.gotools/gocode")
+let g:deoplete#sources#go#use_cache = 1
 
 inoremap <silent><expr> <Tab>   pumvisible() ? "\<C-n>" : deoplete#mappings#manual_complete()
 inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : deoplete#mappings#manual_complete()

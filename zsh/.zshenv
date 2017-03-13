@@ -18,12 +18,11 @@ export DEVVIRTUALENVPATH="$DEVPATH/.virtualenvs"
 export DEVPVTPATH="$DEVPATH/pvt"
 export DEVWRKPATH="$DEVPATH/wrk"
 export DEVEXPERIMENTSPATH="$DEVPATH/experiments"
-export DEVGOPATH="$DEVPATH/gopath"
+export DEVGOPATH="$DEVPATH/go"
+export GOPATH="$DEVGOPATH"
 
 export LISTDIR="$HOME/.config/lists"
 
-export GOPATH="$DEVGOPATH"
-export GOBIN="$GOPATH/bin"
 export WORKON_HOME="$DEVVIRTUALENVPATH"
 
 export EDITOR=nvim
