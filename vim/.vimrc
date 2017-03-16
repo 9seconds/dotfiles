@@ -774,7 +774,7 @@ endif
 let g:gutentags_generate_on_missing = 0
 let g:gutentags_generate_on_write = 1
 let g:gutentags_generate_on_new = 0
-let g:gutentags_exclude = [
+let g:gutentags_ctags_exclude = [
     \ '*.min.js',
     \ '*html*',
     \ 'jquery*.js',
