@@ -38,6 +38,7 @@ export PATH="$HOME/.fzf/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.bin:$PATH"
 export PATH="$HOME/.node_prefix/bin:$PATH"
+export PATH="/snap/bin:$PATH"
 export PATH="$GOBIN:$PATH"
 
 export NVIM_TUI_ENABLE_TRUE_COLOR=1
