@@ -36,11 +36,11 @@
     gcca        = !git gcc && git sf git gcc
     gcc         = !git reflog expire --expire=all --stale-fix --all && git worktree prune --expire 0 && git gc --prune=all && git gc --aggressive --prune=all && git repack -AFdfb --depth 250 --window 250
     la          = !git config -l | grep alias | cut -c 7- | sort
-    le          = log --decorate --oneline --graph
-    ll          = log --pretty=format:"%C(yellow)%h%Cred%d\\ ->\\ %Creset%s%Cblue\\ (%cn)" --decorate --numstat
+    lla         = !git ll --all
+    ll          = log --decorate --oneline --graph
     mc          = diff --check
-    pshf        = !git push --atomic --all --prune --force && git push --tags --force
-    psh         = !git push --atomic --all --prune && git push --tags --prune
+    pshf        = !git push --atomic --all --prune --force && git push --atomic --tags --force
+    psh         = !git push --atomic --all --prune && git push --atomic --tags --prune
     pulla       = pull --rebase --all --recurse-submodules=yes --prune
     pullr       = pull --rebase --recurse-submodules=yes --prune
     rba         = rebase --abort
