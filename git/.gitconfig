@@ -14,7 +14,7 @@
     bra         = branch -vv --all
     br          = branch -vv
     brd         = branch -D
-    brdd        = "!sh -c 'git branch -D \"${@:2}\" && git push --delete $1 \"${@:2}\"'"
+    brdd        = "!bash -c 'repo=\"$1\"; git branch -D \"${@:2}\" && git push --delete \"$repo\" \"${@:2}\"'"
     brl         = branch -vv
     brr         = branch -vv --remotes
     changes     = diff --name-status -r
@@ -25,7 +25,7 @@
     cob         = checkout -b
     co          = checkout
     cp          = cherry-pick
-    detach      = "!sh -c 'git checkout $(git rev-parse ${1:-HEAD})' --"
+    detach      = "!r() { git checkout $(git rev-parse ${1:-HEAD}); }; r"
     dfcc        = !git dfc --ignore-all-space --word-diff="color"
     dfc         = diff --cached --minimal
     df          = diff --minimal
@@ -50,6 +50,7 @@
     retag       = "!r() { git tag -d $1 && git push origin :refs/tags/$1 && git tag $1; }; r"
     rh          = reset --hard
     sf          = submodule foreach --recursive
+    squash      = "!r() { ub=\"$1\"; cb=\"$(git rev-parse --abbrev-ref HEAD)\"; nb=\"${cb}-squashed\"; git checkout -b \"$nb\"; git reset --hard -q \"$ub\"; git merge -q --squash HEAD@{1}; git commit; }; r"
     s           = status -s
     su          = submodule update --init
     unassumeall = !git assumed | xargs -r git update-index --no-assume-unchanged
