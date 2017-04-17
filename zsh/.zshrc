@@ -5,6 +5,7 @@ source "$HOME/.zsh/antigen/antigen.zsh"
 antigen use oh-my-zsh
 antigen bundles <<EOBUNDLES
   autojump
+  colored-man-pages
   command-not-found
   gitfast
   ssh-agent

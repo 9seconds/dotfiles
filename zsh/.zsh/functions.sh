@@ -158,25 +158,6 @@ filespu() {
     filesp "$1" | awk 'NR > 1 {print $2}' | sort -u
 }
 
-man() {
-    # This is a small wrapper for colorizing man pages.
-
-    env LESS_TERMCAP_mb=$'\E[01;31m' \
-        LESS_TERMCAP_md=$'\E[01;38;5;74m' \
-        LESS_TERMCAP_me=$'\E[0m' \
-        LESS_TERMCAP_se=$'\E[0m' \
-        LESS_TERMCAP_so=$'\E[38;5;246m' \
-        LESS_TERMCAP_ue=$'\E[0m' \
-        LESS_TERMCAP_us=$'\E[04;38;5;146m' \
-    man "$@"
-}
-
-wttr() {
-    # fetch wttr for weather
-
-    curl -4L "http://wttr.in/${1:-nizhny}"
-}
-
 extract() {
     # Handy shortcut stolen from internetz.
     # Extracts archives.
@@ -204,124 +185,6 @@ extract() {
 }
 
 
-
-###############################################################################
-# DOCKER FUNCTIONS
-###############################################################################
-
-docker_images() {
-    # Just shows a list of docker images without a noise.
-
-    docker images | awk 'NR > 1 && $1 != "<none>" {print $1}' | sort -u
-}
-
-docker_versions() {
-    # Shows tags of docker images without a noise.
-
-    docker images | awk -v IMG="$1" 'NR > 1 && $1 == IMG {print $2}' | sort
-}
-
-docker_update() {
-    # Updates all existing docker images (all versions).
-
-    docker_images | xargs -P "$(cpu_count)" -n 1 docker pull -a
-}
-
-docker_stop() {
-    # Stops all running containers.
-
-    docker ps -a -q | xargs --no-run-if-empty docker stop
-}
-
-docker_run() {
-    # Runs docker container. If no second argument is set then bash
-    # would be executed.
-
-    local container
-    local cmd
-    local volumes
-
-    container="$1"
-    cmd="${2:-bash}"
-    volumes=""
-
-    if [[ "$#" -gt "2" ]]; then
-        shift 2
-
-        for mapping in "$@"; do
-            volumes="-v $mapping $volumes"
-        done
-    fi
-
-    eval docker run -it --rm=true $volumes $container $cmd
-}
-
-docker_rm() {
-    # Removes all running containers.
-
-    docker_stop
-    docker ps -a -q | xargs --no-run-if-empty docker rm -v -f
-}
-
-docker_clean() {
-    # Stops and removes all running containers. After it cleans stale images.
-
-    docker_stop && docker_rm
-
-    docker system prune
-}
-
-docker_rmi() {
-    # Removes images with all tags.
-    #
-    # Args:
-    #     repo1 repo2 repo3...
-    #
-    # Example:
-    #     $ docker_rmi ubuntu centos nineseconds/docker-vagrant
-
-    local images
-
-    images="$(docker images)"
-
-    for repo in "$@"; do
-        echo ${images} | grep "$repo" | awk '{print $2}' | xargs -n 1 -I {} docker rmi "$repo:{}"
-    done
-}
-
-docker_pull() {
-    # Pulls all tags for the repository.
-    #
-    # Args:
-    #     repo1 repo2 repo3...
-    #
-    # Example:
-    #     $ docker_pull ubuntu centos nineseconds/docker-vagrant
-
-    echo -n "$@" | xargs -d ' ' -n 1 -P "$(cpu_count)" docker pull
-}
-
-docker_search() {
-    # Searches for the docker image with at lease 1 star.
-    #
-    # Args:
-    #     search_pattern
-    #
-    # Example:
-    #     $ docker_search centos
-
-    local delimeter
-
-    delimeter="☃"
-
-    docker search -s 1 "$@" \
-        | sed "s/\s\{2,\}/${delimeter}/g" | \
-        awk -F "${delimeter}" 'NR > 1 && $2 !~ /^[0-9]+/ {print}' | \
-        column -xt -s "${delimeter}"
-}
-
-
-
 ###############################################################################
 # VAGRANT FUNCTIONS
 ###############################################################################
@@ -345,7 +208,9 @@ vagrant_halt() {
             print $1
         }
     "
-    vagrant global-status | awk "$awk_script" | xargs -n 1 -P "$(cpu_count)" vagrant halt
+    vagrant global-status \
+        | awk "$awk_script" \
+        | xargs -n 1 -P "$(cpu_count)" vagrant halt
 }
 
 
@@ -354,7 +219,10 @@ vagrant_boxclean() {
 }
 
 vagrant_boxup() {
-    vagrant box list | cut -f 1 -d ' ' | sort -u | xargs -r -n 1 -I {} vagrant box update --box "{}"
+    vagrant box list \
+        | cut -f 1 -d ' ' \
+        | sort -u \
+        | xargs -r -n 1 -I {} vagrant box update --box "{}"
 }
 
 vagrant_plugup() {
@@ -384,7 +252,7 @@ dockerup() {
 allup() {
     # Upgrades the world.
 
-    aptg && vagrantup
+    aptg && vagrantup && antigen update
 }
 
 purgeoldkernels() {
