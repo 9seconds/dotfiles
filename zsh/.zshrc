@@ -14,7 +14,9 @@ antigen bundles <<EOBUNDLES
   sindresorhus/pure
 
   hcgraf/zsh-sudo
+  hlissner/zsh-autopair
   Tarrasch/zsh-bd
+
   zsh-users/zsh-autosuggestions
   zsh-users/zsh-completions
   zsh-users/zsh-syntax-highlighting
