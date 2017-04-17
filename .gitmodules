@@ -4,3 +4,6 @@
 [submodule "ZSHTheme"]
 	path = zsh/.zsh/custom/9seconds-zsh-theme
 	url = https://github.com/9seconds/9seconds-zsh-theme
+[submodule "antigen"]
+	path = zsh/.zsh/antigen
+	url = https://github.com/zsh-users/antigen.git
