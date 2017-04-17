@@ -9,10 +9,12 @@ antigen bundles <<EOBUNDLES
   gitfast
   ssh-agent
 
+  mafredri/zsh-async
+  sindresorhus/pure
+
   zsh-users/zsh-completions
   zsh-users/zsh-syntax-highlighting
 EOBUNDLES
-antigen theme https://github.com/denysdovhan/spaceship-zsh-theme spaceship
 antigen apply
 
 source "$HOME/.zsh/init.sh"
