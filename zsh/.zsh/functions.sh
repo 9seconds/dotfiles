@@ -268,8 +268,7 @@ docker_clean() {
 
     docker_stop && docker_rm
 
-    docker images -f "dangling=true" -q | xargs --no-run-if-empty docker rmi -f
-    docker volume ls -q -f "dangling=true" | xargs --no-run-if-empty docker volume rm
+    docker system prune
 }
 
 docker_rmi() {
@@ -299,7 +298,7 @@ docker_pull() {
     # Example:
     #     $ docker_pull ubuntu centos nineseconds/docker-vagrant
 
-    echo -n "$@" | xargs -d ' ' -n 1 -P "$(cpu_count)" docker pull -a
+    echo -n "$@" | xargs -d ' ' -n 1 -P "$(cpu_count)" docker pull
 }
 
 docker_search() {
@@ -330,7 +329,7 @@ docker_search() {
 vagrant_halt() {
     # Halts all running Vagrant machines.
 
-    local awk_script='
+    local awk_script="
         BEGIN {
             start = 0
         };
@@ -342,10 +341,10 @@ vagrant_halt() {
         start == 1 && /^\s*$/ {
             exit 0
         };
-        start == 1 && $4 != "poweroff" {
+        start == 1 && $4 != 'poweroff' {
             print $1
         }
-    '
+    "
     vagrant global-status | awk "$awk_script" | xargs -n 1 -P "$(cpu_count)" vagrant halt
 }
 
@@ -358,11 +357,9 @@ vagrant_boxup() {
     vagrant box list | cut -f 1 -d ' ' | sort -u | xargs -r -n 1 -I {} vagrant box update --box "{}"
 }
 
-
 vagrant_plugup() {
     vagrant plugin update
 }
-
 
 vagrantup() {
     vagrant_plugup && vagrant_boxup && vagrant_boxclean
@@ -374,8 +371,6 @@ vagrantup() {
 ###############################################################################
 
 aptg() {
-    # Updates APT packages.
-
     sudo apt -qq -y update && \
     sudo apt -y full-upgrade && \
     sudo apt -qq -y autoremove && \
@@ -383,25 +378,13 @@ aptg() {
 }
 
 dockerup() {
-    # Updates docker and cleans everything.
-
-    docker_update; docker_clean
-}
-
-pipup() {
-    # Upgrades pip packages.
-
-    cat "$LISTDIR/pip.list" | xargs -r pip install --user --upgrade
-}
-
-npmup() {
-    npm -g update
+    docker_update && docker_clean
 }
 
 allup() {
     # Upgrades the world.
 
-    aptg && pipup && npmup && vagrantup
+    aptg && vagrantup
 }
 
 purgeoldkernels() {
@@ -409,26 +392,6 @@ purgeoldkernels() {
     # http://askubuntu.com/a/254585
 
     echo $(dpkg --list | grep linux-image | awk '{ print $2 }' | sort -V | sed -n '/'`uname -r`'/q;p') $(dpkg --list | grep linux-headers | awk '{ print $2 }' | sort -V | sed -n '/'"$(uname -r | sed "s/\([0-9.-]*\)-\([^0-9]\+\)/\1/")"'/q;p') | xargs sudo apt-get -y purge
-}
-
-update_git_repos() {
-    # Updates and gc's repositories.
-
-    local root_path="$(readlink -f $1)"
-    local repo_roots="$(find $root_path -name ".git" -type d | grep -v gopath | xargs -n 1 dirname)"
-    local last_path=$(pwd)
-
-    for repo in $(echo $repo_roots); do
-        cd $repo && \
-        echo "\n====== $repo ======" && \
-        git fetch --prune --all --recurse-submodules=yes && \
-        git gc --aggressive --prune=all && \
-        git repack -Ad && \
-        git submodule foreach git gc --aggressive --prune=all && \
-        git submodule foreach git repack -Ad
-    done
-
-    cd $last_path
 }
 
 disable_kvm() {
@@ -439,56 +402,4 @@ disable_kvm() {
 enable_kvm() {
     sudo /sbin/insmod "/lib/modules/$(uname -r)/kernel/arch/x86/kvm/kvm.ko"
     sudo /sbin/insmod "/lib/modules/$(uname -r)/kernel/arch/x86/kvm/kvm-intel.ko"
-}
-
-
-###############################################################################
-# MISC HELPERS
-###############################################################################
-
-encode_to_ipad() {
-    # This function encodes videofile to my iPad Air trying to minify it as
-    # much as possible. Basically I do not neet max quality, but gonna try
-    # to put as much movies as possible.
-    #
-    # Output has to be used with VLC for iOS.
-
-    local input="$(readlink -ne "$1")"
-    local output="$(readlink -nm "$2")"
-    local sound_stream="${3:=1}"
-    local video_bitrate="${4:=512k}"
-    local tmpdir="$(mktemp -d)"
-
-    cd "$tmpdir" && \
-        _encode_to_ipad_ffmpeg "$sound_stream" "$video_bitrate" 1 "$input" "/dev/null" && \
-        _encode_to_ipad_ffmpeg "$sound_stream" "$video_bitrate" 2 "$input" "$output"
-    cd - && rm -rf "$tmpdir"
-}
-
-_encode_to_ipad_ffmpeg() {
-    # Helper function for `encode_to_ipad`
-
-    local sound_stream="$1"
-    local video_bitrate="$2"
-    local pass="$3"
-    local input="$4"
-    local output="$5"
-
-    ffmpeg -y -i "$input" \
-        -map 0:0 -map 0:$sound_stream \
-        -c:v libx264 \
-        -profile:v high \
-        -level 4.2 \
-        -preset veryslow \
-        -b:v "$video_bitrate" \
-        -maxrate "$video_bitrate" \
-        -bufsize 1000k \
-        -vf scale=-1:576 \
-        -c:a libmp3lame \
-        -q:a 2 \
-        -ar 44100 \
-        -f mp4 \
-        -threads 0 \
-        -pass "$pass" \
-        "$output"
 }
