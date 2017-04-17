@@ -17,16 +17,6 @@ if which pygmentize > /dev/null; then
     alias catc="pygmentize -f terminal256 -O style=native -g"
 fi
 
-if which ah > /dev/null; then
-    alias h=ah
-    alias hl="h l"
-    alias hsg="h s -g"
-    alias hs="h s"
-    alias ht="h t --"
-    alias htx="h t -x --"
-    alias hty="h t -y --"
-fi
-
 if which vim > /dev/null; then
     alias v=vim
     alias vi=vim
