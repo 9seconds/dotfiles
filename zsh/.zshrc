@@ -7,6 +7,7 @@ antigen bundles <<EOBUNDLES
   command-not-found
   gitfast
   ssh-agent
+  taskwarrior
 
   mafredri/zsh-async
   sindresorhus/pure
