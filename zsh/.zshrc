@@ -1,7 +1,5 @@
-#
-# Antigen
-#
 source "$HOME/.zsh/antigen/antigen.zsh"
+
 antigen use oh-my-zsh
 antigen bundles <<EOBUNDLES
   autojump
