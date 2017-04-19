@@ -245,10 +245,6 @@ aptg() {
     sudo apt -qq clean
 }
 
-dockerup() {
-    docker_update && docker_clean
-}
-
 allup() {
     # Upgrades the world.
 
