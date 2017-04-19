@@ -15,7 +15,7 @@ export PATH="$HOME/.node_prefix/bin:$PATH"
 export EDITOR=nvim
 
 export NVIM_TUI_ENABLE_TRUE_COLOR=1
-export NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+export NVIM_TUI_ENABLE_CURSOR_SHAPE=0
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=gasp'
 export VAGRANT_DEFAULT_PROVIDER=libvirt
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
