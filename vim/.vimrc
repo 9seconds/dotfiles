@@ -33,9 +33,9 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/vim-easy-align'
     Plug 'junegunn/vim-peekaboo'
     Plug 'justinmk/vim-sneak'
-    Plug 'dhruvasagar/vim-table-mode', { 'for': 'rst' }
     Plug 'jiangmiao/auto-pairs'
     Plug 'kshenoy/vim-signature'
+    Plug 'tweekmonster/braceless.vim'
     Plug 'lambdalisue/vim-pyenv'
     Plug 'ludovicchabant/vim-gutentags'
     Plug 'mhinz/vim-signify'
@@ -60,8 +60,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/vim-slash'
 
     Plug 'kana/vim-textobj-user' |
-        \ Plug 'kana/vim-textobj-indent' |
-        \ Plug 'bps/vim-textobj-python', { 'for': 'python' } |
         \ Plug 'machakann/vim-textobj-delimited' |
         \ Plug 'coderifous/textobj-word-column.vim'
     Plug 'othree/yajs.vim', { 'for': 'javascript' } |
@@ -235,9 +233,6 @@ set breakindentopt=shift:2
 
 " Show line numbers
 set number
-if v:version >= 703
-    set relativenumber
-endif
 
 " _____________________________________________________________________________
 
@@ -500,7 +495,7 @@ syntax on
 
 " Set rulers
 if v:version >= 703
-    let &colorcolumn="80,".join(range(120,999),",")
+    let &colorcolumn="80,120"
 endif
 
 " Show matching brackets, parenthesis
@@ -693,12 +688,6 @@ map <silent> <F2> :NERDTreeTabsToggle<CR>
 map <silent> <F3> :NERDTreeFind<CR>
 
 " }}}
-" Python Syntax {{{
-
-let python_version_2     = 1
-let python_highlight_all = 1
-
-" }}}
 " Rooter {{{
 
 let g:rooter_use_lcd      = 1
@@ -802,18 +791,6 @@ else
 endif
 
 " }}}
-" Session {{{
-
-let g:session_autoload          = "no"
-let g:session_autosave_periodic = 1
-let g:session_autosave_silent   = 1
-let g:session_autosave_to       = "__last__"
-let g:session_autosave          = "yes"
-let g:session_command_aliases   = 1
-let g:session_default_overwrite = 0
-let g:session_extension         = ".session"
-
-" }}}
 " Deoplete {{{
 
 let g:deoplete#enable_at_startup = 1
@@ -842,37 +819,21 @@ xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
 " }}}
-" Braceless {{{
-
-let g:braceless_auto_dedent_gap = 2
-
-" }}}
-" HardTime {{{
-
-nnoremap <F12> :HardTimeToggle<cr>
-
-let g:hardtime_default_on             = 1
-let g:hardtime_ignore_buffer_patterns = ["NERD.*"]
-let g:hardtime_ignore_quickfix        = 1
-let g:hardtime_allow_different_key    = 1
-let g:hardtime_maxcount               = 2
-
-" }}}
-" Notes {{{
-
-let g:notes_directories = ['~/Sync/Main/notes']
-
-" }}}
 " Sneak {{{
 
 let g:sneak#streak     = 1
 let g:sneak#use_ic_scs = 1
 
 " }}}
-" TableMode {{{
+" Braceless {{{
 
-let g:table_mode_corner_corner="+"
-let g:table_mode_header_fillchar="="
+augroup BracelessSettings
+    autocmd!
+    autocmd FileType python,yaml,ansible BracelessEnable +indent +fold +highlight
+augroup END
+
+let g:braceless_auto_dedent_gap = 2
+let g:braceless_enable_easymotion = 0
 
 " }}}
 
