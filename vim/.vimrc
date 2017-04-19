@@ -51,6 +51,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-endwise'
     Plug 'tpope/vim-markdown', { 'for': 'markdown' }
     Plug 'tpope/vim-repeat'
+    Plug 'tpope/vim-sensible'
     Plug 'tpope/vim-sleuth'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-unimpaired'
@@ -61,7 +62,8 @@ call plug#begin('~/.vim/plugged')
 
     Plug 'kana/vim-textobj-user' |
         \ Plug 'machakann/vim-textobj-delimited' |
-        \ Plug 'coderifous/textobj-word-column.vim'
+        \ Plug 'coderifous/textobj-word-column.vim' |
+        \ Plug 'bps/vim-textobj-python'
     Plug 'othree/yajs.vim', { 'for': 'javascript' } |
         \ Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
 
@@ -123,7 +125,6 @@ set hidden
 " _____________________________________________________________________________
 
 " Autosave and autoread
-set autoread
 set autowriteall
 
 " _____________________________________________________________________________
@@ -140,11 +141,6 @@ set wildmode=full
 
 " _____________________________________________________________________________
 
-" Always show current position
-set ruler
-
-" _____________________________________________________________________________
-
 " Height of the command bar
 set cmdheight=2
 
@@ -158,7 +154,6 @@ set smartcase
 
 " Highlight search results
 set hlsearch
-set incsearch
 
 " _____________________________________________________________________________
 
@@ -195,11 +190,6 @@ set viminfo=
 
 " Set end of line always
 set eol
-
-" _____________________________________________________________________________
-
-" Explain VIM about backspaces
-set backspace=indent,eol,start
 
 " _____________________________________________________________________________
 
@@ -248,11 +238,6 @@ set virtualedit=onemore
 
 " History size
 set history=1000
-
-" _____________________________________________________________________________
-
-" Always show statusline
-set laststatus=2
 
 " _____________________________________________________________________________
 
@@ -405,9 +390,6 @@ nnoremap <C-k>    <C-w>k
 nnoremap <C-l>    <C-w>l
 nnoremap <silent> <C-x> :resize<cr>:vertical resize<cr>
 
-" Disable highlight
-nnoremap <Leader>h :nohl<cr>
-
 " Close the current buffer
 nnoremap <leader>bd :Bdelete<cr>
 
@@ -506,7 +488,6 @@ set shiftwidth=4
 
 " No tabs, only spaces
 set expandtab
-set smarttab
 
 " Indentation length
 set tabstop=4
@@ -523,7 +504,6 @@ augroup END
 set softtabstop=4
 
 " Indents
-set autoindent
 set smartindent
 
 " http://vim.wikia.com/wiki/VimTip644
