@@ -24,40 +24,40 @@ call plug#begin('~/.vim/plugged')
     endif
 
     Plug 'airblade/vim-rooter'
-    Plug 'neomake/neomake'
-    Plug 'editorconfig/editorconfig-vim'
     Plug 'benmills/vimux'
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
+    Plug 'editorconfig/editorconfig-vim'
+    Plug 'equalsraf/neovim-gui-shim'
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
+    Plug 'janko-m/vim-test'
+    Plug 'jiangmiao/auto-pairs'
     Plug 'junegunn/vim-easy-align'
     Plug 'junegunn/vim-peekaboo'
+    Plug 'junegunn/vim-slash'
     Plug 'justinmk/vim-sneak'
-    Plug 'jiangmiao/auto-pairs'
     Plug 'kshenoy/vim-signature'
-    Plug 'tweekmonster/braceless.vim'
     Plug 'lambdalisue/vim-pyenv'
     Plug 'ludovicchabant/vim-gutentags'
     Plug 'mhinz/vim-signify'
     Plug 'mkitt/tabline.vim'
     Plug 'morhetz/gruvbox'
+    Plug 'neomake/neomake'
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
+    Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
     Plug 'sheerun/vim-polyglot'
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-endwise'
     Plug 'tpope/vim-markdown', { 'for': 'markdown' }
-    Plug 'janko-m/vim-test'
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-sleuth'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-unimpaired'
+    Plug 'tweekmonster/braceless.vim'
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
-    Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
-    Plug 'equalsraf/neovim-gui-shim'
-    Plug 'junegunn/vim-slash'
 
     Plug 'kana/vim-textobj-user' |
         \ Plug 'machakann/vim-textobj-delimited' |
@@ -793,14 +793,28 @@ endif
 " }}}
 " Deoplete {{{
 
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#max_list          = 20
+let g:deoplete#enable_at_startup          = 1
+let g:deoplete#max_list                   = 20
+let g:deoplete#auto_complete_start_length = 3
 
 let g:deoplete#sources#go#gocode_binary = expand("~/.gotools/gocode")
 let g:deoplete#sources#go#use_cache = 1
 
-inoremap <silent><expr> <Tab>   pumvisible() ? "\<C-n>" : deoplete#mappings#manual_complete()
-inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : deoplete#mappings#manual_complete()
+inoremap <silent><expr> <TAB>
+    \ pumvisible() ? "\<C-n>" :
+    \ <SID>check_back_space() ? "\<TAB>" :
+    \ deoplete#mappings#manual_complete()
+inoremap <silent><expr> <S-TAB>
+    \ pumvisible() ? "\<C-p>" :
+    \ <SID>check_back_space() ? "\<TAB>" :
+    \ deoplete#mappings#manual_complete()
+
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+call deoplete#custom#set('_', 'matchers', ['matcher_fuzzy'])
 
 " }}}
 " Jedi {{{
