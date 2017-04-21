@@ -25,6 +25,7 @@
     cob         = checkout -b
     co          = checkout
     cp          = cherry-pick
+    cpto        = "!r() { cp=\"$1\"; git checkout -qf \"$2\"; git su; git cob \"${1}-cherrypicked\"; git cp \"$cp\"; }; r"
     detach      = "!r() { git checkout $(git rev-parse ${1:-HEAD}); }; r"
     dfcc        = !git dfc --ignore-all-space --word-diff="color"
     dfc         = diff --cached --minimal
