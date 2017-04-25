@@ -27,5 +27,8 @@ source "$HOME/.zsh/functions.sh"
 source "$HOME/.zsh/aliases.sh"
 source "$HOME/.zsh/binds.sh"
 
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
 [[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
 [[ -f "$HOME/.zshrc.private" ]] && source "$HOME/.zshrc.private"
