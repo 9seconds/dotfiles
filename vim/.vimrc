@@ -271,6 +271,16 @@ set fcs=vert:│
 " Terminal with 256 colors
 set t_Co=256
 
+if has('nvim')
+    set inccommand=nosplit
+
+    augroup Shada
+        autocmd!
+        autocmd VimLeavePre,FocusLost           * wshada
+        autocmd VimEnter,CursorHold,FocusGained * rshada
+    augroup END
+endif
+
 " _____________________________________________________________________________
 
 let g:enable_bold_font          = 1
