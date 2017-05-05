@@ -507,9 +507,9 @@ endif
 " }}}
 " Gutentags {{{
 
-let g:gutentags_generate_on_missing = 0
+let g:gutentags_generate_on_missing = 1
 let g:gutentags_generate_on_write = 1
-let g:gutentags_generate_on_new = 0
+let g:gutentags_generate_on_new = 1
 let g:gutentags_ctags_exclude = [
     \ '*.min.js',
     \ '*html*',
@@ -519,8 +519,6 @@ let g:gutentags_ctags_exclude = [
     \ '*.pyo',
     \ '.tox',
     \ ]
-
-nnoremap <leader>e :GutentagsUpdate!<cr>
 
 " }}}
 " Vim-test {{{
