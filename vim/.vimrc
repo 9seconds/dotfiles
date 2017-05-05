@@ -66,8 +66,7 @@ call plug#begin('~/.vim/plugged')
         \ Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
 
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' } |
-        \ Plug 'junegunn/fzf.vim' |
-        \ Plug 'tweekmonster/fzf-filemru'
+        \ Plug 'junegunn/fzf.vim'
 call plug#end()
 
 filetype plugin indent on
@@ -339,19 +338,6 @@ endfunction
 
 " _____________________________________________________________________________
 
-if executable('ag')
-    set grepprg=ag\ --vimgrep\ $*
-    set grepformat=%f:%l:%c:%m
-
-    command! -nargs=* -complete=file -bar Grep silent! grep! <args>|cwindow|redraw!
-    nnoremap <silent> gs :execute "grep! " . shellescape(expand("<cword>"))<cr>:redraw!<cr>:copen<cr>
-else
-    command! -nargs=* -complete=file -bar Grep silent! grep! -Rni <args> .|cwindow|redraw!
-    nnoremap <silent> gs :execute "grep! -Rni " . shellescape(expand("<cword>")) . " ."<cr>:redraw!<cr>:copen<cr>
-endif
-
-" _____________________________________________________________________________
-
 if has('nvim')
     tnoremap <A-h> <C-\><C-n><C-w>h
     tnoremap <A-j> <C-\><C-n><C-w>j
@@ -366,8 +352,8 @@ if has('nvim')
 
     highlight TermCursor ctermfg=gray guifg=gray
 
-    nnoremap <silent> <leader>] :vsplit term://bash<cr>
-    nnoremap <silent> <leader>[ :split term://bash<cr>
+    nnoremap <silent> <leader>] :vsplit term://$SHELL<cr>
+    nnoremap <silent> <leader>[ :split term://$SHELL<cr>
 endif
 
 
@@ -509,16 +495,13 @@ augroup END
 " FZF {{{
 
 if executable('fzf')
-    command! -nargs=* -complete=file -bar Grep silent! Ag <args>
-
-    nnoremap <silent> <leader>ff :FilesMru --tiebreak=end<cr>
-    nnoremap <silent> <leader>fp :ProjectMru<cr>
+    nnoremap <silent> <leader>ff :Files<cr>
     nnoremap <silent> <leader>fb :Buffers<cr>
     nnoremap <silent> <leader>ft :BTags<cr>
     nnoremap <silent> <leader>fa :Tags<cr>
     nnoremap <silent> <leader>fl :Lines<cr>
     nnoremap <silent> <leader>fm :Marks<cr>
-    nnoremap <silent> gs         :execute "Ag " . expand("<cword>")<cr>
+    nnoremap <silent> <leader>fg :Ag<cr>
 endif
 
 " }}}
@@ -583,8 +566,7 @@ call deoplete#custom#set('_', 'matchers', ['matcher_fuzzy'])
 " }}}
 " Jedi {{{
 
-let g:jedi#completions_enabled = 0
-
+let g:jedi#completions_enabled   = 0
 let g:jedi#goto_command          = "<leader>yg"
 let g:jedi#documentation_command = "<leader>yd"
 let g:jedi#usages_command        = "<leader>yr"
