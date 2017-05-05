@@ -41,6 +41,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'mkitt/tabline.vim'
     Plug 'morhetz/gruvbox'
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
+    Plug 'pearofducks/ansible-vim'
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
     Plug 'sheerun/vim-polyglot'
@@ -502,7 +503,7 @@ nnoremap <leader>m :Neomake<cr>
 
 augroup NeoMake
     au!
-    autocmd BufWritePost,BufEnter *.py,*.sh,*.js,*.go Neomake
+    autocmd BufWritePost,BufEnter *.yaml,*.py,*.sh,*.js,*.go Neomake
 augroup END
 
 " }}}
