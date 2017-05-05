@@ -2,140 +2,117 @@ priority 10
 
 
 global !p
-
 sentinel = object()
 
-def or_empty(value, print_value=sentinel, strip=False):
-	if not value:
-		return ""
+def ifempty(value, print_value):
+    return print_value if value else ""
 
-	to_print = print_value
-	if to_print is sentinel:
-		to_print = value
 
-	return to_print.strip() if strip else to_print
+def def_ifempty(value, print_value):
+    if value and current_indent():
+        return print_value
+    return ""
 
-def short_quote(value):
-	return or_empty(value, '"""')
 
-def long_quote(value, ending=""):
-	return or_empty(value, '"""\n' + ending)
+def delimeter(param, fill="-"):
+    return fill * len(param)
 
-def multiline_delimeter(text, delimeter="-", prefix=""):
-	max_length = 0
 
-	for line in text.splitlines():
-		line = line.lstrip()
-		if prefix and line.startswith(prefix):
-			line = line[len(prefix):]
-		max_length = max(max_length, len(line.strip()))
+def comment_out(text, pre=0, post=0):
+    global snip
 
-	return delimeter * max_length
+    lines = [""] * pre
+    lines.extend(text.splitlines())
+    lines.extend([""] * post)
 
-def comment_out(text):
-	lines = [""] + text.splitlines()
+    indent = smart_indent()
+    if len(lines) > 1:
+        for line in lines:
+            if indent:
+                new_line = "# {0}".format(line.split(indent, 1)[-1])
+            else:
+                new_line = "# {0}".format(line)
+            snip.rv += "\n" + snip.mkline(new_line.rstrip(), indent)
 
-	if len(lines) > 1:
-		for line in lines:
-			snip.rv += "\n" + snip.mkline("# " + line.strip())
 
+def parse_params(param_string):
+    params = []
+
+    for param in param_string.split(","):
+        param_name = param.strip().lstrip("*").split("=", 1)[0]
+        if param_name:
+            params.append(("*" in param, param_name))
+
+    return params
+
+
+def params_to_propagate(param_string):
+    params = []
+
+    for param in param_string.split(","):
+        param = param.strip()
+        param_name = param.lstrip("*").split("=", 1)[0]
+
+        if not param_name:
+            continue
+        elif "*" not in param and "=" in param:
+            params.append("{0}={0}".format(param_name))
+        elif "*" in param:
+            params.append(param)
+        else:
+            params.append(param_name)
+
+    return ", ".join(params)
+
+
+def self_assigns(param_string):
+    global snip
+
+    params = parse_params(param_string)
+    common_params, special_params = [], []
+    for is_special, name in params:
+        if is_special:
+            special_params.append(name)
+        else:
+            common_params.append(name)
+
+    indent_level, is_first = smart_indent(), True
+    for param in common_params:
+        line = "self.{0} = {0}".format(param)
+        if is_first:
+            snip.rv = line
+            is_first = False
+        else:
+            snip.rv += "\n" + snip.mkline(line, indent_level)
+
+    if common_params and special_params:
+        snip.rv += "\n" + snip.mkline("", indent_level)
+
+    if special_params:
+        for param in special_params:
+            line = "self.{0} = {0}".format(param)
+            if is_first:
+                snip.rv = line
+                is_first = False
+            else:
+                snip.rv += "\n" + snip.mkline(line, indent_level)
+
+
+def current_indent():
+    return int(vim.eval("indent('.')"))
+
+
+def smart_indent():
+    return " " * current_indent()
 endglobal
 
-snippet "d "Multiline docstring" b
-"""
-$0
-"""
-
-endsnippet
 
 snippet # "Comment" i
   # $1
 endsnippet
 
-snippet #T "TODO comment" b
-# TODO(${1:`git config user.name || whoami`})`!p snip.rv = or_empty(t[2], ": ")`$2`!p comment_out(snip.v.text)`
-endsnippet
-
-
-snippet #F "FIXME comment" b
-# FIXME(${1:`git config user.name || whoami`})`!p snip.rv = or_empty(t[2], ": ")`$2`!p comment_out(snip.v.text)`
-endsnippet
-
-
-snippet #H "HACK comment" b
-# HACK(${1:`git config user.name || whoami`})`!p snip.rv = or_empty(t[2], ": ")`$2`!p comment_out(snip.v.text)`
-endsnippet
-
-
-snippet #X "XXX comment" b
-# XXX(${1:`git config user.name || whoami`})`!p snip.rv = or_empty(t[2], ": ")`$2`!p comment_out(snip.v.text)`
-endsnippet
-
-
-snippet #D "Temporary disable the block of code" b
-# FIXME(${1:`git config user.name || whoami`}): TEMPORARY DISABLED
-#
-# ${2:Reason}`!p
-comment_out(snip.v.text)`
-#
-# FIXME($1): END OF TEMPORARY DISABLED BLOCK
-endsnippet
-
-
-snippet #! "Shebang header for python scripts" b
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-
-$0
-endsnippet
-
-
-snippet #!3 "Shebang header for python 3 scripts" b
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-
-$0
-endsnippet
-
-
 snippet pdb "Put PDB tracing here" b
 from pdb import set_trace; set_trace()
-endsnippet
-
-
-snippet ipdb "Put iPDB tracing here" b
-from ipdb import set_trace; set_trace()
-endsnippet
-
-
-snippet __script "Start script" b
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-`!p snip.rv = short_quote(t[1])`${1:Script description}`!p snip.rv = short_quote(t[1])`
-
-
-import os
-import sys
-
-
-def main():
-	${2:${VISUAL}}
-
-	return os.EX_OK
-
-
-if __name__ == "__main__":
-	sys.exit(main())
-endsnippet
-
-
-snippet __module "Start module" b
-# -*- coding: utf-8 -*-
-
-
-$0
 endsnippet
 
 
@@ -144,15 +121,47 @@ import ${1:module}
 endsnippet
 
 
-snippet frimp "'from module import name' clause" b
+snippet from "'from module import name' clause" b
 from ${1:.} import ${2:*}
+endsnippet
+
+
+snippet #T "TODO comment" b
+# TODO(${1:`git config user.name || whoami`})`!p snip.rv = ifempty(t[2], ": ")`$2`!p comment_out(snip.v.text)`
+endsnippet
+
+
+snippet #F "FIXME comment" b
+# FIXME(${1:`git config user.name || whoami`})`!p snip.rv = ifempty(t[2], ": ")`$2`!p comment_out(snip.v.text)`
+endsnippet
+
+
+snippet #H "HACK comment" b
+# HACK(${1:`git config user.name || whoami`})`!p snip.rv = ifempty(t[2], ": ")`$2`!p comment_out(snip.v.text)`
+endsnippet
+
+
+snippet #X "XXX comment" b
+# XXX(${1:`git config user.name || whoami`})`!p snip.rv = ifempty(t[2], ": ")`$2`!p comment_out(snip.v.text)`
+endsnippet
+
+
+snippet #D "Temporary disable the block of code" b
+# FIXME(${1:`git config user.name || whoami`}): TEMPORARY DISABLED
+#
+# ${2:Comment}
+#
+# `!p snip.rv += delimeter(t[2]); comment_out(snip.v.text)`
+# `!p snip.rv += delimeter(t[2])`
+#
+# FIXME($1): END OF TEMPORARY DISABLED BLOCK
 endsnippet
 
 
 snippet tryex "'try/except' clause" b
 try:
 	${1:${VISUAL}}
-except ${2:Exception}`!p snip.rv = or_empty(t[3], " as ")`${3:exc}:
+except ${2:Exception}`!p snip.rv = ifempty(t[3], " as ")`${3:exc}:
 	${4:pass}
 endsnippet
 
@@ -168,7 +177,7 @@ endsnippet
 snippet tryexfi "'try/except/finally' clause" b
 try:
 	${1:${VISUAL}}
-except ${2:Exception}`!p snip.rv = or_empty(t[3], " as ")`${3:exc}:
+except ${2:Exception}`!p snip.rv = ifempty(t[3], " as ")`${3:exc}:
 	${4:pass}
 finally:
 	$5
@@ -176,20 +185,14 @@ endsnippet
 
 
 snippet def "Function definition" b
-def ${1:function}(${2:*args, **kwargs}):
-	${3:${VISUAL:# here be dragons}}
-endsnippet
-
-
-snippet defm "Method definition" b
-def ${1:method}(self`!p snip.rv = or_empty(t[2], ", ")`${2:*args, **kwargs}):
+def ${1:function}(`!v indent(".") ? "self": ""``!p snip.rv = def_ifempty(t[2], ", ")`${2:*args, **kwargs}):
 	${3:${VISUAL:# here be dragons}}
 endsnippet
 
 
 snippet defc "Class method definition" b
 @classmethod
-def ${1:method}(cls`!p snip.rv = or_empty(t[2], ", ")`${2:*args, **kwargs}):
+def ${1:method}(cls`!p snip.rv = ifempty(t[2], ", ")`${2:*args, **kwargs}):
 	${3:${VISUAL:# here be dragons}}
 endsnippet
 
@@ -201,98 +204,19 @@ def ${1:method}(${2:*args, **kwargs}):
 endsnippet
 
 
-snippet deft "Test method definition" b
-def test_${1:ok}(self):
-	${2:${VISUAL:# here be dragons}}
+snippet class "Class definition" b
+class ${1:ClassName}`!p snip.rv = ifempty(t[2], "(")`${2:object}`!p snip.rv = ifempty(t[2], ")")`:
+	pass
 endsnippet
 
 
-snippet defg "Magic method" b
-def __$1__(self`!p snip.rv = or_empty(t[2], ", ")`${2:*args, **kwargs}):
-	${3:${VISUAL:# here be dragons}}
-endsnippet
+snippet classi "Class definition" b
+class ${1:ClassName}`!p snip.rv = ifempty(t[2], "(")`${2:object}`!p snip.rv = ifempty(t[2], ")")`:
 
+	def __init__(self`!p snip.rv = ifempty(t[3], ", ")`${3:*args, **kwargs}):
+		${4:super(${5:$1}`!p snip.rv = ifempty(t[5], ", self")`).__init__(${6:`!p snip.rv = params_to_propagate(t[3])`})}
 
-snippet defgg "Magic method" b
-def __$1__(self`!p snip.rv = or_empty(t[2], ", ")`${2:*args, **kwargs}):
-	super(${4:ClassName}, self).__$1__($2)
-
-	${5:${VISUAL:# here be dragons}}
-endsnippet
-
-
-snippet for "For loop" b:
-for ${1:item} in ${2:$1s}:
-	${3:${VISUAL:pass}}
-endsnippet
-
-
-snippet while "While loop" b:
-while ${1:True}:
-	${2:${VISUAL:pass}}
-endsnippet
-
-
-snippet if "If statement" b:
-if ${1:condition}:
-	${2:${VISUAL:pass}}
-endsnippet
-
-
-snippet ife "If statement" b:
-if ${1:condition}:
-	${2:${VISUAL:pass}}
-else:
-	${3:pass}
-endsnippet
-
-
-snippet lamb "Lambda" is
-lambda ${1:x}: ${2:$1}
-endsnippet
-
-
-snippet with "with statement" b
-with ${1:expr}`!p snip.rv = or_empty(t[2], " as ")`${2:var}:
-	${3:${VISUAL:pass}}
-${0}
-endsnippet
-
-
-snippet [] "List comprehension" is
-[${1:${4:$2} for ${2:item} in ${3:$2s}}]
-endsnippet
-
-
-snippet {} "Dict comprehension" is
-{${1:${5:$2}: ${6:$3} for ${2:k}, ${3:v} in ${4:iterable}}}
-endsnippet
-
-
-snippet {}d "Dict comprehension old-style" is
-dict((${4:$1}, ${5:$2}) for ${1:k}, ${2:v} in ${3:iterable})
-endsnippet
-
-
-snippet deco "Simple decorator" b
-def ${1:decorated}(${2:func}):
-	@${3:functools.wraps}($2)
-	def decorator(${4:*args, **kwargs}):
-		${5:return $2($4)}
-
-	return decorator
-endsnippet
-
-
-snippet decoco "Double nested decorator" b
-def ${1:decorated}(${2:*gargs, **gkwargs}):
-	def inner_decorator(${3:func}):
-		@${4:functools.wraps}($3):
-		def outer_decorator(${5:*args, **kwargs}):
-			${6:return $3($5)}
-
-		return outer_decorator
-	return inner_decorator
+		${7:`!p self_assigns(t[3])`}
 endsnippet
 
 
@@ -306,158 +230,23 @@ endsnippet
 snippet propw "Read/write property" b
 @property
 def ${1:name}(self):
-	${2:${VISUAL:# here be dragons}}
+	${2:return self._$1}
 
 @$1.setter
 def $1(self, value):
-	${3:# here be dragons}
+	${3:self.$1 = value}
 endsnippet
 
 
-snippet class "Generic class" b
-class ${1:ClassName}(${2:object}):
-	${3:pass}
+snippet la "Lambda" is
+lambda ${1:x}: ${2:$1}
+$0
 endsnippet
 
 
-snippet classi "Generic class with constructor" b
-class ${1:ClassName}(${2:object}):
+snippet with "with statement" b
+with ${1:expr}`!p snip.rv = ifempty(t[2], " as ")`${2:var}:
+	${3:${VISUAL:pass}}
 
-	def __init__(self`!p snip.rv = or_empty(t[3], ", ")`${3}):
-		super($1, self).__init__($3)
-		`!p
-snip >> 2
-value = None
-
-for value in t[3].split(","):
-	if value:
-		snip += "self.{0} = {0}".format(value.strip())
-
-if value:
-	snip += ""`
-		${4}
-endsnippet
-
-snippet classistr "Generic class with str" b
-class ${1:ClassName}(${2:object}):
-
-	def __init__(self`!p snip.rv = or_empty(t[3], ", ")`${3}):
-		super($1, self).__init__($3)
-		`!p
-snip >> 2
-value = None
-
-for value in t[3].split(","):
-	if value:
-		snip += "self.{0} = {0}".format(value.strip())
-
-if value:
-	snip += ""`
-		${4}
-
-		return
-
-	def __repr__(self):
-		return `!p
-params, args, idx = [], [], 0
-
-for value in t[3].split(","):
-	if not value:
-		continue
-
-	value = value.strip()
-
-	params.append("{0}={{{1}}}".format(value, idx))
-	args.append("self.{0}".format(value))
-
-	idx += 1
-
-params = ", ".join(params)
-args = ", ".join(args)
-
-snip.rv = '"<{0}({1})>".format({2})'.format(t[1], params, args)`
-
-	def __str__(self):
-		return "<$1>"
-
-	def __unicode__(self):
-		return str(self).encode("utf-8")
-endsnippet
-
-
-snippet sae. "self.assertEqual" b
-self.assertEqual(${1:one}, ${2:another})
-
-endsnippet
-
-
-snippet sane. "self.assertNotEqual" b
-self.assertNotEqual(${1:one}, ${2:another})
-
-endsnippet
-
-
-snippet sat. "self.assertTrue" b
-self.assertTrue(${1:expression})
-
-endsnippet
-
-
-snippet saf. "self.assertFalse" b
-self.assertFalse(${1:expression})
-
-endsnippet
-
-
-snippet sai. "self.assertIs" b
-self.assertIs(${1:one}, ${2:another})
-
-endsnippet
-
-
-snippet sai_. "self.assertIn" b
-self.assertIn(${1:object}, ${2:$1s})
-
-endsnippet
-
-
-snippet sain. "self.assertIsNot" b
-self.assertIsNot(${1:one}, ${2:another})
-
-endsnippet
-
-
-snippet sani. "self.assertNotIn" b
-self.assertNotIn(${1:object}, ${2:$1s})
-
-endsnippet
-
-
-snippet saine. "self.assertIsNone" b
-self.assertIsNone(${1:expression})
-
-endsnippet
-
-
-snippet sainne. "self.assertIsNotNone" b
-self.assertIsNotNone(${1:expression})
-
-endsnippet
-
-
-snippet saii. "self.assertIsInstance" b
-self.assertIsInstance(${1:object}, ${2:class})
-
-endsnippet
-
-
-snippet sanii. "self.assertNotIsInstance" b
-self.assertNotIsInstance(${1:object}, ${2:class})
-
-endsnippet
-
-
-snippet sars. "self.assertRaises" b
-self.assertRaises(${1:Exception}, ${2:function}`!p snip.rv = or_empty(t[3], ", ")`$3)
-
+$0
 endsnippet
