@@ -5,13 +5,9 @@
 " everyday
 
 
-" # Header          =============================================== {{{
-" _____________________________________________________________________________
-
 set nocompatible  " Remove compatibility with VIM
 filetype off
 
-" }}}
 " # Plugins         =============================================== {{{
 " _____________________________________________________________________________
 
@@ -21,6 +17,8 @@ call plug#begin('~/.vim/plugged')
             \ Plug 'zchee/deoplete-jedi', { 'for': 'python' } |
             \ Plug 'carlitux/deoplete-ternjs', { 'for': ['json', 'javascript'] } |
             \ Plug 'zchee/deoplete-go', { 'for': 'go' }
+        Plug 'neomake/neomake'
+        Plug 'equalsraf/neovim-gui-shim'
     endif
 
     Plug 'airblade/vim-rooter'
@@ -28,7 +26,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'editorconfig/editorconfig-vim'
-    Plug 'equalsraf/neovim-gui-shim'
+    Plug 'fatih/vim-go', { 'for': 'go' }
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'janko-m/vim-test'
     Plug 'jiangmiao/auto-pairs'
@@ -42,11 +40,11 @@ call plug#begin('~/.vim/plugged')
     Plug 'mhinz/vim-signify'
     Plug 'mkitt/tabline.vim'
     Plug 'morhetz/gruvbox'
-    Plug 'neomake/neomake'
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
     Plug 'sheerun/vim-polyglot'
+    Plug 'SirVer/ultisnips'
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-endwise'
     Plug 'tpope/vim-markdown', { 'for': 'markdown' }
@@ -67,220 +65,139 @@ call plug#begin('~/.vim/plugged')
     Plug 'othree/yajs.vim', { 'for': 'javascript' } |
         \ Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
 
-    if executable('go')
-        Plug 'fatih/vim-go'
-    endif
-
-    if executable('fzf')
-        Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' } |
-            \ Plug 'junegunn/fzf.vim' |
-            \ Plug 'tweekmonster/fzf-filemru'
-    else
-        Plug 'ctrlpvim/ctrlp.vim'
-    endif
-
-    if v:version >= 704
-        Plug 'SirVer/ultisnips'
-    endif
-
-    if executable('lein')
-        Plug 'tpope/vim-fireplace', { 'for': 'clojure' } |
-            \ Plug 'tpope/vim-salve', { 'for': 'clojure' }
-    endif
+    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' } |
+        \ Plug 'junegunn/fzf.vim' |
+        \ Plug 'tweekmonster/fzf-filemru'
 call plug#end()
 
 filetype plugin indent on
+filetype on
+filetype plugin on
+filetype indent on
+syntax on
+
 
 " }}}
 " # Settings        =============================================== {{{
 " _____________________________________________________________________________
 
 try
-    lang en_us
+    lang en_US  " default language for vim
 catch
 endtry
 
 try
-    set termguicolors
+    set termguicolors  " support of true color
 catch
+    set t_Co=256 " use 256 colors
 endtry
 
-" _____________________________________________________________________________
+let &colorcolumn="80,120"                   " ruler for colorcolumn
+set autoread                                " reread file if was changed outside
+set breakindent                             " indent wrapped line
+set breakindentopt=shift:2                  " how to indent wrapped line
+set cmdheight=2                             " number of lines for commandline
+set completeopt-=preview                    " no preview on autocomplete
+set cursorline                              " use cursorline highlight
+set eol                                     " always set end of the line at the end of the file
+set expandtab                               " do not use tabs, spaces
+set fcs=vert:│                              " solid line for veritcal separator
+set ffs=unix,dos,mac                        " fileformats
+set fileencodings=utf8,cp1251,koi8r,ucs-2le " list of encodings for 'fileencoding'
+set fileencoding=utf8                       " character encoding for the buffer
+set foldlevel=1                             " maximum level to be closed
+set foldmethod=indent                       " default folding is indent
+set foldnestmax=10                          " maximum nested folds
+set formatprg=par                           " use par for paragraph formatting
+set hidden                                  " set abandonned buffer as hidden
+set history=1000                            " number of history entries to remember
+set hlsearch                                " highlight search results
+set ignorecase                              " required for smartcase
+set lazyredraw                              " do not redraw screen on macro execution
+set linebreak                               " use line breaks
+set list                                    " show invisible characters
+set modeline                                " read and respect vim modelines
+set mouse=a                                 " enable normal mouse support
+set mousehide                               " hide mouse pointer on editing
+set nobackup                                " do not make backup of file we are updating
+set noerrorbells                            " do not beep on errors
+set nofoldenable                            " do not use folds by default
+set nojoinspaces                            " do not insert 2 spaces after punctuation on line join
+set noswapfile                              " do not use buffer swapfiles
+set novisualbell                            " no visual bells on errors
+set nowb                                    " do not make intermediate backups
+set number                                  " show line numbers
+set scrolloff=5                             " number of lines above cursor on scroll
+set sessionoptions-=options                 " settings for sessions
+set shiftwidth=4                            " length of tab
+set shortmess=I                             " do not show welcome page
+set showbreak=↪                             " marker of wrapped line
+set showcmd                                 " show the status of the current command in the status bar
+set showmatch                               " show matching stuff (brackets, parens)
+set showmode                                " show current active mode
+set sidescroll=1                            " number of columns to scroll horizontally
+set sidescrolloff=15                        " minimal number of columns to keep on left and right
+set smartcase                               " use smartcase for searching
+set smartindent                             " use auto indentation
+set softtabstop=4                           " backspace unindent
+set splitbelow                              " horizontal splits always below
+set splitright                              " vertical split always on the right
+set tabstop=4                               " indentation length of the tab
+set termencoding=utf8                       " encoding of terminal
+set timeoutlen=1000                         " how long to wait till next leader keypress
+set timeout                                 " wait for following leader mapping
+set ttimeout                                " how long to wait till next byte from terminal
+set ttimeoutlen=1                           " wait 1 ms for next byte from terminal
+set wildmenu                                " ex completion
+set wildmode=full                           " default behavour
 
-" Show the status of the current command in the status bar
-set showcmd
+set listchars=tab:▸\ ,trail:⋅,extends:❯,precedes:❮                             " how to display invisible charaters
+set wildignore=*.o,*~,*.pyc,*.pyo,.git\*,.hg\*,svn\*,idea\*,__pycache__\*,.tox " do now show these in wildmenu
 
-" _____________________________________________________________________________
-
-" Scrolling
-set scrolloff=5
-set sidescroll=1
-set sidescrolloff=15
-
-" _____________________________________________________________________________
-
-" Set abandonned buffer as hidden
-set hidden
-
-" _____________________________________________________________________________
-
-" Autosave and autoread
-set autowriteall
-
-" _____________________________________________________________________________
-
-" Admit people's modelines
-set modeline
-
-" _____________________________________________________________________________
-
-" Turn on WildMenu
-set wildmenu
-set wildignore=*.o,*~,*.pyc,*.pyo,.git\*,.hg\*,svn\*,idea\*,__pycache__\*,.tox
-set wildmode=full
-
-" _____________________________________________________________________________
-
-" Height of the command bar
-set cmdheight=2
-
-" _____________________________________________________________________________
-
-" Ignore case when searching
-set ignorecase
-set smartcase
-
-" _____________________________________________________________________________
-
-" Highlight search results
-set hlsearch
-
-" _____________________________________________________________________________
-
-" Don't redraw while executing macros (mostly for performance)
-set lazyredraw
-
-" _____________________________________________________________________________
-
-" No sounds on errors
-set noerrorbells
-set novisualbell
-set t_vb=
-set tm=500
-
-" _____________________________________________________________________________
-
-" Set utf8 for everything
-if !has('nvim')
-    set encoding=utf8
-endif
-set termencoding=utf8
-set fileencoding=utf8
-set fileencodings=utf8,cp1251,koi8r,ucs-2le
-
-" _____________________________________________________________________________
-
-" Turn VIM bullshit off
-set nobackup
-set nowb
-set noswapfile
-set viminfo=
-
-" _____________________________________________________________________________
-
-" Set end of line always
-set eol
-
-" _____________________________________________________________________________
-
-" Prevents inserting two spaces after punctuation
-set nojoinspaces
-
-" _____________________________________________________________________________
-
-" New vertical split to the right
-set splitright
-
-" _____________________________________________________________________________
-
-" New horizontal split at the bottom
-set splitbelow
-
-" _____________________________________________________________________________
-
-" Invisible characters
-set list
-set listchars=tab:▸\ ,trail:⋅,extends:❯,precedes:❮
-set showbreak=↪
-
-" -----------------------------------------------------------------------------
-
-" Break indentation
-set breakindent
-set breakindentopt=shift:2
-
-" _____________________________________________________________________________
-
-" Show line numbers
-set number
-
-" _____________________________________________________________________________
-
-" Show what mode is active
-set showmode
-
-" _____________________________________________________________________________
-
-" Additional character for edit convenience
-set virtualedit=onemore
-
-" _____________________________________________________________________________
-
-" History size
-set history=1000
-
-" _____________________________________________________________________________
-
-" Use Unix as a default filetype
-set ffs=unix,dos,mac
-
-" _____________________________________________________________________________
-
-" Mouse settings
-set mouse=a
-set mousehide
-
-" -----------------------------------------------------------------------------
-
-" Session settings
-set sessionoptions-=options
-
-" _____________________________________________________________________________
-
-" 0 escape time
-set timeoutlen=1000
-set ttimeoutlen=0
-
-" _____________________________________________________________________________
-
-" Solid line for vsplit separator
-set fcs=vert:│
-
-" _____________________________________________________________________________
-
-" Terminal with 256 colors
-set t_Co=256
+let g:python_host_prog  = '/usr/bin/python2'
+let g:python3_host_prog = '/usr/bin/python3'
 
 if has('nvim')
-    set inccommand=nosplit
+    runtime! python_setup.vim
 
-    augroup Shada
-        autocmd!
-        autocmd VimLeavePre,FocusLost           * wshada
-        autocmd VimEnter,CursorHold,FocusGained * rshada
-    augroup END
+    set inccommand=nosplit " make search/replace visually inplace
+    set viminfo=           " with nvim we are going for shadas
+
+    let g:terminal_color_0  = '#2e3436'
+    let g:terminal_color_1  = '#cc0000'
+    let g:terminal_color_2  = '#4e9a06'
+    let g:terminal_color_3  = '#c4a000'
+    let g:terminal_color_4  = '#3465a4'
+    let g:terminal_color_5  = '#75507b'
+    let g:terminal_color_6  = '#0b939b'
+    let g:terminal_color_7  = '#d3d7cf'
+    let g:terminal_color_8  = '#555753'
+    let g:terminal_color_9  = '#ef2929'
+    let g:terminal_color_10 = '#8ae234'
+    let g:terminal_color_11 = '#fce94f'
+    let g:terminal_color_12 = '#729fcf'
+    let g:terminal_color_13 = '#ad7fa8'
+    let g:terminal_color_14 = '#00f5e9'
+    let g:terminal_color_15 = '#eeeeec'
+    let g:terminal_scrollback_buffer_size = 10000
+else
+    set encoding=utf-8  " set encoding for vim
+    set ttyfast         " fast terminal connection (not hw one)
+    set ttymouse=xterm2 " type of mouse to use
 endif
 
+" some tmux magic to support italics
+if exists('$TMUX')
+    let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+    let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+else
+    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+endif
+
+
+" }}}
+" # Colorscheme     =============================================== {{{
 " _____________________________________________________________________________
 
 let g:enable_bold_font          = 1
@@ -296,49 +213,47 @@ endif
 set background=dark
 colorscheme gruvbox
 
+hi StatusLine guibg=#7c6f64 guifg=#3c3836
+
+" }}}
+" # Autogroups      =============================================== {{{
 " _____________________________________________________________________________
 
-" Disable welcome page
-set shortmess=I
 
-" Disable preview on completeopt
-set completeopt-=preview
-
-" -----------------------------------------------------------------------------
-
-" netrw settings
-let g:netrw_liststyle    = 3
-let g:netrw_browse_split = 4
-let g:netrw_altv         = 1
-let g:netrw_winsize      = 25
-let g:netrw_banner       = 0
-
-" _____________________________________________________________________________
-
-augroup VimDefault
+augroup Vim
     autocmd!
-    autocmd VimResized             *            exe "normal! \<c-w>="
+    autocmd VimResized             *            exe      "normal! \<c-w>="
     autocmd BufWritePre            *            :%s/\s\+$//e
-    autocmd BufNewFile,BufReadPost *.md         set filetype=markdown
+    autocmd BufNewFile,BufReadPost *.md         set      filetype=markdown
+    autocmd FileType               qf           setlocal colorcolumn=
+    autocmd InsertLeave,WinEnter   *            set      cursorline
+    autocmd InsertEnter,WinLeave   *            set      nocursorline
+    autocmd FileType               vim          setlocal foldmethod=marker
+    autocmd FileType               vim          setlocal foldlevel=0
+    autocmd FileType               ansible,yaml setlocal ts=2 sw=2 sts=2 expandtab
+    autocmd FileType               make         setlocal noexpandtab
 augroup END
 
-" _____________________________________________________________________________
-
-if exists('$TMUX')
-    let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-    let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-else
-    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+if has('nvim')
+    augroup NeoVim
+        autocmd!
+        autocmd VimLeavePre,FocusLost           *        wshada
+        autocmd VimEnter,CursorHold,FocusGained *        rshada
+        autocmd BufEnter,WinEnter               term://* startinsert
+        autocmd BufLeave                        term://* stopinsert
+    augroup END
 endif
-
 
 
 " }}}
 " # Keymap          =============================================== {{{
 " _____________________________________________________________________________
 
-" No arrows :(
+let mapleader        = "\<Space>"
+let g:mapleader      = "\<Space>"
+let maplocalleader   = "\<Space>"
+let g:maplocalleader = "\<Space>"
+
 noremap  <up>    <nop>
 noremap  <down>  <nop>
 noremap  <left>  <nop>
@@ -348,20 +263,9 @@ inoremap <down>  <nop>
 inoremap <left>  <nop>
 inoremap <right> <nop>
 
-" Map Leader to the Space
-let mapleader        = "\<Space>"
-let g:mapleader      = "\<Space>"
-let maplocalleader   = "\<Space>"
-let g:maplocalleader = "\<Space>"
-
-" Fast saving on Space+w
 nnoremap <silent> <leader>w :update<cr>
-
-" :W sudo saves the file
-" (useful for handling the permission-denied error)
 cnoremap w!! w !sudo tee > /dev/null %
 
-" Put /v everywhere on search
 nnoremap / /\v
 vnoremap / /\v
 cnoremap %s/ %smagic/
@@ -369,17 +273,14 @@ cnoremap \>s/ \>smagic/
 nnoremap :g/ :g/\v
 nnoremap :g// :g//
 
-" Reselect visual block after indent or outdent
 vnoremap < <gv
 vnoremap > >gv
 
-" Reasonable navigation through wrapped lines
 nnoremap j gj
 nnoremap k gk
 nnoremap $ g$
 nnoremap 0 ^
 
-" Keep search pattern at the center of the screen
 nnoremap <silent> n  nzz
 nnoremap <silent> N  Nzz
 nnoremap <silent> *  *zz
@@ -387,23 +288,19 @@ nnoremap <silent> #  #zz
 nnoremap <silent> g* g*zz
 nnoremap <silent> g# g#zz
 
-" Center screen position on fast listing
 nnoremap <C-d> <C-d>zz
 nnoremap <C-u> <C-u>zz
 nnoremap <C-f> <C-f>zz
 nnoremap <C-b> <C-b>zz
 
-" Fast window navigation by Alt+hjkl
 nnoremap <C-h>    <C-w>h
 nnoremap <C-j>    <C-w>j
 nnoremap <C-k>    <C-w>k
 nnoremap <C-l>    <C-w>l
 nnoremap <silent> <C-x> :resize<cr>:vertical resize<cr>
 
-" Close the current buffer
 nnoremap <leader>bd :Bdelete<cr>
 
-" Fast tab switch
 nnoremap <silent> <Leader>1 1gt<cr>
 nnoremap <silent> <Leader>2 2gt<cr>
 nnoremap <silent> <Leader>3 3gt<cr>
@@ -414,24 +311,14 @@ nnoremap <silent> <Leader>7 7gt<cr>
 nnoremap <silent> <Leader>8 8gt<cr>
 nnoremap <silent> <Leader>9 9gt<cr>
 
-" Do not jump on star
 nnoremap * *``
-
-" QuickFix setup
 nnoremap <silent> Q :call <SID>QuickfixToggle()<cr>
-
-" Faster window close
 nnoremap <silent> <Leader>qq :q<cr>
 nnoremap <silent> <Leader>qa :qa<cr>
-
-" Grep function
 nnoremap <Leader>gp :Grep<space>
-
-" Esc!
 inoremap jk <esc>
-
-" Sort output
 vnoremap <silent> s :!sort<cr>
+inoremap # X<BS>#
 
 
 " _____________________________________________________________________________
@@ -450,14 +337,6 @@ function! s:QuickfixToggle()
     endif
 endfunction
 
-" Do not show color column in a quickfix for a greater good
-if v:version >= 703
-    augroup qf_colorcolumn
-        autocmd!
-        autocmd FileType qf setlocal colorcolumn=
-    augroup END
-endif
-
 " _____________________________________________________________________________
 
 if executable('ag')
@@ -471,85 +350,9 @@ else
     nnoremap <silent> gs :execute "grep! -Rni " . shellescape(expand("<cword>")) . " ."<cr>:redraw!<cr>:copen<cr>
 endif
 
-
-" }}}
-" # Code            =============================================== {{{
 " _____________________________________________________________________________
-
-
-" Enable filetype related settings
-filetype on
-filetype plugin on
-filetype indent on
-
-" Enable syntax
-syntax on
-
-" Set rulers
-if v:version >= 703
-    let &colorcolumn="80,120"
-endif
-
-" Show matching brackets, parenthesis
-set showmatch
-
-" Tab is 4 spaces length
-set shiftwidth=4
-
-" No tabs, only spaces
-set expandtab
-
-" Indentation length
-set tabstop=4
-
-" Smarter cursorline
-set cursorline
-augroup VimCursorLine
-    autocmd!
-    autocmd InsertLeave,WinEnter * set cursorline
-    autocmd InsertEnter,WinLeave * set nocursorline
-augroup END
-
-" Backspace unindent
-set softtabstop=4
-
-" Indents
-set smartindent
-
-" http://vim.wikia.com/wiki/VimTip644
-inoremap # X<BS>#
-
-" Set line breaks
-set lbr
-set tw=500
-
-" Setup folding
-set foldmethod=indent
-set foldnestmax=10
-set foldlevel=1
-set nofoldenable
-
-" Format with par
-set formatprg=par
-
-" Pythons
-let g:python_host_prog  = '/usr/bin/python2'
-let g:python3_host_prog = '/usr/bin/python3'
-
-
-" }}}
-" # Neovim settings =============================================== {{{
-" _____________________________________________________________________________
-
 
 if has('nvim')
-    " Python support
-    runtime! python_setup.vim
-
-    " TUI support
-    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-
-    " Windows navigation
     tnoremap <A-h> <C-\><C-n><C-w>h
     tnoremap <A-j> <C-\><C-n><C-w>j
     tnoremap <A-k> <C-\><C-n><C-w>k
@@ -558,42 +361,13 @@ if has('nvim')
     nnoremap <A-j> <C-w>j
     nnoremap <A-k> <C-w>k
     nnoremap <A-l> <C-w>l
-
-    " Teminal
     tnoremap <A-q> <C-\><C-n>
     tnoremap <A-]> <C-\><C-n>:q!<cr>
 
-    let g:terminal_color_0  = '#2e3436'
-    let g:terminal_color_1  = '#cc0000'
-    let g:terminal_color_2  = '#4e9a06'
-    let g:terminal_color_3  = '#c4a000'
-    let g:terminal_color_4  = '#3465a4'
-    let g:terminal_color_5  = '#75507b'
-    let g:terminal_color_6  = '#0b939b'
-    let g:terminal_color_7  = '#d3d7cf'
-    let g:terminal_color_8  = '#555753'
-    let g:terminal_color_9  = '#ef2929'
-    let g:terminal_color_10 = '#8ae234'
-    let g:terminal_color_11 = '#fce94f'
-    let g:terminal_color_12 = '#729fcf'
-    let g:terminal_color_13 = '#ad7fa8'
-    let g:terminal_color_14 = '#00f5e9'
-    let g:terminal_color_15 = '#eeeeec'
-
-    let g:terminal_scrollback_buffer_size = 10000
     highlight TermCursor ctermfg=gray guifg=gray
-
-    augroup TerminalNiceties
-        autocmd!
-        autocmd BufEnter,WinEnter term://* startinsert
-        autocmd BufLeave term://* stopinsert
-    augroup END
 
     nnoremap <silent> <leader>] :vsplit term://bash<cr>
     nnoremap <silent> <leader>[ :split term://bash<cr>
-else
-    set ttyfast
-    set ttymouse=xterm2
 endif
 
 
@@ -840,59 +614,5 @@ let g:braceless_auto_dedent_gap = 2
 let g:braceless_enable_easymotion = 0
 
 " }}}
-
-" }}}
-" # GUI             =============================================== {{{
-" _____________________________________________________________________________
-
-
-if has('gui_running')
-    let g:gruvbox_italic = 1
-
-    set guioptions-=T  " hide toolbar
-    set guioptions-=r  " hide right scrollbar
-    set guioptions-=L  " hide left scrollbar
-    set guioptions-=m  " hide menu bar
-    set guifont=Fira\ Mono\ 11
-    set guitablabel=%M\ %t
-    set ttimeoutlen=10
-
-    if executable("wmctrl")
-        au GUIEnter * call system('wmctrl -i -b add,maximized_vert,maximized_horz -r '.v:windowid)
-    else
-        set lines=999 columns=999
-    endif
-
-    augroup FastEscape
-        autocmd!
-        au InsertEnter * set timeoutlen=0
-        au InsertLeave * set timeoutlen=1000
-    augroup END
-
-    " Make copy/cut/paste work with GUI as expected
-    nnoremap <silent> y "+y
-    vnoremap <silent> y "+y
-    nnoremap <silent><Leader>p "+gP
-
-    if !exists('g:GuiLoaded')
-        Guifont Fira\ Mono:h11
-    endif
-endif
-
-" }}}
-" # Misc            =============================================== {{{
-" _____________________________________________________________________________
-
-augroup VimFileTypesSettings
-    autocmd!
-    autocmd FileType vim          setlocal foldmethod=marker
-    autocmd FileType vim          setlocal foldlevel=0
-    autocmd FileType vim          setlocal foldenable
-    autocmd FileType ansible,yaml setlocal ts=2 sw=2 sts=2 expandtab
-    autocmd FileType make         setlocal noexpandtab
-augroup END
-
-" Changes in hilight
-hi StatusLine guibg=#7c6f64 guifg=#3c3836
 
 " }}}
