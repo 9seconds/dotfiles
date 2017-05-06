@@ -385,48 +385,6 @@ augroup Go
 augroup END
 
 " }}}
-" CtrlP {{{
-
-if !executable('fzf')
-    let g:ctrlp_custom_ignore = {
-      \ 'dir':  '\v[\/]\.(git|hg|svn)$',
-      \ 'file': '\v\.(pyc|pyo|exe|so|dll)$'
-      \ }
-
-    if executable('ag')
-        let g:ctrlp_user_command = {
-            \ 'types': {
-                \ 1: ['.git', 'cd %s && git ls-files'],
-                \ 2: ['.hg', 'hg --cwd %s locate -I .'],
-                \ },
-            \ 'fallback': 'ag %s -i --nocolor --nogroup --hidden
-                \ --ignore "**/*.pyc"
-                \ --ignore ".git"
-                \ --ignore ".svn"
-                \ -g ""'
-        \ }
-        let g:ctrlp_use_caching = 0
-    else
-        let g:ctrlp_user_command = {
-            \ 'types': {
-                \ 1: ['.git', 'cd %s && git ls-files'],
-                \ 2: ['.hg', 'hg --cwd %s locate -I .'],
-                \ },
-            \ 'fallback': 'find %s -type f'
-        \ }
-    endif
-
-    let g:ctrlp_map = ''
-    let g:ctrlp_cmd = 'CtrlP'
-
-    nnoremap <silent> <leader>ff :CtrlP<cr>
-    nnoremap <silent> <leader>fp :CtrlP<cr>
-    nnoremap <silent> <leader>fb :CtrlPBuffer<cr>
-    nnoremap <silent> <leader>ft :CtrlPBufTag<cr>
-    nnoremap <silent> <leader>fa :CtrlPTag<cr>
-endif
-
-" }}}
 " NerdTree and NerdTreeTabs {{{
 
 let g:nerdtree_tabs_open_on_gui_startup     = 0
@@ -477,19 +435,21 @@ let g:signify_update_on_bufenter = 1
 " }}}
 " Neomake {{{
 
-let g:neomake_python_enabled_makers     = ['flake8']
-let g:neomake_sh_enabled_makers         = ['shellcheck']
-let g:neomake_go_enabled_makers         = ['golint']
-let g:neomake_javascript_enabled_makers = ['eslint']
-let g:neomake_yaml_enabled_makers       = ['yamllint']
-let g:neomake_verbose                   = -1
+if has('nvim')
+    let g:neomake_python_enabled_makers     = ['flake8']
+    let g:neomake_sh_enabled_makers         = ['shellcheck']
+    let g:neomake_go_enabled_makers         = ['golint']
+    let g:neomake_javascript_enabled_makers = ['eslint']
+    let g:neomake_yaml_enabled_makers       = ['yamllint']
+    let g:neomake_verbose                   = -1
 
-nnoremap <leader>m :Neomake<cr>
+    nnoremap <leader>m :Neomake<cr>
 
-augroup NeoMake
-    au!
-    autocmd BufWritePost,BufEnter *.yaml,*.py,*.sh,*.js,*.go Neomake
-augroup END
+    augroup NeoMake
+        au!
+        autocmd BufWritePost,BufEnter *.yaml,*.py,*.sh,*.js,*.go Neomake
+    augroup END
+endif
 
 " }}}
 " FZF {{{
@@ -538,28 +498,30 @@ endif
 " }}}
 " Deoplete {{{
 
-let g:deoplete#enable_at_startup          = 1
-let g:deoplete#max_list                   = 20
-let g:deoplete#auto_complete_start_length = 3
+if has('nvim')
+    let g:deoplete#enable_at_startup          = 1
+    let g:deoplete#max_list                   = 20
+    let g:deoplete#auto_complete_start_length = 3
 
-let g:deoplete#sources#go#gocode_binary = expand("~/.gotools/gocode")
-let g:deoplete#sources#go#use_cache = 1
+    let g:deoplete#sources#go#gocode_binary = expand("~/.gotools/gocode")
+    let g:deoplete#sources#go#use_cache = 1
 
-inoremap <silent><expr> <TAB>
-    \ pumvisible() ? "\<C-n>" :
-    \ <SID>check_back_space() ? "\<TAB>" :
-    \ deoplete#mappings#manual_complete()
-inoremap <silent><expr> <S-TAB>
-    \ pumvisible() ? "\<C-p>" :
-    \ <SID>check_back_space() ? "\<TAB>" :
-    \ deoplete#mappings#manual_complete()
+    inoremap <silent><expr> <TAB>
+        \ pumvisible() ? "\<C-n>" :
+        \ <SID>check_back_space() ? "\<TAB>" :
+        \ deoplete#mappings#manual_complete()
+    inoremap <silent><expr> <S-TAB>
+        \ pumvisible() ? "\<C-p>" :
+        \ <SID>check_back_space() ? "\<TAB>" :
+        \ deoplete#mappings#manual_complete()
 
-function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
-endfunction
+    function! s:check_back_space() abort
+        let col = col('.') - 1
+        return !col || getline('.')[col - 1]  =~ '\s'
+    endfunction
 
-call deoplete#custom#set('_', 'matchers', ['matcher_fuzzy'])
+    call deoplete#custom#set('_', 'matchers', ['matcher_fuzzy'])
+endif
 
 " }}}
 " Jedi {{{
