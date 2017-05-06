@@ -17,7 +17,6 @@ call plug#begin('~/.vim/plugged')
             \ Plug 'zchee/deoplete-jedi', { 'for': 'python' } |
             \ Plug 'carlitux/deoplete-ternjs', { 'for': ['json', 'javascript'] } |
             \ Plug 'zchee/deoplete-go', { 'for': 'go' }
-        Plug 'neomake/neomake'
         Plug 'equalsraf/neovim-gui-shim'
     endif
 
@@ -40,6 +39,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'mhinz/vim-signify'
     Plug 'mkitt/tabline.vim'
     Plug 'morhetz/gruvbox'
+    Plug 'neomake/neomake'
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
@@ -435,21 +435,19 @@ let g:signify_update_on_bufenter = 1
 " }}}
 " Neomake {{{
 
-if has('nvim')
-    let g:neomake_python_enabled_makers     = ['flake8']
-    let g:neomake_sh_enabled_makers         = ['shellcheck']
-    let g:neomake_go_enabled_makers         = ['golint']
-    let g:neomake_javascript_enabled_makers = ['eslint']
-    let g:neomake_yaml_enabled_makers       = ['yamllint']
-    let g:neomake_verbose                   = -1
+let g:neomake_python_enabled_makers     = ['python', 'flake8']
+let g:neomake_sh_enabled_makers         = ['shellcheck']
+let g:neomake_go_enabled_makers         = ['gometalinter']
+let g:neomake_javascript_enabled_makers = ['eslint']
+let g:neomake_yaml_enabled_makers       = ['yamllint']
+let g:neomake_verbose                   = 1
 
-    nnoremap <leader>m :Neomake<cr>
+nnoremap <leader>m :Neomake!<cr>
 
-    augroup NeoMake
-        au!
-        autocmd BufWritePost,BufEnter *.yaml,*.py,*.sh,*.js,*.go Neomake
-    augroup END
-endif
+augroup NeoMake
+    au!
+    autocmd BufWritePost,BufEnter *.yaml,*.py,*.sh,*.js,*.go Neomake
+augroup END
 
 " }}}
 " FZF {{{
