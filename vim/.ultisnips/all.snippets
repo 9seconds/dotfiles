@@ -6,21 +6,21 @@ snippet !env "/usr/bin/env shebang" b
 endsnippet
 
 
-snippet modeline "Vim modeline"
+snippet !modeline "Vim modeline"
 vim`!v ': set '. (&expandtab ? printf('et sw=%i ts=%i', &sw, &ts) : printf('noet sts=%i sw=%i ts=%i', &sts, &sw, &ts)) . (&tw ? ' tw='. &tw : '') . ':'`
 endsnippet
 
 
-snippet ymd "Date: YYYY-MM-DD" w
+snippet !date "Date: YYYY-MM-DD" w
 `!v strftime("%F")`
 endsnippet
 
 
-snippet hm "Time: HH-MM"
+snippet !time "Time: HH-MM"
 `!v strftime("%H:%M")`
 endsnippet
 
 
-snippet hms "Time: HH-MM-SS"
+snippet !times "Time: HH-MM-SS"
 `!v strftime("%H:%M:%S")`
 endsnippet
