@@ -54,6 +54,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-unimpaired'
     Plug 'tweekmonster/braceless.vim'
+    Plug 'vim-python/python-syntax'
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
@@ -541,6 +542,16 @@ nmap ga <Plug>(EasyAlign)
 
 let g:sneak#streak     = 1
 let g:sneak#use_ic_scs = 1
+
+" }}}
+" Polyglot {{{
+
+let g:polyglot_disabled = ["python"]
+
+" }}}
+" vim-python {{{
+
+let g:python_highlight_all = 1
 
 " }}}
 " Braceless {{{
