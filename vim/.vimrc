@@ -426,6 +426,7 @@ let g:UltiSnipsEditSplit           = "vertical"
 
 let g:UltiSnipsSnippetsDir        = "~/.ultisnips"
 let g:UltiSnipsSnippetDirectories = [$HOME.'/.ultisnips']
+let g:UltiSnipsUsePythonVersion   = 3
 
 " }}}
 " Signify {{{
