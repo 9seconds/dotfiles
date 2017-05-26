@@ -436,7 +436,7 @@ let g:signify_update_on_bufenter = 1
 " }}}
 " Neomake {{{
 
-let g:neomake_python_enabled_makers     = ['python', 'flake8']
+let g:neomake_python_enabled_makers     = ['flake8']
 let g:neomake_sh_enabled_makers         = ['shellcheck']
 let g:neomake_go_enabled_makers         = ['gometalinter']
 let g:neomake_javascript_enabled_makers = ['eslint']
