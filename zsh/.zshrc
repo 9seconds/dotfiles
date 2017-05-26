@@ -18,7 +18,7 @@ antigen bundles <<EOBUNDLES
 
   zsh-users/zsh-autosuggestions
   zsh-users/zsh-completions
-  zsh-users/zsh-syntax-highlighting
+  zdharma/fast-syntax-highlighting
 EOBUNDLES
 antigen apply
 
