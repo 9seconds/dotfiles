@@ -130,6 +130,7 @@ set number                                  " show line numbers
 set scrolloff=5                             " number of lines above cursor on scroll
 set sessionoptions-=options                 " settings for sessions
 set shiftwidth=4                            " length of tab
+set shiftround                              " round indent to shiftwidth
 set shortmess=I                             " do not show welcome page
 set showbreak=↪                             " marker of wrapped line
 set showcmd                                 " show the status of the current command in the status bar
