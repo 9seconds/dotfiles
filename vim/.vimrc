@@ -180,10 +180,6 @@ if has('nvim')
     let g:terminal_color_14 = '#00f5e9'
     let g:terminal_color_15 = '#eeeeec'
     let g:terminal_scrollback_buffer_size = 10000
-
-    if exists('g:Gui')
-        :Guifont Fira Mono:h10
-    endif
 else
     set encoding=utf-8  " set encoding for vim
     set ttyfast         " fast terminal connection (not hw one)

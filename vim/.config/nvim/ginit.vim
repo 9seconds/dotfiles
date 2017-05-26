@@ -1,2 +1,2 @@
-    Guifont Fira Mono:h10
-    GuiLinespace 2
+Guifont Fira Mono:h10
+GuiLinespace 2
