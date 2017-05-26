@@ -453,15 +453,13 @@ augroup END
 " }}}
 " FZF {{{
 
-if executable('fzf')
-    nnoremap <silent> <leader>ff :Files<cr>
-    nnoremap <silent> <leader>fb :Buffers<cr>
-    nnoremap <silent> <leader>ft :Tags<cr>
-    nnoremap <silent> <leader>fl :Lines<cr>
-    nnoremap <silent> <leader>fm :Marks<cr>
-    nnoremap <silent> <leader>fa :Ag<cr>
-    nnoremap <silent> <leader>fg :GFiles?<cr>
-endif
+nnoremap <silent> <leader>ff :Files<cr>
+nnoremap <silent> <leader>fb :Buffers<cr>
+nnoremap <silent> <leader>ft :Tags<cr>
+nnoremap <silent> <leader>fl :Lines<cr>
+nnoremap <silent> <leader>fm :Marks<cr>
+nnoremap <silent> <leader>fa :Ag<cr>
+nnoremap <silent> <leader>fg :GFiles?<cr>
 
 " }}}
 " Gutentags {{{
