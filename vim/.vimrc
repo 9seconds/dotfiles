@@ -456,11 +456,11 @@ augroup END
 if executable('fzf')
     nnoremap <silent> <leader>ff :Files<cr>
     nnoremap <silent> <leader>fb :Buffers<cr>
-    nnoremap <silent> <leader>ft :BTags<cr>
-    nnoremap <silent> <leader>fa :Tags<cr>
+    nnoremap <silent> <leader>ft :Tags<cr>
     nnoremap <silent> <leader>fl :Lines<cr>
     nnoremap <silent> <leader>fm :Marks<cr>
-    nnoremap <silent> <leader>fg :Ag<cr>
+    nnoremap <silent> <leader>fa :Ag<cr>
+    nnoremap <silent> <leader>fg :GFiles?<cr>
 endif
 
 " }}}
