@@ -154,8 +154,8 @@ set wildmode=full                           " default behavour
 set listchars=tab:▸\ ,trail:⋅,extends:❯,precedes:❮                             " how to display invisible charaters
 set wildignore=*.o,*~,*.pyc,*.pyo,.git\*,.hg\*,svn\*,idea\*,__pycache__\*,.tox " do now show these in wildmenu
 
-let g:python_host_prog  = '/usr/bin/python2'
-let g:python3_host_prog = '/usr/bin/python3'
+let g:python_host_prog  = $HOME . '/.neovim_pythons/2/bin/python'
+let g:python3_host_prog = $HOME . '/.neovim_pythons/3/bin/python'
 
 if has('nvim')
     runtime! python_setup.vim
