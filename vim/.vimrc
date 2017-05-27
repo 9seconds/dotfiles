@@ -47,6 +47,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'SirVer/ultisnips'
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-endwise'
+    Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-markdown', { 'for': 'markdown' }
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-sensible'
