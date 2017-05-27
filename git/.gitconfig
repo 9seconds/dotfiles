@@ -65,7 +65,7 @@
 [color]
     ui = true
 [merge]
-    tool = vimdiff
+    tool = vim-fugitive
 [diff]
     tool = vimdiff
 [core]
@@ -84,3 +84,5 @@
 [grep]
     patternType = perl
     fullName    = true
+[mergetool "vim-fugitive"]
+    cmd = vim \"+Gdiff\" $MERGED
