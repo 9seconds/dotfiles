@@ -83,7 +83,7 @@ syntax on
 " _____________________________________________________________________________
 
 try
-    lang en_US  " default language for vim
+    lang en_US.UTF-8  " default language for vim
 catch
 endtry
 
@@ -152,6 +152,16 @@ set ttimeout                                " how long to wait till next byte fr
 set ttimeoutlen=1                           " wait 1 ms for next byte from terminal
 set wildmenu                                " ex completion
 set wildmode=full                           " default behavour
+
+set statusline=%.80F                                   " filename
+set statusline+=:%c,%l                                 " column and line number
+set statusline+=\ %m%r                                 " modified and RO flags
+set statusline+=%=                                     " switch to right side
+set statusline+=%h%w                                   " show preview and help flags
+set statusline+=\ [venv:%{pyenv#info#preset('short')}] " sdfsdf
+set statusline+=[git:%{fugitive#head(7)}]              " git branch
+set statusline+=%y                                     " filetype
+set statusline+=\ %P                                   " percentage/position at file which is shown
 
 set listchars=tab:▸\ ,trail:⋅,extends:❯,precedes:❮                             " how to display invisible charaters
 set wildignore=*.o,*~,*.pyc,*.pyo,.git\*,.hg\*,svn\*,idea\*,__pycache__\*,.tox " do now show these in wildmenu
