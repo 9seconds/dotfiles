@@ -54,7 +54,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-sleuth'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-unimpaired'
-    Plug 'tweekmonster/braceless.vim'
     Plug 'vim-python/python-syntax'
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
@@ -563,17 +562,6 @@ let g:polyglot_disabled = ["python"]
 " vim-python {{{
 
 let g:python_highlight_all = 1
-
-" }}}
-" Braceless {{{
-
-augroup BracelessSettings
-    autocmd!
-    autocmd FileType python,yaml,ansible BracelessEnable +indent +fold +highlight
-augroup END
-
-let g:braceless_auto_dedent_gap = 2
-let g:braceless_enable_easymotion = 0
 
 " }}}
 
