@@ -21,6 +21,8 @@ export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 export FZF_DEFAULT_COMMAND='(ag --nocolor --nogroup -l -g "") 2> /dev/null'
 
 export PURE_PROMPT_SYMBOL="➜"
+# to avoid https://github.com/neovim/neovim/issues/6982
+export COLORTERM=truecolor
 
 # Set proper TERM for tmux
 if [ -n "$TMUX" ]; then
