@@ -471,7 +471,7 @@ nnoremap <leader>m :Neomake!<cr>
 
 augroup NeoMake
     au!
-    autocmd BufWritePost,BufEnter *.yaml,*.py,*.sh,*.js,*.go,*.sass,*.scss Neomake
+    autocmd BufWritePost,BufEnter *.rst,*.md,*.yaml,*.py,*.sh,*.js,*.go,*.sass,*.scss Neomake
 augroup END
 
 " }}}
