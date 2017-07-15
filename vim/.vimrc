@@ -463,6 +463,8 @@ let g:neomake_javascript_enabled_makers = ['eslint_d', 'eslint']
 let g:neomake_yaml_enabled_makers       = ['yamllint']
 let g:neomake_scss_enabled_makers       = ['sasslint']
 let g:neomake_sass_enabled_makers       = ['sasslint']
+let g:neomake_markdown_enabled_makers   = ['markdownlint', 'writegood']
+let g:neomake_rst_enabled_makers        = ['rstcheck', 'writegood']
 let g:neomake_verbose                   = 1
 
 nnoremap <leader>m :Neomake!<cr>
