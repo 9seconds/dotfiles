@@ -237,6 +237,8 @@ augroup Vim
     autocmd BufWritePre            *            :%s/\s\+$//e
     autocmd BufNewFile,BufReadPost *.md         set      filetype=markdown
     autocmd FileType               qf           setlocal colorcolumn=
+    " vue components drive vim nuts
+    autocmd FileType               vue          syntax sync fromstart
     autocmd InsertLeave,WinEnter   *            set      cursorline
     autocmd InsertEnter,WinLeave   *            set      nocursorline
     autocmd FileType               vim          setlocal foldmethod=marker
