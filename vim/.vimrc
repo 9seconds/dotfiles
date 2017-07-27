@@ -457,11 +457,18 @@ let g:neomake_sass_sasslint_maker = {
         \ '%E%f: line %l\, col %c\, Error - %m,' .
         \ '%W%f: line %l\, col %c\, Warning - %m',
 \}
+let g:neomake_vue_eslint_maker = {
+    \ 'exe': 'eslint',
+    \ 'args': ['-f', 'compact'],
+    \ 'errorformat': '%E%f: line %l\, col %c\, Error - %m,' .
+    \   '%W%f: line %l\, col %c\, Warning - %m,%-G,%-G%*\d problems%#'
+\}
 
 let g:neomake_python_enabled_makers     = ['flake8']
 let g:neomake_sh_enabled_makers         = ['shellcheck']
 let g:neomake_go_enabled_makers         = ['gometalinter']
 let g:neomake_javascript_enabled_makers = ['eslint']
+let g:neomake_vue_enabled_makers        = ['eslint']
 let g:neomake_yaml_enabled_makers       = ['yamllint']
 let g:neomake_scss_enabled_makers       = ['sasslint']
 let g:neomake_sass_enabled_makers       = ['sasslint']
@@ -473,7 +480,7 @@ nnoremap <leader>m :Neomake!<cr>
 
 augroup NeoMake
     au!
-    autocmd BufWritePost,BufEnter *.rst,*.md,*.yaml,*.py,*.sh,*.js,*.go,*.sass,*.scss Neomake
+    autocmd BufWritePost,BufEnter *.rst,*.md,*.yaml,*.py,*.sh,*.js,*.go,*.sass,*.scss,*.vue Neomake
 augroup END
 
 " }}}
