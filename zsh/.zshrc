@@ -1,7 +1,7 @@
 source "$HOME/.zsh/antigen/antigen.zsh"
 
 zstyle :omz:plugins:ssh-agent agent-forwarding on
-zstyle :omz:plugins:ssh-agent $(ls -1 ~/.ssh/id_* | grep -Ev '\.pub$' | xargs -n 1 basename | paste -sd -)
+zstyle :omz:plugins:ssh-agent $(ls -1 ~/.ssh/id_* | grep -Ev '\.pub$' | xargs -n 1 basename | paste -sd ' ' -)
 
 antigen use oh-my-zsh
 antigen bundles <<EOBUNDLES
