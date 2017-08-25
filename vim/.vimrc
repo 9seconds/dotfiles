@@ -39,7 +39,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'mhinz/vim-signify'
     Plug 'mkitt/tabline.vim'
     Plug 'morhetz/gruvbox'
-    Plug 'neomake/neomake'
+    Plug 'w0rp/ale'
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript', 'vue'] }
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
@@ -324,7 +324,8 @@ nnoremap <silent> <Leader>8 8gt<cr>
 nnoremap <silent> <Leader>9 9gt<cr>
 
 nnoremap * *``
-nnoremap <silent> Q :call <SID>QuickfixToggle()<cr>
+nnoremap <silent> <Leader>q :call <SID>QuickfixToggle()<cr>
+nnoremap <silent> <Leader>l :call <SID>LocalfixToggle()<cr>
 nnoremap <silent> <Leader>qq :q<cr>
 nnoremap <silent> <Leader>qa :qa<cr>
 nnoremap <Leader>gp :Grep<space>
@@ -342,10 +343,24 @@ function! s:QuickfixToggle()
         lclose
         let g:quickfix_is_open = 0
         execute g:quickfix_return_to_window . "wincmd w"
-    else
+      else
         let g:quickfix_return_to_window = winnr()
         copen
         let g:quickfix_is_open = 1
+    endif
+endfunction
+
+let g:localfix_is_open = 0
+function! s:LocalfixToggle()
+    if g:localfix_is_open
+        cclose
+        lclose
+        let g:localfix_is_open = 0
+        execute g:localfix_return_to_window . "wincmd w"
+      else
+        let g:localfix_return_to_window = winnr()
+        lopen
+        let g:localfix_is_open = 1
     endif
 endfunction
 
@@ -447,40 +462,25 @@ let g:signify_vcs_list           = [ 'git' ]
 let g:signify_update_on_bufenter = 1
 
 " }}}
-" Neomake {{{
+" Ale {{{
 
-let g:neomake_sass_sasslint_maker = {
-    \ 'exe': 'sass-lint',
-    \ 'args': ['--no-exit', '--verbose', '--format=compact'],
-    \ 'errorformat':
-        \ '%E%f: line %l\, col %c\, Error - %m,' .
-        \ '%W%f: line %l\, col %c\, Warning - %m',
+let g:airline#extensions#ale#enabled = 0
+let g:ale_lint_on_insert_leave = 1
+let g:ale_linters = {
+  \ 'python':     ['flake8'],
+  \ 'sh':         ['shellcheck'],
+  \ 'go':         ['gometalinter'],
+  \ 'javascript': ['eslint'],
+  \ 'vue':        ['eslint'],
+  \ 'yaml':       ['yamllint'],
+  \ 'scss':       ['sasslint'],
+  \ 'sass':       ['sasslint'],
+  \ 'markdown':   ['markdownlint', 'writegood'],
+  \ 'rst':        ['rstcheck', 'writegood']
 \}
-let g:neomake_vue_eslint_maker = {
-    \ 'exe': 'eslint',
-    \ 'args': ['-f', 'compact'],
-    \ 'errorformat': '%E%f: line %l\, col %c\, Error - %m,' .
-    \   '%W%f: line %l\, col %c\, Warning - %m,%-G,%-G%*\d problems%#'
-\}
-
-let g:neomake_python_enabled_makers     = ['flake8']
-let g:neomake_sh_enabled_makers         = ['shellcheck']
-let g:neomake_go_enabled_makers         = ['gometalinter']
-let g:neomake_javascript_enabled_makers = ['eslint']
-let g:neomake_vue_enabled_makers        = ['eslint']
-let g:neomake_yaml_enabled_makers       = ['yamllint']
-let g:neomake_scss_enabled_makers       = ['sasslint']
-let g:neomake_sass_enabled_makers       = ['sasslint']
-let g:neomake_markdown_enabled_makers   = ['markdownlint', 'writegood']
-let g:neomake_rst_enabled_makers        = ['rstcheck', 'writegood']
-let g:neomake_verbose                   = 1
-
-nnoremap <leader>m :Neomake!<cr>
-
-augroup NeoMake
-    au!
-    autocmd BufWritePost,BufEnter *.rst,*.md,*.yaml,*.py,*.sh,*.js,*.go,*.sass,*.scss,*.vue Neomake
-augroup END
+let g:ale_sign_error = '✖'
+let g:ale_sign_warning = '⚠'
+let g:ale_sign_column_always = 1
 
 " }}}
 " FZF {{{
