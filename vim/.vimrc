@@ -326,10 +326,10 @@ nnoremap <silent> <Leader>q :call <SID>QuickfixToggle()<cr>
 nnoremap <silent> <Leader>l :call <SID>LocalfixToggle()<cr>
 nnoremap <silent> <Leader>qq :q<cr>
 nnoremap <silent> <Leader>qa :qa<cr>
-nnoremap <Leader>gp :Grep<space>
 inoremap jk <esc>
 vnoremap <silent> s :!sort<cr>
 inoremap # X<BS>#
+nnoremap <silent> <Leader>h :nohlsearch<cr>
 
 noremap <silent><F12> <Esc>:syntax sync fromstart<CR>
 
