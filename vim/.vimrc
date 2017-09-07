@@ -41,8 +41,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'mhinz/vim-signify'
     Plug 'mkitt/tabline.vim'
     Plug 'morhetz/gruvbox'
-    Plug 'w0rp/ale'
-    Plug 'othree/html5.vim', { 'for': ['html', 'javascript', 'vue'] }
+    Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
+    Plug 'posva/vim-vue', { 'for': ['vue']}
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
     Plug 'sheerun/vim-polyglot'
@@ -57,6 +57,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-unimpaired'
     Plug 'vim-python/python-syntax'
+    Plug 'w0rp/ale'
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
@@ -65,7 +66,7 @@ call plug#begin('~/.vim/plugged')
         \ Plug 'machakann/vim-textobj-delimited' |
         \ Plug 'coderifous/textobj-word-column.vim' |
         \ Plug 'bps/vim-textobj-python'
-    Plug 'pangloss/vim-javascript', { 'for': ['html', 'javascript', 'vue'] }
+    Plug 'pangloss/vim-javascript', { 'for': ['html', 'javascript'] }
 
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' } |
         \ Plug 'junegunn/fzf.vim'
@@ -620,6 +621,11 @@ augroup Goyo
 augroup END
 
 nnoremap <silent> <F9> :Goyo<cr>
+
+" }}}
+" vue {{{
+
+let g:vue_disable_pre_processors = 1
 
 " }}}
 
