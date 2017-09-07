@@ -13,9 +13,9 @@ filetype off
 
 call plug#begin('~/.vim/plugged')
     if has('nvim')
-        Plug 'Shougo/deoplete.nvim' |
+        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' } |
             \ Plug 'zchee/deoplete-jedi', { 'for': 'python' } |
-            \ Plug 'carlitux/deoplete-ternjs', { 'for': ['json', 'javascript'] } |
+            \ Plug 'carlitux/deoplete-ternjs', { 'for': ['json', 'javascript', 'vue'] } |
             \ Plug 'zchee/deoplete-go', { 'for': 'go' }
         Plug 'equalsraf/neovim-gui-shim'
     endif
@@ -553,6 +553,13 @@ if has('nvim')
     endfunction
 
     call deoplete#custom#set('_', 'matchers', ['matcher_fuzzy'])
+
+    let g:deoplete#sources#ternjs#filetypes = [
+    \ 'jsx',
+    \ 'javascript.jsx',
+    \ 'vue',
+    \ 'javascript'
+    \ ]
 endif
 
 " }}}
