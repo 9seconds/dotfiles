@@ -13,6 +13,7 @@
     bl          = blame --show-number
     bra         = branch -vv --all
     br          = branch -vv
+    brc         = !git branch -vv | grep -v '*' | awk '/: gone]/{print $1}' | xargs -r git branch -D
     brd         = branch -D
     brdd        = "!bash -c 'repo=\"$1\"; git branch -D \"${@:2}\" && git push --delete \"$repo\" \"${@:2}\"'"
     brl         = branch -vv
