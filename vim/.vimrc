@@ -496,6 +496,7 @@ nnoremap <silent> <leader>fl :Lines<cr>
 nnoremap <silent> <leader>fm :Marks<cr>
 nnoremap <silent> <leader>fa :Ag<cr>
 nnoremap <silent> <leader>fg :GFiles?<cr>
+nnoremap <silent> <leader>gg :Ag <c-r><c-w><cr>
 
 " }}}
 " Gutentags {{{
