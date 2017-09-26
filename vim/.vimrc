@@ -478,8 +478,9 @@ let g:ale_linters = {
   \ 'yaml':       ['yamllint'],
   \ 'scss':       ['sasslint'],
   \ 'sass':       ['sasslint'],
-  \ 'markdown':   ['markdownlint', 'writegood'],
-  \ 'rst':        ['rstcheck', 'writegood']
+  \ 'markdown':   ['markdownlint', 'proselint'],
+  \ 'rst':        ['rstcheck', 'proselint'],
+  \ 'text':       ['proselint'],
 \}
 let g:ale_sign_error = '✖'
 let g:ale_sign_warning = '⚠'
