@@ -20,6 +20,7 @@ call plug#begin('~/.vim/plugged')
         Plug 'equalsraf/neovim-gui-shim'
     endif
 
+    Plug 'takac/vim-hardtime'
     Plug 'airblade/vim-rooter'
     Plug 'benmills/vimux'
     Plug 'christoomey/vim-tmux-navigator'
@@ -636,6 +637,11 @@ nnoremap <silent> <F9> :Goyo<cr>
 " vue {{{
 
 let g:vue_disable_pre_processors = 1
+
+" }}}
+" hardtime {{{
+
+let g:hardtime_default_on = 1
 
 " }}}
 
