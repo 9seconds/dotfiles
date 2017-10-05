@@ -641,7 +641,7 @@ let g:vue_disable_pre_processors = 1
 " }}}
 " hardtime {{{
 
-let g:hardtime_default_on = 1
+let g:hardtime_default_on = 0
 
 " }}}
 
