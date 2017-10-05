@@ -311,7 +311,9 @@ nnoremap <C-h>    <C-w>h
 nnoremap <C-j>    <C-w>j
 nnoremap <C-k>    <C-w>k
 nnoremap <C-l>    <C-w>l
-nnoremap <silent> <C-x> :resize<cr>:vertical resize<cr>
+
+nnoremap <leader>to :tabnew<space>
+nnoremap <leader>tc :tabclose<cr>
 
 nnoremap <leader>bd :Bdelete<cr>
 
@@ -498,7 +500,20 @@ nnoremap <silent> <leader>fl :Lines<cr>
 nnoremap <silent> <leader>fm :Marks<cr>
 nnoremap <silent> <leader>fa :Ag<cr>
 nnoremap <silent> <leader>fg :GFiles?<cr>
-nnoremap <silent> <leader>gg :Ag <c-r><c-w><cr>
+nnoremap <silent> <leader>fs :Ag <c-r><c-w><cr>
+
+" }}}
+" fugitive {{{
+
+nnoremap <leader>gb :Gblame<cr>
+nnoremap <leader>gs :Gstatus<cr>
+nnoremap <leader>gl :Gllog<cr>
+nnoremap <leader>gw :Gwrite<cr>
+nnoremap <leader>gf :Gdiff<cr>
+nnoremap <leader>gm :Gmove<cr>
+nnoremap <leader>gd :Gdelete<cr>
+nnoremap <leader>gr :Gread<cr>
+nnoremap <leader>gg :Git<space>
 
 " }}}
 " Gutentags {{{
