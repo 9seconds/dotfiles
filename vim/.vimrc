@@ -510,7 +510,7 @@ nnoremap <leader>gs :Gstatus<cr>
 nnoremap <leader>gl :Gllog<cr>
 nnoremap <leader>gw :Gwrite<cr>
 nnoremap <leader>gf :Gdiff<cr>
-nnoremap <leader>gm :Gmove<cr>
+nnoremap <leader>gm :Gmove<space>
 nnoremap <leader>gd :Gdelete<cr>
 nnoremap <leader>gr :Gread<cr>
 nnoremap <leader>gg :Git<space>
