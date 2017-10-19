@@ -584,11 +584,12 @@ endif
 " }}}
 " Jedi {{{
 
-let g:jedi#completions_enabled   = 0
-let g:jedi#goto_command          = "<leader>yg"
-let g:jedi#documentation_command = "<leader>yd"
-let g:jedi#usages_command        = "<leader>yr"
-let g:jedi#rename_command        = "<leader>yn"
+let g:jedi#completions_enabled      = 0
+let g:jedi#goto_assignments_command = "<leader>yg"
+let g:jedi#goto_command             = "<leader>yy"
+let g:jedi#documentation_command    = "<leader>yd"
+let g:jedi#usages_command           = "<leader>yr"
+let g:jedi#rename_command           = "<leader>yn"
 
 " }}}
 " Easy Align {{{
