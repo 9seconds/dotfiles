@@ -45,6 +45,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
     Plug 'posva/vim-vue', { 'for': ['vue']}
     Plug 'rust-lang/rust.vim', { 'for': 'rust' }
+    Plug 'sbdchd/neoformat'
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
     Plug 'sheerun/vim-polyglot'
     Plug 'SirVer/ultisnips'
@@ -449,6 +450,12 @@ let g:VimuxOrientation  = "h"
 let g:VimuxHeight       = "45"
 let g:VimuxPromptString = "tmux> "
 let g:VimuxRunnerType   = "pane"
+
+" }}}
+" Neoformat {{{
+
+nnoremap <silent> <leader>nf :Neoformat<cr>
+vnoremap <silent> <leader>nf :Neoformat<cr>
 
 " }}}
 " UltiSnips {{{
