@@ -20,9 +20,9 @@ call plug#begin('~/.vim/plugged')
         Plug 'equalsraf/neovim-gui-shim'
     endif
 
-    Plug 'takac/vim-hardtime'
     Plug 'airblade/vim-rooter'
     Plug 'benmills/vimux'
+    Plug 'chrisbra/NrrwRgn'
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'editorconfig/editorconfig-vim'
@@ -48,6 +48,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
     Plug 'sheerun/vim-polyglot'
     Plug 'SirVer/ultisnips'
+    Plug 'takac/vim-hardtime'
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-endwise'
     Plug 'tpope/vim-fugitive'
