@@ -27,6 +27,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'editorconfig/editorconfig-vim'
     Plug 'fatih/vim-go', { 'for': 'go' }
+    Plug 'gcmt/taboo.vim'
+    Plug 'gcmt/wildfire.vim'
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'janko-m/vim-test'
     Plug 'jiangmiao/auto-pairs'
@@ -96,6 +98,8 @@ try
 catch
     set t_Co=256 " use 256 colors
 endtry
+
+set guioptions=-e " consistent tabs anywhere
 
 let &colorcolumn="80,120"                   " ruler for colorcolumn
 set autoread                                " reread file if was changed outside
@@ -625,6 +629,12 @@ let g:python_highlight_all = 1
 " vim-javascript {{{
 
 let g:javascript_plugin_flow = 1
+
+" }}}
+" Taboo {{{
+
+nnoremap <leader>to :TabooOpen<space>
+nnoremap <leader>tr :TabooRename<space>
 
 " }}}
 " Goyo {{{
