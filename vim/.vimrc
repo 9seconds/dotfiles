@@ -508,6 +508,7 @@ let g:ale_sign_column_always = 1
 nnoremap <silent> <leader>ff :Files<cr>
 nnoremap <silent> <leader>fb :Buffers<cr>
 nnoremap <silent> <leader>ft :Tags<cr>
+nnoremap <silent> <leader>fy :BTags<cr>
 nnoremap <silent> <leader>fl :Lines<cr>
 nnoremap <silent> <leader>fm :Marks<cr>
 nnoremap <silent> <leader>fa :Ag<cr>
