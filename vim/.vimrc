@@ -508,12 +508,18 @@ let g:ale_sign_column_always = 1
 nnoremap <silent> <leader>ff :Files<cr>
 nnoremap <silent> <leader>fb :Buffers<cr>
 nnoremap <silent> <leader>ft :Tags<cr>
-nnoremap <silent> <leader>fy :BTags<cr>
-nnoremap <silent> <leader>fl :Lines<cr>
+nnoremap <silent> <leader>fg :BTags<cr>
+nnoremap <silent> <leader>fl :BLines<cr>
 nnoremap <silent> <leader>fm :Marks<cr>
 nnoremap <silent> <leader>fa :Ag<cr>
-nnoremap <silent> <leader>fg :GFiles?<cr>
 nnoremap <silent> <leader>fs :Ag <c-r><c-w><cr>
+
+command! -bang -nargs=* Ag
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   <bang>0)
 
 " }}}
 " fugitive {{{
