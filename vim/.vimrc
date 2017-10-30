@@ -461,6 +461,8 @@ let g:VimuxRunnerType   = "pane"
 nnoremap <silent> <leader>nf :Neoformat<cr>
 vnoremap <silent> <leader>nf :Neoformat<cr>
 
+let g:neoformat_enabled_python = ['yapf', 'isort']
+
 " }}}
 " UltiSnips {{{
 
