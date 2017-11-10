@@ -267,3 +267,7 @@ enable_kvm() {
     sudo /sbin/insmod "/lib/modules/$(uname -r)/kernel/arch/x86/kvm/kvm.ko"
     sudo /sbin/insmod "/lib/modules/$(uname -r)/kernel/arch/x86/kvm/kvm-intel.ko"
 }
+
+reswap() {
+    sudo swapoff -a && sudo swapon -a
+}
