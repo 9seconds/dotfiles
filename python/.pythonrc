@@ -204,6 +204,16 @@ finally:
 
 
 try:
+    reload
+except NameError:
+    import imp
+
+    reload = imp.reload
+
+    del imp
+
+
+try:
     from see import see  # noqa
 except ImportError:
     see = dir
