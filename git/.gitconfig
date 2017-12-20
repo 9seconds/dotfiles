@@ -37,6 +37,8 @@
     ftch        = fetch --prune --all --recurse-submodules=yes
     gcca        = !git gcc && git sf git gcc
     gcc         = !git reflog expire --expire=all --stale-fix --all && git worktree prune --expire 0 && git gc --prune=all && git gc --aggressive --prune=all && git repack -AFdfb --depth 250 --window 250
+    idfc        = icdiff --cached
+    idf         = icdiff
     la          = !git config -l | grep alias | cut -c 7- | sort
     lla         = !git ll --all
     ll          = log --decorate --oneline --graph
