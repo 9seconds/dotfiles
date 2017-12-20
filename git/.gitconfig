@@ -85,5 +85,7 @@
 [grep]
     patternType = perl
     fullName    = true
+[icdiff]
+    options = --line-numbers
 [mergetool "vim-fugitive"]
     cmd = vim \"+Gdiff\" $MERGED
