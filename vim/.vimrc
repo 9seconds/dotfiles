@@ -22,7 +22,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'benmills/vimux'
     Plug 'chrisbra/NrrwRgn'
     Plug 'christoomey/vim-tmux-navigator'
-    " Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'editorconfig/editorconfig-vim'
     Plug 'fatih/vim-go', { 'for': 'go' }
     Plug 'gcmt/taboo.vim'
@@ -47,7 +46,9 @@ call plug#begin('~/.vim/plugged')
     Plug 'sbdchd/neoformat'
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
     Plug 'sheerun/vim-polyglot'
+    Plug 'Shougo/echodoc.vim'
     Plug 'SirVer/ultisnips'
+    Plug 'slashmili/alchemist.vim'
     Plug 'takac/vim-hardtime'
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-endwise'
@@ -63,7 +64,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
-    Plug 'slashmili/alchemist.vim'
 
     Plug 'kana/vim-textobj-user' |
         \ Plug 'machakann/vim-textobj-delimited' |
