@@ -14,9 +14,7 @@ filetype off
 call plug#begin('~/.vim/plugged')
     if has('nvim')
         Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' } |
-            \ Plug 'zchee/deoplete-jedi', { 'for': 'python' } |
-            \ Plug 'carlitux/deoplete-ternjs', { 'for': ['json', 'javascript', 'vue'] } |
-            \ Plug 'zchee/deoplete-go', { 'for': 'go' }
+            \ Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
         Plug 'equalsraf/neovim-gui-shim'
     endif
 
@@ -24,7 +22,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'benmills/vimux'
     Plug 'chrisbra/NrrwRgn'
     Plug 'christoomey/vim-tmux-navigator'
-    Plug 'davidhalter/jedi-vim', { 'for': 'python' }
+    " Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'editorconfig/editorconfig-vim'
     Plug 'fatih/vim-go', { 'for': 'go' }
     Plug 'gcmt/taboo.vim'
@@ -46,7 +44,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'morhetz/gruvbox'
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
     Plug 'posva/vim-vue', { 'for': ['vue']}
-    Plug 'rust-lang/rust.vim', { 'for': 'rust' }
     Plug 'sbdchd/neoformat'
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
     Plug 'sheerun/vim-polyglot'
@@ -576,9 +573,6 @@ if has('nvim')
     let g:deoplete#max_list                   = 20
     let g:deoplete#auto_complete_start_length = 3
 
-    let g:deoplete#sources#go#gocode_binary = expand("~/.gotools/gocode")
-    let g:deoplete#sources#go#use_cache = 1
-
     inoremap <silent><expr> <TAB>
         \ pumvisible() ? "\<C-n>" :
         \ <SID>check_back_space() ? "\<TAB>" :
@@ -594,24 +588,28 @@ if has('nvim')
     endfunction
 
     call deoplete#custom#set('_', 'matchers', ['matcher_fuzzy'])
-
-    let g:deoplete#sources#ternjs#filetypes = [
-    \ 'jsx',
-    \ 'javascript.jsx',
-    \ 'vue',
-    \ 'javascript'
-    \ ]
 endif
 
 " }}}
-" Jedi {{{
+" LanguageClient_neovim {{{
 
-let g:jedi#completions_enabled      = 0
-let g:jedi#goto_assignments_command = "<leader>yg"
-let g:jedi#goto_command             = "<leader>yy"
-let g:jedi#documentation_command    = "<leader>yd"
-let g:jedi#usages_command           = "<leader>yr"
-let g:jedi#rename_command           = "<leader>yn"
+if has('nvim')
+  let g:LanguageClient_serverCommands = {
+        \ 'python': ['pyls']
+        \ }
+
+  let g:LanguageClient_autoStart = 1
+  let g:LanguageClient_changeThrottle = 0.2
+  let g:LanguageClient_diagnosticsEnable = 0
+
+  nnoremap <silent> <leader>yk :call LanguageClient_textDocument_hover()<cr>
+  nnoremap <silent> <leader>yd :call LanguageClient_textDocument_definition()<cr>
+  nnoremap <silent> <leader>yn :call LanguageClient_textDocument_rename()<cr>
+  nnoremap <silent> <leader>yb :call LanguageClient_textDocument_documentSymbol()<cr>
+  nnoremap <silent> <leader>yr :call LanguageClient_textDocument_references()<cr>
+  nnoremap <silent> <leader>ys :call LanguageClient_workspace_symbol()<cr>
+  nnoremap <silent> <leader>yf :call LanguageClient_textDocument_formatting()<cr>
+endif
 
 " }}}
 " Easy Align {{{
