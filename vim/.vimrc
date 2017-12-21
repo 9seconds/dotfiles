@@ -595,7 +595,11 @@ endif
 
 if has('nvim')
   let g:LanguageClient_serverCommands = {
-        \ 'python': ['pyls']
+        \ 'python': ['pyls'],
+        \ 'javascript': ['javascript-typescript-stdio'],
+        \ 'typescript': ['javascript-typescript-stdio'],
+        \ 'javascript.jsx': ['javascript-typescript-stdio'],
+        \ 'vue': ['vls']
         \ }
 
   let g:LanguageClient_autoStart = 1
