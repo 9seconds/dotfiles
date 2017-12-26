@@ -14,7 +14,7 @@ filetype off
 call plug#begin('~/.vim/plugged')
     if has('nvim')
         Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' } |
-            \ Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
+            \ Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins', 'tag': 'binary-*-x86_64-unknown-linux-musl' }
         Plug 'equalsraf/neovim-gui-shim'
     endif
 
