@@ -22,7 +22,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'benmills/vimux'
     Plug 'chrisbra/NrrwRgn'
     Plug 'christoomey/vim-tmux-navigator'
-    " Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'editorconfig/editorconfig-vim'
     Plug 'fatih/vim-go', { 'for': 'go' }
     Plug 'gcmt/taboo.vim'
@@ -494,13 +493,15 @@ let g:ale_linters = {
   \ 'yaml':       ['yamllint'],
   \ 'scss':       ['sasslint'],
   \ 'sass':       ['sasslint'],
-  \ 'markdown':   ['markdownlint', 'proselint'],
-  \ 'rst':        ['rstcheck', 'proselint'],
-  \ 'text':       ['proselint'],
+  \ 'markdown':   ['markdownlint', 'proselint', 'write-good'],
+  \ 'rst':        ['rstcheck', 'proselint', 'write-good'],
+  \ 'text':       ['proselint', 'write-good'],
 \}
+
 let g:ale_sign_error = '✖'
 let g:ale_sign_warning = '⚠'
 let g:ale_sign_column_always = 1
+let g:ale_writegood_use_global = 1
 
 " }}}
 " FZF {{{
