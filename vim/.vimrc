@@ -459,6 +459,8 @@ let g:VimuxRunnerType   = "pane"
 nnoremap <silent> <leader>nf :Neoformat<cr>
 vnoremap <silent> <leader>nf :Neoformat<cr>
 
+let g:neoformat_run_all_formatters = 1
+
 let g:neoformat_enabled_python = ['yapf', 'isort']
 
 " }}}
