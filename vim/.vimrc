@@ -408,6 +408,7 @@ let g:go_highlight_structs   = 1
 
 let g:go_bin_path = expand("~/.gotools")
 let g:go_auto_type_info = 1
+let g:go_fmt_fail_silently = 1
 
 augroup Go
     autocmd!
