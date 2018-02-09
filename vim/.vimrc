@@ -575,24 +575,9 @@ endif
 
 if has('nvim')
     let g:deoplete#enable_at_startup          = 1
+    let g:deoplete#enable_camel_case          = 1
     let g:deoplete#max_list                   = 20
     let g:deoplete#auto_complete_start_length = 3
-
-    inoremap <silent><expr> <TAB>
-        \ pumvisible() ? "\<C-n>" :
-        \ <SID>check_back_space() ? "\<TAB>" :
-        \ deoplete#mappings#manual_complete()
-    inoremap <silent><expr> <S-TAB>
-        \ pumvisible() ? "\<C-p>" :
-        \ <SID>check_back_space() ? "\<TAB>" :
-        \ deoplete#mappings#manual_complete()
-
-    function! s:check_back_space() abort
-        let col = col('.') - 1
-        return !col || getline('.')[col - 1]  =~ '\s'
-    endfunction
-
-    call deoplete#custom#set('_', 'matchers', ['matcher_fuzzy'])
 endif
 
 " }}}
