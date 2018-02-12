@@ -506,6 +506,7 @@ let g:ale_sign_error = '✖'
 let g:ale_sign_warning = '⚠'
 let g:ale_sign_column_always = 1
 let g:ale_writegood_use_global = 1
+let g:ale_go_gometalinter_options = '--fast'
 
 " }}}
 " FZF {{{
