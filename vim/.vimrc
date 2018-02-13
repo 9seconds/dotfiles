@@ -14,6 +14,7 @@ filetype off
 call plug#begin('~/.vim/plugged')
     if has('nvim')
         Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' } |
+            \ Plug 'zchee/deoplete-jedi', { 'for': 'python' } |
             \ Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins', 'tag': 'binary-*-x86_64-unknown-linux-musl' }
         Plug 'equalsraf/neovim-gui-shim'
     endif
@@ -26,6 +27,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'fatih/vim-go', { 'for': 'go' }
     Plug 'gcmt/taboo.vim'
     Plug 'gcmt/wildfire.vim'
+    Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'janko-m/vim-test'
     Plug 'jiangmiao/auto-pairs'
@@ -579,6 +581,9 @@ if has('nvim')
     let g:deoplete#enable_camel_case          = 1
     let g:deoplete#max_list                   = 20
     let g:deoplete#auto_complete_start_length = 3
+
+    inoremap <expr><C-h> deoplete#mappings#smart_close_popup()."\<C-h>"
+    inoremap <expr><BS>  deoplete#mappings#smart_close_popup()."\<C-h>"
 endif
 
 " }}}
@@ -586,7 +591,6 @@ endif
 
 if has('nvim')
   let g:LanguageClient_serverCommands = {
-        \ 'python': ['pyls'],
         \ 'javascript': ['javascript-typescript-stdio'],
         \ 'typescript': ['javascript-typescript-stdio'],
         \ 'javascript.jsx': ['javascript-typescript-stdio'],
@@ -594,7 +598,7 @@ if has('nvim')
         \ }
 
   let g:LanguageClient_autoStart = 1
-  let g:LanguageClient_changeThrottle = 0.2
+  let g:LanguageClient_changeThrottle = 0
   let g:LanguageClient_diagnosticsEnable = 0
 
   nnoremap <silent> <leader>yk :call LanguageClient_textDocument_hover()<cr>
@@ -605,6 +609,17 @@ if has('nvim')
   nnoremap <silent> <leader>ys :call LanguageClient_workspace_symbol()<cr>
   nnoremap <silent> <leader>yf :call LanguageClient_textDocument_formatting()<cr>
 endif
+
+" }}}
+" jedi-vim {{{
+
+let g:jedi#completions_enabled = 0
+
+augroup Jedi
+  autocmd!
+  autocmd FileType python nnoremap <silent> <leader>yd :call jedi#goto()<cr>
+  autocmd FileType python nnoremap <silent> <leader>yr :call jedi#usages()<cr>
+augroup END
 
 " }}}
 " Easy Align {{{
