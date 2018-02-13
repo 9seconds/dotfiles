@@ -15,6 +15,7 @@ call plug#begin('~/.vim/plugged')
     if has('nvim')
         Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' } |
             \ Plug 'zchee/deoplete-jedi', { 'for': 'python' } |
+            \ Plug 'zchee/deoplete-go', { 'for': 'go' } |
             \ Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins', 'tag': 'binary-*-x86_64-unknown-linux-musl' }
         Plug 'equalsraf/neovim-gui-shim'
     endif
