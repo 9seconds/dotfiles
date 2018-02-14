@@ -40,7 +40,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'justinmk/vim-sneak'
     Plug 'kshenoy/vim-signature'
     Plug 'lambdalisue/vim-pyenv'
-    Plug 'ludovicchabant/vim-gutentags'
+    " Plug 'ludovicchabant/vim-gutentags'
     Plug 'mhinz/vim-signify'
     Plug 'mkitt/tabline.vim'
     Plug 'morhetz/gruvbox'
@@ -67,6 +67,10 @@ call plug#begin('~/.vim/plugged')
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
+
+    if executable('gtags')
+      Plug 'jsfaint/gen_tags.vim'
+    endif
 
     Plug 'kana/vim-textobj-user' |
         \ Plug 'machakann/vim-textobj-delimited' |
@@ -558,6 +562,25 @@ let g:gutentags_ctags_exclude = [
     \ '*.pyo',
     \ '.tox',
     \ ]
+
+" }}}
+" gen_tags {{{
+
+let g:gen_tags#use_cache_dir = 0
+
+if executable('ctags')
+  let g:loaded_gentags#ctags    = 0
+  let g:gen_tags#ctags_auto_gen = 1
+else
+  let g:loaded_gentags#ctags = 1
+endif
+
+if executable('gtags')
+  let g:loaded_gentags#ctags    = 0
+  let g:gen_tags#gtags_auto_gen = 1
+else
+  let g:loaded_gentags#ctags = 1
+endif
 
 " }}}
 " Vim-test {{{
