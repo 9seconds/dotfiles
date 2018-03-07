@@ -68,9 +68,9 @@ call plug#begin('~/.vim/plugged')
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
 
-    if executable('gtags')
-      Plug 'jsfaint/gen_tags.vim'
-    endif
+    " if executable('gtags')
+    "   Plug 'jsfaint/gen_tags.vim'
+    " endif
 
     Plug 'kana/vim-textobj-user' |
         \ Plug 'machakann/vim-textobj-delimited' |
