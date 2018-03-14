@@ -40,7 +40,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'justinmk/vim-sneak'
     Plug 'kshenoy/vim-signature'
     Plug 'lambdalisue/vim-pyenv'
-    " Plug 'ludovicchabant/vim-gutentags'
     Plug 'mhinz/vim-signify'
     Plug 'mkitt/tabline.vim'
     Plug 'morhetz/gruvbox'
@@ -53,7 +52,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'SirVer/ultisnips'
     Plug 'slashmili/alchemist.vim'
     Plug 'takac/vim-hardtime'
-    Plug 'tpope/vim-commentary'
+    Plug 'tyru/caw.vim'
+    Plug 'Shougo/context_filetype.vim'
     Plug 'tpope/vim-endwise'
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-markdown', { 'for': 'markdown' }
@@ -68,9 +68,9 @@ call plug#begin('~/.vim/plugged')
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
 
-    " if executable('gtags')
-    "   Plug 'jsfaint/gen_tags.vim'
-    " endif
+    if executable('gtags')
+      Plug 'jsfaint/gen_tags.vim'
+    endif
 
     Plug 'kana/vim-textobj-user' |
         \ Plug 'machakann/vim-textobj-delimited' |
