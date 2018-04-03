@@ -568,9 +568,21 @@ let g:gutentags_ctags_exclude = [
 
 if executable('gtags')
   let g:gen_tags#gtags_auto_gen = 1
+  let g:loaded_gentags#ctags    = 0
 else
-  let g:gen_tags#ctags_auto_gen = 1
+  let g:gen_tags#ctags_auto_gen = 0
+  let g:loaded_gentags#ctags    = 1
 endif
+
+if executable('ctags')
+  let g:gen_tags#ctags_auto_gen = 1
+  let g:loaded_gentags#ctags    = 0
+else
+  let g:gen_tags#ctags_auto_gen = 0
+  let g:loaded_gentags#ctags    = 1
+endif
+
+let g:gen_tags#use_cache_dir = 0
 
 " }}}
 " Vim-test {{{
