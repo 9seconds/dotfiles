@@ -5,6 +5,8 @@ export PYTHONSTARTUP="${HOME}/.pythonrc"
 
 export HISTTIMEFORMAT="%d.%m.%y %H:%M:%S"
 
+export PATH="/usr/local/bin:$PATH"
+export PATH="/usr/local/opt/curl/bin:$PATH"
 export PATH="/snap/bin:$PATH"
 export PATH="$PYENV_ROOT/bin:$PATH"
 export PATH="$HOME/.fzf/bin:$PATH"

@@ -15,7 +15,13 @@ cpu_count() {
     #     $ cpu_count
     #     4
 
-    grep -c processor /proc/cpuinfo
+    case "$(uname -s)" in
+      Darwin)
+        sysctl -n hw.ncpu
+        ;;
+      Linux)
+        grep -c processor /proc/cpuinfo
+    esac
 }
 
 skip_first() {
