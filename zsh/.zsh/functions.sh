@@ -257,6 +257,10 @@ allup() {
     aptg && vagrantup && antigen update
 }
 
+brewup() {
+    brew update && brew upgrade && brew cask upgrade && brew cask cleanup && brew cleanup
+}
+
 purgeoldkernels() {
     # Purges old Ubuntu kernels
     # http://askubuntu.com/a/254585
