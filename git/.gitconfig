@@ -74,6 +74,7 @@
 [core]
     pager        = less -XSFR
     preloadindex = true
+	excludesfile = /Users/9seconds/.gitignore_global
 [mergetool "p4merge"]
     cmd             = "/opt/p4merge/bin/p4merge $BASE $LOCAL $REMOTE $MERGED"
     keepTemporaries = false
@@ -91,3 +92,9 @@
     options = --line-numbers
 [mergetool "vim-fugitive"]
     cmd = vim \"+Gdiff\" $MERGED
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
