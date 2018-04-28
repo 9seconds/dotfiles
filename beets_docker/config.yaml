@@ -1,0 +1,101 @@
+---
+
+directory: /music/Music
+library: /beets.db
+asciify_paths: yes
+original_date: yes
+per_disc_numbering: yes
+
+import:
+  write: yes
+  copy: yes
+  move: no
+  link: no
+  resume: no
+
+paths:
+  default: Albums/%the{$albumartist}/$year - $album%aunique{}/%if{$multidisc,CD$disc/}$track. $title
+  singleton: Non-Album/%the{$artist}/$title
+  comp: Compilations/$album ($year)%aunique{}/%if{$multidisc,CD$disc/}$track. $title
+
+plugins:
+  - acousticbrainz
+  - badfiles
+  - chroma
+  - convert
+  - duplicates
+  - edit
+  - embedart
+  - export
+  - fetchart
+  - ftintitle
+  - fuzzy
+  - info
+  - inline
+  - lastgenre
+  - lyrics
+  - missing
+  - permissions
+  - replaygain
+  - scrub
+  - the
+  # - thumbnails
+  - web
+  - zero
+
+badfiles:
+  commands:
+    flac: flac --test --silent --warnings-as-errors
+    mp3: mp3val
+    ogg: oggz-validate
+
+item_fields:
+  multidisc: 1 if disctotal > 1 else 0
+
+convert:
+  never_convert_lossy_files: yes
+  format: mp3_v0
+  formats:
+    mp3_320k:
+      command: ffmpeg -i $source -y -codec:a libmp3lame -b:a 320k $dest
+      extension: mp3
+    mp3_v0:
+      command: ffmpeg -i $source -y -codec:a libmp3lame -q:a 0 $dest
+      extension: mp3
+    mp3_v2:
+      command: ffmpeg -i $source -y -codec:a libmp3lame -q:a 2 $dest
+      extension: mp3
+    mp3_v4:
+      command: ffmpeg -i $source -y -codec:a libmp3lame -q:a 4 $dest
+      extension: mp3
+    mp3_v6:
+      command: ffmpeg -i $source -y -codec:a libmp3lame -q:a 6 $dest
+      extension: mp3
+    ogg_q5:
+      command: ffmpeg -i $source -y -codec:a libvorbis -qscale:a 5 $dest
+      extension: ogg
+    ogg_q6:
+      command: ffmpeg -i $source -y -codec:a libvorbis -qscale:a 6 $dest
+      extension: ogg
+    ogg_q7:
+      command: ffmpeg -i $source -y -codec:a libvorbis -qscale:a 7 $dest
+      extension: ogg
+    ogg_max:
+      command: ffmpeg -i $source -y -codec:a libvorbis -qscale:a 10 $dest
+      extension: ogg
+
+embedart:
+  ifempty: true
+
+lastgenre:
+  separator: ' / '
+
+replaygain:
+  backend: gstreamer
+
+web:
+  host: 0.0.0.0
+  port: 80
+
+zero:
+  fields: comments
