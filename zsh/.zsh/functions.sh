@@ -258,7 +258,7 @@ allup() {
 }
 
 brewup() {
-    brew update && brew upgrade && brew cask upgrade && brew cask cleanup && brew cleanup
+    brew update && brew upgrade && brew cask upgrade --greedy && brew cask cleanup && brew cleanup
 }
 
 purgeoldkernels() {
