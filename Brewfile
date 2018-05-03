@@ -47,6 +47,7 @@ brew "tree"
 brew "vim"
 brew "watchman"
 brew "wavpack"
+brew "yamllint"
 brew "yarn"
 brew "youtube-dl"
 brew "zsh"
@@ -61,6 +62,7 @@ cask "grammarly"
 cask "iterm2"
 cask "karabiner-elements"
 cask "macvim"
+cask "musicbrainz-picard"
 cask "nordvpn"
 cask "numi"
 cask "paragon-ntfs"
@@ -77,6 +79,7 @@ cask "transmission"
 cask "vagrant"
 cask "vimr"
 cask "virtualbox"
+cask "virtualbox-extension-pack"
 cask "visual-studio-code"
 cask "vlc"
 cask "zoomus"
@@ -109,6 +112,7 @@ mas "GarageBand", id: 682658836
 mas "iMovie", id: 408981434
 mas "Keynote", id: 409183694
 mas "Magnet", id: 441258766
+mas "Meta", id: 558317092
 mas "Monosnap", id: 540348655
 mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
