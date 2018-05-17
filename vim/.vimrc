@@ -16,7 +16,7 @@ call plug#begin('~/.vim/plugged')
         Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' } |
             \ Plug 'zchee/deoplete-jedi', { 'for': 'python' } |
             \ Plug 'zchee/deoplete-go', { 'for': 'go' } |
-            \ Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins', 'tag': 'binary-*-x86_64-unknown-linux-musl' }
+            \ Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins', 'branch': 'next', 'install': 'bash install.sh' }
         Plug 'equalsraf/neovim-gui-shim'
     endif
 
@@ -39,7 +39,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/vim-slash'
     Plug 'justinmk/vim-sneak'
     Plug 'kshenoy/vim-signature'
-    Plug 'lambdalisue/vim-pyenv'
+    " Plug 'lambdalisue/vim-pyenv'
     Plug 'mhinz/vim-signify'
     Plug 'mkitt/tabline.vim'
     Plug 'morhetz/gruvbox'
@@ -171,7 +171,6 @@ set statusline+=:%c,%l                                 " column and line number
 set statusline+=\ %m%r                                 " modified and RO flags
 set statusline+=%=                                     " switch to right side
 set statusline+=%h%w                                   " show preview and help flags
-set statusline+=\ [venv:%{pyenv#info#preset('short')}] " sdfsdf
 set statusline+=[git:%{fugitive#head(7)}]              " git branch
 set statusline+=%y                                     " filetype
 set statusline+=\ %P                                   " percentage/position at file which is shown
@@ -620,6 +619,7 @@ if has('nvim')
         \ 'javascript': ['javascript-typescript-stdio'],
         \ 'typescript': ['javascript-typescript-stdio'],
         \ 'javascript.jsx': ['javascript-typescript-stdio'],
+        \ 'python': ['pyls'],
         \ 'vue': ['vls']
         \ }
 
@@ -639,13 +639,13 @@ endif
 " }}}
 " jedi-vim {{{
 
-let g:jedi#completions_enabled = 0
+" let g:jedi#completions_enabled = 0
 
-augroup Jedi
-  autocmd!
-  autocmd FileType python nnoremap <silent> <leader>yd :call jedi#goto()<cr>
-  autocmd FileType python nnoremap <silent> <leader>yr :call jedi#usages()<cr>
-augroup END
+" augroup Jedi
+"   autocmd!
+"   autocmd FileType python nnoremap <silent> <leader>yd :call jedi#goto()<cr>
+"   autocmd FileType python nnoremap <silent> <leader>yr :call jedi#usages()<cr>
+" augroup END
 
 " }}}
 " Easy Align {{{
