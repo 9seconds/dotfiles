@@ -16,7 +16,7 @@ call plug#begin('~/.vim/plugged')
         Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' } |
             \ Plug 'zchee/deoplete-jedi', { 'for': 'python' } |
             \ Plug 'zchee/deoplete-go', { 'for': 'go' } |
-            \ Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins', 'branch': 'next', 'install': 'bash install.sh' }
+            \ Plug 'autozimu/LanguageClient-neovim', { 'do': 'bash ./install.sh', 'branch': 'next' }
         Plug 'equalsraf/neovim-gui-shim'
     endif
 
@@ -39,7 +39,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/vim-slash'
     Plug 'justinmk/vim-sneak'
     Plug 'kshenoy/vim-signature'
-    " Plug 'lambdalisue/vim-pyenv'
     Plug 'mhinz/vim-signify'
     Plug 'mkitt/tabline.vim'
     Plug 'morhetz/gruvbox'
@@ -52,7 +51,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'SirVer/ultisnips'
     Plug 'slashmili/alchemist.vim'
     Plug 'takac/vim-hardtime'
-    Plug 'tyru/caw.vim'
     Plug 'Shougo/context_filetype.vim'
     Plug 'tpope/vim-endwise'
     Plug 'tpope/vim-fugitive'
@@ -62,15 +60,13 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-sleuth'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-unimpaired'
+    Plug 'tpope/vim-commentary'
     Plug 'vim-python/python-syntax'
     Plug 'w0rp/ale'
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
-
-    if executable('gtags')
-      Plug 'jsfaint/gen_tags.vim'
-    endif
+    Plug 'ludovicchabant/vim-gutentags' | Plug 'skywind3000/gutentags_plus'
 
     Plug 'kana/vim-textobj-user' |
         \ Plug 'machakann/vim-textobj-delimited' |
@@ -340,8 +336,6 @@ nnoremap <silent> <Leader>9 9gt<cr>
 nnoremap * *``
 nnoremap <silent> <Leader>q :call <SID>QuickfixToggle()<cr>
 nnoremap <silent> <Leader>l :call <SID>LocalfixToggle()<cr>
-nnoremap <silent> <Leader>qq :q<cr>
-nnoremap <silent> <Leader>qa :qa<cr>
 inoremap jk <esc>
 vnoremap <silent> s :!sort<cr>
 inoremap # X<BS>#
@@ -549,9 +543,20 @@ nnoremap <leader>gg :Git<space>
 " }}}
 " Gutentags {{{
 
+let g:gutentags_modules = ['ctags']
+if executable('gtags')
+  let g:gutentags_modules = ['ctags', 'gtags_cscope']
+endif
+
+let g:gutentags_cache_dir = expand("~/.cache/gutentags")
 let g:gutentags_generate_on_missing = 1
 let g:gutentags_generate_on_write = 1
 let g:gutentags_generate_on_new = 1
+
+" this is for gutentags_plug
+let g:gutentags_auto_add_gtags_cscope = 0
+let g:gutentags_plus_nomap = 1
+
 let g:gutentags_ctags_exclude = [
     \ '*.min.js',
     \ '*html*',
@@ -562,26 +567,15 @@ let g:gutentags_ctags_exclude = [
     \ '.tox',
     \ ]
 
-" }}}
-" gen_tags {{{
-
-if executable('gtags')
-  let g:gen_tags#gtags_auto_gen = 1
-  let g:loaded_gentags#ctags    = 0
-else
-  let g:gen_tags#ctags_auto_gen = 0
-  let g:loaded_gentags#ctags    = 1
-endif
-
-if executable('ctags')
-  let g:gen_tags#ctags_auto_gen = 1
-  let g:loaded_gentags#ctags    = 0
-else
-  let g:gen_tags#ctags_auto_gen = 0
-  let g:loaded_gentags#ctags    = 1
-endif
-
-let g:gen_tags#use_cache_dir = 0
+nnoremap <silent> <leader>gts :GscopeFind s <c-r><c-w><cr>
+nnoremap <silent> <leader>gtg :GscopeFind g <c-r><c-w><cr>
+nnoremap <silent> <leader>gtd :GscopeFind d <c-r><c-w><cr>
+nnoremap <silent> <leader>gtc :GscopeFind c <c-r><c-w><cr>
+nnoremap <silent> <leader>gtt :GscopeFind t <c-r><c-w><cr>
+nnoremap <silent> <leader>gte :GscopeFind e <c-r><c-w><cr>
+nnoremap <silent> <leader>gtf :GscopeFind f <c-r><c-w><cr>
+nnoremap <silent> <leader>gti :GscopeFind i <c-r><c-w><cr>
+nnoremap <silent> <leader>gta :GscopeFind a <c-r><c-w><cr>
 
 " }}}
 " Vim-test {{{
