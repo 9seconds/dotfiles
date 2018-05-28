@@ -548,6 +548,10 @@ if executable('gtags')
   let g:gutentags_modules = ['ctags', 'gtags_cscope']
 endif
 
+if executable('uctags')
+  let g:gutentags_ctags_executable = 'uctags'
+endif
+
 let g:gutentags_cache_dir = expand("~/.cache/gutentags")
 let g:gutentags_generate_on_missing = 1
 let g:gutentags_generate_on_write = 1
