@@ -24,11 +24,11 @@ call plug#begin('~/.vim/plugged')
     Plug 'benmills/vimux'
     Plug 'chrisbra/NrrwRgn'
     Plug 'christoomey/vim-tmux-navigator'
+    Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'editorconfig/editorconfig-vim'
     Plug 'fatih/vim-go', { 'for': 'go' }
     Plug 'gcmt/taboo.vim'
     Plug 'gcmt/wildfire.vim'
-    Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'janko-m/vim-test'
     Plug 'jiangmiao/auto-pairs'
@@ -39,19 +39,22 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/vim-slash'
     Plug 'justinmk/vim-sneak'
     Plug 'kshenoy/vim-signature'
+    Plug 'ludovicchabant/vim-gutentags' | Plug 'skywind3000/gutentags_plus'
     Plug 'mhinz/vim-signify'
     Plug 'mkitt/tabline.vim'
     Plug 'morhetz/gruvbox'
+    Plug 'numirias/semshi', { 'for': 'python' }
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
     Plug 'posva/vim-vue', { 'for': ['vue']}
     Plug 'sbdchd/neoformat'
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
     Plug 'scrooloose/vim-slumlord'
     Plug 'sheerun/vim-polyglot'
+    Plug 'Shougo/context_filetype.vim'
     Plug 'SirVer/ultisnips'
     Plug 'slashmili/alchemist.vim'
     Plug 'takac/vim-hardtime'
-    Plug 'Shougo/context_filetype.vim'
+    Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-endwise'
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-markdown', { 'for': 'markdown' }
@@ -60,13 +63,11 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-sleuth'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-unimpaired'
-    Plug 'tpope/vim-commentary'
     Plug 'vim-python/python-syntax'
     Plug 'w0rp/ale'
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
-    Plug 'ludovicchabant/vim-gutentags' | Plug 'skywind3000/gutentags_plus'
 
     Plug 'kana/vim-textobj-user' |
         \ Plug 'machakann/vim-textobj-delimited' |
