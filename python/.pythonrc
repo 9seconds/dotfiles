@@ -2,9 +2,6 @@
 # vim: set ft=python:
 
 
-from datetime import datetime as dt  # noqa
-
-
 def _install_pprint_displayhook():
     import sys
     import pprint
@@ -24,26 +21,8 @@ def _install_pprint_displayhook():
     sys.displayhook = displayhook
 
 
-def _make_z():
-    import calendar
-    import datetime
+def _install_src():
     import inspect
-    import json
-    import os
-    import pprint
-    import random
-    import sys
-    import time
-    import uuid
-
-
-    def _print(obj):
-        if sys.version_info == 2:
-            sys.stdout.write(obj)
-            sys.stdout.write("\n")
-        else:
-            print(obj)
-
 
     try:
         import pygments
@@ -52,100 +31,13 @@ def _make_z():
 
         lexer = pygments.lexers.PythonLexer()
         formatter = pygments.formatters.TerminalFormatter()
-    except:
-        src = inspect.getsource
+    except Exception:
+        return inspect.getsource
     else:
         def src(obj):
             return pygments.highlight(inspect.getsource(obj), lexer, formatter)
 
-
-    class Z(object):
-
-        @property
-        def tf(self):
-            return time.time()
-
-        @property
-        def ti(self):
-            return int(self.tf)
-
-        @property
-        def now(self):
-            return dt.now()
-
-        @property
-        def utcnow(self):
-            return dt.utcnow()
-
-        @property
-        def uuid4(self):
-            return str(uuid.uuid4())
-
-        @property
-        def random(self):
-            lower = getattr(self, "rs", 0)
-            upper = getattr(self, "rf", 1)
-
-            return lower + upper * random.random()
-
-        @property
-        def randint(self):
-            lower = getattr(self, "rs", 0)
-            upper = getattr(self, "rf", 255)
-
-            return random.randint(lower, upper)
-
-        @staticmethod
-        def tfdt(dtime):
-            if hasattr(dtime, "timestamp"):
-                return dtime.timestamp()
-
-            return time.mktime(dtime.timetuple())
-
-        @staticmethod
-        def tfudt(dtime):
-            return calendar.timegm(dtime.timetuple())
-
-        @staticmethod
-        def j(obj):
-            return json.dumps(obj, sort_keys=True)
-
-        @staticmethod
-        def pj(obj):
-            _print(json.dumps(obj, sort_keys=True, indent=4))
-
-        @staticmethod
-        def ps(obj):
-            _print(src(obj))
-
-        ct = ctime = staticmethod(time.ctime)
-        dtft = dt_f_t = staticmethod(dt.fromtimestamp)
-        udtft = u_dt_f_t = staticmethod(dt.utcfromtimestamp)
-        pf = staticmethod(pprint.pformat)
-        pp = staticmethod(pprint.pprint)
-        s = staticmethod(src)
-
-        t = ti
-        u = uuid = u4 = uuid4
-        n = nn = now
-        un = unow = utcnow
-        r = random
-        ri = randint
-        t_f_udt = tfudt
-        t_f_dt = tfdt
-
-        def __str__(self):
-            return "Various magic from PYTHONSTARTUP ({0})!".format(
-                os.getenv("PYTHONSTARTUP", "?"))
-
-        if sys.version_info.major == 2:
-            def __unicode__(self):
-                return str(self).decode("utf-8")
-
-        __repr__ = __str__
-
-
-    return Z()
+        return src
 
 
 def _install_completer():
@@ -169,7 +61,7 @@ def _install_completer():
     if not os.path.isdir(history_dir):
         try:
             os.makedirs(history_dir)
-        except:
+        except Exception:
             return
 
     executable_inode = os.stat(sys.executable).st_ino
@@ -198,19 +90,19 @@ finally:
 
 
 try:
-    z = _make_z()
+    src = _install_src()
 finally:
-    del _make_z
+    del _install_src
 
 
 try:
     reload
 except NameError:
-    import imp
+    import importlib
 
-    reload = imp.reload
+    reload = importlib.reload
 
-    del imp
+    del importlib
 
 
 try:
