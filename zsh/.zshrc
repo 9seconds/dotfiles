@@ -35,3 +35,6 @@ eval "$(pyenv virtualenv-init -)"
 
 [[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
 [[ -f "$HOME/.zshrc.private" ]] && source "$HOME/.zshrc.private"
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
