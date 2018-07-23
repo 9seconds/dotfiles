@@ -68,6 +68,9 @@ call plug#begin('~/.vim/plugged')
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
+    Plug 'trevordmiller/nova-vim'
+    Plug 'romainl/Apprentice'
+    Plug 'arcticicestudio/nord-vim'
 
     Plug 'kana/vim-textobj-user' |
         \ Plug 'machakann/vim-textobj-delimited' |
@@ -221,20 +224,29 @@ endif
 " # Colorscheme     =============================================== {{{
 " _____________________________________________________________________________
 
-let g:enable_bold_font          = 1
-let g:gruvbox_contrast_dark     = "soft"
-let g:gruvbox_italicize_strings = 1
-let g:gruvbox_undercurl         = 1
-let g:gruvbox_underline         = 1
+let g:nord_italic                        = 1
+let g:nord_underline                     = 1
+let g:nord_italic_comments               = 1
+let g:nord_uniform_status_lines          = 1
+let g:nord_cursor_line_number_background = 1
+let g:nord_comment_brightness            = 14
 
-if has('nvim')
-    let g:gruvbox_italic = 1
-endif
+colorscheme nord
 
-set background=dark
-colorscheme gruvbox
+" let g:enable_bold_font          = 1
+" let g:gruvbox_contrast_dark     = "soft"
+" let g:gruvbox_italicize_strings = 1
+" let g:gruvbox_undercurl         = 1
+" let g:gruvbox_underline         = 1
 
-hi StatusLine guibg=#7c6f64 guifg=#3c3836
+" if has('nvim')
+"     let g:gruvbox_italic = 1
+" endif
+
+" set background=dark
+" colorscheme gruvbox
+
+" hi StatusLine guibg=#7c6f64 guifg=#3c3836
 
 " }}}
 " # Autogroups      =============================================== {{{
