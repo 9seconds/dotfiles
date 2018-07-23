@@ -68,9 +68,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
-    Plug 'trevordmiller/nova-vim'
     Plug 'romainl/Apprentice'
-    Plug 'arcticicestudio/nord-vim'
+    Plug 'ajmwagar/vim-deus'
 
     Plug 'kana/vim-textobj-user' |
         \ Plug 'machakann/vim-textobj-delimited' |
@@ -224,14 +223,8 @@ endif
 " # Colorscheme     =============================================== {{{
 " _____________________________________________________________________________
 
-let g:nord_italic                        = 1
-let g:nord_underline                     = 1
-let g:nord_italic_comments               = 1
-let g:nord_uniform_status_lines          = 1
-let g:nord_cursor_line_number_background = 1
-let g:nord_comment_brightness            = 14
-
-colorscheme nord
+set background=dark
+colorscheme deus
 
 " let g:enable_bold_font          = 1
 " let g:gruvbox_contrast_dark     = "soft"
