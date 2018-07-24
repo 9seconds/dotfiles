@@ -223,6 +223,13 @@ endif
 " # Colorscheme     =============================================== {{{
 " _____________________________________________________________________________
 
+let g:deus_bold              = 1
+let g:deus_undercurl         = 1
+let g:deus_underline         = 1
+let g:deus_inverse           = 1
+let g:deus_improved_strings  = 0
+let g:deus_improved_warnings = 0
+
 set background=dark
 colorscheme deus
 
