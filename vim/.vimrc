@@ -25,15 +25,12 @@ call plug#begin('~/.vim/plugged')
     Plug 'chrisbra/NrrwRgn'
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'davidhalter/jedi-vim', { 'for': 'python' }
-    Plug 'editorconfig/editorconfig-vim'
     Plug 'fatih/vim-go', { 'for': 'go' }
     Plug 'gcmt/taboo.vim'
     Plug 'gcmt/wildfire.vim'
     Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
     Plug 'janko-m/vim-test'
     Plug 'jiangmiao/auto-pairs'
-    Plug 'junegunn/goyo.vim'
-    Plug 'junegunn/limelight.vim'
     Plug 'junegunn/vim-easy-align'
     Plug 'junegunn/vim-peekaboo'
     Plug 'junegunn/vim-slash'
@@ -45,15 +42,12 @@ call plug#begin('~/.vim/plugged')
     Plug 'morhetz/gruvbox'
     Plug 'numirias/semshi', { 'for': 'python' }
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
-    Plug 'posva/vim-vue', { 'for': ['vue']}
     Plug 'sbdchd/neoformat'
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
-    Plug 'scrooloose/vim-slumlord'
     Plug 'sheerun/vim-polyglot'
-    Plug 'Shougo/context_filetype.vim'
+    Plug 'Shougo/context_filetype.vim' | Plug 'posva/vim-vue', { 'for': 'vue' }
     Plug 'SirVer/ultisnips'
     Plug 'slashmili/alchemist.vim'
-    Plug 'takac/vim-hardtime'
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-endwise'
     Plug 'tpope/vim-fugitive'
@@ -68,7 +62,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
-    Plug 'romainl/Apprentice'
     Plug 'ajmwagar/vim-deus'
 
     Plug 'kana/vim-textobj-user' |
@@ -690,37 +683,6 @@ let g:javascript_plugin_flow = 1
 
 nnoremap <leader>to :TabooOpen<space>
 nnoremap <leader>tr :TabooRename<space>
-
-" }}}
-" Goyo {{{
-
-let g:goyo_width = 81
-
-function! s:goyo_enter()
-  silent !tmux set status off
-  silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
-  set noshowmode
-  set noshowcmd
-  set scrolloff=999
-  Limelight 0.5
-endfunction
-
-function! s:goyo_leave()
-  silent !tmux set status on
-  silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
-  set showmode
-  set showcmd
-  set scrolloff=5
-  Limelight!
-endfunction
-
-augroup Goyo
-  autocmd!
-  autocmd! User GoyoEnter nested call <SID>goyo_enter()
-  autocmd! User GoyoLeave nested call <SID>goyo_leave()
-augroup END
-
-nnoremap <silent> <F9> :Goyo<cr>
 
 " }}}
 " vue {{{
