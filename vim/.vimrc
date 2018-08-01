@@ -226,21 +226,6 @@ let g:deus_improved_warnings = 0
 set background=dark
 colorscheme deus
 
-" let g:enable_bold_font          = 1
-" let g:gruvbox_contrast_dark     = "soft"
-" let g:gruvbox_italicize_strings = 1
-" let g:gruvbox_undercurl         = 1
-" let g:gruvbox_underline         = 1
-
-" if has('nvim')
-"     let g:gruvbox_italic = 1
-" endif
-
-" set background=dark
-" colorscheme gruvbox
-
-" hi StatusLine guibg=#7c6f64 guifg=#3c3836
-
 " }}}
 " # Autogroups      =============================================== {{{
 " _____________________________________________________________________________
@@ -523,12 +508,12 @@ nnoremap <silent> <leader>ft :Tags<cr>
 nnoremap <silent> <leader>fg :BTags<cr>
 nnoremap <silent> <leader>fl :BLines<cr>
 nnoremap <silent> <leader>fm :Marks<cr>
-nnoremap <silent> <leader>fa :Ag<cr>
+nnoremap <leader>fa :Ag<space>
 nnoremap <silent> <leader>fs :Ag <c-r><c-w><cr>
 
 command! -bang -nargs=* Ag
   \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
+  \   'rg --vimgrep --color always --smart-case --encoding utf8 '.shellescape(<q-args>), 1,
   \   <bang>0 ? fzf#vim#with_preview('up:60%')
   \           : fzf#vim#with_preview('right:50%:hidden', '?'),
   \   <bang>0)
