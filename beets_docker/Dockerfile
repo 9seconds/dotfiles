@@ -1,4 +1,4 @@
-FROM alpine:3.7
+FROM alpine:3.8
 
 ENTRYPOINT ["/usr/bin/beet", "--config", "/beets.yaml"]
 EXPOSE 80
