@@ -166,6 +166,7 @@ set statusline+=%h%w                                   " show preview and help f
 set statusline+=[git:%{fugitive#head(7)}]              " git branch
 set statusline+=%y                                     " filetype
 set statusline+=\ %P                                   " percentage/position at file which is shown
+set spelllang=en_us                                    " set spelling
 
 set listchars=tab:▸\ ,trail:⋅,extends:❯,precedes:❮                             " how to display invisible charaters
 set wildignore=*.o,*~,*.pyc,*.pyo,.git\*,.hg\*,svn\*,idea\*,__pycache__\*,.tox " do now show these in wildmenu
@@ -331,6 +332,7 @@ inoremap jk <esc>
 vnoremap <silent> s :!sort<cr>
 inoremap # X<BS>#
 nnoremap <silent> <Leader>h :nohlsearch<cr>
+nnoremap <silent> <Leader>c :set spell!<cr>
 
 noremap <silent><F12> <Esc>:syntax sync fromstart<CR>
 
