@@ -6,7 +6,7 @@ ENV EDITOR=vim
 WORKDIR "/work"
 
 RUN set -x \
-  && echo 'http://dl-cdn.alpinelinux.org/alpine/v3.7/community' >> /etc/apk/repositories \
+  && echo 'http://dl-cdn.alpinelinux.org/alpine/v3.8/community' >> /etc/apk/repositories \
   && echo 'http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories \
   && apk --update upgrade \
   && apk add \
