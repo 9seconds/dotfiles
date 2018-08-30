@@ -62,7 +62,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
-    Plug 'ajmwagar/vim-deus'
+    Plug 'arcticicestudio/nord-vim'
 
     Plug 'kana/vim-textobj-user' |
         \ Plug 'machakann/vim-textobj-delimited' |
@@ -217,15 +217,16 @@ endif
 " # Colorscheme     =============================================== {{{
 " _____________________________________________________________________________
 
-let g:deus_bold              = 1
-let g:deus_undercurl         = 1
-let g:deus_underline         = 1
-let g:deus_inverse           = 1
-let g:deus_improved_strings  = 0
-let g:deus_improved_warnings = 0
+let g:nord_italic = 1
+let g:nord_underline = 1
+let g:nord_italic_comments = 1
+let g:nord_uniform_status_lines = 1
+let g:nord_comment_brightness = 12
+let g:nord_uniform_diff_background = 1
+let g:nord_cursor_line_number_background = 1
 
 set background=dark
-colorscheme deus
+colorscheme nord
 
 " }}}
 " # Autogroups      =============================================== {{{
