@@ -62,7 +62,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
-    Plug 'KeitaNakamura/neodark.vim'
 
     Plug 'kana/vim-textobj-user' |
         \ Plug 'machakann/vim-textobj-delimited' |
@@ -217,10 +216,15 @@ endif
 " # Colorscheme     =============================================== {{{
 " _____________________________________________________________________________
 
-let g:neodark#solid_vertsplit = 1
+let g:gruvbox_bold = 1
+let g:gruvbox_italic = 1
+let g:gruvbox_underline = 1
+let g:gruvbox_undercurl = 1
+let g:gruvbox_contrast_dark = "soft"
+let g:gruvbox_italicize_strings = 1
 
 set background=dark
-colorscheme neodark
+colorscheme gruvbox
 
 " }}}
 " # Autogroups      =============================================== {{{
