@@ -599,6 +599,8 @@ if has('nvim')
 
     inoremap <expr><C-h> deoplete#mappings#smart_close_popup()."\<C-h>"
     inoremap <expr><BS>  deoplete#mappings#smart_close_popup()."\<C-h>"
+    inoremap <silent><expr><c-k> pumvisible() ? "\<c-n>" : "\<tab>"
+    inoremap <silent><expr><c-l> pumvisible() ? "\<c-p>" : "\<s-tab>"
 endif
 
 " }}}
