@@ -39,3 +39,5 @@ if [ -n "$TMUX" ]; then
 else
     export TERM=xterm-256color
 fi
+
+export BAT_THEME="OneHalfDark"
