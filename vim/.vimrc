@@ -14,22 +14,15 @@ filetype off
 call plug#begin('~/.vim/plugged')
     if has('nvim')
         Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' } |
-            \ Plug 'zchee/deoplete-jedi', { 'for': 'python' } |
-            \ Plug 'zchee/deoplete-go', { 'for': 'go' } |
+            \ Plug 'zchee/deoplete-go', { 'for': 'go', 'do': 'make' } |
             \ Plug 'autozimu/LanguageClient-neovim', { 'do': 'bash ./install.sh', 'branch': 'next' }
-        Plug 'equalsraf/neovim-gui-shim'
     endif
 
     Plug 'airblade/vim-rooter'
-    Plug 'benmills/vimux'
     Plug 'chrisbra/NrrwRgn'
     Plug 'christoomey/vim-tmux-navigator'
-    Plug 'davidhalter/jedi-vim', { 'for': 'python' }
     Plug 'fatih/vim-go', { 'for': 'go' }
-    Plug 'gcmt/taboo.vim'
     Plug 'gcmt/wildfire.vim'
-    Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
-    Plug 'janko-m/vim-test'
     Plug 'jiangmiao/auto-pairs'
     Plug 'junegunn/vim-easy-align'
     Plug 'junegunn/vim-peekaboo'
@@ -42,12 +35,10 @@ call plug#begin('~/.vim/plugged')
     Plug 'morhetz/gruvbox'
     Plug 'numirias/semshi', { 'for': 'python' }
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
-    Plug 'sbdchd/neoformat'
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
     Plug 'sheerun/vim-polyglot'
     Plug 'Shougo/context_filetype.vim' | Plug 'posva/vim-vue', { 'for': 'vue' }
     Plug 'SirVer/ultisnips'
-    Plug 'slashmili/alchemist.vim'
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-endwise'
     Plug 'tpope/vim-fugitive'
@@ -57,7 +48,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-sleuth'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-unimpaired'
-    Plug 'vim-python/python-syntax'
     Plug 'w0rp/ale'
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
@@ -328,7 +318,7 @@ nnoremap * *``
 nnoremap <silent> <Leader>q :call <SID>QuickfixToggle()<cr>
 nnoremap <silent> <Leader>l :call <SID>LocalfixToggle()<cr>
 inoremap jk <esc>
-vnoremap <silent> s :!sort<cr>
+vnoremap <silent> s :sort<cr>
 inoremap # X<BS>#
 nnoremap <silent> <Leader>h :nohlsearch<cr>
 nnoremap <silent> <Leader>c :set spell!<cr>
@@ -432,30 +422,6 @@ let g:rooter_use_lcd      = 1
 let g:rooter_silent_chdir = 1
 
 " }}}
-" Vimux {{{
-
-nnoremap <silent> <F5> :VimuxPromptCommand<cr>
-nnoremap <silent> <F6> :VimuxRunLastCommand<cr>
-nnoremap <silent> <F7> :VimuxCloseRunner<cr>
-nnoremap <silent> <F8> :VimuxInterruptRunner<cr>
-nnoremap <silent> <F9> :VimuxZoomRunner<cr>
-
-let g:VimuxOrientation  = "h"
-let g:VimuxHeight       = "45"
-let g:VimuxPromptString = "tmux> "
-let g:VimuxRunnerType   = "pane"
-
-" }}}
-" Neoformat {{{
-
-nnoremap <silent> <leader>nf :Neoformat<cr>
-vnoremap <silent> <leader>nf :Neoformat<cr>
-
-let g:neoformat_run_all_formatters = 1
-
-let g:neoformat_enabled_python = ['yapf', 'isort']
-
-" }}}
 " UltiSnips {{{
 
 let g:UltiSnipsExpandTrigger       = "<c-j>"
@@ -491,7 +457,7 @@ let g:ale_linters = {
   \ 'markdown':   ['markdownlint', 'proselint', 'write-good'],
   \ 'rst':        ['rstcheck', 'proselint', 'write-good'],
   \ 'text':       ['proselint', 'write-good'],
-\}
+  \}
 
 let g:ale_sign_error = '✖'
 let g:ale_sign_warning = '⚠'
@@ -573,33 +539,19 @@ nnoremap <silent> <leader>gti :GscopeFind i <c-r><c-w><cr>
 nnoremap <silent> <leader>gta :GscopeFind a <c-r><c-w><cr>
 
 " }}}
-" Vim-test {{{
-
-nmap <silent> <leader>tn :TestNearest<CR>
-nmap <silent> <leader>tf :TestFile<CR>
-nmap <silent> <leader>ts :TestSuite<CR>
-nmap <silent> <leader>tl :TestLast<CR>
-nmap <silent> <leader>tv :TestVisit<CR>
-
-if !empty($TMUX)
-    let test#strategy = "vimux"
-else
-    let test#strategy = "neovim"
-endif
-
-" }}}
 " Deoplete {{{
 
 if has('nvim')
-    let g:deoplete#enable_at_startup          = 1
-    let g:deoplete#enable_camel_case          = 1
-    let g:deoplete#max_list                   = 20
-    let g:deoplete#auto_complete_start_length = 3
+    let g:deoplete#enable_at_startup = 1
 
-    inoremap <expr><C-h> deoplete#mappings#smart_close_popup()."\<C-h>"
-    inoremap <expr><BS>  deoplete#mappings#smart_close_popup()."\<C-h>"
-    inoremap <silent><expr><c-k> pumvisible() ? "\<c-n>" : "\<tab>"
-    inoremap <silent><expr><c-l> pumvisible() ? "\<c-p>" : "\<s-tab>"
+    call deoplete#custom#source('go', 'sort_class', ['package', 'func', 'type', 'var', 'const'])
+    call deoplete#custom#source('go', 'pointer', 1)
+    call deoplete#custom#source('_', 'disabled_syntaxes', ['Comment', 'String'])
+    call deoplete#custom#option({
+      \ 'smart_case': v:true,
+      \ 'max_list': 20,
+      \ 'auto_complete_delay': 20,
+      \ })
 endif
 
 " }}}
@@ -613,9 +565,7 @@ if has('nvim')
         \ 'python': ['pyls'],
         \ 'vue': ['vls']
         \ }
-
-  let g:LanguageClient_autoStart = 1
-  let g:LanguageClient_changeThrottle = 0
+  let g:LanguageClient_rootMarkers = ['.git', 'go.mod', 'requirements.txt', 'setup.py']
   let g:LanguageClient_diagnosticsEnable = 0
 
   nnoremap <silent> <leader>yk :call LanguageClient_textDocument_hover()<cr>
@@ -626,17 +576,6 @@ if has('nvim')
   nnoremap <silent> <leader>ys :call LanguageClient_workspace_symbol()<cr>
   nnoremap <silent> <leader>yf :call LanguageClient_textDocument_formatting()<cr>
 endif
-
-" }}}
-" jedi-vim {{{
-
-" let g:jedi#completions_enabled = 0
-
-" augroup Jedi
-"   autocmd!
-"   autocmd FileType python nnoremap <silent> <leader>yd :call jedi#goto()<cr>
-"   autocmd FileType python nnoremap <silent> <leader>yr :call jedi#usages()<cr>
-" augroup END
 
 " }}}
 " Easy Align {{{
@@ -651,35 +590,14 @@ let g:sneak#streak     = 1
 let g:sneak#use_ic_scs = 1
 
 " }}}
-" Polyglot {{{
-
-let g:polyglot_disabled = ["python"]
-
-" }}}
-" vim-python {{{
-
-let g:python_highlight_all = 1
-
-" }}}
 " vim-javascript {{{
 
 let g:javascript_plugin_flow = 1
 
 " }}}
-" Taboo {{{
-
-nnoremap <leader>to :TabooOpen<space>
-nnoremap <leader>tr :TabooRename<space>
-
-" }}}
 " vue {{{
 
 let g:vue_disable_pre_processors = 1
-
-" }}}
-" hardtime {{{
-
-let g:hardtime_default_on = 0
 
 " }}}
 
