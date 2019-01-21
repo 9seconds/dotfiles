@@ -93,7 +93,7 @@ set breakindent                             " indent wrapped line
 set breakindentopt=shift:2                  " how to indent wrapped line
 set cmdheight=2                             " number of lines for commandline
 set completeopt-=preview                    " no preview on autocomplete
-set completeopt+=noinsert                   " do not insert anything if I type
+"  set completeopt+=noinsert                   " do not insert anything if I type
 set cursorline                              " use cursorline highlight
 set eol                                     " always set end of the line at the end of the file
 set expandtab                               " do not use tabs, spaces
