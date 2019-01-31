@@ -224,16 +224,17 @@ colorscheme gruvbox
 
 augroup Vim
     autocmd!
-    autocmd VimResized             *            exe      "normal! \<c-w>="
-    autocmd BufWritePre            *            :%s/\s\+$//e
-    autocmd BufNewFile,BufReadPost *.md         set      filetype=markdown
-    autocmd FileType               qf           setlocal colorcolumn=
-    autocmd InsertLeave,WinEnter   *            set      cursorline
-    autocmd InsertEnter,WinLeave   *            set      nocursorline
-    autocmd FileType               vim          setlocal foldmethod=marker
-    autocmd FileType               vim          setlocal foldlevel=0
-    autocmd FileType               ansible,yaml setlocal ts=2 sw=2 sts=2 expandtab
-    autocmd FileType               make         setlocal noexpandtab
+    autocmd VimResized             *                        exe      "normal! \<c-w>="
+    autocmd BufWritePre            *                        :%s/\s\+$//e
+    autocmd BufNewFile,BufReadPost *.md                     set      filetype=markdown
+    autocmd BufNewFile,BufReadPost Dockerfile,*.dockerfile  set      filetype=dockerfile
+    autocmd FileType               qf                       setlocal colorcolumn=
+    autocmd InsertLeave,WinEnter   *                        set      cursorline
+    autocmd InsertEnter,WinLeave   *                        set      nocursorline
+    autocmd FileType               vim                      setlocal foldmethod=marker
+    autocmd FileType               vim                      setlocal foldlevel=0
+    autocmd FileType               ansible,yaml             setlocal ts=2 sw=2 sts=2 expandtab
+    autocmd FileType               make                     setlocal noexpandtab
 augroup END
 
 if has('nvim')
