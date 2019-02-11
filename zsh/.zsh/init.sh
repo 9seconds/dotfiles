@@ -19,7 +19,6 @@ export EDITOR=nvim
 
 export NVIM_TUI_ENABLE_TRUE_COLOR=1
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=gasp'
-export VAGRANT_DEFAULT_PROVIDER=libvirt
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 export GTAGSLABEL=pygments
 if which rg > /dev/null; then
