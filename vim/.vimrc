@@ -569,6 +569,7 @@ if has('nvim')
         \ }
   let g:LanguageClient_rootMarkers = ['.git', 'go.mod', 'requirements.txt', 'setup.py']
   let g:LanguageClient_diagnosticsEnable = 0
+  let g:LanguageClient_hasSnippetsSupport = 0
 
   nnoremap <silent> <leader>yk :call LanguageClient_textDocument_hover()<cr>
   nnoremap <silent> <leader>yd :call LanguageClient_textDocument_definition()<cr>
