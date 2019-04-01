@@ -450,7 +450,7 @@ let g:ale_lint_on_insert_leave = 1
 let g:ale_linters = {
   \ 'python':     ['flake8'],
   \ 'sh':         ['shellcheck'],
-  \ 'go':         ['gometalinter'],
+  \ 'go':         ['golangci-lint'],
   \ 'javascript': ['eslint'],
   \ 'vue':        ['eslint'],
   \ 'yaml':       ['yamllint'],
