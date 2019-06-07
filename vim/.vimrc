@@ -12,12 +12,6 @@ filetype off
 " _____________________________________________________________________________
 
 call plug#begin('~/.vim/plugged')
-    if has('nvim')
-        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' } |
-            \ Plug 'zchee/deoplete-go', { 'for': 'go', 'do': 'make' } |
-            \ Plug 'autozimu/LanguageClient-neovim', { 'do': 'bash ./install.sh', 'branch': 'next' }
-    endif
-
     Plug 'airblade/vim-rooter'
     Plug 'chrisbra/NrrwRgn'
     Plug 'christoomey/vim-tmux-navigator'
@@ -33,7 +27,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'mhinz/vim-signify'
     Plug 'mkitt/tabline.vim'
     Plug 'morhetz/gruvbox'
-    Plug 'numirias/semshi', { 'for': 'python' }
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
     Plug 'sheerun/vim-polyglot'
@@ -52,6 +45,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
+    Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh'}
 
     Plug 'kana/vim-textobj-user' |
         \ Plug 'machakann/vim-textobj-delimited' |
@@ -116,6 +110,7 @@ set modeline                                " read and respect vim modelines
 set mouse=a                                 " enable normal mouse support
 set mousehide                               " hide mouse pointer on editing
 set nobackup                                " do not make backup of file we are updating
+set nowritebackup                           " NO BACKUPS
 set noerrorbells                            " do not beep on errors
 set nofoldenable                            " do not use folds by default
 set nojoinspaces                            " do not insert 2 spaces after punctuation on line join
@@ -127,7 +122,7 @@ set scrolloff=5                             " number of lines above cursor on sc
 set sessionoptions-=options                 " settings for sessions
 set shiftwidth=4                            " length of tab
 set shiftround                              " round indent to shiftwidth
-set shortmess=I                             " do not show welcome page
+set shortmess=Ic                            " do not show welcome page
 set showbreak=↪                             " marker of wrapped line
 set showcmd                                 " show the status of the current command in the status bar
 set showmatch                               " show matching stuff (brackets, parens)
@@ -147,6 +142,8 @@ set ttimeout                                " how long to wait till next byte fr
 set ttimeoutlen=1                           " wait 1 ms for next byte from terminal
 set wildmenu                                " ex completion
 set wildmode=full                           " default behavour
+set updatetime=300                          " smaller updatetime for coc
+set signcolumn=yes
 
 set statusline=%.80F                                   " filename
 set statusline+=:%c,%l                                 " column and line number
@@ -240,10 +237,8 @@ augroup END
 if has('nvim')
     augroup NeoVim
         autocmd!
-        autocmd VimLeavePre,FocusLost           *        wshada
-        autocmd VimEnter,CursorHold,FocusGained *        rshada
-        autocmd BufEnter,WinEnter               term://* startinsert
-        autocmd BufLeave                        term://* stopinsert
+        autocmd BufEnter,WinEnter term://* startinsert
+        autocmd BufLeave          term://* stopinsert
     augroup END
 endif
 
@@ -542,44 +537,51 @@ nnoremap <silent> <leader>gti :GscopeFind i <c-r><c-w><cr>
 nnoremap <silent> <leader>gta :GscopeFind a <c-r><c-w><cr>
 
 " }}}
-" Deoplete {{{
+" COC {{{
 
-if has('nvim')
-    let g:deoplete#enable_at_startup = 1
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
 
-    call deoplete#custom#source('go', 'sort_class', ['package', 'func', 'type', 'var', 'const'])
-    call deoplete#custom#source('go', 'pointer', 1)
-    call deoplete#custom#source('_', 'disabled_syntaxes', ['Comment', 'String'])
-    call deoplete#custom#option({
-      \ 'smart_case': v:true,
-      \ 'max_list': 20,
-      \ 'auto_complete_delay': 20,
-      \ })
-endif
+inoremap <silent><expr> <tab>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<tab>" :
+      \ coc#refresh()
 
-" }}}
-" LanguageClient_neovim {{{
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
 
-if has('nvim')
-  let g:LanguageClient_serverCommands = {
-        \ 'javascript': ['javascript-typescript-stdio'],
-        \ 'typescript': ['javascript-typescript-stdio'],
-        \ 'javascript.jsx': ['javascript-typescript-stdio'],
-        \ 'python': ['pyls'],
-        \ 'vue': ['vls']
-        \ }
-  let g:LanguageClient_rootMarkers = ['.git', 'go.mod', 'requirements.txt', 'setup.py']
-  let g:LanguageClient_diagnosticsEnable = 0
-  let g:LanguageClient_hasSnippetsSupport = 0
+nmap <leader>yd <Plug>(coc-definition)
+nmap <leader>yl <Plug>(coc-declaration)
+nmap <leader>yi <Plug>(coc-implementation)
+nmap <leader>yr <Plug>(coc-references)
+nmap <leader>ys <Plug>(coc-type-definition)
+nmap <leader>yf <Plug>(coc-format)
+nmap <leader>yn <Plug>(coc-rename)
 
-  nnoremap <silent> <leader>yk :call LanguageClient_textDocument_hover()<cr>
-  nnoremap <silent> <leader>yd :call LanguageClient_textDocument_definition()<cr>
-  nnoremap <silent> <leader>yn :call LanguageClient_textDocument_rename()<cr>
-  nnoremap <silent> <leader>yb :call LanguageClient_textDocument_documentSymbol()<cr>
-  nnoremap <silent> <leader>yr :call LanguageClient_textDocument_references()<cr>
-  nnoremap <silent> <leader>ys :call LanguageClient_workspace_symbol()<cr>
-  nnoremap <silent> <leader>yf :call LanguageClient_textDocument_formatting()<cr>
-endif
+let g:coc_global_extensions = [
+  \ 'coc-css',
+  \ 'coc-docker',
+  \ 'coc-highlight',
+  \ 'coc-html',
+  \ 'coc-json',
+  \ 'coc-sh',
+  \ 'coc-tsserver',
+  \ 'coc-vetur',
+  \ 'coc-yaml',
+  \ ]
+
+augroup COC
+  autocmd!
+
+  autocmd CursorHold * silent call CocActionAsync('highlight')
+augroup END
 
 " }}}
 " Easy Align {{{
