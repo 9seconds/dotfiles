@@ -142,7 +142,6 @@ set ttimeout                                " how long to wait till next byte fr
 set ttimeoutlen=1                           " wait 1 ms for next byte from terminal
 set wildmenu                                " ex completion
 set wildmode=full                           " default behavour
-set updatetime=300                          " smaller updatetime for coc
 set signcolumn=yes
 
 set statusline=%.80F                                   " filename
@@ -378,30 +377,6 @@ endif
 " # Plugin settings =============================================== {{{
 " _____________________________________________________________________________
 
-" VimGo {{{
-
-let g:go_highlight_operators = 1
-let g:go_highlight_functions = 1
-let g:go_highlight_methods   = 1
-let g:go_highlight_structs   = 1
-
-let g:go_auto_type_info = 1
-let g:go_fmt_fail_silently = 1
-
-augroup Go
-    autocmd!
-    autocmd FileType go nmap <leader>gcs <Plug>(go-doc)
-    autocmd FileType go nmap <leader>gcv <Plug>(go-doc-vertical)
-    autocmd FileType go nmap <leader>gdt <Plug>(go-def-tab)
-    autocmd FileType go nmap <leader>gds <Plug>(go-def-split)
-    autocmd FileType go nmap <leader>gdv <Plug>(go-def-vertical)
-    autocmd FileType go nmap <leader>gl  <Plug>(go-callers)
-    autocmd FileType go nmap <leader>gi  <Plug>(go-implements)
-    autocmd FileType go nmap <leader>gm  <Plug>(go-imports)
-    autocmd FileType go nmap <leader>gr  <Plug>(go-rename)
-augroup END
-
-" }}}
 " NerdTree and NerdTreeTabs {{{
 
 let g:nerdtree_tabs_open_on_gui_startup     = 0
@@ -557,20 +532,22 @@ function! s:show_documentation()
   endif
 endfunction
 
-nmap <leader>yd <Plug>(coc-definition)
-nmap <leader>yl <Plug>(coc-declaration)
-nmap <leader>yi <Plug>(coc-implementation)
-nmap <leader>yr <Plug>(coc-references)
-nmap <leader>ys <Plug>(coc-type-definition)
-nmap <leader>yf <Plug>(coc-format)
-nmap <leader>yn <Plug>(coc-rename)
+nmap <silent> <leader>yd <Plug>(coc-definition)
+nmap <silent> <leader>yl <Plug>(coc-declaration)
+nmap <silent> <leader>yi <Plug>(coc-implementation)
+nmap <silent> <leader>yr <Plug>(coc-references)
+nmap <silent> <leader>ys <Plug>(coc-type-definition)
+nmap <silent> <leader>yf <Plug>(coc-format)
+nmap <silent> <leader>yn <Plug>(coc-rename)
 
 let g:coc_global_extensions = [
   \ 'coc-css',
   \ 'coc-docker',
+  \ 'coc-go',
   \ 'coc-highlight',
   \ 'coc-html',
   \ 'coc-json',
+  \ 'coc-python',
   \ 'coc-sh',
   \ 'coc-tsserver',
   \ 'coc-vetur',
@@ -581,6 +558,7 @@ augroup COC
   autocmd!
 
   autocmd CursorHold * silent call CocActionAsync('highlight')
+  autocmd BufWritePre *.go silent call CocAction('runCommand', 'editor.action.organizeImport')
 augroup END
 
 " }}}
