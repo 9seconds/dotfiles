@@ -23,7 +23,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/vim-slash'
     Plug 'justinmk/vim-sneak'
     Plug 'kshenoy/vim-signature'
-    Plug 'ludovicchabant/vim-gutentags' | Plug 'skywind3000/gutentags_plus'
+    " Plug 'ludovicchabant/vim-gutentags' | Plug 'skywind3000/gutentags_plus'
     Plug 'mhinz/vim-signify'
     Plug 'mkitt/tabline.vim'
     Plug 'morhetz/gruvbox'
@@ -45,7 +45,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
-    Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh'}
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
     Plug 'kana/vim-textobj-user' |
         \ Plug 'machakann/vim-textobj-delimited' |
@@ -544,7 +544,6 @@ let g:coc_global_extensions = [
   \ 'coc-css',
   \ 'coc-docker',
   \ 'coc-go',
-  \ 'coc-highlight',
   \ 'coc-html',
   \ 'coc-json',
   \ 'coc-python',
@@ -554,11 +553,12 @@ let g:coc_global_extensions = [
   \ 'coc-yaml',
   \ ]
 
+command! -nargs=0 COCGOOR :call CocAction('runCommand', 'editor.action.organizeImport')
+
 augroup COC
   autocmd!
 
-  autocmd CursorHold * silent call CocActionAsync('highlight')
-  autocmd BufWritePre *.go silent call CocAction('runCommand', 'editor.action.organizeImport')
+  autocmd BufWritePre *.go :COCGOOR
 augroup END
 
 " }}}
