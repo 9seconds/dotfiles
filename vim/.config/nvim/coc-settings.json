@@ -1,5 +1,6 @@
 {
 	"diagnostic.displayByAle": true,
+	"diagnostic.locationlist": false,
 	"coc.preferences.rootPatterns": [
 		".vim",
 		".git",

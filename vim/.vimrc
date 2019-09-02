@@ -553,7 +553,7 @@ let g:coc_global_extensions = [
   \ 'coc-yaml',
   \ ]
 
-command! -nargs=0 COCGOOR :call CocAction('runCommand', 'editor.action.organizeImport')
+command! -nargs=0 COCGOOR :call CocActionAsync('runCommand', 'editor.action.organizeImport')
 
 augroup COC
   autocmd!
