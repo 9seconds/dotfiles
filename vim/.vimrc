@@ -15,7 +15,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'airblade/vim-rooter'
     Plug 'chrisbra/NrrwRgn'
     Plug 'christoomey/vim-tmux-navigator'
-    Plug 'fatih/vim-go', { 'for': 'go' }
     Plug 'gcmt/wildfire.vim'
     Plug 'jiangmiao/auto-pairs'
     Plug 'junegunn/vim-easy-align'
@@ -23,7 +22,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/vim-slash'
     Plug 'justinmk/vim-sneak'
     Plug 'kshenoy/vim-signature'
-    " Plug 'ludovicchabant/vim-gutentags' | Plug 'skywind3000/gutentags_plus'
     Plug 'mhinz/vim-signify'
     Plug 'mkitt/tabline.vim'
     Plug 'morhetz/gruvbox'
@@ -135,7 +133,9 @@ set softtabstop=4                           " backspace unindent
 set splitbelow                              " horizontal splits always below
 set splitright                              " vertical split always on the right
 set tabstop=4                               " indentation length of the tab
-set termencoding=utf8                       " encoding of terminal
+if ! has('nvim')
+  set termencoding=utf8                       " encoding of terminal
+endif
 set timeoutlen=1000                         " how long to wait till next leader keypress
 set timeout                                 " wait for following leader mapping
 set ttimeout                                " how long to wait till next byte from terminal
@@ -204,7 +204,7 @@ endif
 " _____________________________________________________________________________
 
 let g:gruvbox_bold = 1
-let g:gruvbox_italic = 1
+let g:gruvbox_italic = 0
 let g:gruvbox_underline = 1
 let g:gruvbox_undercurl = 1
 let g:gruvbox_contrast_dark = "soft"
