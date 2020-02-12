@@ -24,7 +24,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'kshenoy/vim-signature'
     Plug 'mhinz/vim-signify'
     Plug 'mkitt/tabline.vim'
-    Plug 'morhetz/gruvbox'
+    Plug 'gruvbox-material/vim', {'as': 'gruvbox-material'}
     Plug 'othree/html5.vim', { 'for': ['html', 'javascript'] }
     Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
     Plug 'sheerun/vim-polyglot'
@@ -203,15 +203,11 @@ endif
 " # Colorscheme     =============================================== {{{
 " _____________________________________________________________________________
 
-let g:gruvbox_bold = 1
-let g:gruvbox_italic = 0
-let g:gruvbox_underline = 1
-let g:gruvbox_undercurl = 1
-let g:gruvbox_contrast_dark = "soft"
-let g:gruvbox_italicize_strings = 1
+let g:gruvbox_material_background = 'soft'
+let g:gruvbox_material_enable_italic = 1
 
 set background=dark
-colorscheme gruvbox
+colorscheme gruvbox-material
 
 " }}}
 " # Autogroups      =============================================== {{{
