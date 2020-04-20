@@ -1,15 +1,15 @@
 #!/bin/bash
 
 beet_update() {
-  local path="$HOME/dev/pvt/dotfiles/beets"
+  local repo_path="$HOME/dev/pvt/dotfiles/beets"
 
   docker image build \
       --squash \
       --pull \
       --compress \
       --rm \
-      --file "$path/Dockerfile" \
-    "$path"
+      --file "$repo_path/Dockerfile" \
+    "$repo_path"
 }
 
 beet () {
