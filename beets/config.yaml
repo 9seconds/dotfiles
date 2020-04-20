@@ -1,0 +1,212 @@
+---
+
+# a directory where store music
+directory: /music
+
+# A file with beets database
+library: /config/beets.db
+
+# A list of globs to ignore
+ignore:
+  - ".*"
+  - "*~"
+  - "System Volume Information"
+  - "lost+found"
+  - ".DS_Store"
+
+# Ignore hidden files or not
+ignore_hidden: yes
+
+# A set of regular expression/replacement pairs to be applied to all
+# filenames created by beets.
+replace:
+  '[\\/]': "_"
+  '^\.': "_"
+  '\.$': "_"
+  '\s+$': ""
+  '^\s+': ""
+  '^-': "_"
+
+# When importing album art, the name of the file (without extension)
+# where the cover art image should be placed.
+art_filename: cover
+
+# Whether the autotagger should use multiple threads or not.
+threaded: yes
+
+# Format to use when listing individual items with the list command and
+# other commands that need to print out items.
+format_item: "$artist ($album, $original_year) - $track. $title"
+
+# Format to use when listing albums with list and other commands.
+format_album: "$albumartist - $album ($original_year)"
+
+# Default sort order to use when fetching items from the database.
+sort_item: "artist+ album+ disc+ track+"
+
+# Default sort order to use when fetching albums from the database.
+sort_album: "albumartist+ album+"
+
+# Either yes or no, indicating whether the case should be ignored when
+# sorting lexicographic fields.
+sort_case_insensitive: yes
+
+# Either yes or no, indicating whether matched albums should have their
+# year, month, and day fields set to the release date of the original
+# version of an album rather than the selected version of the release.
+original_date: yes
+
+# indicating whether matched tracks and albums should use the artist
+# credit, rather than the artist.
+artist_credit: yes
+
+# By default (per_disc_numbering: no), tracks are numbered per-release,
+# so the first track on the second disc has track number N+1 where N is
+# the number of tracks on the first disc. If this per_disc_numbering is
+# enabled, then the first (non-pregap) track on each disc always has
+# track number 1.
+per_disc_numbering: yes
+
+ui:
+  color: yes
+
+import:
+  # Write metadata to files
+  write: yes
+  # Copies files into library directory
+  copy: yes
+  # No symlinks!
+  link: no
+  # No hardlinks!
+  hardlink: no
+  # Controls whether interrupted imports should be resumed
+  resume: no
+  incremental: no
+  # Do not trust existing metadata
+  from_scratch: yes
+  autotag: yes
+
+paths:
+  default: Albums/%the{$albumartist}/$original_year - $album%aunique{}/%if{$multidisc,CD$disc/}$track. $title
+  singleton: Non-Album/%the{$artist}/$title
+  comp: Compilations/$original_year - $album%aunique{}/%if{$multidisc,CD$disc/}$track. $title
+
+# PLUGINS
+
+plugins:
+  - acousticbrainz
+  - badfiles
+  - chroma
+  - convert
+  - duplicates
+  - edit
+  - embedart
+  - export
+  - fetchart
+  - ftintitle
+  - fuzzy
+  - inline
+  - lastgenre
+  - lyrics
+  - mbsync
+  - missing
+  - permissions
+  - replaygain
+  - rewrite
+  - scrub
+  - the
+
+acousticbrainz:
+  auto: yes
+
+badfiles:
+  commands:
+    flac: flac --test --silent --warnings-as-errors
+    mp3: mp3val
+
+chroma:
+  auto: yes
+
+convert:
+  auto: no
+  never_convert_lossy_files: yes
+  format: mp3_v0
+  formats:
+    mp3_320k:
+      command: ffmpeg -i $source -y -codec:a libmp3lame -b:a 320k $dest
+      extension: mp3
+    mp3_v0:
+      command: ffmpeg -i $source -y -codec:a libmp3lame -q:a 0 $dest
+      extension: mp3
+    mp3_v2:
+      command: ffmpeg -i $source -y -codec:a libmp3lame -q:a 2 $dest
+      extension: mp3
+    mp3_v4:
+      command: ffmpeg -i $source -y -codec:a libmp3lame -q:a 4 $dest
+      extension: mp3
+    mp3_v6:
+      command: ffmpeg -i $source -y -codec:a libmp3lame -q:a 6 $dest
+      extension: mp3
+    ogg_q5:
+      command: ffmpeg -i $source -y -codec:a libvorbis -qscale:a 5 $dest
+      extension: ogg
+    ogg_q6:
+      command: ffmpeg -i $source -y -codec:a libvorbis -qscale:a 6 $dest
+      extension: ogg
+    ogg_q7:
+      command: ffmpeg -i $source -y -codec:a libvorbis -qscale:a 7 $dest
+      extension: ogg
+    ogg_max:
+      command: ffmpeg -i $source -y -codec:a libvorbis -qscale:a 10 $dest
+      extension: ogg
+
+duplicates:
+  album: yes
+
+embedart:
+  auto: yes
+  ifempty: no
+
+export:
+  indent: 2
+  sort_keys: true
+
+fetchart:
+  auto: yes
+  cautious: true
+  sources:
+    - filesystem
+    - coverart
+    - itunes
+    - amazon
+    - albumart
+    - wikipedia
+    - google
+
+ftintitle:
+  auto: yes
+  format: "feat. {0}"
+
+fuzzy:
+  prefix: "~"
+
+lastgenre:
+  auto: yes
+
+lyrics:
+  auto: yes
+  sources: genius lyricwiki musixmatch
+
+permissions:
+  file: 644
+  dir: 755
+
+replaygain:
+  auto: yes
+  backend: gstreamer
+
+scrub:
+  auto: yes
+
+item_fields:
+  multidisc: 1 if disctotal > 1 else 0
