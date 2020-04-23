@@ -96,6 +96,7 @@ paths:
 plugins:
   - acousticbrainz
   - badfiles
+  - bandcamp
   - chroma
   - convert
   - duplicates
@@ -123,6 +124,9 @@ badfiles:
   commands:
     flac: flac --test --silent --warnings-as-errors
     mp3: mp3val
+
+bandcamp:
+  art: true
 
 chroma:
   auto: yes

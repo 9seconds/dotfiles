@@ -8,6 +8,7 @@ beet_update() {
       --pull \
       --compress \
       --rm \
+      --tag beets \
       --file "$repo_path/Dockerfile" \
     "$repo_path"
 }
