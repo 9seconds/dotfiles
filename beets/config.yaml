@@ -111,7 +111,7 @@ plugins:
   - lyrics
   - mbsync
   - missing
-  - permissions
+  # - permissions
   - replaygain
   - rewrite
   - scrub
