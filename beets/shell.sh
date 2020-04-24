@@ -26,7 +26,7 @@ beet () {
       -e "DGID=$gid" \
       -e "TZ=Europe/Moscow" \
       -v "$HOME/.beets:/config" \
-      -v "$HOME/test:/music" \
+      -v "$HOME/beets_music:/music" \
       -v "$(pwd):/work:ro" \
       -v "/etc/group:/etc/group:ro" \
       -v "/etc/shadow:/etc/shadow:ro" \
