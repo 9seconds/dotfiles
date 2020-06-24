@@ -4,10 +4,8 @@
 alias clc="noglob clc"
 alias df="df -ah --total"
 alias grep=egrep
-alias makep="make -j $(cpu_count)"
 alias mkdir="mkdir -pv"
 alias netstat="netstat -anp"
-alias pxargs="xargs -P $(cpu_count)"
 alias reset="reset && resource"
 alias resource="source $ZSHRC"
 alias tailf="tail -f"
