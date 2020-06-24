@@ -49,24 +49,8 @@ fi
 # Alises with color support
 if which dircolors > /dev/null; then
     alias ag="ag --color -fS"
-	alias ls="ls --color=auto -F"
-	alias grep="grep --color=auto"
-	alias fgrep="fgrep --color=auto"
-	alias egrep="egrep --color=auto"
+    alias ls="ls --color=auto -F"
+    alias grep="grep --color=auto"
+    alias fgrep="fgrep --color=auto"
+    alias egrep="egrep --color=auto"
 fi
-
-# Global aliases
-alias -g AG="| ag"
-alias -g B="&|"
-alias -g CA="2>&1 | cat -A"
-alias -g DEVNULL=">/dev/null 2>&1"
-alias -g G="| grep"
-alias -g HL="--help"
-alias -g LL="2>&1 | less -XSFR"
-alias -g L="| less -XSFR"
-alias -g NE="2> /dev/null"
-alias -g ST="2>&1"
-alias -g TEE="2>&1 | tee"
-alias -g V="| view -"
-alias -g JQ="| jq ."
-alias -g JQL="| jq . | less -XSFR"

@@ -26,8 +26,8 @@ EOBUNDLES
 antigen apply
 
 source "$HOME/.zsh/init.sh"
-source "$HOME/.zsh/functions.sh"
 source "$HOME/.zsh/aliases.sh"
+source "$HOME/.zsh/functions.sh"
 source "$HOME/.zsh/binds.sh"
 
 eval "$(pyenv init -)"

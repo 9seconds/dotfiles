@@ -6,20 +6,15 @@ export PYTHONSTARTUP="${HOME}/.pythonrc"
 export HISTTIMEFORMAT="%d.%m.%y %H:%M:%S"
 
 export PATH="/usr/local/bin:$PATH"
-export PATH="/usr/local/opt/curl/bin:$PATH"
 export PATH="/snap/bin:$PATH"
 export PATH="$PYENV_ROOT/bin:$PATH"
 export PATH="$HOME/.fzf/bin:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/.bin:$PATH"
 export PATH="$HOME/.node_prefix/bin:$PATH"
-export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.poetry/bin:$PATH"
 
 export EDITOR=nvim
 
 export NVIM_TUI_ENABLE_TRUE_COLOR=1
-export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=gasp'
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 export GTAGSLABEL=pygments
 if which rg > /dev/null; then
