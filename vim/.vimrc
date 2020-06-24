@@ -143,6 +143,7 @@ set ttimeoutlen=1                           " wait 1 ms for next byte from termi
 set wildmenu                                " ex completion
 set wildmode=full                           " default behavour
 set signcolumn=yes
+set updatetime=300                          " have a lower update time
 
 set statusline=%.80F                                   " filename
 set statusline+=:%c,%l                                 " column and line number
