@@ -33,6 +33,5 @@ source "$HOME/.zsh/binds.sh"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
-[[ -f "$HOME/.fzf.zsh" ]] && source "$HOME/.fzf.zsh"
 [[ -z "$DISABLE_ITERM2" && -f "$HOME/.iterm2_shell_integration.zsh" ]] && source "$HOME/.iterm2_shell_integration.zsh"
 [[ -f "$HOME/.zshrc.private" ]] && source "$HOME/.zshrc.private"
