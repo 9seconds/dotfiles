@@ -39,7 +39,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-sleuth'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-unimpaired'
-    Plug 'w0rp/ale'
+    Plug 'dense-analysis/ale'
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
@@ -414,6 +414,7 @@ let g:signify_update_on_bufenter = 1
 
 let g:airline#extensions#ale#enabled = 0
 let g:ale_lint_on_insert_leave = 1
+let g:ale_disable_lsp = 1
 let g:ale_linters = {
   \ 'python':     ['flake8'],
   \ 'sh':         ['shellcheck'],
