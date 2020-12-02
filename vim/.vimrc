@@ -39,7 +39,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-sleuth'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-unimpaired'
-    Plug 'dense-analysis/ale'
     Plug 'wellle/targets.vim'
     Plug 'wellle/tmux-complete.vim'
     Plug 'wellle/visual-split.vim'
@@ -410,33 +409,6 @@ let g:signify_realtime           = 1
 let g:signify_update_on_bufenter = 1
 
 " }}}
-" Ale {{{
-
-let g:airline#extensions#ale#enabled = 0
-let g:ale_lint_on_insert_leave = 1
-let g:ale_disable_lsp = 1
-let g:ale_linters = {
-  \ 'python':     ['flake8'],
-  \ 'sh':         ['shellcheck'],
-  \ 'go':         ['golangci-lint'],
-  \ 'javascript': ['eslint'],
-  \ 'vue':        ['eslint'],
-  \ 'yaml':       ['yamllint'],
-  \ 'scss':       ['sasslint'],
-  \ 'sass':       ['sasslint'],
-  \ 'markdown':   ['markdownlint', 'proselint', 'write-good'],
-  \ 'rst':        ['rstcheck', 'proselint', 'write-good'],
-  \ 'text':       ['proselint', 'write-good'],
-  \}
-
-let g:ale_sign_error = '✖'
-let g:ale_sign_warning = '⚠'
-let g:ale_sign_column_always = 1
-let g:ale_writegood_use_global = 1
-let g:ale_go_golangci_lint_package = 1
-let g:ale_go_golangci_lint_options = '--fast'
-
-" }}}
 " FZF {{{
 
 nnoremap <silent> <leader>ff :Files<cr>
@@ -522,21 +494,41 @@ inoremap <silent><expr> <tab>
       \ <SID>check_back_space() ? "\<tab>" :
       \ coc#refresh()
 
+nmap <silent> <leader>yd <Plug>(coc-definition)
+nmap <silent> <leader>yD <Plug>(coc-references)
+nmap <silent> <leader>yf <Plug>(coc-format)
+nmap <silent> <leader>yn <Plug>(coc-rename)
+
+nnoremap <silent> <leader>yk :call <SID>show_documentation()<CR>
+
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
   else
-    call CocAction('doHover')
+    execute '!' . &keywordprg . " " . expand('<cword>')
   endif
 endfunction
 
-nmap <silent> <leader>yd <Plug>(coc-definition)
-nmap <silent> <leader>yl <Plug>(coc-declaration)
-nmap <silent> <leader>yi <Plug>(coc-implementation)
-nmap <silent> <leader>yr <Plug>(coc-references)
-nmap <silent> <leader>ys <Plug>(coc-type-definition)
-nmap <silent> <leader>yf <Plug>(coc-format)
-nmap <silent> <leader>yn <Plug>(coc-rename)
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Remap <C-f> and <C-b> for scroll float windows/popups.
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+endif
+
+" NeoVim-only mapping for visual mode scroll
+" Useful on signatureHelp after jump placeholder of snippet expansion
+if has('nvim')
+  vnoremap <nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#nvim_scroll(1, 1) : "\<C-f>"
+  vnoremap <nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#nvim_scroll(0, 1) : "\<C-b>"
+endif
 
 let g:coc_global_extensions = [
   \ 'coc-css',
@@ -544,7 +536,8 @@ let g:coc_global_extensions = [
   \ 'coc-go',
   \ 'coc-html',
   \ 'coc-json',
-  \ 'coc-python',
+  \ 'coc-jedi',
+  \ 'coc-diagnostic',
   \ 'coc-sh',
   \ 'coc-tsserver',
   \ 'coc-vetur',

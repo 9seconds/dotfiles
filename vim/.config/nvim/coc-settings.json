@@ -1,5 +1,4 @@
 {
-	"diagnostic.displayByAle": true,
 	"diagnostic.locationlist": false,
 	"coc.preferences.rootPatterns": [
 		".vim",
@@ -8,8 +7,6 @@
 		".svn",
 		"go.mod"
 	],
-	"python.venvFolders": [".pyenv", ".cache/pypoetry/virtualenvs"],
-	"python.formatting.provider": "black",
-	"python.jediEnabled": false,
-	"python.linting.enabled": false
+    "diagnostic-languageserver.enable": true,
+    "diagnostic-languageserver.mergeConfig": true
 }
