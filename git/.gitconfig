@@ -61,6 +61,15 @@
     unassume    = update-index --no-assume-unchanged
     up          = !git ftch && git pulla && git su
     wip         = !git commit --all -n -m WIP-$(date +%Y-%m-%d_%H-%M-%S)
+[interactive]
+    diffFilter = delta --color-only
+[delta]
+    features = side-by-side line-numbers decorations
+    whitespace-error-style = 22 reverse
+[delta "decorations"]
+    commit-decoration-style = bold yellow box ul
+    file-style = bold yellow ul
+    file-decoration-style = none
 [push]
     default = simple
 [rerere]
@@ -71,15 +80,11 @@
     tool = vim-fugitive
 [diff]
     tool = vimdiff
+    colorMoved = default
 [core]
-    pager        = less -XSFR
+    pager        = delta
     preloadindex = true
 	excludesfile = ~/.gitignore_global
-[mergetool "p4merge"]
-    cmd             = "/opt/p4merge/bin/p4merge $BASE $LOCAL $REMOTE $MERGED"
-    keepTemporaries = false
-    trustExitCode   = false
-    keepBackup      = false
 [pack]
     compression = 9
     threads     = 8
@@ -92,9 +97,3 @@
     options = --line-numbers
 [mergetool "vim-fugitive"]
     cmd = vim \"+Gdiff\" $MERGED
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path =
-[mergetool "sourcetree"]
-	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
