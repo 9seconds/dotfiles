@@ -17,11 +17,21 @@ export EDITOR=nvim
 export NVIM_TUI_ENABLE_TRUE_COLOR=1
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 export GTAGSLABEL=pygments
+
 if which rg > /dev/null; then
     export FZF_DEFAULT_COMMAND='rg --files'
 else
     export FZF_DEFAULT_COMMAND='ag --nocolor --nogroup -l -g ""'
 fi
+
+if which fdfind > /dev/null; then
+    export FZF_DEFAULT_COMMAND='fdfind --type f --hidden --follow --exclude .git'
+fi
+
+if which fd > /dev/null; then
+    export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+fi
+
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 export PURE_PROMPT_SYMBOL="➜"
