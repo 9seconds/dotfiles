@@ -495,7 +495,7 @@ inoremap <silent><expr> <tab>
       \ coc#refresh()
 
 nmap <silent> <leader>yd <Plug>(coc-definition)
-nmap <silent> <leader>yD <Plug>(coc-references)
+nmap <silent> <leader>yr <Plug>(coc-references)
 nmap <silent> <leader>yf <Plug>(coc-format)
 nmap <silent> <leader>yn <Plug>(coc-rename)
 
