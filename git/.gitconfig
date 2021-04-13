@@ -65,6 +65,7 @@
     diffFilter = delta --color-only
 [delta]
     features = line-numbers decorations
+    syntax-theme = gruvbox
     whitespace-error-style = 22 reverse
 [delta "decorations"]
     hunk-header-style = omit

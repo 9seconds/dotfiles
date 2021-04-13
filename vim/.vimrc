@@ -203,7 +203,7 @@ endif
 " # Colorscheme     =============================================== {{{
 " _____________________________________________________________________________
 
-let g:gruvbox_material_background = 'soft'
+let g:gruvbox_material_background = 'medium'
 let g:gruvbox_material_enable_italic = 1
 
 set background=dark
