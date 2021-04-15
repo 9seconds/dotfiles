@@ -410,6 +410,7 @@ let g:signify_update_on_bufenter = 1
 
 " }}}
 " FZF {{{
+let g:fzf_tags_command = 'ctags -R --exclude=@'.$HOME.'/.ctagsignore'
 
 nnoremap <silent> <leader>ff :Files<cr>
 nnoremap <silent> <leader>fb :Buffers<cr>
