@@ -417,17 +417,6 @@ nnoremap <silent> <leader>ft :Tags<cr>
 nnoremap <silent> <leader>fg :BTags<cr>
 nnoremap <silent> <leader>fl :BLines<cr>
 nnoremap <silent> <leader>fm :Marks<cr>
-nnoremap <leader>fa :Ag<space>
-nnoremap <silent> <leader>fs :Ag <c-r><c-w><cr>
-
-command! -bang -nargs=* Ag
-  \ call fzf#vim#grep(
-  \   'rg --vimgrep --color always --smart-case --encoding utf8 '.shellescape(<q-args>), 1,
-  \   <bang>0 ? fzf#vim#with_preview('up:60%')
-  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-  \   <bang>0)
-
-" }}}
 " fugitive {{{
 
 nnoremap <leader>gb :Gblame<cr>
