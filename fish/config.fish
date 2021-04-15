@@ -1,4 +1,5 @@
-set -gx PATH $HOME/.fzf/bin $PATH
+fish_add_path "$HOME/.fzf/bin"
+fish_add_path "$HOME/.pyenv/bin"
 
 if command -q nvim
   set -gx EDITOR nvim
@@ -49,6 +50,11 @@ alias v vim
 if command -q tig
   alias t tig
   alias ta 'tig --all'
+end
+
+if command -q exa
+  alias l 'exa --classify --icons --git'
+  alias ll 'exa --classify --icons --git --long --binary --header'
 end
 
 if status --is-interactive
