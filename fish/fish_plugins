@@ -1,5 +1,4 @@
 jorgebucaran/fisher
-pure-fish/pure
 jethrokuan/z
 jomik/fish-gruvbox
 jorgebucaran/autopair.fish
@@ -7,3 +6,4 @@ jorgebucaran/replay.fish
 danhper/fish-ssh-agent
 patrickf1/colored_man_pages.fish
 PatrickF1/fzf.fish
+IlanCosman/tide

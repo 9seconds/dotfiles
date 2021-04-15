@@ -1,3 +1,11 @@
+# This is a configuration file for Fish shell.
+#
+# This configuration file is done in a 'rc'-fashion,
+# so it implies that everything is put here. It is done
+# to avoid disambiguity so loading as chunks and also
+# it simplifies a deployment of the configuration.
+
+set -U fish_greeting
 fish_add_path "$HOME/.fzf/bin"
 fish_add_path "$HOME/.pyenv/bin"
 
@@ -61,8 +69,10 @@ if status --is-interactive
   theme_gruvbox dark medium
 end
 
-set pure_symbol_prompt '➜'
-set pure_symbol_git_unpulled_commits '⇣'
-set pure_symbol_git_unpushed_commits '⇡'
+set -g tide_prompt_char_icon ➜
+set -gx tide_left_prompt_items pwd git cmd_duration newline prompt_char
+set -gx tide_right_prompt_items time
 
-test -e {$HOME}/.iterm2_shell_integration.fish ; and source {$HOME}/.iterm2_shell_integration.fish
+if test -e {$HOME}/.iterm2_shell_integration.fish
+  source {$HOME}/.iterm2_shell_integration.fish
+end
