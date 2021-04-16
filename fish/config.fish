@@ -1,78 +1,30 @@
-# This is a configuration file for Fish shell.
+#!/usr/bin/env fish
 #
-# This configuration file is done in a 'rc'-fashion,
-# so it implies that everything is put here. It is done
-# to avoid disambiguity so loading as chunks and also
-# it simplifies a deployment of the configuration.
+# This is a configuration file for Fish shell. This is
+# configuration file used by Sergey Arkhipov. There are many good
+# configuration files available everywhere but here is mine.
+#
+# A main idea behind this configuration is to be deployed
+# from dotfiles. In order to have autoloading and so on,
+# we do not use default ~/.config/fish/functions paths
+# and so on because they are populated by other means. Instead
+# I use an alternative structure:
+#
+#     $XDG_CONFIG_HOME/fish/config.fish.d/*.fish for snippets
+#     $XDG_CONFIG_HOME/fish/config.fish.d/functions for functions
 
-set -U fish_greeting
-fish_add_path "$HOME/.fzf/bin"
-fish_add_path "$HOME/.pyenv/bin"
+# CONFIG_DIR is a path to custom configuration files.
+set -l CONFIG_DIR $__fish_config_dir/config.fish.d
+not test -d $CONFIG_DIR; and mkdir -p $CONFIG_DIR
 
-if command -q nvim
-  set -gx EDITOR nvim
-else
-  set -gx EDITOR vim
+# CONFIG_FUNCTIONS_DIR is a path to custom autoloading functions.
+# It should be present in CONFIG_DIR because usually CONFIG_DIR
+# is a symlink from dotfiles.
+set -l CONFIG_FUNCTIONS_DIR $CONFIG_DIR/functions
+not contains $CONFIG_FUNCTIONS_DIR $fish_function_path; and set -gp fish_function_path $CONFIG_FUNCTIONS_DIR
+
+for filename in $CONFIG_DIR/*.fish
+  source $filename
 end
 
-if command -q pyenv
-  pyenv init - | source
-  status --is-interactive; and source (pyenv virtualenv-init -|psub)
-end
-
-if command -q ag
-  set -gx FZF_DEFAULT_COMMAND 'ag --nocolor --nogroup -l -g ""'
-end
-
-if command -q rg
-  set -gx FZF_DEFAULT_COMMAND 'rg --files'
-end
-
-if command -q fdfind
-  set -gx FZF_DEFAULT_COMMAND 'fdfind --type f --hidden --follow --exclude .git'
-end
-
-if command -q fd
-  set -gx FZF_DEFAULT_COMMAND 'fd --type f --hidden --follow --exclude .git'
-end
-
-if set -q TMUX
-  set -gx TERM tmux-256color
-end
-
-set -gx BAT_THEME 'gruvbox'
-set -gx NVIM_TUI_ENABLE_TRUE_COLOR 1
-set -gx PYENV_VIRTUALENV_DISABLE_PROMPT 1
-set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
-set -gx COLORTERM truecolor
-set -gx VIMRC $HOME/.vimrc
-set -gx PYTHONSTARTUP $HOME/.pythonrc
-
-alias grep egrep
-alias mkdir 'mkdir -pv'
-alias g git
-alias gs 'git s'
-alias gdf 'git df'
-alias v vim
-
-if command -q tig
-  alias t tig
-  alias ta 'tig --all'
-end
-
-if command -q exa
-  alias l 'exa --classify --icons --git'
-  alias ll 'exa --classify --icons --git --long --binary --header'
-end
-
-if status --is-interactive
-  theme_gruvbox dark medium
-end
-
-set -g tide_prompt_char_icon ➜
-set -gx tide_left_prompt_items pwd git cmd_duration newline prompt_char
-set -gx tide_right_prompt_items time
-
-if test -e {$HOME}/.iterm2_shell_integration.fish
-  source {$HOME}/.iterm2_shell_integration.fish
-end
+test -e $HOME/.local-config.fish; and $HOME/.local-config.fish
