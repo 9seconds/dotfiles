@@ -27,4 +27,4 @@ for filename in $CONFIG_DIR/*.fish
   source $filename
 end
 
-test -e $HOME/.local-config.fish; and $HOME/.local-config.fish
+test -e $HOME/.local-config.fish; and source $HOME/.local-config.fish

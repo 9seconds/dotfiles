@@ -9,6 +9,6 @@ end
 not command -q pyenv; and exit
 
 pyenv init - | source
-status --is-interactive; and source (pyenv virtualenv-init -|psub)
+status --is-interactive; and source (pyenv virtualenv-init -| psub)
 
 set -gx PYENV_VIRTUALENV_DISABLE_PROMPT 1
