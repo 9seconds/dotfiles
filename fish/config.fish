@@ -13,18 +13,24 @@
 #     $XDG_CONFIG_HOME/fish/config.fish.d/*.fish for snippets
 #     $XDG_CONFIG_HOME/fish/config.fish.d/functions for functions
 
-# CONFIG_DIR is a path to custom configuration files.
-set -l CONFIG_DIR $__fish_config_dir/config.fish.d
-not test -d $CONFIG_DIR; and mkdir -p $CONFIG_DIR
+# CONFIG_DIR is a path to a dotfiles configuration files.
+set -l DOTFILES_CONFIG_DIR $__fish_config_dir/config.fish.d
+not contains $DOTFILES_CONFIG_DIR/functions $fish_function_path; and set -gp fish_function_path $DOTFILES_CONFIG_DIR/functions
+not contains $DOTFILES_CONFIG_DIR/completions $fish_complete_path; and set -gp fish_complete_path $DOTFILES_CONFIG_DIR/completions
 
-# CONFIG_FUNCTIONS_DIR is a path to custom autoloading functions.
-# It should be present in CONFIG_DIR because usually CONFIG_DIR
-# is a symlink from dotfiles.
-set -l CONFIG_FUNCTIONS_DIR $CONFIG_DIR/functions
-not contains $CONFIG_FUNCTIONS_DIR $fish_function_path; and set -gp fish_function_path $CONFIG_FUNCTIONS_DIR
-
-for filename in $CONFIG_DIR/*.fish
+for filename in $DOTFILES_CONFIG_DIR/*.fish
   source $filename
 end
 
-test -e $HOME/.local-config.fish; and source $HOME/.local-config.fish
+# LOCAL_CONFIG_DIR is a directory with fish configuration but for a local
+# machine.
+set -l LOCAL_CONFIG_DIR $HOME/.local-fish
+test -r $LOCAL_CONFIG_DIR/config.fish; and source $LOCAL_CONFIG_DIR/config.fish
+if test -d $LOCAL_CONFIG_DIR/functions
+  and not contains $LOCAL_CONFIG_DIR/functions $fish_function_path
+  set -gp fish_function_path $LOCAL_CONFIG_DIR/functions
+end
+if test -d $LOCAL_CONFIG_DIR/completions
+  and not contains $LOCAL_CONFIG_DIR/completions $fish_complete_path
+  set -gp fish_complete_path $LOCAL_CONFIG_DIR/completions
+end
