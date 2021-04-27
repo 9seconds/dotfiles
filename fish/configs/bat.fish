@@ -3,4 +3,8 @@
 # This file contains settings for bat
 # https://github.com/sharkdp/bat
 
-command -q bat; and set -gx BAT_THEME gruvbox-dark
+if command -q bat
+  set -gx BAT_THEME gruvbox-dark
+  set -gx MANPAGER "sh -c 'col -bx | bat -l man -p'"
+  set -gx MANROFFOPT -c
+end
