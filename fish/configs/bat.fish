@@ -5,6 +5,7 @@
 
 if command -q bat
   set -gx BAT_THEME gruvbox-dark
+  set -gx BAT_CONFIG_PATH $HOME/.config/bat/config
   set -gx MANPAGER "sh -c 'col -bx | bat -l man -p'"
   set -gx MANROFFOPT -c
 end
