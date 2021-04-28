@@ -4,4 +4,6 @@
 
 set -U fish_greeting
 
+set -gx LESS -RFXS
+
 not test -f $HOME/.hushlogin; touch $HOME/.hushlogin
