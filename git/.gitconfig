@@ -38,9 +38,9 @@
     psh = push --atomic -u
     ftch = fetch --prune --all --recurse-submodules=yes
     rh = reset --hard
-    l = l '--pretty=format:%Cblue%h %Cgreen%aN%Cred%d%Creset: %s' --no-merges --abbrev-commit
-    lg = lg --graph --simplify-by-decoration
-    lgg = lg --graph
+    l = log '--pretty=format:%Cblue%h %Cgreen%aN%Cred%d%Creset: %s' --no-merges --abbrev-commit
+    lgg = l --graph
+    lg = lgg --simplify-by-decoration
 [interactive]
     diffFilter = delta --color-only
 [delta]

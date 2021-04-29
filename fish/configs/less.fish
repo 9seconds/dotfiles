@@ -4,20 +4,11 @@
 
 set -gx LESS -RFXS
 
-if command -q lesspipe
-  set cmd -l (command -s lesspipe)
-  set -gx LESSOPEN "| $cmd %s"
-  set -gx LESSCLOSE "$cmd %s %s"
-end
-
-if command -q pygmentize
-  set -l cmd (command -s pygmentize)
-  set -gx LESSOPEN "| $cmd -f terminal %s"
-  set -ge LESSCLOSE
-end
-
 if command -q bat
-  set -l cmd (command -s bat)
-  set -gx LESSOPEN "| $cmd -p --color=always %s"
-  set -ge LESSCLOSE
+  set -gx LESSOPEN "| "(command -s bat)" -pp --color=always %s"
+else if command -q pygmentize
+  set -gx LESSOPEN "| "(command -s pygmentize)" -f terminal %s"
+else if command -q lesspipe
+  set -gx LESSOPEN "| "(command -s lesspipe)" %s"
+  set -gx LESSCLOSE (command -s lesspipe)" %s %s"
 end
