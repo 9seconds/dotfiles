@@ -1,70 +1,50 @@
 [user]
     email = nineseconds@yandex.ru
     name  = 9seconds
+    branch-prefix = 9seconds
 [alias]
-    a           = add
-    apa         = add --all --patch
-    ap          = add --patch
-    assumeall   = !git status -s | awk {'print $2'} | xargs -r git assume
-    assumed     = !git ls-files -v | grep ^h | cut -c 3-
-    assume      = update-index --assume-unchanged
-    baseb       = "!f() { git branch -a --contains $1; }; f"
-    baset       = "!f() { git describe --always --contains $1; }; f"
-    bl          = blame --show-number
-    bra         = branch -vv --all
-    br          = branch -vv
-    brc         = !git branch -vv | grep -v '*' | awk '/: gone]/{print $1}' | xargs -r git branch -D
-    brd         = branch -D
-    brdd        = "!bash -c 'repo=\"$1\"; git branch -D \"${@:2}\" && git push --delete \"$repo\" \"${@:2}\"'"
-    brl         = branch -vv
-    brr         = branch -vv --remotes
-    changes     = diff --name-status -r
-    cla         = clean -xfd
-    cl          = clean -fd
-    cma         = commit -a -m
-    cm          = commit -m
-    cob         = checkout -b
-    co          = checkout
-    cp          = cherry-pick
-    cpto        = "!r() { cp=\"$1\"; git checkout -qf \"$2\"; git su; git cob \"${1}-cherrypicked\"; git cp \"$cp\"; }; r"
-    detach      = "!r() { git checkout $(git rev-parse ${1:-HEAD}); }; r"
-    dfcc        = !git dfc --ignore-all-space --word-diff="color"
-    dfc         = diff --cached --minimal
-    df          = diff --minimal
-    dff         = !git df --ignore-all-space --word-diff="color"
-    fixa        = !git fix --reuse-message=HEAD
-    fix         = commit -a --amend
-    ftch        = fetch --prune --all --recurse-submodules=yes
-    gcca        = !git gcc && git sf git gcc
-    gcc         = !git reflog expire --expire=all --stale-fix --all && git worktree prune --expire 0 && git gc --prune=all && git gc --aggressive --prune=all && git repack -AFdfb --depth 250 --window 250
-    idfc        = icdiff --cached
-    idf         = icdiff
-    la          = !git config -l | grep alias | cut -c 7- | sort
-    lla         = !git ll --all
-    ll          = log --decorate --oneline --graph
-    mc          = diff --check
-    pshf        = !git push --atomic --all --prune --force && git push --atomic --tags --force
-    psh         = !git push --atomic --all --prune && git push --atomic --tags --prune
-    pulla       = pull --rebase --all --recurse-submodules=yes --prune
-    pullr       = pull --rebase --recurse-submodules=yes --prune
-    rba         = rebase --abort
-    rbc         = rebase --continue
-    rbi         = rebase --interactive
-    rb          = rebase
-    retag       = "!r() { git tag -d $1 && git push origin :refs/tags/$1 && git tag $1; }; r"
-    rh          = reset --hard
-    sf          = submodule foreach --recursive
-    squash      = "!r() { ub=\"$1\"; cb=\"$(git rev-parse --abbrev-ref HEAD)\"; nb=\"${cb}-squashed\"; git checkout -b \"$nb\"; git reset --hard -q \"$ub\"; git merge -q --squash HEAD@{1}; git commit; }; r"
-    s           = status -s
-    su          = submodule update --init
-    unassumeall = !git assumed | xargs -r git update-index --no-assume-unchanged
-    unassume    = update-index --no-assume-unchanged
-    up          = !git ftch && git pulla && git su
-    wip         = !git commit --all -n -m WIP-$(date +%Y-%m-%d_%H-%M-%S)
+    a = add
+    ap = a --patch
+    apa = ap --all
+    ignore = update-index --skip-worktree
+    no-ingnore = update-index --no-skip-worktree
+    bl = blame --show-stats --date iso
+    br = branch -vv
+    brl = "!f() { git br --all --list \"*$1*\"; }; f"
+    brm = "!f() { git br --all --list \"*$(git config user.branch-prefix)*\"; }; f"
+    brc = !git br | grep -v '*' | awk '/: gone]/{print $1}' | xargs -n 10 -r git brd
+    brd = branch -D
+    cl = clean -fdq
+    cla = cl -x
+    s = status -sb --find-renames
+    cm = commit
+    cma = cm -a
+    cmm = cm -m
+    cmam = cma -m
+    fixup = cm --fixup
+    amend = cm --amend -C HEAD
+    rb = rebase --interactive --autosquash
+    co = checkout
+    sw = switch
+    swc = sw -c
+    swm = sw -C
+    rs = restore
+    rsp = rs --patch
+    df = diff --minimal
+    dfc = df --cached
+    gcc = !git reflog expire --expire=all --stale-fix --all && git worktree prune --expire 0 && git gc --prune=all && git gc --aggressive --prune=all && git repack -AFdfb --depth 250 --window 250
+    gcca = !git gcc && git sf git gcc
+    sf = submodule foreach --recursive
+    psh = push --atomic -u
+    ftch = fetch --prune --all --recurse-submodules=yes
+    rh = reset --hard
+    l = l '--pretty=format:%Cblue%h %Cgreen%aN%Cred%d%Creset: %s' --no-merges --abbrev-commit
+    lg = lg --graph --simplify-by-decoration
+    lgg = lg --graph
 [interactive]
     diffFilter = delta --color-only
 [delta]
-    features = line-numbers decorations
+    features = line-numbers
     syntax-theme = gruvbox
     whitespace-error-style = 22 reverse
 [delta "decorations"]
@@ -92,7 +72,5 @@
 [grep]
     patternType = perl
     fullName    = true
-[icdiff]
-    options = --line-numbers
 [mergetool "vim-fugitive"]
     cmd = vim \"+Gdiff\" $MERGED
