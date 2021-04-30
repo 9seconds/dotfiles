@@ -38,7 +38,7 @@
     psh = push --atomic -u
     ftch = fetch --prune --all --recurse-submodules=yes
     rh = reset --hard
-    l = log '--pretty=format:%Cblue%h %Cgreen%aN%Cred%d%Creset: %s' --no-merges --abbrev-commit
+    l = log '--pretty=format:%C(auto)%h %Cgreen%aN%Cblue%d%Creset: %s' --no-merges --abbrev-commit
     lgg = l --graph
     lg = lgg --simplify-by-decoration
 [interactive]
