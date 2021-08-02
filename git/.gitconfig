@@ -22,12 +22,11 @@
     cmm = cm -m
     cmam = cma -m
     fixup = cm --fixup
-    amend = cm --amend -C HEAD
+    amend = cm --amend
     rb = rebase --interactive --autosquash
     co = checkout
+    cob = co -b
     sw = switch
-    swc = sw -c
-    swm = sw -C
     rs = restore
     rsp = rs --patch
     df = diff --minimal
@@ -35,16 +34,17 @@
     gcc = !git reflog expire --expire=all --stale-fix --all && git worktree prune --expire 0 && git gc --prune=all && git gc --aggressive --prune=all && git repack -AFdfb --depth 250 --window 250
     gcca = !git gcc && git sf git gcc
     sf = submodule foreach --recursive
-    psh = push --atomic -u
+    psh = push --atomic --set-upstream origin
     ftch = fetch --prune --all --recurse-submodules=yes
     rh = reset --hard
     l = log '--pretty=format:%C(auto)%h %Cgreen%aN%Cblue%d%Creset: %s' --no-merges --abbrev-commit
     lgg = l --graph
     lg = lgg --simplify-by-decoration
+    ifix = "!f() { git l | fzf | cut -f1 -d' ' | head -1 | xargs -r -n 1 git fixup; }; f"
 [interactive]
     diffFilter = delta --color-only
 [delta]
-    features = line-numbers
+    features = line-numbers side-by-side
     syntax-theme = gruvbox
     whitespace-error-style = 22 reverse
 [delta "decorations"]
