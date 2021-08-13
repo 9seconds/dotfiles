@@ -344,10 +344,15 @@ require("packer").startup(function(use)
   use {
     "nvim-telescope/telescope.nvim",
     requires={
-      "nvim-lua/plenary.nvim"
+      "nvim-lua/plenary.nvim",
+      {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        run="make"
+      }
     },
     config=function()
       local keymap = require("helpers").keymap
+      local telescope = require("telescope")
 
       keymap(
         "n", "<leader>ff",
@@ -363,12 +368,20 @@ require("packer").startup(function(use)
       )
       keymap(
         "n", "<leader>fg",
-        "<cmd>lua require('telescope.builtin').treesitter()<cr>"
+        "<cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>"
       )
-      keymap(
-        "n", "<leader>fl",
-        "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>"
-      )
+
+      telescope.setup {
+        extensions = {
+          fzf={
+            fuzzy=true,
+            override_generic_sorter=true,
+            override_file_sorter=true,
+            smart_case=true,
+          }
+        }
+      }
+      telescope.load_extension("fzf")
     end
   }
 

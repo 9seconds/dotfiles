@@ -22,8 +22,6 @@ local function on_attach(client, bufnr)
   keymap("n", "<leader>yc", "<cmd>lua vim.lsp.buf.code_action()<cr>")
   keymap("v", "<leader>yc", "<cmd>lua vim.lsp.buf.range_code_action()<cr>")
   keymap("n", "<leader>ys", "<cmd>lua vim.lsp.buf.signature_help()<cr>")
-
-  vim.api.nvim_command("autocmd BufWritePre <buffer> lua vim.lsp.diagnostic.set_loclist({open=false})")
 end
 
 
