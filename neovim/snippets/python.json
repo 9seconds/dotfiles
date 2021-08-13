@@ -1,0 +1,132 @@
+{
+  "For loop": {
+    "prefix": "for",
+    "description": "A generic for loop",
+    "body": [
+      "for ${2:item} in ${1:items}:",
+      "    $0"
+    ]
+  },
+
+  "try/except": {
+    "prefix": "tryex",
+    "description": "A base try/except clause",
+    "body": [
+      "try:",
+      "  ${1:$TM_SELECTED_TEXT}",
+      "except ${2:${3:Exception}${4: as ${5:exc}}}:",
+      "  ${6:pass}",
+      "$0"
+    ]
+  },
+
+  "try/finally": {
+    "prefix": "tryfi",
+    "description": "A base try/finally clause",
+    "body": [
+      "try:",
+      "  ${1:$TM_SELECTED_TEXT}",
+      "finally:",
+      "  $2",
+      "$0"
+    ]
+  },
+
+  "Conditional": {
+    "prefix": "if",
+    "description": "A base if clause",
+    "body": [
+      "if ${1:clause}:",
+      "  $0"
+    ]
+  },
+
+  "Function": {
+    "prefix": "def",
+    "description": "Function declaraction",
+    "body": [
+      "def ${1:func}(${2:*args, **kwargs}):",
+      "  $0"
+    ]
+  },
+
+  "Function method": {
+    "prefix": "def",
+    "description": "Method declaraction",
+    "body": [
+      "def ${1:func}(self${2:, *args, **kwargs}):",
+      "  $0"
+    ]
+  },
+
+  "Readable property": {
+    "prefix": "propr",
+    "description": "Property only for reading",
+    "body": [
+      "@property",
+      "def ${1:name}(self):",
+      "  ${0:return self._$1}"
+    ]
+  },
+
+  "Writable property": {
+    "prefix": "propw",
+    "description": "Property for reading/writing",
+    "body": [
+      "@property",
+      "def ${1:name}(self):",
+      "  ${2:return self._$1}",
+      "",
+      "@${1}.setter",
+      "def ${1}(self, value):",
+      "  ${0:self._$1 = value}"
+    ]
+  },
+
+  "set pdb": {
+    "prefix": "pdb",
+    "description": "pdb.set_trace()",
+    "body": [
+      "import pdb; pdb.set_trace()",
+      "$0"
+    ]
+  },
+
+  "Python 2 class definition": {
+    "prefix": "class2",
+    "description": "A base class definition for Python2",
+    "body": [
+      "class ${1:Class}(${2:object}):",
+      "",
+      "    def __init__(self${5:, }${4:*args, **kwargs}):",
+      "        ${6:super($1, self).__init__($4)}"
+    ]
+  },
+
+  "Python 3 class definition": {
+    "prefix": "class",
+    "description": "A base class definition for Python3",
+    "body": [
+      "class ${1:Class}${2:(${3:Base$1})}:",
+      "",
+      "    def __init__(self${5:, }${4:*args, **kwargs}):",
+      "        ${6:super().__init__($4)}"
+    ]
+  },
+
+  "TODO comment": {
+    "prefix": "#T",
+    "description": "Put a general TODO comment",
+    "body": [
+      "# TODO(${1:author}): $0"
+    ]
+  },
+
+  "lambda definition": {
+    "prefix": "ld",
+    "description": "Lambda function definition",
+    "body": [
+      "lambda ${1:element}: ${0:$1}"
+    ]
+  }
+}
