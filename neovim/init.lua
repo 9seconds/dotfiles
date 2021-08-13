@@ -198,17 +198,10 @@ require("packer").startup(function(use)
 
   use {
     "nvim-treesitter/nvim-treesitter",
+    requires={
+      "nvim-treesitter/nvim-treesitter-textobjects"
+    },
     run=":TSUpdate",
-  }
-
-  use {
-    "nvim-treesitter/nvim-treesitter-textobjects",
-    after="nvim-treesitter"
-  }
-
-  use {
-    "nvim-treesitter/nvim-treesitter-refactor",
-    after="nvim-treesitter"
   }
 
   use {
@@ -244,24 +237,13 @@ require("packer").startup(function(use)
   }
 
   use {
-    "lukas-reineke/indent-blankline.nvim",
-    after="nvim-treesitter",
-    config=function()
-      require("indent_blankline").setup {
-        char = "|",
-        buftype_exclude={"terminal"}
-      }
-    end
-  }
-
-  use {
     "tpope/vim-surround",
     requires={
       "tpope/vim-repeat",
     }
   }
 
-  use "wellle/targets.vim"
+  use "junegunn/vim-slash"
 
   use {
     "Valloric/ListToggle",
@@ -408,6 +390,7 @@ require("packer").startup(function(use)
           path=true,
           nvim_lsp=true,
           vsnip=true,
+          treesitter=false,
         },
       }
     end
@@ -425,6 +408,32 @@ require("packer").startup(function(use)
 
       keymap("n", "c", "<Plug>(vsnip-cut-text)", {noremap=false})
       keymap("x", "c", "<Plug>(vsnip-cut-text)", {noremap=false})
+    end
+  }
+
+  use {
+    "folke/zen-mode.nvim",
+    requires={
+      "folke/twilight.nvim"
+    },
+    config=function()
+      local keymap = require("helpers").keymap
+
+      require("zen-mode").setup {
+        window={
+          options={
+            signcolumn="no"
+          }
+        },
+        on_open=function()
+          vim.cmd("setlocal colorcolumn=")
+        end,
+        on_close=function()
+          vim.o.colorcolumn = "80,120"
+        end
+      }
+
+      keymap("n", "<leader>z", ":ZenMode<cr>")
     end
   }
 end)
@@ -453,28 +462,11 @@ require("nvim-treesitter.configs").setup {
         ["if"]="@function.inner",
         ["ac"]="@class.outer",
         ["ic"]="@class.inner",
-      },
-    },
-
-    move={
-      enable=true,
-      set_jumps=true,
-      goto_next_start={
-        ["<right>"]="@function.outer",
-        ["<down>"]="@class.outer",
-      },
-      goto_previous_start={
-        ["<left>"]="@function.outer",
-        ["<up>"]="@class.outer",
+        ["ia"]="@parameter.inner",
+        ["aa"]="@parameter.outer",
       },
     },
   },
-
-  refactor={
-    highlight_definitions={
-      enable=true,
-    },
-  }
 }
 
 

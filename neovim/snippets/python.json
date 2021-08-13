@@ -13,9 +13,9 @@
     "description": "A base try/except clause",
     "body": [
       "try:",
-      "  ${1:$TM_SELECTED_TEXT}",
+      "    ${1:$TM_SELECTED_TEXT}",
       "except ${2:${3:Exception}${4: as ${5:exc}}}:",
-      "  ${6:pass}",
+      "    ${6:pass}",
       "$0"
     ]
   },
@@ -25,9 +25,9 @@
     "description": "A base try/finally clause",
     "body": [
       "try:",
-      "  ${1:$TM_SELECTED_TEXT}",
+      "    ${1:$TM_SELECTED_TEXT}",
       "finally:",
-      "  $2",
+      "    $2",
       "$0"
     ]
   },
@@ -37,7 +37,7 @@
     "description": "A base if clause",
     "body": [
       "if ${1:clause}:",
-      "  $0"
+      "    $0"
     ]
   },
 
@@ -46,16 +46,16 @@
     "description": "Function declaraction",
     "body": [
       "def ${1:func}(${2:*args, **kwargs}):",
-      "  $0"
+      "    ${0:raise NotImplementedError()}"
     ]
   },
 
   "Function method": {
-    "prefix": "def",
+    "prefix": "defm",
     "description": "Method declaraction",
     "body": [
       "def ${1:func}(self${2:, *args, **kwargs}):",
-      "  $0"
+      "    ${0:raise NotImplementedError()}"
     ]
   },
 
@@ -65,7 +65,7 @@
     "body": [
       "@property",
       "def ${1:name}(self):",
-      "  ${0:return self._$1}"
+      "    ${0:return self._$1}"
     ]
   },
 
@@ -75,11 +75,11 @@
     "body": [
       "@property",
       "def ${1:name}(self):",
-      "  ${2:return self._$1}",
+      "    ${2:return self._$1}",
       "",
       "@${1}.setter",
       "def ${1}(self, value):",
-      "  ${0:self._$1 = value}"
+      "    ${0:self._$1 = value}"
     ]
   },
 
