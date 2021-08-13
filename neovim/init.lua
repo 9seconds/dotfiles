@@ -229,21 +229,11 @@ require("packer").startup(function(use)
     end
   }
 
-  use {
-    "ggandor/lightspeed.nvim",
-    requires={
-      "tpope/vim-repeat",
-    },
-  }
-
-  use {
-    "tpope/vim-surround",
-    requires={
-      "tpope/vim-repeat",
-    }
-  }
-
+  use "tpope/vim-repeat"
+  use "ggandor/lightspeed.nvim"
+  use "tpope/vim-surround"
   use "junegunn/vim-slash"
+  use "machakann/vim-textobj-delimited"
 
   use {
     "Valloric/ListToggle",
