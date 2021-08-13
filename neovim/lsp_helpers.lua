@@ -21,7 +21,7 @@ local function on_attach(client, bufnr)
   keymap("n", "<leader>yR", "<cmd>lua vim.lsp.buf.rename()<cr>")
   keymap("n", "<leader>yc", "<cmd>lua vim.lsp.buf.code_action()<cr>")
   keymap("v", "<leader>yc", "<cmd>lua vim.lsp.buf.range_code_action()<cr>")
-  keymap("n", "<leader>yD", "<cmd>lua vim.lsp.buf.signature_help()<cr>")
+  keymap("n", "<leader>ys", "<cmd>lua vim.lsp.buf.signature_help()<cr>")
 
   vim.api.nvim_command("autocmd BufWritePre <buffer> lua vim.lsp.diagnostic.set_loclist({open=false})")
 end
@@ -57,7 +57,7 @@ end
 
 
 -- generates a new config for LSP setup function
-function M.new_server_config()
+function M.new_server_config(self)
   return {
     on_attach=on_attach,
     capabilities=capabilities,
@@ -75,12 +75,12 @@ end
 
 
 -- defines how to manage a custom server
-function M.define_custom_server(language, command, install_script, uninstall_script)
-  local config = lspinstall_util.extract_config(language)
+function M.define_custom_server(self, language, lsp_name, command, install_script, uninstall_script)
+  local config = lspinstall_util.extract_config(lsp_name)
 
   config.default_config.cmd[1] = command
   lspinstall_servers[language] = vim.tbl_extend("error", config, {
-    install_script=install_script,
+    install_script=install_script or "",
     uninstall_script=uninstall_script or "rm -rf *"
   })
 end

@@ -325,7 +325,7 @@ require("packer").startup(function(use)
       keymap("n", "<f3>", ":NvimTreeFindFile<cr>")
 
       vim.g.nvim_tree_width = 30
-      vim.g.nvim_tree_ignore = {".git", "node_modules"}
+      vim.g.nvim_tree_gitignore = 1
       vim.g.nvim_tree_auto_close = true
     end
   }
