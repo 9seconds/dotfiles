@@ -1,6 +1,9 @@
 -- vim: ts=2:sw=2:sts=2
 
+local M = {}
 
+
+-- makes a default key options for mappings
 local function make_keymap_opts(options)
   local opts = {
     noremap=true,
@@ -13,9 +16,6 @@ local function make_keymap_opts(options)
 
   return opts
 end
-
-
-local M = {}
 
 -- this function sets a global key mapping
 function M.keymap(mode, lhs, rhs, options)

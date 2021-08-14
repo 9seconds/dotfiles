@@ -1,15 +1,20 @@
 -- vim: ts=2:sw=2:sts=2
 
-local helpers = require("helpers")
+local M = {
+  server_configs={},
+}
+
+local utils = require("_utils")
 local lspconfig = require("lspconfig")
 local lspinstall = require("lspinstall")
 local lspinstall_servers = require("lspinstall/servers")
 local lspinstall_util = require("lspinstall/util")
 
 
+-- this function is executed when LSP attaches to a buffer.
 local function on_attach(client, bufnr)
-  local set_option = helpers.get_buf_set_option(bufnr)
-  local keymap = helpers.get_buf_keymap(bufnr)
+  local set_option = utils.get_buf_set_option(bufnr)
+  local keymap = utils.get_buf_keymap(bufnr)
 
   set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
 
@@ -25,12 +30,8 @@ local function on_attach(client, bufnr)
 end
 
 
-local M = {
-  requested_servers={}
-}
-
-
--- returns a table with all available servers
+-- returns a table with all available servers (that were installed on
+-- a disk)
 function M.available_servers(self)
   local installed = {}
 
@@ -41,18 +42,16 @@ function M.available_servers(self)
   return installed
 end
 
-
--- returns a table with active servers
+-- returns a table with active servers (installed and requested)
 function M.active_servers(self)
   local active = {}
 
   for server, _ in pairs(self:available_servers()) do
-    active[server] = self.requested_servers[server]
+    active[server] = self.server_configs[server]
   end
 
   return active
 end
-
 
 -- generates a new config for LSP setup function
 function M.new_server_config(self)
@@ -65,12 +64,10 @@ function M.new_server_config(self)
   }
 end
 
-
 -- adds a new server to a list of used
 function M.use_server(self, name, config)
-  self.requested_servers[name] = config or self:new_server_config()
+  self.server_configs[name] = config or self:new_server_config()
 end
-
 
 -- defines how to manage a custom server
 function M.define_custom_server(self, language, lsp_name, command, install_script, uninstall_script)
@@ -82,7 +79,6 @@ function M.define_custom_server(self, language, lsp_name, command, install_scrip
     uninstall_script=uninstall_script or "rm -rf *"
   })
 end
-
 
 -- do setup lsp
 function M.setup(self)

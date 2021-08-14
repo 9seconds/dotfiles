@@ -5,7 +5,7 @@
 
 --]]
 
-local keymap = require("helpers").keymap
+local keymap = require("_utils").keymap
 
 -- ----------------------------------------------------------------------------
 -- GLOBAL SETTINGS
@@ -292,7 +292,7 @@ require("packer").startup(function(use)
       "kyazdani42/nvim-web-devicons"
     },
     config=function()
-      local keymap = require("helpers").keymap
+      local keymap = require("_utils").keymap
 
       keymap("n", "<f2>", ":NvimTreeToggle<cr>")
       keymap("n", "<f3>", ":NvimTreeFindFile<cr>")
@@ -333,7 +333,7 @@ require("packer").startup(function(use)
       }
     },
     config=function()
-      local keymap = require("helpers").keymap
+      local keymap = require("_utils").keymap
       local telescope = require("telescope")
 
       keymap(
@@ -402,9 +402,9 @@ require("packer").startup(function(use)
       "hrsh7th/vim-vsnip-integ",
     },
     config=function()
-      local keymap = require("helpers").keymap
+      local keymap = require("_utils").keymap
 
-      vim.g.vsnip_snippet_dir = "~/.config/nvim/snippets"
+      vim.g.vsnip_snippet_dir = vim.fn.expand("~/.config/nvim/snippets")
 
       keymap("n", "c", "<Plug>(vsnip-cut-text)", {noremap=false})
       keymap("x", "c", "<Plug>(vsnip-cut-text)", {noremap=false})
@@ -417,7 +417,7 @@ require("packer").startup(function(use)
       "folke/twilight.nvim"
     },
     config=function()
-      local keymap = require("helpers").keymap
+      local keymap = require("_utils").keymap
 
       require("zen-mode").setup {
         window={
@@ -473,5 +473,5 @@ pcall(function()
 end)
 
 
-require("compe_helpers"):setup()
-require("lsp_helpers"):setup()
+require("_compe"):setup()
+require("_lsp"):setup()
