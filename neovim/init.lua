@@ -51,6 +51,7 @@ vim.o.writebackup = false              -- do not create backup during a file is 
 vim.o.viminfo = ""                     -- do not use viminfo
 vim.o.inccommand = "nosplit"           -- incrementally update replaces
 vim.o.completeopt = "menuone,noselect" -- asked by nvim-compe
+vim.o.shell = "/bin/bash"              -- use bash as a default shell
 
 
 -- ----------------------------------------------------------------------------
@@ -297,8 +298,17 @@ require("packer").startup(function(use)
       keymap("n", "<f3>", ":NvimTreeFindFile<cr>")
 
       vim.g.nvim_tree_width = 30
-      vim.g.nvim_tree_gitignore = 1
+      vim.g.nvim_tree_gitignore = 0
       vim.g.nvim_tree_auto_close = true
+      vim.g.nvim_tree_show_icons = {
+        git=0,
+        folders=1,
+        files=1,
+        folder_arrows=1,
+      }
+      vim.g.nvim_tree_git_hl = 0
+      vim.g.nvim_tree_hide_dotfiles = 1
+      vim.g.nvim_tree_lsp_diagnostics = 0
     end
   }
 
@@ -411,8 +421,10 @@ require("packer").startup(function(use)
 
       require("zen-mode").setup {
         window={
+          width=120,
           options={
-            signcolumn="no"
+            number=false,
+            signcolumn="no",
           }
         },
         on_open=function()
@@ -437,10 +449,6 @@ require("nvim-treesitter.configs").setup {
 
   indent={
     enable=true
-  },
-
-  incremental_selection={
-    enable=true,
   },
 
   textobjects={
