@@ -108,7 +108,7 @@ function M.define_custom_server(self, language, lsp_name, command, install_scrip
 
   local config = lspinstall_util.extract_config(lsp_name)
 
-  config.default_config.cmd[1] = command
+  config.default_config.cmd = command
   lspinstall_servers[language] = vim.tbl_extend("error", config, {
     install_script=install_script or "",
     uninstall_script=uninstall_script or "rm -rf *"
