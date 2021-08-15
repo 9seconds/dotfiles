@@ -11,54 +11,55 @@ local function check_back_space()
   return col == 0 or vim.fn.getline("."):sub(col, col):match("%s")
 end
 
+local function keymap(mode, lhs, rhs, options)
+  options = options or {}
+  options.noremap = false
+  options.expr = true
+
+  return utils.keymap(mode, lhs, rhs, options)
+end
+
 -- a list of constants to use here and there
 local TERMCODE_CN = utils.termcode("<c-n>")
 local TERMCODE_CP = utils.termcode("<c-p>")
 local TERMCODE_TAB = utils.termcode("<tab>")
 local TERMCODE_STAB = utils.termcode("<s-tab>")
-local TERMCODE_VSNIP_EXPAND_OR_JUMP = utils.termcode("<Plug>(vsnip-expand-or-jump)")
-local TERMCODE_VSNIP_JUMP_PREV = utils.termcode("<Plug>(vsnip-jump-prev)")
 local TERMCODE_CE = utils.termcode("<c-e>")
 
 
 -- setups nvim-compe. installs tab/stab completion
 function M.setup()
-  _G.tab_complete = function()
+  function _G.tab_complete()
     if vim.fn.pumvisible() == 1 then
       return TERMCODE_CN
-    elseif vim.fn['vsnip#available'](1) == 1 then
-      return TERMCODE_VSNIP_EXPAND_OR_JUMP
     elseif check_back_space() then
       return TERMCODE_TAB
     end
     return vim.fn["compe#complete"]()
   end
 
-  _G.stab_complete = function()
+  function _G.stab_complete()
     if vim.fn.pumvisible() == 1 then
       return TERMCODE_CP
-    elseif vim.fn['vsnip#jumpable'](-1) then
-      return TERMCODE_VSNIP_JUMP_PREV
     end
     return TERMCODE_STAB
   end
 
-  _G.compe_confirm = function()
+  function _G.compe_confirm()
     local autopairs = require("nvim-autopairs")
     return vim.fn["compe#confirm"](autopairs.autopairs_cr())
   end
 
-  _G.compe_close = function()
+  function _G.compe_close()
     return vim.fn["compe#close"](TERMCODE_CE)
   end
 
-  utils.keymap("i", "<tab>", "v:lua.tab_complete()", {noremap=false, expr=true})
-  utils.keymap("s", "<tab>", "v:lua.tab_complete()", {noremap=false, expr=true})
-  utils.keymap("i", "<s-tab>", "v:lua.stab_complete()", {noremap=false, expr=true})
-  utils.keymap("s", "<s-tab>", "v:lua.stab_complete()", {noremap=false, expr=true})
-
-  utils.keymap("i", "<cr>", "v:lua.compe_confirm()", {noremap=false, expr=true})
-  utils.keymap("i", "<c-e>", "v:lua.compe_close()", {noremap=false, expr=true})
+  keymap("i", "<tab>", "v:lua.tab_complete()")
+  keymap("s", "<tab>", "v:lua.tab_complete()")
+  keymap("i", "<s-tab>", "v:lua.stab_complete()")
+  keymap("s", "<s-tab>", "v:lua.stab_complete()")
+  keymap("i", "<cr>", "v:lua.compe_confirm()")
+  keymap("i", "<c-e>", "v:lua.compe_close()")
 end
 
 

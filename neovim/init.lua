@@ -35,7 +35,7 @@ vim.o.shiftwidth = 4                   -- a number of spaces for autoindent
 vim.o.shortmess = "Ic"                 -- do not show a welcome page
 vim.o.showbreak = "↪"                  -- use this symbol to display a wrapped line
 vim.o.showmatch = true                 -- show matching stuff
-vim.o.showmode = false                  -- show current active mode
+vim.o.showmode = false                 -- show current active mode
 vim.o.signcolumn = "yes"               -- always reserve a space for a sign column
 vim.o.smartcase = true                 -- smartcase search
 vim.o.smartindent = true               -- enable smart indent
@@ -428,27 +428,14 @@ require("packer").startup(function(use)
         source={
           path=true,
           nvim_lsp=true,
-          vsnip=true,
+          vsnip=false,
           treesitter=false,
         },
       }
     end
   }
 
-  use {
-    "hrsh7th/vim-vsnip",
-    requires={
-      "hrsh7th/vim-vsnip-integ",
-    },
-    config=function()
-      local keymap = require("_utils").keymap
-
-      vim.g.vsnip_snippet_dir = vim.fn.expand("~/.config/nvim/snippets")
-
-      keymap("n", "c", "<Plug>(vsnip-cut-text)", {noremap=false})
-      keymap("x", "c", "<Plug>(vsnip-cut-text)", {noremap=false})
-    end
-  }
+  use "hrsh7th/vim-vsnip"
 
   use {
     "folke/zen-mode.nvim",
@@ -485,5 +472,6 @@ pcall(function()
 end)
 
 
+require("_vsnip"):setup()
 require("_compe"):setup()
 require("_lsp"):setup()
