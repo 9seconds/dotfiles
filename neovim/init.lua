@@ -203,6 +203,34 @@ require("packer").startup(function(use)
       "nvim-treesitter/nvim-treesitter-textobjects"
     },
     run=":TSUpdate",
+    config=function()
+      require("nvim-treesitter.configs").setup {
+        ensure_installed="maintained",
+
+        highlight={
+          enable=true
+        },
+
+        indent={
+          enable=true
+        },
+
+        textobjects={
+          select={
+            enable=true,
+            lookahead=true,
+            keymaps={
+              ["af"]="@function.outer",
+              ["if"]="@function.inner",
+              ["ac"]="@class.outer",
+              ["ic"]="@class.inner",
+              ["ia"]="@parameter.inner",
+              ["aa"]="@parameter.outer",
+            },
+          },
+        },
+      }
+    end
   }
 
   use {
@@ -309,6 +337,20 @@ require("packer").startup(function(use)
       vim.g.nvim_tree_git_hl = 0
       vim.g.nvim_tree_hide_dotfiles = 1
       vim.g.nvim_tree_lsp_diagnostics = 0
+    end
+  }
+
+  use {
+    "lukas-reineke/indent-blankline.nvim",
+    config=function()
+      require("indent_blankline").setup {
+        use_treesiter=true,
+        char_list = {"│", "┆", "┊", "|", "¦"},
+        show_first_indent_level=false,
+        show_trailing_blankline_indent=false,
+        show_end_of_line=false,
+        buftype_exclude={"terminal"},
+      }
     end
   }
 
@@ -436,33 +478,6 @@ require("packer").startup(function(use)
     end
   }
 end)
-
-require("nvim-treesitter.configs").setup {
-  ensure_installed="maintained",
-
-  highlight={
-    enable=true
-  },
-
-  indent={
-    enable=true
-  },
-
-  textobjects={
-    select={
-      enable=true,
-      lookahead=true,
-      keymaps={
-        ["af"]="@function.outer",
-        ["if"]="@function.inner",
-        ["ac"]="@class.outer",
-        ["ic"]="@class.inner",
-        ["ia"]="@parameter.inner",
-        ["aa"]="@parameter.outer",
-      },
-    },
-  },
-}
 
 
 pcall(function()
