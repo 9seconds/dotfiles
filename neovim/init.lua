@@ -348,10 +348,6 @@ require("packer").startup(function(use)
         "n", "<leader>fb",
         "<cmd>lua require('telescope.builtin').buffers()<cr>"
       )
-      keymap(
-        "n", "<leader>fg",
-        "<cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>"
-      )
 
       telescope.setup {
         extensions = {
@@ -377,7 +373,8 @@ require("packer").startup(function(use)
   use {
     "kabouzeid/nvim-lspinstall",
     requires={
-      "neovim/nvim-lspconfig"
+      "neovim/nvim-lspconfig",
+      "ray-x/lsp_signature.nvim"
     }
   }
 

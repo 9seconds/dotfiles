@@ -3,14 +3,7 @@
 local M = {}
 
 local utils = require("_utils")
-local autopairs = require("nvim-autopairs")
 
-
--- returns internal representation of terminal code or keycodes.
--- please see :h nvim_replace_termcodes() for details.
-local function tcode(code)
-  return vim.api.nvim_replace_termcodes(code, true, true, true)
-end
 
 -- returns if backspace was pressed.
 local function check_back_space()
@@ -19,13 +12,13 @@ local function check_back_space()
 end
 
 -- a list of constants to use here and there
-local TERMCODE_CN = tcode("<c-n>")
-local TERMCODE_CP = tcode("<c-p>")
-local TERMCODE_TAB = tcode("<tab>")
-local TERMCODE_STAB = tcode("<s-tab>")
-local TERMCODE_VSNIP_EXPAND_OR_JUMP = tcode("<Plug>(vsnip-expand-or-jump)")
-local TERMCODE_VSNIP_JUMP_PREV = tcode("<Plug>(vsnip-jump-prev)")
-local TERMCODE_CE = tcode("<c-e>")
+local TERMCODE_CN = utils.termcode("<c-n>")
+local TERMCODE_CP = utils.termcode("<c-p>")
+local TERMCODE_TAB = utils.termcode("<tab>")
+local TERMCODE_STAB = utils.termcode("<s-tab>")
+local TERMCODE_VSNIP_EXPAND_OR_JUMP = utils.termcode("<Plug>(vsnip-expand-or-jump)")
+local TERMCODE_VSNIP_JUMP_PREV = utils.termcode("<Plug>(vsnip-jump-prev)")
+local TERMCODE_CE = utils.termcode("<c-e>")
 
 
 -- setups nvim-compe. installs tab/stab completion
@@ -51,6 +44,7 @@ function M.setup()
   end
 
   _G.compe_confirm = function()
+    local autopairs = require("nvim-autopairs")
     return vim.fn["compe#confirm"](autopairs.autopairs_cr())
   end
 

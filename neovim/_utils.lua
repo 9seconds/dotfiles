@@ -36,5 +36,11 @@ function M.get_buf_set_option(bufnr)
   end
 end
 
+-- returns internal representation of terminal code or keycodes.
+-- please see :h nvim_replace_termcodes() for details.
+function M.termcode(code)
+  return vim.api.nvim_replace_termcodes(code, true, true, true)
+end
+
 
 return M
