@@ -1,11 +1,4 @@
 -- vim: ts=2:sw=2:sts=2
---[[
-
-                       9seconds' init.lua
-
---]]
-
-local keymap = require("_utils").keymap
 
 -- ----------------------------------------------------------------------------
 -- GLOBAL SETTINGS
@@ -58,71 +51,73 @@ vim.o.shell = "/bin/bash"              -- use bash as a default shell
 -- GLOBAL KEYMAPS
 -- ----------------------------------------------------------------------------
 
+local utils = require("_utils")
+
 -- space as a leader
-keymap("", "<space>", "<nop>")
+utils:keynmap("", "<space>", "<nop>")
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 -- sudo write
-keymap("c", "w!!", "w !sudo tee >/dev/null %")
+utils:keynmap("c", "w!!", "w !sudo tee >/dev/null %")
 
 -- more reasonable indents/unindents
-keymap("v", "<", "<gv")
-keymap("v", ">", ">gv")
+utils:keynmap("v", "<", "<gv")
+utils:keynmap("v", ">", ">gv")
 
 -- wrapline-aware navigation
-keymap("n", "j", "gj")
-keymap("n", "k", "gk")
-keymap("n", "$", "g$")
-keymap("n", "0", "^")
+utils:keynmap("n", "j", "gj")
+utils:keynmap("n", "k", "gk")
+utils:keynmap("n", "$", "g$")
+utils:keynmap("n", "0", "^")
 
 -- center screen on search operations
-keymap("n", "n", "nzz")
-keymap("n", "N", "Nzz")
-keymap("n", "*", "*zz``")
-keymap("n", "#", "#zz")
-keymap("n", "g*", "g*zz")
-keymap("n", "g#", "g#zz")
-keymap("n", "<c-d>", "<c-d>zz")
-keymap("n", "<c-u>", "<c-u>zz")
-keymap("n", "<c-f>", "<c-f>zz")
-keymap("n", "<c-b>", "<c-b>zz")
-keymap("n", "<leader>h", ":noh<cr>")
+utils:keynmap("n", "n", "nzz")
+utils:keynmap("n", "N", "Nzz")
+utils:keynmap("n", "*", "*zz``")
+utils:keynmap("n", "#", "#zz")
+utils:keynmap("n", "g*", "g*zz")
+utils:keynmap("n", "g#", "g#zz")
+utils:keynmap("n", "<c-d>", "<c-d>zz")
+utils:keynmap("n", "<c-u>", "<c-u>zz")
+utils:keynmap("n", "<c-f>", "<c-f>zz")
+utils:keynmap("n", "<c-b>", "<c-b>zz")
+utils:keynmap("n", "<leader>h", ":noh<cr>")
 
 -- split navigation
-keymap("n", "<c-h>", "<c-w>h")
-keymap("n", "<c-j>", "<c-w>j")
-keymap("n", "<c-k>", "<c-w>k")
-keymap("n", "<c-l>", "<c-w>l")
+utils:keynmap("n", "<c-h>", "<c-w>h")
+utils:keynmap("n", "<c-j>", "<c-w>j")
+utils:keynmap("n", "<c-k>", "<c-w>k")
+utils:keynmap("n", "<c-l>", "<c-w>l")
 
 -- exit insert mode
-keymap("i", "jk", "<esc>")
-keymap("i", "jj", "<esc>")
+utils:keynmap("i", "jk", "<esc>")
+utils:keynmap("i", "jj", "<esc>")
 
 -- tab management
-keymap("n", "<leader>t1", "1gt")
-keymap("n", "<leader>t2", "2gt")
-keymap("n", "<leader>t3", "3gt")
-keymap("n", "<leader>t4", "4gt")
-keymap("n", "<leader>t5", "5gt")
-keymap("n", "<leader>t6", "6gt")
-keymap("n", "<leader>t7", "7gt")
-keymap("n", "<leader>t8", "8gt")
-keymap("n", "<leader>t9", "9gt")
-keymap("n", "<leader>tc", ":tabclose<cr>")
+utils:keynmap("n", "<leader>t1", "1gt")
+utils:keynmap("n", "<leader>t2", "2gt")
+utils:keynmap("n", "<leader>t3", "3gt")
+utils:keynmap("n", "<leader>t4", "4gt")
+utils:keynmap("n", "<leader>t5", "5gt")
+utils:keynmap("n", "<leader>t6", "6gt")
+utils:keynmap("n", "<leader>t7", "7gt")
+utils:keynmap("n", "<leader>t8", "8gt")
+utils:keynmap("n", "<leader>t9", "9gt")
+utils:keynmap("n", "<leader>tc", ":tabclose<cr>")
 
 -- sort
-keymap("v", "<leader>s", ":sort<cr>")
+utils:keynmap("v", "<leader>s", ":sort<cr>")
 
 -- terminal mappings
-keymap("n", "<leader>]", ":vsplit term://$SHELL<cr>i")
-keymap("n", "<leader>[", ":split term://$SHELL<cr>i")
-keymap("t", "<c-j><c-j>", "<c-\\><c-n>")
-keymap("t", "<c-j><c-k>", "<c-\\><c-n>")
+utils:keynmap("n", "<leader>]", ":vsplit term://$SHELL<cr>i")
+utils:keynmap("n", "<leader>[", ":split term://$SHELL<cr>i")
+utils:keynmap("t", "<c-j><c-j>", "<c-\\><c-n>")
+utils:keynmap("t", "<c-j><c-k>", "<c-\\><c-n>")
 
 -- fast access
-keymap("n", "<leader>q", ":q<cr>")
-keymap("n", "<leader>w", ":update<cr>")
+utils:keynmap("n", "<leader>q", ":q<cr>")
+utils:keynmap("n", "<leader>w", ":update<cr>")
 
 
 -- ----------------------------------------------------------------------------
@@ -291,7 +286,7 @@ require("packer").startup(function(use)
       "kyazdani42/nvim-web-devicons"
     },
     config=function()
-      require('lualine').setup {
+      require("lualine").setup {
         options={
           theme="auto",
           section_separators="",
@@ -320,10 +315,10 @@ require("packer").startup(function(use)
       "kyazdani42/nvim-web-devicons"
     },
     config=function()
-      local keymap = require("_utils").keymap
+      local utils = require("_utils")
 
-      keymap("n", "<f2>", ":NvimTreeToggle<cr>")
-      keymap("n", "<f3>", ":NvimTreeFindFile<cr>")
+      utils:keynmap("n", "<f2>", ":NvimTreeToggle<cr>")
+      utils:keynmap("n", "<f3>", ":NvimTreeFindFile<cr>")
 
       vim.g.nvim_tree_width = 30
       vim.g.nvim_tree_gitignore = 0
@@ -375,18 +370,18 @@ require("packer").startup(function(use)
       }
     },
     config=function()
-      local keymap = require("_utils").keymap
+      local utils = require("_utils")
       local telescope = require("telescope")
 
-      keymap(
+      utils:keynmap(
         "n", "<leader>ff",
         "<cmd>lua require('telescope.builtin').find_files()<cr>"
       )
-      keymap(
+      utils:keynmap(
         "n", "<leader>fr",
         "<cmd>lua require('telescope.builtin').live_grep()<cr>"
       )
-      keymap(
+      utils:keynmap(
         "n", "<leader>fb",
         "<cmd>lua require('telescope.builtin').buffers()<cr>"
       )
@@ -443,7 +438,7 @@ require("packer").startup(function(use)
       "folke/twilight.nvim"
     },
     config=function()
-      local keymap = require("_utils").keymap
+      local utils= require("_utils")
 
       require("zen-mode").setup {
         window={
@@ -461,7 +456,7 @@ require("packer").startup(function(use)
         end
       }
 
-      keymap("n", "<leader>z", ":ZenMode<cr>")
+      utils:keynmap("n", "<leader>z", ":ZenMode<cr>")
     end
   }
 end)
@@ -470,6 +465,7 @@ end)
 pcall(function()
   vim.api.nvim_command("source $HOME/.local-vimrc.lua")
 end)
+  vim.api.nvim_command("source $HOME/.local-vimrc.lua")
 
 
 require("_vsnip"):setup()

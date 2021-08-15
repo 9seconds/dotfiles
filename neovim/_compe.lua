@@ -11,20 +11,13 @@ local function check_back_space()
   return col == 0 or vim.fn.getline("."):sub(col, col):match("%s")
 end
 
-local function keymap(mode, lhs, rhs, options)
-  options = options or {}
-  options.noremap = false
-  options.expr = true
-
-  return utils.keymap(mode, lhs, rhs, options)
-end
 
 -- a list of constants to use here and there
-local TERMCODE_CN = utils.termcode("<c-n>")
-local TERMCODE_CP = utils.termcode("<c-p>")
-local TERMCODE_TAB = utils.termcode("<tab>")
-local TERMCODE_STAB = utils.termcode("<s-tab>")
-local TERMCODE_CE = utils.termcode("<c-e>")
+local TERMCODE_CN = utils:termcode("<c-n>")
+local TERMCODE_CP = utils:termcode("<c-p>")
+local TERMCODE_TAB = utils:termcode("<tab>")
+local TERMCODE_STAB = utils:termcode("<s-tab>")
+local TERMCODE_CE = utils:termcode("<c-e>")
 
 
 -- setups nvim-compe. installs tab/stab completion
@@ -54,12 +47,12 @@ function M.setup()
     return vim.fn["compe#close"](TERMCODE_CE)
   end
 
-  keymap("i", "<tab>", "v:lua.tab_complete()")
-  keymap("s", "<tab>", "v:lua.tab_complete()")
-  keymap("i", "<s-tab>", "v:lua.stab_complete()")
-  keymap("s", "<s-tab>", "v:lua.stab_complete()")
-  keymap("i", "<cr>", "v:lua.compe_confirm()")
-  keymap("i", "<c-e>", "v:lua.compe_close()")
+  utils:keyemap("i", "<tab>", "v:lua.tab_complete()")
+  utils:keyemap("s", "<tab>", "v:lua.tab_complete()")
+  utils:keyemap("i", "<s-tab>", "v:lua.stab_complete()")
+  utils:keyemap("s", "<s-tab>", "v:lua.stab_complete()")
+  utils:keyemap("i", "<cr>", "v:lua.compe_confirm()")
+  utils:keyemap("i", "<c-e>", "v:lua.compe_close()")
 end
 
 

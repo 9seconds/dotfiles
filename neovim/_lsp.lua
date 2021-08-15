@@ -9,8 +9,8 @@ local function on_attach(client, bufnr)
   local utils = require("_utils")
   local lsp_signature = require("lsp_signature")
 
-  local set_option = utils.get_buf_set_option(bufnr)
-  local keymap = utils.get_buf_keymap(bufnr)
+  local set_option = utils:get_buf_set_option(bufnr)
+  local keymap = utils:get_buf_keymap(bufnr, {noremap=true})
 
   lsp_signature.on_attach()
 
@@ -102,17 +102,19 @@ function M.use_server(self, name, config)
 end
 
 -- defines how to manage a custom server
-function M.define_custom_server(self, language, lsp_name, command, install_script, uninstall_script)
+function M.define_custom_server(self, language, lsp_name, config)
   local lspinstall_servers = require("lspinstall/servers")
   local lspinstall_util = require("lspinstall/util")
+  local utils = require("_utils")
 
-  local config = lspinstall_util.extract_config(lsp_name)
-
-  config.default_config.cmd = command
-  lspinstall_servers[language] = vim.tbl_extend("error", config, {
-    install_script=install_script or "",
-    uninstall_script=uninstall_script or "rm -rf *"
-  })
+  lspinstall_servers[language] = utils:tbl_merge(
+    {
+      install_script="",
+      uninstall_script="rm -rf *"
+    },
+    lspinstall_util.extract_config(lsp_name) or {},
+    config or {}
+  )
 end
 
 -- do setup lsp

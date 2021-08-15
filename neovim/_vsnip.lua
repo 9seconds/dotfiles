@@ -5,20 +5,12 @@ local M = {}
 local utils = require("_utils")
 
 
-local TERMCODE_EXPAND_OR_JUMP = utils.termcode("<Plug>(vsnip-expand-or-jump)")
-local TERMCODE_CUT_TEXT = utils.termcode("<Plug>(vsnip-cut-text)")
-local TERMCODE_JUMP_PREV = utils.termcode("<Plug>(vsnip-jump-prev)")
-local TERMCODE_CJ = utils.termcode("<c-j>")
-local TERMCODE_CK = utils.termcode("<c-k>")
+local TERMCODE_EXPAND_OR_JUMP = utils:termcode("<Plug>(vsnip-expand-or-jump)")
+local TERMCODE_CUT_TEXT = utils:termcode("<Plug>(vsnip-cut-text)")
+local TERMCODE_JUMP_PREV = utils:termcode("<Plug>(vsnip-jump-prev)")
+local TERMCODE_CJ = utils:termcode("<c-j>")
+local TERMCODE_CK = utils:termcode("<c-k>")
 
-
-local function keymap(mode, lhs, rhs, options)
-  options = options or {}
-  options.noremap = false
-  options.expr = true
-
-  return utils.keymap(mode, lhs, rhs, options)
-end
 
 -- setups vsnip
 function M.setup()
@@ -42,12 +34,12 @@ function M.setup()
     return TERMCODE_CK
   end
 
-  keymap("n", "c", "v:lua.vsnip_cut_text()")
-  keymap("x", "c", "v:lua.vsnip_cut_text()")
-  keymap("i", "<c-j>", "v:lua.vsnip_cj()")
-  keymap("s", "<c-j>", "v:lua.vsnip_cj()")
-  keymap("i", "<c-k>", "v:lua.vsnip_ck()")
-  keymap("s", "<c-k>", "v:lua.vsnip_ck()")
+  utils:keyemap("n", "c", "v:lua.vsnip_cut_text()")
+  utils:keyemap("x", "c", "v:lua.vsnip_cut_text()")
+  utils:keyemap("i", "<c-j>", "v:lua.vsnip_cj()")
+  utils:keyemap("s", "<c-j>", "v:lua.vsnip_cj()")
+  utils:keyemap("i", "<c-k>", "v:lua.vsnip_ck()")
+  utils:keyemap("s", "<c-k>", "v:lua.vsnip_ck()")
 end
 
 
