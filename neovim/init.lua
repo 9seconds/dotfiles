@@ -465,7 +465,6 @@ end)
 pcall(function()
   vim.api.nvim_command("source $HOME/.local-vimrc.lua")
 end)
-  vim.api.nvim_command("source $HOME/.local-vimrc.lua")
 
 
 require("_vsnip"):setup()

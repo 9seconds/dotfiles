@@ -59,6 +59,15 @@
     ]
   },
 
+  "Function method with super() call": {
+    "prefix": "defms",
+    "description": "Function methid with super",
+    "body": [
+      "def ${1:func}(self, ${2:*args, **kwargs}):",
+      "    ${5:result} = super(${3:Class}, self).$1(${4:$2})"
+    ]
+  },
+
   "Readable property": {
     "prefix": "propr",
     "description": "Property only for reading",
@@ -93,32 +102,21 @@
   },
 
   "Python 2 class definition": {
-    "prefix": "class2",
+    "prefix": "class",
     "description": "A base class definition for Python2",
     "body": [
       "class ${1:Class}(${2:object}):",
       "",
-      "    def __init__(self${5:, }${4:*args, **kwargs}):",
-      "        ${6:super($1, self).__init__($4)}"
+      "    def __init__(self, ${3:*args, **kwargs}):",
+      "        ${5:super($1, self).__init__(${4:$3})}"
     ]
   },
 
-  "Python 3 class definition": {
-    "prefix": "class",
-    "description": "A base class definition for Python3",
+  "from . import lala": {
+    "prefix": "fri",
+    "description": "Add from . import . clause",
     "body": [
-      "class ${1:Class}${2:(${3:Base$1})}:",
-      "",
-      "    def __init__(self${5:, }${4:*args, **kwargs}):",
-      "        ${6:super().__init__($4)}"
-    ]
-  },
-
-  "TODO comment": {
-    "prefix": "#T",
-    "description": "Put a general TODO comment",
-    "body": [
-      "# TODO(${1:author}): $0"
+      "from ${1:foo} import ${0:bar}"
     ]
   },
 
