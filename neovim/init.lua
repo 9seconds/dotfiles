@@ -94,18 +94,6 @@ utils:keynmap("n", "<c-l>", "<c-w>l")
 utils:keynmap("i", "jk", "<esc>")
 utils:keynmap("i", "jj", "<esc>")
 
--- tab management
-utils:keynmap("n", "<leader>t1", "1gt")
-utils:keynmap("n", "<leader>t2", "2gt")
-utils:keynmap("n", "<leader>t3", "3gt")
-utils:keynmap("n", "<leader>t4", "4gt")
-utils:keynmap("n", "<leader>t5", "5gt")
-utils:keynmap("n", "<leader>t6", "6gt")
-utils:keynmap("n", "<leader>t7", "7gt")
-utils:keynmap("n", "<leader>t8", "8gt")
-utils:keynmap("n", "<leader>t9", "9gt")
-utils:keynmap("n", "<leader>tc", ":tabclose<cr>")
-
 -- sort
 utils:keynmap("v", "<leader>s", ":sort<cr>")
 
