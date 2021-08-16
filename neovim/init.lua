@@ -246,6 +246,12 @@ require("packer").startup(function(use)
   use "tpope/vim-surround"
   use "junegunn/vim-slash"
   use "machakann/vim-textobj-delimited"
+  use {
+    "crispgm/nvim-tabline",
+    config=function()
+      require("tabline").setup {}
+    end
+  }
 
   use {
     "Valloric/ListToggle",

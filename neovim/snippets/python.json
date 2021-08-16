@@ -41,6 +41,30 @@
     ]
   },
 
+  "Comprehension": {
+    "prefix": "comp",
+    "description": "Base for a list comprehension",
+    "body": [
+      "${3:expression} for ${1:item} in ${2:items}"
+    ]
+  },
+
+  "return": {
+    "prefix": "re",
+    "description": "Just a shortcut for a return",
+    "body": [
+      "return $0"
+    ]
+  },
+
+  "self": {
+    "prefix": "se",
+    "description": "Just a shortcut for self.",
+    "body": [
+      "self.$0"
+    ]
+  },
+
   "Function": {
     "prefix": "def",
     "description": "Function declaraction",
@@ -96,8 +120,7 @@
     "prefix": "pdb",
     "description": "pdb.set_trace()",
     "body": [
-      "import pdb; pdb.set_trace()",
-      "$0"
+      "import pdb; pdb.set_trace()"
     ]
   },
 
@@ -112,11 +135,11 @@
     ]
   },
 
-  "from . import lala": {
+  "from . import something": {
     "prefix": "fri",
     "description": "Add from . import . clause",
     "body": [
-      "from ${1:foo} import ${0:bar}"
+      "from ${1:foo} import ${2:bar}${3: as ${4:_$2}}"
     ]
   },
 
