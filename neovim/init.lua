@@ -149,7 +149,7 @@ augroup END
 vim.cmd([[
 augroup CorrectCTRLDForTerminal
   autocmd!
-  autocmd TermClose * call feedkeys("i")
+  autocmd TermClose * call feedkeys("\<esc>")
 augroup END
 ]])
 
@@ -377,6 +377,7 @@ require("packer").startup(function(use)
           win_row=0.4,
           win_border=false,
         },
+        preview_horizontal="right:45%",
         default_previewer="bat",
         previewers={
           bat={
