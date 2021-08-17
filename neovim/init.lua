@@ -197,6 +197,7 @@ require("packer").startup(function(use)
 
         indent={
           enable=true,
+          disable={"python"},
         },
 
         textobjects={
