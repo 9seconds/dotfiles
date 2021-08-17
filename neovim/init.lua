@@ -136,6 +136,7 @@ augroup NoQuickfixRulers
 augroup END
 ]])
 
+
 -- hide cursorline when it makes sense
 vim.cmd([[
 augroup HideCursorline
@@ -195,7 +196,7 @@ require("packer").startup(function(use)
         },
 
         indent={
-          enable=false,
+          enable=true,
         },
 
         textobjects={
@@ -209,7 +210,7 @@ require("packer").startup(function(use)
               ["ic"]="@class.inner",
               ["ia"]="@parameter.inner",
               ["aa"]="@parameter.outer",
-            },
+          },
           },
         },
       }
@@ -317,6 +318,12 @@ require("packer").startup(function(use)
       vim.g.nvim_tree_width = 30
       vim.g.nvim_tree_gitignore = 0
       vim.g.nvim_tree_auto_close = true
+      vim.g.nvim_tree_ignore = {
+        ".git",
+        "*.pyc",
+        "*.pyo",
+        "__pycache__"
+      }
       vim.g.nvim_tree_show_icons = {
         git=0,
         folders=1,
@@ -355,42 +362,60 @@ require("packer").startup(function(use)
   }
 
   use {
-    "nvim-telescope/telescope.nvim",
+    "ibhagwan/fzf-lua",
     requires={
-      "nvim-lua/plenary.nvim",
-      {
-        "nvim-telescope/telescope-fzf-native.nvim",
-        run="make"
-      }
+      "vijaymarupudi/nvim-fzf",
+      "kyazdani42/nvim-web-devicons"
     },
     config=function()
       local utils = require("_utils")
-      local telescope = require("telescope")
+
+      require("fzf-lua").setup {
+        winopts={
+          win_height=0.7,
+          win_width=0.7,
+          win_row=0.4,
+          win_border=false,
+        },
+        default_previewer="bat",
+        previewers={
+          bat={
+            args="--color always",
+            theme="",
+            config=nil,
+          },
+        },
+        files={
+          git_icons=false,
+        },
+        git={
+          files={
+            git_icons=false,
+          },
+          status={
+            git_icons=false,
+          },
+        },
+        grep={
+          git_icons=false,
+        },
+        quickfix={
+          git_icons=false,
+        }
+      }
 
       utils:keynmap(
         "n", "<leader>ff",
-        "<cmd>lua require('telescope.builtin').find_files()<cr>"
-      )
-      utils:keynmap(
-        "n", "<leader>fr",
-        "<cmd>lua require('telescope.builtin').live_grep()<cr>"
+        "<cmd>lua require('fzf-lua').files()<cr>"
       )
       utils:keynmap(
         "n", "<leader>fb",
-        "<cmd>lua require('telescope.builtin').buffers()<cr>"
+        "<cmd>lua require('fzf-lua').buffers()<cr>"
       )
-
-      telescope.setup {
-        extensions = {
-          fzf={
-            fuzzy=true,
-            override_generic_sorter=true,
-            override_file_sorter=true,
-            smart_case=true,
-          }
-        }
-      }
-      telescope.load_extension("fzf")
+      utils:keynmap(
+        "n", "<leader>fg",
+        "<cmd>lua require('fzf-lua').grep()<cr>"
+      )
     end
   }
 
@@ -404,8 +429,7 @@ require("packer").startup(function(use)
   use {
     "kabouzeid/nvim-lspinstall",
     requires={
-      "neovim/nvim-lspconfig",
-      "ray-x/lsp_signature.nvim"
+      "neovim/nvim-lspconfig"
     }
   }
 

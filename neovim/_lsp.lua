@@ -7,12 +7,9 @@ local M = {
 -- this function is executed when LSP attaches to a buffer.
 local function on_attach(client, bufnr)
   local utils = require("_utils")
-  local lsp_signature = require("lsp_signature")
 
   local set_option = utils:get_buf_set_option(bufnr)
   local keymap = utils:get_buf_keymap(bufnr, {noremap=true})
-
-  lsp_signature.on_attach()
 
   set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
 
@@ -40,14 +37,14 @@ local function on_attach(client, bufnr)
   if client.resolved_capabilities.find_references then
     keymap(
       "n", "<leader>yr",
-      "<cmd>lua require('telescope.builtin').lsp_references()<cr>"
+      "<cmd>lua require('fzf-lua').lsp_references()<cr>"
     )
   end
 
   if client.resolved_capabilities.document_symbol then
     keymap(
       "n", "<leader>ym",
-      "<cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>"
+      "<cmd>lua require('fzf-lua').lsp_document_symbols()<cr>"
     )
   end
 
