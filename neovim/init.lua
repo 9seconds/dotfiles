@@ -248,6 +248,17 @@ require("packer").startup(function(use)
   use "tpope/vim-surround"
   use "junegunn/vim-slash"
   use "machakann/vim-textobj-delimited"
+
+  use {
+    "winston0410/range-highlight.nvim",
+    requires={
+      "winston0410/cmd-parser.nvim"
+    },
+    config=function()
+      require("range-highlight").setup {}
+    end
+  }
+
   use {
     "crispgm/nvim-tabline",
     config=function()
