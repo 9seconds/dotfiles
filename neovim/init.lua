@@ -408,7 +408,7 @@ require("packer").startup(function(use)
 
       utils:keynmap(
         "n", "<leader>ff",
-        "<cmd>lua require('fzf-lua').files()<cr>"
+        "<cmd>lua require('fzf-lua').files({preview_opts='hidden'})<cr>"
       )
       utils:keynmap(
         "n", "<leader>fb",
