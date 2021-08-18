@@ -149,5 +149,15 @@
     "body": [
       "lambda ${1:element}: ${0:$1}"
     ]
+  },
+
+  "docstring with single quote": {
+    "prefix": "d'",
+    "description": "Add docstring with a single quote",
+    "body": [
+      "'''",
+      "$0",
+      "'''"
+    ]
   }
 }
