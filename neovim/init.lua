@@ -221,13 +221,7 @@ require("packer").startup(function(use)
   use {
     "airblade/vim-rooter",
     config=function()
-      vim.g.rooter_patterns = {
-        ".git",
-        "go.mod",
-        "package.json",
-        "setup.py",
-        "Makefile",
-      }
+      vim.g.rooter_patterns = {".git"}
       vim.g.rooter_change_directory_for_non_project_files = "current"
       vim.g.rooter_silent_chdir = 1
     end
