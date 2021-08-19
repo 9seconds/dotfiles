@@ -19,7 +19,7 @@ local function on_attach(client, bufnr)
   end
 
   if client.resolved_capabilities.goto_definition then
-    keymap("n", "<leader>yd", "<cmd>lua vim.lsp.buf.definition()<cr>")
+    keymap("n", "<c-]>", "<cmd>lua vim.lsp.buf.definition()<cr>")
   end
 
   if client.resolved_capabilities.document_formatting then
@@ -36,14 +36,14 @@ local function on_attach(client, bufnr)
 
   if client.resolved_capabilities.find_references then
     keymap(
-      "n", "<leader>yr",
+      "n", "<leader>fr",
       "<cmd>lua require('fzf-lua').lsp_references()<cr>"
     )
   end
 
   if client.resolved_capabilities.document_symbol then
     keymap(
-      "n", "<leader>ym",
+      "n", "<leader>ft",
       "<cmd>lua require('fzf-lua').lsp_document_symbols()<cr>"
     )
   end
@@ -53,7 +53,7 @@ local function on_attach(client, bufnr)
   end
 
   if client.resolved_capabilities.rename then
-    keymap("n", "<leader>yR", "<cmd>lua vim.lsp.buf.rename()<cr>")
+    keymap("n", "<leader>yr", "<cmd>lua vim.lsp.buf.rename()<cr>")
   end
 end
 
