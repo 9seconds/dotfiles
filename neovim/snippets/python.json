@@ -97,17 +97,6 @@
     ]
   },
 
-  "Python 2 class definition": {
-    "prefix": "class",
-    "description": "A base class definition for Python2",
-    "body": [
-      "class ${1:Class}(${2:object}):",
-      "",
-      "    def __init__(self, ${3:*args, **kwargs}):",
-      "        ${5:super($1, self).__init__(${4:$3})}"
-    ]
-  },
-
   "from . import something": {
     "prefix": "fri",
     "description": "Add from . import . clause",
