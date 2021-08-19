@@ -18,9 +18,8 @@
     cla = cl -x
     s = status -sb --find-renames
     cm = commit
-    cma = cm -a
     cmm = cm -m
-    cmam = cma -m
+    cmma = cm -a -m
     fixup = cm --fixup
     amend = cm --amend
     rb = rebase --interactive --autosquash
