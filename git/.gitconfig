@@ -40,6 +40,7 @@
     lgg = l --graph
     lg = lgg --simplify-by-decoration
     ifix = "!f() { git l | fzf | cut -f1 -d' ' | head -1 | xargs -r -n 1 git fixup; }; f"
+    ia = "!f() { git status --porcelain=v2 | awk '{if ($2 != \"M.\") {print $9}}' | fzf -m --print0 | xargs -0 -r git add; }; f"
 [interactive]
     diffFilter = delta --color-only
 [delta]
