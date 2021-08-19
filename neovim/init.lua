@@ -100,6 +100,7 @@ utils:keynmap("v", "<leader>s", ":sort<cr>")
 -- terminal mappings
 utils:keynmap("n", "<leader>]", ":vsplit term://$SHELL<cr>i")
 utils:keynmap("n", "<leader>[", ":split term://$SHELL<cr>i")
+utils:keynmap("n", "<leader>\\", ":tabnew term://$SHELL<cr>i")
 utils:keynmap("t", "<c-j><c-j>", "<c-\\><c-n>")
 utils:keynmap("t", "<c-j><c-k>", "<c-\\><c-n>")
 
