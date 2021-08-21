@@ -46,6 +46,10 @@ vim.o.inccommand = "nosplit"           -- incrementally update replaces
 vim.o.completeopt = "menuone,noselect" -- asked by nvim-compe
 vim.o.shell = "/bin/bash"              -- use bash as a default shell
 
+if vim.fn.executable("rg") then
+  vim.o.grepprg = "rg --vimgrep --fixed-strings --no-heading --smart-case"
+end
+
 
 -- ----------------------------------------------------------------------------
 -- GLOBAL KEYMAPS
