@@ -182,7 +182,6 @@ require("packer").startup(function(use)
 
         indent={
           enable=true,
-          disable={"python"},
         },
 
         textobjects={
@@ -414,21 +413,7 @@ require("packer").startup(function(use)
     }
   }
 
-  use {
-    "hrsh7th/nvim-compe",
-    config=function()
-      require("compe").setup {
-        enabled=true,
-        source={
-          path=true,
-          nvim_lsp=true,
-          vsnip=false,
-          treesitter=false,
-        },
-      }
-    end
-  }
-
+  use "hrsh7th/nvim-compe"
   use "hrsh7th/vim-vsnip"
 
   use {

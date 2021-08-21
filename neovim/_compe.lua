@@ -21,11 +21,20 @@ local TERMCODE_STAB = utils:termcode("<s-tab>")
 
 -- setups nvim-compe. installs tab/stab completion
 function M.setup()
-  require("nvim-autopairs.completion.compe").setup({
+  require("nvim-autopairs.completion.compe").setup {
     map_cr=true,
     map_complete=true,
     auto_select=false,
-  })
+  }
+  require("compe").setup {
+    enabled=true,
+    source={
+      path=true,
+      nvim_lsp=true,
+      vsnip=false,
+      treesitter=false,
+    },
+  }
 
   function _G.tab_complete()
     if vim.fn.pumvisible() == 1 then
@@ -47,7 +56,6 @@ function M.setup()
   utils:keyemap("s", "<tab>", "v:lua.tab_complete()")
   utils:keyemap("i", "<s-tab>", "v:lua.stab_complete()")
   utils:keyemap("s", "<s-tab>", "v:lua.stab_complete()")
-  utils:keyemap("i", "<cr>", "compe#confirm('<cr>')")
   utils:keyemap("i", "<c-e>", "compe#close('<c-e>')")
 end
 
