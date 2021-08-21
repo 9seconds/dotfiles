@@ -17,11 +17,16 @@ local TERMCODE_CN = utils:termcode("<c-n>")
 local TERMCODE_CP = utils:termcode("<c-p>")
 local TERMCODE_TAB = utils:termcode("<tab>")
 local TERMCODE_STAB = utils:termcode("<s-tab>")
-local TERMCODE_CE = utils:termcode("<c-e>")
 
 
 -- setups nvim-compe. installs tab/stab completion
 function M.setup()
+  require("nvim-autopairs.completion.compe").setup({
+    map_cr=true,
+    map_complete=true,
+    auto_select=false,
+  })
+
   function _G.tab_complete()
     if vim.fn.pumvisible() == 1 then
       return TERMCODE_CN
@@ -38,21 +43,12 @@ function M.setup()
     return TERMCODE_STAB
   end
 
-  function _G.compe_confirm()
-    local autopairs = require("nvim-autopairs")
-    return vim.fn["compe#confirm"](autopairs.autopairs_cr())
-  end
-
-  function _G.compe_close()
-    return vim.fn["compe#close"](TERMCODE_CE)
-  end
-
   utils:keyemap("i", "<tab>", "v:lua.tab_complete()")
   utils:keyemap("s", "<tab>", "v:lua.tab_complete()")
   utils:keyemap("i", "<s-tab>", "v:lua.stab_complete()")
   utils:keyemap("s", "<s-tab>", "v:lua.stab_complete()")
-  utils:keyemap("i", "<cr>", "v:lua.compe_confirm()")
-  utils:keyemap("i", "<c-e>", "v:lua.compe_close()")
+  utils:keyemap("i", "<cr>", "compe#confirm('<cr>')")
+  utils:keyemap("i", "<c-e>", "compe#close('<c-e>')")
 end
 
 

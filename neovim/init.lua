@@ -189,12 +189,21 @@ require("packer").startup(function(use)
   use {
     "nvim-treesitter/nvim-treesitter",
     requires={
-      "nvim-treesitter/nvim-treesitter-textobjects"
+      "nvim-treesitter/nvim-treesitter-textobjects",
+      "windwp/nvim-autopairs"
     },
     run=":TSUpdate",
     config=function()
+      require("nvim-autopairs").setup {
+        check_ts=true
+      }
+
       require("nvim-treesitter.configs").setup {
         ensure_installed="maintained",
+
+        autopairs={
+          enable=true
+        },
 
         highlight={
           enable=true
@@ -424,13 +433,6 @@ require("packer").startup(function(use)
         "n", "<leader>fg",
         "<cmd>lua require('fzf-lua').grep()<cr>"
       )
-    end
-  }
-
-  use {
-    "windwp/nvim-autopairs",
-    config=function()
-      require("nvim-autopairs").setup {}
     end
   }
 
