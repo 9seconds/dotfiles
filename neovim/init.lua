@@ -266,14 +266,6 @@ require("packer").startup(function(use)
   }
 
   use {
-    "Valloric/ListToggle",
-    config=function()
-      vim.g.lt_location_list_toggle_map = '<leader>ql'
-      vim.g.lt_quickfix_list_toggle_map = '<leader>qq'
-    end
-  }
-
-  use {
     "sainnhe/gruvbox-material",
     as="gruvbox-material",
     config=function()
