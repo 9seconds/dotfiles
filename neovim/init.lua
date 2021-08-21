@@ -39,6 +39,7 @@ vim.o.signcolumn = "yes"               -- always reserve a space for a sign colu
 vim.o.smartcase = true                 -- smartcase search
 vim.o.smartindent = true               -- enable smart indent
 vim.o.smarttab = true                  -- understand when to insert and remove
+vim.o.spelllang = "en_us"              -- a language to use for spellchecking
 vim.o.splitbelow = true                -- horizontal split is always below
 vim.o.splitright = true                -- vertical split is always on the right handsight
 vim.o.swapfile = false                 -- do not use swapfile for buffer
