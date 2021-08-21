@@ -108,7 +108,6 @@ utils:keynmap("t", "<c-j><c-j>", "<c-\\><c-n>")
 utils:keynmap("t", "<c-j><c-k>", "<c-\\><c-n>")
 
 -- fast access
-utils:keynmap("n", "<leader>q", ":q<cr>")
 utils:keynmap("n", "<leader>w", ":update<cr>")
 
 
