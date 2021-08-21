@@ -62,4 +62,20 @@ function M.termcode(self, code)
 end
 
 
+function M.set_indent(self, tbl, options)
+  if type(options) == "number" then
+    options = {tabstop=options}
+  end
+
+  options.tabstop = options.tabstop or 4
+  tbl.tabstop = options.tabstop
+  tbl.softtabstop = options.softtabstop or options.tabstop
+  tbl.shiftwidth = options.shiftwidth or options.tabstop
+  tbl.smartindent = true
+  tbl.shiftround = true
+  tbl.smarttab = true
+  tbl.breakindentopt = "shift:" .. math.ceil(options.tabstop > 2 and options.tabstop / 2 or 2)
+end
+
+
 return M
