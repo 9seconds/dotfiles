@@ -11,37 +11,41 @@ utils:set_indent(vim.o, 4)
 vim.o.autoread = true                  -- suggest to reload if file was updated outside
 vim.o.backup = false                   -- do not use backup after file is written
 vim.o.breakindent = true               -- indent wrapped line
+vim.o.breakindentopt = "shift:2"       -- how to display wrapped line
 vim.o.clipboard = "unnamedplus"        -- clipboard integration
 vim.o.cmdheight = 1                    -- number of lines for commandline
 vim.o.colorcolumn = "80,120"           -- ruler lines on columns
+vim.o.completeopt = "menuone,noselect" -- asked by nvim-compe
 vim.o.cursorline = true                -- highlight a line where cursor is placed
 vim.o.eol = true                       -- always set \n at the end of the file
 vim.o.errorbells = false               -- do not issue error bell
 vim.o.expandtab = true                 -- do not use tabs, only spaces
 vim.o.hidden = true                    -- do not delete a buffer if file was deleted
 vim.o.hlsearch = true                  -- highlight search
+vim.o.inccommand = "nosplit"           -- incrementally update replaces
 vim.o.joinspaces = false               -- do not insert 2 spaces after punctuation on each line join
 vim.o.list = true                      -- show hidden characters
 vim.o.listchars = "tab:▸ ,trail:⋅,extends:❯,precedes:❮"
 vim.o.modeline = true                  -- respect file modelines
 vim.o.mouse = "a"                      -- mouse support
 vim.o.number = true                    -- show line numbers
+vim.o.shell = "/bin/bash"              -- use bash as a default shell
+vim.o.shiftround = true                -- round indent to shiftwidth
 vim.o.shortmess = "Ic"                 -- do not show a welcome page
 vim.o.showbreak = "↪"                  -- use this symbol to display a wrapped line
 vim.o.showmatch = true                 -- show matching stuff
 vim.o.showmode = false                 -- show current active mode
 vim.o.signcolumn = "yes"               -- always reserve a space for a sign column
 vim.o.smartcase = true                 -- smartcase search
+vim.o.smartindent = true               -- enable smart indent
+vim.o.smarttab = true                  -- understand when to insert and remove
 vim.o.splitbelow = true                -- horizontal split is always below
 vim.o.splitright = true                -- vertical split is always on the right handsight
 vim.o.swapfile = false                 -- do not use swapfile for buffer
 vim.o.termguicolors = true             -- enable truecolors
+vim.o.viminfo = ""                     -- do not use viminfo
 vim.o.visualbell = false               -- do not issue visualbell
 vim.o.writebackup = false              -- do not create backup during a file is written
-vim.o.viminfo = ""                     -- do not use viminfo
-vim.o.inccommand = "nosplit"           -- incrementally update replaces
-vim.o.completeopt = "menuone,noselect" -- asked by nvim-compe
-vim.o.shell = "/bin/bash"              -- use bash as a default shell
 
 if vim.fn.executable("rg") then
   vim.o.grepprg = "rg --vimgrep --fixed-strings --no-heading --smart-case"
@@ -128,15 +132,6 @@ augroup StripTrailingWhitespaces
 augroup END
 ]])
 
--- delete rulers from quickfix window
-vim.cmd([[
-augroup NoQuickfixRulers
-  autocmd!
-  autocmd FileType qf setlocal colorcolumn=
-augroup END
-]])
-
-
 -- hide cursorline when it makes sense
 vim.cmd([[
 augroup HideCursorline
@@ -150,24 +145,6 @@ vim.cmd([[
 augroup CorrectCTRLDForTerminal
   autocmd!
   autocmd TermClose * call feedkeys("\<esc>")
-augroup END
-]])
-
--- settings for filetypes
-vim.cmd([[
-augroup FileTypeMake
-  autocmd!
-  autocmd FileType make setlocal noexpandtab
-augroup END
-
-augroup FileTypeYAML
-  autocmd!
-  autocmd FileType yaml setlocal ts=2 sw=2 sts=2 expandtab
-augroup END
-
-augroup FileTypeJSON
-  autocmd!
-  autocmd FileType json setlocal ts=2 sw=2 sts=2 expandtab
 augroup END
 ]])
 

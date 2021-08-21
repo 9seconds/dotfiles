@@ -71,10 +71,6 @@ function M.set_indent(self, tbl, options)
   tbl.tabstop = options.tabstop
   tbl.softtabstop = options.softtabstop or options.tabstop
   tbl.shiftwidth = options.shiftwidth or options.tabstop
-  tbl.smartindent = true
-  tbl.shiftround = true
-  tbl.smarttab = true
-  tbl.breakindentopt = "shift:" .. math.ceil(options.tabstop > 2 and options.tabstop / 2 or 2)
 end
 
 
