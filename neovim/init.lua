@@ -98,7 +98,7 @@ utils:keynmap("i", "jk", "<esc>")
 utils:keynmap("i", "jj", "<esc>")
 
 -- sort
-utils:keynmap("v", "<leader>s", ":sort<cr>")
+utils:keynmap("v", "<leader>s", ":sort i<cr>")
 
 -- terminal mappings
 utils:keynmap("n", "<leader>]", ":vsplit term://$SHELL<cr>i")
