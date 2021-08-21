@@ -34,8 +34,6 @@ function M.setup()
     return TERMCODE_CK
   end
 
-  utils:keyemap("n", "c", "v:lua.vsnip_cut_text()")
-  utils:keyemap("x", "c", "v:lua.vsnip_cut_text()")
   utils:keyemap("i", "<c-j>", "v:lua.vsnip_cj()")
   utils:keyemap("s", "<c-j>", "v:lua.vsnip_cj()")
   utils:keyemap("i", "<c-k>", "v:lua.vsnip_ck()")
