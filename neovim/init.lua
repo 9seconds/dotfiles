@@ -126,7 +126,7 @@ augroup END
 vim.cmd([[
 augroup StripTrailingWhitespaces
   autocmd!
-  autocmd BufWritePre * :%s/\s\+$//e
+  autocmd BufWritePre * let w:wv = winsaveview() | %s/\s\+$//e | call winrestview(w:wv)
 augroup END
 ]])
 
