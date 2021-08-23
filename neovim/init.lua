@@ -202,15 +202,6 @@ require("packer").startup(function(use)
   }
 
   use {
-    "airblade/vim-rooter",
-    config=function()
-      vim.g.rooter_patterns = {".git"}
-      vim.g.rooter_change_directory_for_non_project_files = "current"
-      vim.g.rooter_silent_chdir = 1
-    end
-  }
-
-  use {
     "lewis6991/gitsigns.nvim",
     requires={
       "nvim-lua/plenary.nvim",
@@ -314,6 +305,16 @@ require("packer").startup(function(use)
       vim.g.nvim_tree_git_hl = 0
       vim.g.nvim_tree_hide_dotfiles = 1
       vim.g.nvim_tree_lsp_diagnostics = 0
+    end
+  }
+
+  use {
+    "ahmedkhalf/project.nvim",
+    config=function()
+      require("project_nvim").setup {}
+
+      vim.g.nvim_tree_update_cwd = 1
+      vim.g.nvim_tree_respect_buf_cwd = 1
     end
   }
 
