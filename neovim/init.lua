@@ -442,6 +442,20 @@ require("packer").startup(function(use)
       utils:keynmap("n", "<leader>z", ":ZenMode<cr>")
     end
   }
+
+  use {
+    "romgrk/nvim-treesitter-context",
+    config=function()
+      local utils = require("_utils")
+
+      require("treesitter-context").setup {
+        enable=false,
+        throttle=true,
+      }
+
+      utils:keynmap("n", "<f5>", ":TSContextToggle<cr>")
+    end
+  }
 end)
 
 
