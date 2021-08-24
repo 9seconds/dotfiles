@@ -457,6 +457,23 @@ require("packer").startup(function(use)
       utils:keynmap("n", "<f5>", ":TSContextToggle<cr>")
     end
   }
+
+  use {
+    "abecodes/tabout.nvim",
+    config=function()
+      local utils = require("_utils")
+
+      require("tabout").setup {
+        tabkey="",
+        backwards_tabkey="",
+        enable_backwards=false,
+        act_as_tab=false,
+        act_as_shift_tab=false,
+      }
+
+      utils:keymap("i", "<c-j>", "<Plug>(TaboutMulti)")
+    end
+  }
 end)
 
 
