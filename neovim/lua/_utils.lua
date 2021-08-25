@@ -60,6 +60,7 @@ function M.termcode(self, code)
 end
 
 
+-- sets a consistent indentation settings
 function M.set_indent(self, tbl, options)
   if type(options) == "number" then
     options = {tabstop=options}

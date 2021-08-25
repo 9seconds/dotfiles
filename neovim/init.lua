@@ -13,7 +13,7 @@ vim.o.breakindentopt = "shift:2"       -- how to display wrapped line
 vim.o.clipboard = "unnamedplus"        -- clipboard integration
 vim.o.cmdheight = 1                    -- number of lines for commandline
 vim.o.colorcolumn = "80,120"           -- ruler lines on columns
-vim.o.completeopt = "menuone,noselect" -- asked by nvim-compe
+vim.o.completeopt = "menuone,noselect" -- asked by nvim-cmp
 vim.o.cursorline = true                -- highlight a line where cursor is placed
 vim.o.eol = true                       -- always set \n at the end of the file
 vim.o.errorbells = false               -- do not issue error bell
@@ -54,7 +54,6 @@ end
 -- ----------------------------------------------------------------------------
 -- GLOBAL KEYMAPS
 -- ----------------------------------------------------------------------------
-
 -- space as a leader
 utils:keynmap("", "<space>", "<nop>")
 vim.g.mapleader = " "
@@ -154,20 +153,52 @@ augroup END
 require("packer").startup(function(use)
   use "wbthomason/packer.nvim"
 
+  use "ggandor/lightspeed.nvim"
+  use "junegunn/vim-slash"
+  use "machakann/vim-textobj-delimited"
+  use "tpope/vim-repeat"
   use "tpope/vim-sensible"
+  use "tpope/vim-surround"
+
+  use {
+    "hrsh7th/nvim-cmp",
+    requires={
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-nvim-lsp",
+    },
+    config=function()
+      local cmp = require("cmp")
+
+      cmp.setup {
+        sources={
+          {name="nvim_lsp"},
+          {name="path"},
+          {name="buffer"},
+        },
+
+        mapping={
+          ["<tab>"]=cmp.mapping.select_next_item(),
+          ["<s-tab>"]=cmp.mapping.select_prev_item(),
+          ["<c-d>"]=cmp.mapping.scroll_docs(-4),
+          ["<c-f>"]=cmp.mapping.scroll_docs(4),
+          ["<c-e>"] = cmp.mapping.close(),
+          ['<CR>'] = cmp.mapping.confirm {
+            behavior=cmp.ConfirmBehavior.Replace,
+            select=true,
+          }
+        }
+      }
+    end
+  }
 
   use {
     "nvim-treesitter/nvim-treesitter",
+    opt=false,
     requires={
       "nvim-treesitter/nvim-treesitter-textobjects",
-      "windwp/nvim-autopairs"
     },
-    run=":TSUpdate",
     config=function()
-      require("nvim-autopairs").setup {
-        check_ts=true
-      }
-
       require("nvim-treesitter.configs").setup {
         ensure_installed="maintained",
 
@@ -202,20 +233,94 @@ require("packer").startup(function(use)
   }
 
   use {
+    "windwp/nvim-autopairs",
+    opt=false,
+    after={
+      "nvim-treesitter",
+      "nvim-cmp",
+    },
+    config=function()
+      require("nvim-autopairs").setup {
+        check_ts=true,
+      }
+      require("nvim-autopairs.completion.cmp").setup {
+        map_cr=true,
+        map_complete=true,
+      }
+    end
+  }
+
+  use {
+    "lukas-reineke/indent-blankline.nvim",
+    opt=false,
+    after="nvim-treesitter",
+    config=function()
+      require("indent_blankline").setup {
+        use_treesiter=true,
+        char_list = {"│", "┆", "┊", "|", "¦"},
+        show_first_indent_level=false,
+        show_trailing_blankline_indent=false,
+        show_end_of_line=false,
+        buftype_exclude={"terminal"},
+      }
+    end
+  }
+
+  use {
+    "sainnhe/gruvbox-material",
+    after="nvim-treesitter",
+    config=function()
+      vim.g.background = "dark"
+      vim.g.gruvbox_material_background = "soft"
+      vim.g.gruvbox_material_enable_italic = 1
+      vim.g.gruvbox_material_enable_bold = 1
+      vim.g.gruvbox_material_better_performance = 1
+      vim.api.nvim_command("colorscheme gruvbox-material")
+    end
+  }
+
+  use {
+    "romgrk/nvim-treesitter-context",
+    opt=false,
+    after="nvim-treesitter",
+    config=function()
+      local utils = require("_utils")
+
+      require("treesitter-context").setup {
+        enable=false,
+        throttle=true,
+      }
+
+      utils:keynmap("n", "<f5>", ":TSContextToggle<cr>")
+    end
+  }
+
+  use {
+    "abecodes/tabout.nvim",
+    opt=false,
+    after="nvim-treesitter",
+    config=function()
+      local utils = require("_utils")
+
+      require("tabout").setup {
+        tabkey="",
+        backwards_tabkey="",
+        enable_backwards=false,
+        act_as_tab=false,
+        act_as_shift_tab=false,
+      }
+    end
+  }
+
+  use {
     "lewis6991/gitsigns.nvim",
     requires={
       "nvim-lua/plenary.nvim",
     },
     config=function()
-      require('gitsigns').setup()
+      require("gitsigns").setup()
     end
   }
-
-  use "tpope/vim-repeat"
-  use "ggandor/lightspeed.nvim"
-  use "tpope/vim-surround"
-  use "junegunn/vim-slash"
-  use "machakann/vim-textobj-delimited"
 
   use {
     "winston0410/range-highlight.nvim",
@@ -231,19 +336,6 @@ require("packer").startup(function(use)
     "crispgm/nvim-tabline",
     config=function()
       require("tabline").setup {}
-    end
-  }
-
-  use {
-    "sainnhe/gruvbox-material",
-    as="gruvbox-material",
-    config=function()
-      vim.g.background = "dark"
-      vim.g.gruvbox_material_background = "soft"
-      vim.g.gruvbox_material_enable_italic = 1
-      vim.g.gruvbox_material_enable_bold = 1
-      vim.g.gruvbox_material_better_performance = 1
-      vim.api.nvim_command("colorscheme gruvbox-material")
     end
   }
 
@@ -318,19 +410,6 @@ require("packer").startup(function(use)
     end
   }
 
-  use {
-    "lukas-reineke/indent-blankline.nvim",
-    config=function()
-      require("indent_blankline").setup {
-        use_treesiter=true,
-        char_list = {"│", "┆", "┊", "|", "¦"},
-        show_first_indent_level=false,
-        show_trailing_blankline_indent=false,
-        show_end_of_line=false,
-        buftype_exclude={"terminal"},
-      }
-    end
-  }
 
   use {
     "b3nj5m1n/kommentary",
@@ -413,9 +492,6 @@ require("packer").startup(function(use)
     }
   }
 
-  use "hrsh7th/nvim-compe"
-  use "hrsh7th/vim-vsnip"
-
   use {
     "folke/zen-mode.nvim",
     requires={
@@ -445,35 +521,33 @@ require("packer").startup(function(use)
   }
 
   use {
-    "romgrk/nvim-treesitter-context",
+    "hrsh7th/vim-vsnip",
+    opt=false,
+    after="tabout.nvim",
     config=function()
       local utils = require("_utils")
 
-      require("treesitter-context").setup {
-        enable=false,
-        throttle=true,
-      }
+      vim.g.vsnip_snippet_dir = vim.fn.expand("~/.config/nvim/snippets")
 
-      utils:keynmap("n", "<f5>", ":TSContextToggle<cr>")
+      utils:keyemap(
+        "i", "<c-j>",
+        "vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<Plug>(TaboutMulti)'"
+      )
+      utils:keyemap(
+        "s", "<c-j>",
+        "vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<Plug>(TaboutMulti)'"
+      )
+      utils:keyemap(
+        "i", "<c-k>",
+        "vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)' : '<c-k>'"
+      )
+      utils:keyemap(
+        "s", "<c-k>",
+        "vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)' : '<c-k>'"
+      )
     end
   }
 
-  use {
-    "abecodes/tabout.nvim",
-    config=function()
-      local utils = require("_utils")
-
-      require("tabout").setup {
-        tabkey="",
-        backwards_tabkey="",
-        enable_backwards=false,
-        act_as_tab=false,
-        act_as_shift_tab=false,
-      }
-
-      utils:keymap("i", "<c-j>", "<Plug>(TaboutMulti)")
-    end
-  }
 end)
 
 
@@ -482,6 +556,4 @@ pcall(function()
 end)
 
 
-require("_vsnip"):setup()
-require("_compe"):setup()
 require("_lsp"):setup()
