@@ -13,7 +13,7 @@ vim.o.breakindentopt = "shift:2"       -- how to display wrapped line
 vim.o.clipboard = "unnamedplus"        -- clipboard integration
 vim.o.cmdheight = 1                    -- number of lines for commandline
 vim.o.colorcolumn = "80,120"           -- ruler lines on columns
-vim.o.completeopt = "menuone,noselect" -- asked by nvim-cmp
+vim.o.completeopt = "menu,menuone,preview" -- required for nvim-cmp
 vim.o.cursorline = true                -- highlight a line where cursor is placed
 vim.o.eol = true                       -- always set \n at the end of the file
 vim.o.errorbells = false               -- do not issue error bell
@@ -166,9 +166,11 @@ require("packer").startup(function(use)
       "hrsh7th/cmp-path",
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-nvim-lsp",
+      "onsails/lspkind-nvim",
     },
     config=function()
       local cmp = require("cmp")
+      local lspkind = require("lspkind")
 
       cmp.setup {
         sources={
@@ -177,13 +179,20 @@ require("packer").startup(function(use)
           {name="buffer"},
         },
 
+        formatting = {
+          format=function(entry, vim_item)
+            vim_item.kind = lspkind.presets.default[vim_item.kind]
+            return vim_item
+          end
+        },
+
         mapping={
           ["<tab>"]=cmp.mapping.select_next_item(),
           ["<s-tab>"]=cmp.mapping.select_prev_item(),
           ["<c-d>"]=cmp.mapping.scroll_docs(-4),
           ["<c-f>"]=cmp.mapping.scroll_docs(4),
           ["<c-e>"] = cmp.mapping.close(),
-          ['<CR>'] = cmp.mapping.confirm {
+          ["<CR>"] = cmp.mapping.confirm {
             behavior=cmp.ConfirmBehavior.Replace,
             select=true,
           }
