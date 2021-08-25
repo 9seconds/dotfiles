@@ -172,6 +172,11 @@ require("packer").startup(function(use)
       local cmp = require("cmp")
       local lspkind = require("lspkind")
 
+      local presets = {}
+      for k, v in pairs(lspkind.presets.default) do
+        presets[k] = v .. " " .. k
+      end
+
       cmp.setup {
         sources={
           {name="nvim_lsp"},
@@ -181,7 +186,7 @@ require("packer").startup(function(use)
 
         formatting = {
           format=function(entry, vim_item)
-            vim_item.kind = lspkind.presets.default[vim_item.kind]
+            vim_item.kind = presets[vim_item.kind]
             return vim_item
           end
         },
