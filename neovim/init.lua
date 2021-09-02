@@ -562,6 +562,26 @@ require("packer").startup(function(use)
     end
   }
 
+  use {
+    "folke/trouble.nvim",
+    requires={
+      "kyazdani42/nvim-web-devicons"
+    },
+    config=function()
+      require("trouble").setup {
+        mode="lsp_document_diagnostics",
+      }
+
+      local utils = require("_utils")
+
+      utils:keynmap("n", "<leader>xx", "<cmd>TroubleToggle<cr>")
+      utils:keynmap("n", "<leader>xw", "<cmd>TroubleToggle lsp_workspace_diagnostics<cr>")
+      utils:keynmap("n", "<leader>xd", "<cmd>TroubleToggle lsp_document_diagnostics<cr>")
+      utils:keynmap("n", "<leader>xq", "<cmd>TroubleToggle quickfix<cr>")
+      utils:keynmap("n", "<leader>xl", "<cmd>TroubleToggle loclist<cr>")
+    end
+  }
+
 end)
 
 
