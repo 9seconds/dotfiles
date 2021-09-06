@@ -50,6 +50,12 @@ if vim.fn.executable("rg") then
   vim.o.grepprg = "rg --vimgrep --fixed-strings --no-heading --smart-case"
 end
 
+if vim.fn.executable("prettypar") then
+  vim.o.formatprg = "prettypar"
+elseif vim.fn.executable("par") then
+  vim.o.formatprg = "par"
+end
+
 
 -- ----------------------------------------------------------------------------
 -- GLOBAL KEYMAPS
