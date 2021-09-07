@@ -92,10 +92,10 @@ utils:keynmap("n", "<c-b>", "<c-b>zz")
 utils:keynmap("n", "<leader>h", ":noh<cr>")
 
 -- split navigation
-utils:keynmap("n", "<c-h>", "<c-w>h")
-utils:keynmap("n", "<c-j>", "<c-w>j")
-utils:keynmap("n", "<c-k>", "<c-w>k")
-utils:keynmap("n", "<c-l>", "<c-w>l")
+utils:keynmap("n", "<a-h>", "<c-w>h")
+utils:keynmap("n", "<a-j>", "<c-w>j")
+utils:keynmap("n", "<a-k>", "<c-w>k")
+utils:keynmap("n", "<a-l>", "<c-w>l")
 
 -- exit insert mode
 utils:keynmap("i", "jk", "<esc>")
@@ -110,6 +110,10 @@ utils:keynmap("n", "<leader>[", ":split term://$SHELL<cr>i")
 utils:keynmap("n", "<leader>\\", ":tabnew term://$SHELL<cr>i")
 utils:keynmap("t", "<c-j><c-j>", "<c-\\><c-n>")
 utils:keynmap("t", "<c-j><c-k>", "<c-\\><c-n>")
+utils:keynmap("t", "<a-h>", "<c-\\><c-n><c-w>h")
+utils:keynmap("t", "<a-j>", "<c-\\><c-n><c-w>j")
+utils:keynmap("t", "<a-k>", "<c-\\><c-n><c-w>k")
+utils:keynmap("t", "<a-l>", "<c-\\><c-n><c-w>l")
 
 -- fast access
 utils:keynmap("n", "<leader>w", ":update<cr>")
