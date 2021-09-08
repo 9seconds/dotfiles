@@ -105,9 +105,6 @@ utils:keynmap("i", "jj", "<esc>")
 utils:keynmap("v", "<leader>s", ":sort i<cr>")
 
 -- terminal mappings
-utils:keynmap("n", "<leader>]", ":vsplit term://$SHELL<cr>i")
-utils:keynmap("n", "<leader>[", ":split term://$SHELL<cr>i")
-utils:keynmap("n", "<leader>\\", ":tabnew term://$SHELL<cr>i")
 utils:keynmap("t", "<c-j><c-j>", "<c-\\><c-n>")
 utils:keynmap("t", "<c-j><c-k>", "<c-\\><c-n>")
 utils:keynmap("t", "<a-h>", "<c-\\><c-n><c-w>h")
@@ -589,6 +586,44 @@ require("packer").startup(function(use)
       utils:keynmap("n", "<leader>xd", "<cmd>TroubleToggle lsp_document_diagnostics<cr>")
       utils:keynmap("n", "<leader>xq", "<cmd>TroubleToggle quickfix<cr>")
       utils:keynmap("n", "<leader>xl", "<cmd>TroubleToggle loclist<cr>")
+    end
+  }
+
+  use {
+    "akinsho/toggleterm.nvim",
+    config=function()
+      require("toggleterm").setup {
+        open_mapping="<c-\\>",
+        hide_numbers=true,
+        shade_terminals=false,
+        shell=vim.env.SHELL or vim.o.shell,
+        size=function(term)
+          if term.direction == "horizontal" then
+            return 20
+          end
+
+          return vim.o.columns * 0.4
+        end
+      }
+
+      local Terminal = require("toggleterm.terminal").Terminal
+
+      local lazygit = Terminal:new {
+        cmd="lazygit",
+        dir="git_dir",
+        direction="float",
+        float_opts={
+          border="double",
+        },
+        hidden=true,
+        count=3,
+      }
+
+      function _G.lazygit_toggle()
+        lazygit:toggle()
+      end
+
+      require("_utils"):keynmap("n", "<a-g>", "<cmd>lua lazygit_toggle()<cr>")
     end
   }
 
