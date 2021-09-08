@@ -594,6 +594,7 @@ require("packer").startup(function(use)
     config=function()
       require("toggleterm").setup {
         open_mapping="<c-\\>",
+        direction="vertical",
         hide_numbers=true,
         shade_terminals=false,
         shell=vim.env.SHELL or vim.o.shell,
@@ -601,8 +602,7 @@ require("packer").startup(function(use)
           if term.direction == "horizontal" then
             return 20
           end
-
-          return vim.o.columns * 0.4
+          return vim.o.columns / 2
         end
       }
 
