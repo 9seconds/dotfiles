@@ -681,6 +681,25 @@ require("packer").startup(function(use)
     end
   }
 
+  use {
+    "mizlan/iswap.nvim",
+    opt=false,
+    after={
+      "nvim-treesitter",
+      "vim-repeat"
+    },
+    config=function()
+      local utils = require("_utils")
+
+      require("iswap").setup {
+        keys="qwertyuiop",
+        autoswap=true,
+      }
+
+      utils:keynmap("n", "<leader>s", "<cmd>ISwap<cr>")
+    end
+  }
+
 end)
 
 
