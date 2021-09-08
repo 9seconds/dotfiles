@@ -592,21 +592,55 @@ require("packer").startup(function(use)
   use {
     "akinsho/toggleterm.nvim",
     config=function()
+      local utils = require("_utils")
+      local Terminal = require("toggleterm.terminal").Terminal
+
       require("toggleterm").setup {
-        open_mapping="<c-\\>",
-        direction="vertical",
         hide_numbers=true,
         shade_terminals=false,
         shell=vim.env.SHELL or vim.o.shell,
         size=function(term)
           if term.direction == "horizontal" then
-            return 20
+            return 23
+          elseif term.direction == "vertical" then
+            return vim.o.columns / 2
           end
-          return vim.o.columns / 2
         end
       }
 
-      local Terminal = require("toggleterm.terminal").Terminal
+      local horizonta = Terminal:new {
+        dir="git_dir",
+        direction="horizontal",
+        hidden=true,
+        count=1,
+        on_open=function(term)
+          local keymap = utils:get_buf_keymap(
+            term.bufnr, {
+              noremap=true,
+              silent=true
+            }
+          )
+
+          keymap("t", "<a-\\>", "<cmd>lua term_horizonta_toggle()<cr>")
+        end
+      }
+
+      local vertica = Terminal:new {
+        dir="git_dir",
+        direction="vertical",
+        hidden=true,
+        count=2,
+        on_open=function(term)
+          local keymap = utils:get_buf_keymap(
+            term.bufnr, {
+              noremap=true,
+              silent=true
+            }
+          )
+
+          keymap("t", "<a-]>", "<cmd>lua term_vertica_toggle()<cr>")
+        end
+      }
 
       local lazygit = Terminal:new {
         cmd="lazygit",
@@ -617,13 +651,33 @@ require("packer").startup(function(use)
         },
         hidden=true,
         count=3,
+        on_open=function(term)
+          local keymap = utils:get_buf_keymap(
+            term.bufnr, {
+              noremap=true,
+              silent=true
+            }
+          )
+
+          keymap("t", "<a-g>", "<cmd>close<cr>")
+        end
       }
 
-      function _G.lazygit_toggle()
+      function _G.term_horizonta_toggle()
+        horizonta:toggle()
+      end
+
+      function _G.term_vertica_toggle()
+        vertica:toggle()
+      end
+
+      function _G.term_lazygit_toggle()
         lazygit:toggle()
       end
 
-      require("_utils"):keynmap("n", "<a-g>", "<cmd>lua lazygit_toggle()<cr>")
+      utils:keynmap("n", "<a-\\>", "<cmd>lua term_horizonta_toggle()<cr>")
+      utils:keynmap("n", "<a-]>", "<cmd>lua term_vertica_toggle()<cr>")
+      utils:keynmap("n", "<a-g>", "<cmd>lua term_lazygit_toggle()<cr>")
     end
   }
 
