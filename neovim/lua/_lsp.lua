@@ -1,5 +1,5 @@
 local M = {
-  server_configs={},
+  server_setups={},
 }
 
 -- this function is executed when LSP attaches to a buffer.
@@ -74,7 +74,7 @@ function M.active_servers(self)
   local active = {}
 
   for server, _ in pairs(self:available_servers()) do
-    active[server] = self.server_configs[server]
+    active[server] = self.server_setups[server]
   end
 
   return active
@@ -84,7 +84,6 @@ end
 function M.new_server_config(self)
   return {
     on_attach=on_attach,
-    capabilities=capabilities,
     flags={
       debounce_text_changes=100,
     }
@@ -93,21 +92,10 @@ end
 
 -- adds a new server to a list of used
 function M.use_server(self, name, config)
-  self.server_configs[name] = config or self:new_server_config()
-end
-
--- defines how to manage a custom server
-function M.define_custom_server(self, language, lsp_name, config)
-  local lspinstall_servers = require("lspinstall/servers")
-  local lspinstall_util = require("lspinstall/util")
   local utils = require("_utils")
 
-  lspinstall_servers[language] = utils:tbl_merge(
-    {
-      install_script="",
-      uninstall_script="rm -rf *"
-    },
-    lspinstall_util.extract_config(lsp_name) or {},
+  self.server_configs[name] = utils:tbl_merge(
+    self:new_server_config(),
     config or {}
   )
 end
@@ -125,11 +113,12 @@ function M.setup(self)
     end
   end
 
-  do_setup()
-  lspinstall.post_install_hook = function()
+  function lspinstall.post_install_hook()
     do_setup()
     vim.cmd("bufdo e")
   end
+
+  do_setup()
 end
 
 
