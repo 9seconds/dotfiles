@@ -452,6 +452,13 @@ require("packer").startup(function(use)
     config=function()
       local utils = require("_utils")
 
+      local files_command = "find . -type f"
+      if vim.fn.executable("fd") then
+        files_command = "fd -c never -t f"
+      elseif vm.fn.executable("rg") then
+        files_command = "rg --files -c never"
+      end
+
       require("fzf-lua").setup {
         winopts={
           win_height=0.7,
@@ -469,6 +476,7 @@ require("packer").startup(function(use)
           },
         },
         files={
+          cmd=files_command,
           git_icons=false,
         },
         git={
