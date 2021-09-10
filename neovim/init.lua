@@ -89,7 +89,6 @@ utils:keynmap("n", "<c-d>", "<c-d>zz")
 utils:keynmap("n", "<c-u>", "<c-u>zz")
 utils:keynmap("n", "<c-f>", "<c-f>zz")
 utils:keynmap("n", "<c-b>", "<c-b>zz")
-utils:keynmap("n", "<leader>h", ":noh<cr>")
 
 -- split navigation
 utils:keynmap("n", "<a-h>", "<c-w>h")
