@@ -91,10 +91,10 @@ utils:keynmap("n", "<c-f>", "<c-f>zz")
 utils:keynmap("n", "<c-b>", "<c-b>zz")
 
 -- split navigation
-utils:keynmap("n", "<a-h>", "<c-w>h")
-utils:keynmap("n", "<a-j>", "<c-w>j")
-utils:keynmap("n", "<a-k>", "<c-w>k")
-utils:keynmap("n", "<a-l>", "<c-w>l")
+utils:keynmap("n", "<c-h>", "<c-w>h")
+utils:keynmap("n", "<c-j>", "<c-w>j")
+utils:keynmap("n", "<c-k>", "<c-w>k")
+utils:keynmap("n", "<c-l>", "<c-w>l")
 
 -- exit insert mode
 utils:keynmap("i", "jk", "<esc>")
