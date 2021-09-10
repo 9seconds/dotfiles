@@ -739,9 +739,9 @@ require("packer").startup(function(use)
 end)
 
 
-pcall(function()
+if vim.fn.filereadable(vim.fn.expand("$HOME/.local-vimrc.lua")) then
   vim.api.nvim_command("source $HOME/.local-vimrc.lua")
-end)
+end
 
 
 require("_lsp"):setup()
