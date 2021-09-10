@@ -94,7 +94,7 @@ end
 function M.use_server(self, name, config)
   local utils = require("_utils")
 
-  self.server_configs[name] = utils:tbl_merge(
+  self.server_setups[name] = utils:tbl_merge(
     self:new_server_config(),
     config or {}
   )
