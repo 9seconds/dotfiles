@@ -396,12 +396,7 @@ require("packer").startup(function(use)
     config=function()
       local utils = require("_utils")
 
-      utils:keynmap("n", "<f2>", ":NvimTreeToggle<cr>")
-      utils:keynmap("n", "<f3>", ":NvimTreeFindFile<cr>")
-
-      vim.g.nvim_tree_width = 30
       vim.g.nvim_tree_gitignore = 0
-      vim.g.nvim_tree_auto_close = true
       vim.g.nvim_tree_ignore = {
         ".git",
         "*.pyc",
@@ -416,7 +411,18 @@ require("packer").startup(function(use)
       }
       vim.g.nvim_tree_git_hl = 0
       vim.g.nvim_tree_hide_dotfiles = 1
-      vim.g.nvim_tree_lsp_diagnostics = 0
+
+      require("nvim-tree").setup {
+        auto_close=true,
+        update_cwd=true,
+        lsp_diagnostics=false,
+        view={
+          width=30,
+        }
+      }
+
+      utils:keynmap("n", "<f2>", ":NvimTreeToggle<cr>")
+      utils:keynmap("n", "<f3>", ":NvimTreeFindFile<cr>")
     end
   }
 
@@ -425,7 +431,6 @@ require("packer").startup(function(use)
     config=function()
       require("project_nvim").setup {}
 
-      vim.g.nvim_tree_update_cwd = 1
       vim.g.nvim_tree_respect_buf_cwd = 1
     end
   }
