@@ -415,7 +415,9 @@ require("packer").startup(function(use)
       require("nvim-tree").setup {
         auto_close=true,
         update_cwd=true,
-        lsp_diagnostics=false,
+        diagnostics={
+          enable=false
+        },
         view={
           width=30,
         }
