@@ -467,13 +467,14 @@ require("packer").startup(function(use)
 
       require("fzf-lua").setup {
         winopts={
-          win_height=0.7,
-          win_width=0.7,
-          win_row=0.4,
-          win_border=false,
+          height=0.7,
+          width=0.7,
+          row=0.4,
+          border=false,
+          preview={
+            horizontal="right:45%",
+          },
         },
-        preview_horizontal="right:45%",
-        default_previewer="bat",
         previewers={
           bat={
             args="--color always",
