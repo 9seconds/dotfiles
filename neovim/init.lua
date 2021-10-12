@@ -472,6 +472,7 @@ require("packer").startup(function(use)
           row=0.4,
           border=false,
           preview={
+            default="bat",
             horizontal="right:45%",
           },
         },
