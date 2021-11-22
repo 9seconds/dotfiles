@@ -1,5 +1,5 @@
 local M = {
-  server_setups={},
+  server_configs={}
 }
 
 -- this function is executed when LSP attaches to a buffer.
@@ -55,71 +55,29 @@ local function on_attach(client, bufnr)
   end
 end
 
-
--- returns a table with all available servers (that were installed on
--- a disk)
-function M.available_servers(self)
-  local installed = {}
-  local lspinstall = require("lspinstall")
-
-  for _, server in pairs(lspinstall.installed_servers()) do
-    installed[server] = true
-  end
-
-  return installed
-end
-
--- returns a table with active servers (installed and requested)
-function M.active_servers(self)
-  local active = {}
-
-  for server, _ in pairs(self:available_servers()) do
-    active[server] = self.server_setups[server]
-  end
-
-  return active
-end
-
--- generates a new config for LSP setup function
-function M.new_server_config(self)
-  return {
-    on_attach=on_attach,
-    flags={
-      debounce_text_changes=100,
-    }
-  }
-end
-
--- adds a new server to a list of used
-function M.use_server(self, name, config)
-  local utils = require("_utils")
-
-  self.server_setups[name] = utils:tbl_merge(
-    self:new_server_config(),
-    config or {}
-  )
+-- add/modify config
+function M.configure_server(self, name, config)
+  self.server_configs[name] = config
 end
 
 -- do setup lsp
 function M.setup(self)
-  local lspconfig = require("lspconfig")
-  local lspinstall = require("lspinstall")
+  local lsp_installer = require("nvim-lsp-installer")
 
-  local function do_setup()
-    lspinstall.setup()
+  lsp_installer.on_server_ready(function(server)
+    local utils = require("_utils")
+    local opts = utils:tbl_merge(
+      {
+        on_attach=on_attach,
+        flags={
+          debounce_text_changes=100,
+        },
+      },
+      self.server_configs[server.name] or {}
+    )
 
-    for server, config in pairs(self:active_servers()) do
-      lspconfig[server].setup(config)
-    end
-  end
-
-  function lspinstall.post_install_hook()
-    do_setup()
-    vim.cmd("bufdo e")
-  end
-
-  do_setup()
+    server:setup(opts)
+  end)
 end
-
 
 return M
