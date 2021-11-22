@@ -260,12 +260,20 @@ require("packer").startup(function(use)
       "nvim-cmp",
     },
     config=function()
+      local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+      local cmp = require("cmp")
+
+      cmp.event:on(
+        "confirm_done",
+        cmp_autopairs.on_confirm_done {
+          map_char={
+            tex="",
+          },
+				}
+      )
+
       require("nvim-autopairs").setup {
         check_ts=true,
-      }
-      require("nvim-autopairs.completion.cmp").setup {
-        map_cr=true,
-        map_complete=true,
       }
     end
   }
