@@ -405,12 +405,6 @@ require("packer").startup(function(use)
       local utils = require("_utils")
 
       vim.g.nvim_tree_gitignore = 0
-      vim.g.nvim_tree_ignore = {
-        ".git",
-        "*.pyc",
-        "*.pyo",
-        "__pycache__"
-      }
       vim.g.nvim_tree_show_icons = {
         git=0,
         folders=1,
@@ -418,7 +412,6 @@ require("packer").startup(function(use)
         folder_arrows=1,
       }
       vim.g.nvim_tree_git_hl = 0
-      vim.g.nvim_tree_hide_dotfiles = 1
 
       require("nvim-tree").setup {
         auto_close=true,
@@ -428,7 +421,16 @@ require("packer").startup(function(use)
         },
         view={
           width=30,
-        }
+        },
+        filters={
+          dotfiles=false,
+          custom={
+            ".git",
+            "*.pyc",
+            "*.pyo",
+            "__pycache__",
+          },
+        },
       }
 
       utils:keynmap("n", "<f2>", ":NvimTreeToggle<cr>")
