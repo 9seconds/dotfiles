@@ -548,6 +548,15 @@ require("packer").startup(function(use)
   }
 
   use {
+    "ray-x/lsp_signature.nvim",
+    config=function()
+      require("lsp_signature").setup {
+        hint_enable=false
+      }
+    end
+  }
+
+  use {
     "max397574/better-escape.nvim",
     config=function()
       require("better_escape").setup()
