@@ -540,6 +540,14 @@ require("packer").startup(function(use)
   }
 
   use {
+    "jose-elias-alvarez/null-ls.nvim",
+    requires={
+      "nvim-lua/plenary.nvim",
+      "neovim/nvim-lspconfig"
+    }
+  }
+
+  use {
     "max397574/better-escape.nvim",
     config=function()
       require("better_escape").setup()

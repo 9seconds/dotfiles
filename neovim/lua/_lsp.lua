@@ -1,5 +1,13 @@
 local M = {
-  server_configs={}
+  servers={},
+  null_ls={
+    code_actions={},
+    diagnostics={},
+    formattings={},
+    hovers={},
+    completions={},
+    customs={}
+  }
 }
 
 -- this function is executed when LSP attaches to a buffer.
@@ -12,8 +20,8 @@ local function on_attach(client, bufnr)
   set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
 
   if client.resolved_capabilities.code_action then
-    keymap("n", "<leader>yc", "<cmd>lua vim.lsp.buf.code_action()<cr>")
-    keymap("v", "<leader>yc", "<cmd>lua vim.lsp.buf.range_code_action()<cr>")
+    keymap("n", "<leader>lc", "<cmd>lua vim.lsp.buf.code_action()<cr>")
+    keymap("v", "<leader>lc", "<cmd>lua vim.lsp.buf.range_code_action()<cr>")
   end
 
   if client.resolved_capabilities.goto_definition then
@@ -21,48 +29,88 @@ local function on_attach(client, bufnr)
   end
 
   if client.resolved_capabilities.document_formatting then
-    keymap("n", "<leader>y=", "<cmd>lua vim.lsp.buf.formatting()<cr>")
+    keymap("n", "<leader>l=", "<cmd>lua vim.lsp.buf.formatting()<cr>")
   end
 
   if client.resolved_capabilities.document_range_formatting then
-    keymap("v", "<leader>y=", "<cmd>lua vim.lsp.buf.range_formatting()<cr>")
+    keymap("v", "<leader>l=", "<cmd>lua vim.lsp.buf.range_formatting()<cr>")
   end
 
   if client.resolved_capabilities.hover then
-    keymap("n", "<leader>yh", "<cmd>lua vim.lsp.buf.hover()<cr>")
+    keymap("n", "<leader>lh", "<cmd>lua vim.lsp.buf.hover()<cr>")
   end
 
   if client.resolved_capabilities.find_references then
     keymap(
-      "n", "<leader>fr",
+      "n", "<leader>lf",
       "<cmd>lua require('fzf-lua').lsp_references()<cr>"
     )
   end
 
   if client.resolved_capabilities.document_symbol then
     keymap(
-      "n", "<leader>ft",
+      "n", "<leader>ld",
       "<cmd>lua require('fzf-lua').lsp_document_symbols()<cr>"
     )
   end
 
   if client.resolved_capabilities.signature_help then
-    keymap("n", "<leader>ys", "<cmd>lua vim.lsp.buf.signature_help()<cr>")
+    keymap("n", "<leader>ls", "<cmd>lua vim.lsp.buf.signature_help()<cr>")
   end
 
   if client.resolved_capabilities.rename then
-    keymap("n", "<leader>yr", "<cmd>lua vim.lsp.buf.rename()<cr>")
+    keymap("n", "<leader>lr", "<cmd>lua vim.lsp.buf.rename()<cr>")
   end
 end
 
+
 -- add/modify config
 function M.configure_server(self, name, config)
-  self.server_configs[name] = config
+  self.servers[name] = config
 end
+
+
+-- add/modify null ls source
+function M.null_ls_set_code_action(self, name, config)
+  self.null_ls.code_actions[name] = config
+end
+
+
+-- add/modify null ls diagnostic
+function M.null_ls_set_diagnostic(self, name, config)
+  self.null_ls.diagnostics[name] = config
+end
+
+
+-- add/modify null ls diagnostic
+function M.null_ls_set_formatting(self, name, config)
+  self.null_ls.formattings[name] = config
+end
+
+
+-- add/modify null ls hovers
+function M.null_ls_set_hover(self, name, config)
+  self.null_ls.hovers[name] = config
+end
+
+
+-- add/modify null ls completions
+function M.null_ls_set_hover(self, name, config)
+  self.null_ls.completions[name] = config
+end
+
+
+-- add/modify null ls custom server definition
+function M.null_ls_set_custom(self, name, config)
+  self.null_ls.customs[name] = config
+end
+
 
 -- do setup lsp
 function M.setup(self)
   local lsp_installer = require("nvim-lsp-installer")
+  local lspconfig = require("lspconfig")
+  local null_ls = require("null-ls")
 
   lsp_installer.on_server_ready(function(server)
     local utils = require("_utils")
@@ -73,11 +121,43 @@ function M.setup(self)
           debounce_text_changes=100,
         },
       },
-      self.server_configs[server.name] or {}
+      self.servers[server.name] or {}
     )
 
     server:setup(opts)
   end)
+
+  local null_ls_sources = {}
+
+  for k, v in pairs(self.null_ls.code_actions) do
+    table.insert(null_ls_sources, null_ls.builtins.code_actions[k].with(v))
+  end
+
+  for k, v in pairs(self.null_ls.diagnostics) do
+    table.insert(null_ls_sources, null_ls.builtins.diagnostics[k].with(v))
+  end
+
+  for k, v in pairs(self.null_ls.formattings) do
+    table.insert(null_ls_sources, null_ls.builtins.formatting[k].with(v))
+  end
+
+  for k, v in pairs(self.null_ls.hovers) do
+    table.insert(null_ls_sources, null_ls.builtins.hover[k].with(v))
+  end
+
+  for k, v in pairs(self.null_ls.completions) do
+    table.insert(null_ls_sources, null_ls.builtins.completion[k].with(v))
+  end
+
+  for k, v in pairs(self.null_ls.customs) do
+    null_ls.register(v)
+  end
+
+  null_ls.config {
+    sources=null_ls_sources
+  }
+
+  lspconfig["null-ls"].setup({})
 end
 
 return M
