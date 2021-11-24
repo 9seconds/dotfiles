@@ -518,6 +518,10 @@ require("packer").startup(function(use)
         "<cmd>lua require('fzf-lua').files({preview_opts='hidden'})<cr>"
       )
       utils:keynmap(
+        "n", "<leader>ft",
+        "<cmd>lua require('fzf-lua').lsp_document_symbols()<cr>"
+      )
+      utils:keynmap(
         "n", "<leader>fd",
         "<cmd>lua require('fzf-lua').files({cwd='~/.dotfiles', preview_opts='hidden'})<cr>"
       )
