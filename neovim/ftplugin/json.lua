@@ -5,4 +5,4 @@ local utils = require("_utils")
 
 
 utils:set_indent(vim.bo, 2)
-vim.wo.expandtab = true
+vim.bo.expandtab = true
