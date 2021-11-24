@@ -20,12 +20,12 @@ local function on_attach(client, bufnr)
   set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
 
   if client.resolved_capabilities.code_action then
-    keymap("n", "<leader>lc", "<cmd>lua vim.lsp.buf.code_action()<cr>")
-    keymap("v", "<leader>lc", "<cmd>lua vim.lsp.buf.range_code_action()<cr>")
+    keymap("n", "<leader>lc", "<cmd>lua require('telescope.builtin').lsp_code_actions()<cr>")
+    keymap("v", "<leader>lc", "<cmd>lua require('telescope.builtin).lsp_range_code_actions()<cr>")
   end
 
   if client.resolved_capabilities.goto_definition then
-    keymap("n", "<c-]>", "<cmd>lua vim.lsp.buf.definition()<cr>")
+    keymap("n", "<c-]>", "<cmd>lua require('telescope.builtin').lsp_definitions()<cr>")
   end
 
   if client.resolved_capabilities.document_formatting then
@@ -43,14 +43,14 @@ local function on_attach(client, bufnr)
   if client.resolved_capabilities.find_references then
     keymap(
       "n", "<leader>lf",
-      "<cmd>lua require('fzf-lua').lsp_references()<cr>"
+      "<cmd>lua require('telescope.builtin').lsp_references()<cr>"
     )
   end
 
   if client.resolved_capabilities.document_symbol then
     keymap(
-      "n", "<leader>ld",
-      "<cmd>lua require('fzf-lua').lsp_document_symbols()<cr>"
+      "n", "<leader>lt",
+      "<cmd>lua require('telescope-builtin').lsp_document_symbols()<cr>"
     )
   end
 

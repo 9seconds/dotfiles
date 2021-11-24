@@ -460,79 +460,48 @@ require("packer").startup(function(use)
   }
 
   use {
-    "ibhagwan/fzf-lua",
+    "nvim-telescope/telescope.nvim",
     requires={
-      "vijaymarupudi/nvim-fzf",
-      "kyazdani42/nvim-web-devicons"
+      "nvim-lua/plenary.nvim",
+      "kyazdani42/nvim-web-devicons",
+      {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        run="make"
+      }
     },
     config=function()
+      local telescope = require("telescope")
       local utils = require("_utils")
 
-      local files_command = "find . -type f"
-      if vim.fn.executable("fd") then
-        files_command = "fd -c never -t f"
-      elseif vm.fn.executable("rg") then
-        files_command = "rg --files -c never"
-      end
-
-      require("fzf-lua").setup {
-        winopts={
-          height=0.7,
-          width=0.7,
-          row=0.4,
-          border='none',
-          preview={
-            default="bat",
-            horizontal="right:45%",
-          },
-        },
-        previewers={
-          bat={
-            args="--color always",
-            theme="",
-            config=nil,
-          },
-        },
-        files={
-          cmd=files_command,
-          git_icons=false,
-        },
-        git={
-          files={
-            git_icons=false,
-          },
-          status={
-            git_icons=false,
-          },
-        },
-        grep={
-          git_icons=false,
-        },
-        quickfix={
-          git_icons=false,
+      telescope.setup({
+        extensions={
+          fzf={
+            fuzzy=true,
+            override_generic_sorter=true,
+            override_file_sorter=true,
+            case_mode="smart_case",
+          }
         }
-      }
+      })
+      telescope.load_extension("fzf")
 
       utils:keynmap(
         "n", "<leader>ff",
-        "<cmd>lua require('fzf-lua').files({preview_opts='hidden'})<cr>"
-      )
-      utils:keynmap(
-        "n", "<leader>ft",
-        "<cmd>lua require('fzf-lua').lsp_document_symbols()<cr>"
+        "<cmd>lua require('telescope.builtin').find_files({previewer=false})<cr>"
       )
       utils:keynmap(
         "n", "<leader>fd",
-        "<cmd>lua require('fzf-lua').files({cwd='~/.dotfiles', preview_opts='hidden'})<cr>"
+        "<cmd>lua require('telescope.builtin').find_files({previewer=false, search_dirs={'~/.dotfiles'}})<cr>"
       )
       utils:keynmap(
         "n", "<leader>fb",
-        "<cmd>lua require('fzf-lua').buffers()<cr>"
+        "<cmd>lua require('telescope.builtin').buffers()<cr>"
       )
-      utils:keynmap(
-        "n", "<leader>fg",
-        "<cmd>lua require('fzf-lua').grep()<cr>"
-      )
+
+      vim.cmd([[
+        :command! -nargs=1 Grep :lua require('telescope.builtin').grep_string({search=vim.fn.expand('<args>')})
+      ]])
+      vim.api.nvim_set_keymap("n", "<leader>fg", ":Grep ", {})
     end
   }
 
