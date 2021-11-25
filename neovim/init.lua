@@ -536,7 +536,7 @@ require("packer").startup(function(use)
     "ray-x/lsp_signature.nvim",
     config=function()
       require("lsp_signature").setup {
-        hint_enable=false
+        floating_window=false
       }
     end
   }
