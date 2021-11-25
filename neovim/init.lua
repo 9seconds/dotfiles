@@ -370,9 +370,19 @@ require("packer").startup(function(use)
   use {
     "hoob3rt/lualine.nvim",
     requires={
-      "kyazdani42/nvim-web-devicons"
+      "kyazdani42/nvim-web-devicons",
+      {
+        "SmiteshP/nvim-gps",
+        requires={
+          "nvim-treesitter/nvim-treesitter"
+        }
+      }
     },
     config=function()
+      local gps = require("nvim-gps")
+
+      gps.setup()
+
       require("lualine").setup {
         options={
           theme="auto",
@@ -388,7 +398,9 @@ require("packer").startup(function(use)
               path=2,
             }
           },
-          lualine_x={},
+          lualine_x={
+            {gps.get_location, cond=gps.is_available}
+          },
           lualine_y={"filetype"},
           lualine_z={"location"},
         }
