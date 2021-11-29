@@ -416,7 +416,6 @@ require("packer").startup(function(use)
     config=function()
       local utils = require("_utils")
 
-      vim.g.nvim_tree_gitignore = 0
       vim.g.nvim_tree_show_icons = {
         git=0,
         folders=1,
@@ -428,6 +427,9 @@ require("packer").startup(function(use)
       require("nvim-tree").setup {
         auto_close=true,
         update_cwd=true,
+        git={
+          ignore=false
+        },
         diagnostics={
           enable=false
         },
