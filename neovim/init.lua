@@ -487,6 +487,15 @@ require("packer").startup(function(use)
       local telescope = require("telescope")
       local utils = require("_utils")
 
+      function _G.telescope_git_find_files(opts)
+        local tscope = require("telescope.builtin")
+
+        local ok = pcall(tscope.git_files, opts)
+        if not ok then
+          tscope.find_files(opts)
+        end
+      end
+
       telescope.setup({
         extensions={
           fzf={
@@ -501,15 +510,19 @@ require("packer").startup(function(use)
 
       utils:keynmap(
         "n", "<leader>ff",
-        "<cmd>lua require('telescope.builtin').find_files({previewer=false})<cr>"
+        "<cmd>lua telescope_git_find_files({previewer=false})<cr>"
       )
       utils:keynmap(
-        "n", "<leader>fd",
-        "<cmd>lua require('telescope.builtin').find_files({previewer=false, search_dirs={'~/.dotfiles'}})<cr>"
+        "n", "<leader>fh",
+        "<cmd>lua telescope_git_find_files({previewer=false, search_dirs={'~/.dotfiles'}})<cr>"
       )
       utils:keynmap(
         "n", "<leader>fb",
         "<cmd>lua require('telescope.builtin').buffers()<cr>"
+      )
+      utils:keynmap(
+        "n", "<leader>ft",
+        "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>"
       )
 
       vim.cmd([[

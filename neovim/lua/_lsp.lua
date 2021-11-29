@@ -20,8 +20,8 @@ local function on_attach(client, bufnr)
   set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
 
   if client.resolved_capabilities.code_action then
-    keymap("n", "<leader>lc", "<cmd>lua require('telescope.builtin').lsp_code_actions()<cr>")
-    keymap("v", "<leader>lc", "<cmd>lua require('telescope.builtin).lsp_range_code_actions()<cr>")
+    keymap("n", "<leader>fc", "<cmd>lua require('telescope.builtin').lsp_code_actions()<cr>")
+    keymap("v", "<leader>fc", "<cmd>lua require('telescope.builtin).lsp_range_code_actions()<cr>")
   end
 
   if client.resolved_capabilities.goto_definition then
@@ -29,37 +29,37 @@ local function on_attach(client, bufnr)
   end
 
   if client.resolved_capabilities.document_formatting then
-    keymap("n", "<leader>l=", "<cmd>lua vim.lsp.buf.formatting()<cr>")
+    keymap("n", "<leader>f=", "<cmd>lua vim.lsp.buf.formatting()<cr>")
   end
 
   if client.resolved_capabilities.document_range_formatting then
-    keymap("v", "<leader>l=", "<cmd>lua vim.lsp.buf.range_formatting()<cr>")
+    keymap("v", "<leader>f=", "<cmd>lua vim.lsp.buf.range_formatting()<cr>")
   end
 
   if client.resolved_capabilities.hover then
-    keymap("n", "<leader>lh", "<cmd>lua vim.lsp.buf.hover()<cr>")
+    keymap("n", "<leader>fh", "<cmd>lua vim.lsp.buf.hover()<cr>")
   end
 
   if client.resolved_capabilities.find_references then
     keymap(
-      "n", "<leader>lf",
+      "n", "<leader>fr",
       "<cmd>lua require('telescope.builtin').lsp_references()<cr>"
     )
   end
 
   if client.resolved_capabilities.document_symbol then
     keymap(
-      "n", "<leader>lt",
-      "<cmd>lua require('telescope-builtin').lsp_document_symbols()<cr>"
+      "n", "<leader>fd",
+      "<cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>"
     )
   end
 
   if client.resolved_capabilities.signature_help then
-    keymap("n", "<leader>ls", "<cmd>lua vim.lsp.buf.signature_help()<cr>")
+    keymap("n", "<leader>fs", "<cmd>lua vim.lsp.buf.signature_help()<cr>")
   end
 
   if client.resolved_capabilities.rename then
-    keymap("n", "<leader>lr", "<cmd>lua vim.lsp.buf.rename()<cr>")
+    keymap("n", "<leader>fn", "<cmd>lua vim.lsp.buf.rename()<cr>")
   end
 end
 
