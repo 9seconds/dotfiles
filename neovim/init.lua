@@ -524,6 +524,10 @@ require("packer").startup(function(use)
         "n", "<leader>fl",
         "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>"
       )
+      utils:keynmap(
+        "n", "<leader>ft",
+        "<cmd>lua require('telescope.builtin').tags()<cr>"
+      )
 
       vim.cmd([[
         :command! -nargs=1 Grep :lua require('telescope.builtin').grep_string({search=vim.fn.expand('<args>')})
