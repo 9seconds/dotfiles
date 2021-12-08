@@ -521,7 +521,7 @@ require("packer").startup(function(use)
         "<cmd>lua require('telescope.builtin').buffers()<cr>"
       )
       utils:keynmap(
-        "n", "<leader>ft",
+        "n", "<leader>fl",
         "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>"
       )
 
