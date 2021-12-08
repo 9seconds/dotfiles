@@ -779,6 +779,17 @@ require("packer").startup(function(use)
     end
   }
 
+  use {
+    "ludovicchabant/vim-gutentags",
+    config=function()
+      vim.g.gutentags_cache_dir = vim.fn.expand("~/.cache/gutentags")
+
+      if vim.fn.executable("fd") then
+        vim.g.gutentags_file_list_command = "fd --type f --hidden --full-path --color never ."
+      end
+    end
+  }
+
 end)
 
 
