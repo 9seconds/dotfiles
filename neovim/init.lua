@@ -295,17 +295,31 @@ require("packer").startup(function(use)
   }
 
   use {
-    "sainnhe/gruvbox-material",
+    "arcticicestudio/nord-vim",
     after="nvim-treesitter",
     config=function()
-      vim.g.background = "dark"
-      vim.g.gruvbox_material_background = "soft"
-      vim.g.gruvbox_material_enable_italic = 1
-      vim.g.gruvbox_material_enable_bold = 1
-      vim.g.gruvbox_material_better_performance = 1
-      vim.api.nvim_command("colorscheme gruvbox-material")
+      vim.g.nord_cursor_line_number_background = 1
+      vim.g.nord_uniform_diff_background = 1
+      vim.g.nord_bold = 1
+      vim.g.nord_italic = 1
+      vim.g.nord_underline = 1
+      vim.g.nord_italic_comments = 1
+
+      vim.cmd("colorscheme nord")
     end
   }
+  -- use {
+  --   "sainnhe/gruvbox-material",
+  --   after="nvim-treesitter",
+  --   config=function()
+  --     vim.g.background = "dark"
+  --     vim.g.gruvbox_material_background = "soft"
+  --     vim.g.gruvbox_material_enable_italic = 1
+  --     vim.g.gruvbox_material_enable_bold = 1
+  --     vim.g.gruvbox_material_better_performance = 1
+  --     vim.api.nvim_command("colorscheme gruvbox-material")
+  --   end
+  -- }
 
   use {
     "romgrk/nvim-treesitter-context",
@@ -360,12 +374,12 @@ require("packer").startup(function(use)
     end
   }
 
-  use {
-    "crispgm/nvim-tabline",
-    config=function()
-      require("tabline").setup {}
-    end
-  }
+  -- use {
+  --   "crispgm/nvim-tabline",
+  --   config=function()
+  --     require("tabline").setup {}
+  --   end
+  -- }
 
   use {
     "hoob3rt/lualine.nvim",
@@ -385,7 +399,7 @@ require("packer").startup(function(use)
 
       require("lualine").setup {
         options={
-          theme="auto",
+          theme="nord",
           section_separators="",
           component_separators="",
         },
@@ -485,6 +499,7 @@ require("packer").startup(function(use)
     },
     config=function()
       local telescope = require("telescope")
+      local actions = require("telescope.actions")
       local utils = require("_utils")
 
       function _G.telescope_git_find_files(opts)
@@ -497,6 +512,13 @@ require("packer").startup(function(use)
       end
 
       telescope.setup({
+        defaults={
+          mappings={
+            i={
+              ["<esc>"]=actions.close,
+            },
+          },
+        },
         extensions={
           fzf={
             fuzzy=true,
