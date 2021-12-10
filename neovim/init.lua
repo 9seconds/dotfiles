@@ -492,6 +492,7 @@ require("packer").startup(function(use)
 
       local find_command = {"find", ".", "-type", "f"}
       local vimgrep_arguments = nil
+
       if vim.fn.executable("rg") then
         find_command = {
           "rg",
@@ -666,14 +667,14 @@ require("packer").startup(function(use)
     },
     config=function()
       require("trouble").setup {
-        mode="lsp_document_diagnostics",
+        mode="document_diagnostics",
       }
 
       local utils = require("_utils")
 
       utils:keynmap("n", "<leader>xx", "<cmd>TroubleToggle<cr>")
-      utils:keynmap("n", "<leader>xw", "<cmd>TroubleToggle lsp_workspace_diagnostics<cr>")
-      utils:keynmap("n", "<leader>xd", "<cmd>TroubleToggle lsp_document_diagnostics<cr>")
+      utils:keynmap("n", "<leader>xw", "<cmd>TroubleToggle workspace_diagnostics<cr>")
+      utils:keynmap("n", "<leader>xd", "<cmd>TroubleToggle document_diagnostics<cr>")
       utils:keynmap("n", "<leader>xq", "<cmd>TroubleToggle quickfix<cr>")
       utils:keynmap("n", "<leader>xl", "<cmd>TroubleToggle loclist<cr>")
     end
