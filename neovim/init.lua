@@ -490,13 +490,22 @@ require("packer").startup(function(use)
       local actions = require("telescope.actions")
       local utils = require("_utils")
 
-      function _G.telescope_git_find_files(opts)
-        local tscope = require("telescope.builtin")
-
-        local ok = pcall(tscope.git_files, opts)
-        if not ok then
-          tscope.find_files(opts)
-        end
+      local find_command = {"find", ".", "-type", "f"}
+      if vim.fn.executable("rg") then
+        find_command = {
+          "rg",
+          "--files",
+          "--color", "never"
+        }
+      elseif vim.fn.executable("fd") then
+        find_command = {
+            "fd",
+          "--strip-cwd-prefix",
+          "--color",
+          "never",
+          "--type",
+          "file"
+        }
       end
 
       telescope.setup({
@@ -505,6 +514,11 @@ require("packer").startup(function(use)
             i={
               ["<esc>"]=actions.close,
             },
+          },
+        },
+        pickers={
+          find_files={
+            find_command=find_command,
           },
         },
         extensions={
@@ -520,11 +534,11 @@ require("packer").startup(function(use)
 
       utils:keynmap(
         "n", "<leader>ff",
-        "<cmd>lua telescope_git_find_files({previewer=false})<cr>"
+        "<cmd>lua require('telescope.builtin').find_files({previewer=false})<cr>"
       )
       utils:keynmap(
         "n", "<leader>fh",
-        "<cmd>lua telescope_git_find_files({previewer=false, search_dirs={'~/.dotfiles'}})<cr>"
+        "<cmd>lua require('telescope.builtin').find_files({previewer=false, search_dirs={'~/.dotfiles'}})<cr>"
       )
       utils:keynmap(
         "n", "<leader>fb",
