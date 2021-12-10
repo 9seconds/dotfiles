@@ -308,18 +308,6 @@ require("packer").startup(function(use)
       vim.cmd("colorscheme nord")
     end
   }
-  -- use {
-  --   "sainnhe/gruvbox-material",
-  --   after="nvim-treesitter",
-  --   config=function()
-  --     vim.g.background = "dark"
-  --     vim.g.gruvbox_material_background = "soft"
-  --     vim.g.gruvbox_material_enable_italic = 1
-  --     vim.g.gruvbox_material_enable_bold = 1
-  --     vim.g.gruvbox_material_better_performance = 1
-  --     vim.api.nvim_command("colorscheme gruvbox-material")
-  --   end
-  -- }
 
   use {
     "romgrk/nvim-treesitter-context",
