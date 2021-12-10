@@ -295,33 +295,13 @@ require("packer").startup(function(use)
   }
 
   use {
-    "arcticicestudio/nord-vim",
-    after="nvim-treesitter",
+    "andersevenrud/nordic.nvim",
     config=function()
-      vim.g.nord_cursor_line_number_background = 1
-      vim.g.nord_uniform_diff_background = 1
-      vim.g.nord_bold = 1
-      vim.g.nord_italic = 1
-      vim.g.nord_underline = 1
-      vim.g.nord_italic_comments = 1
-
-      vim.cmd("colorscheme nord")
-    end
-  }
-
-  use {
-    "romgrk/nvim-treesitter-context",
-    opt=false,
-    after="nvim-treesitter",
-    config=function()
-      local utils = require("_utils")
-
-      require("treesitter-context").setup {
-        enable=false,
-        throttle=true,
-      }
-
-      utils:keynmap("n", "<f5>", ":TSContextToggle<cr>")
+      require('nordic').colorscheme({
+        underline_option="underline",
+        italic=false,
+        italic_comments=true,
+      })
     end
   }
 
