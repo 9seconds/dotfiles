@@ -491,11 +491,22 @@ require("packer").startup(function(use)
       local utils = require("_utils")
 
       local find_command = {"find", ".", "-type", "f"}
+      local vimgrep_arguments = nil
       if vim.fn.executable("rg") then
         find_command = {
           "rg",
           "--files",
           "--color", "never"
+        }
+        vimgrep_arguments = {
+          "rg",
+          "--color=never",
+          "--no-heading",
+          "--with-filename",
+          "--line-number",
+          "--column",
+          "--smart-case",
+          "--trim",
         }
       elseif vim.fn.executable("fd") then
         find_command = {
@@ -510,6 +521,7 @@ require("packer").startup(function(use)
 
       telescope.setup({
         defaults={
+          vimgrep_arguments=vimgrep_arguments,
           mappings={
             i={
               ["<esc>"]=actions.close,
