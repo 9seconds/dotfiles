@@ -109,7 +109,6 @@ end
 -- do setup lsp
 function M.setup(self)
   local lsp_installer = require("nvim-lsp-installer")
-  local lspconfig = require("lspconfig")
   local null_ls = require("null-ls")
 
   lsp_installer.on_server_ready(function(server)
@@ -153,11 +152,9 @@ function M.setup(self)
     null_ls.register(v)
   end
 
-  null_ls.config {
+  null_ls.setup({
     sources=null_ls_sources
-  }
-
-  lspconfig["null-ls"].setup({})
+  })
 end
 
 return M
