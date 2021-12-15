@@ -383,7 +383,7 @@ require("packer").startup(function(use)
           lualine_x={
             {gps.get_location, cond=gps.is_available}
           },
-          lualine_y={"filetype"},
+          lualine_y={},
           lualine_z={"location"},
         }
       }
