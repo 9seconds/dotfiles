@@ -57,6 +57,7 @@
     ui = true
 [merge]
     tool = nvimdiff3
+    conflictStyle = diff3
 [mergetool]
     prompt = true
     keepBackup = false
