@@ -56,10 +56,10 @@
 [color]
     ui = true
 [merge]
-    tool = vim-fugitive
-[diff]
-    tool = vimdiff
-    colorMoved = default
+    tool = nvimdiff3
+[mergetool]
+    prompt = true
+    keepBackup = false
 [core]
     pager        = delta
     preloadindex = true
@@ -72,5 +72,3 @@
 [grep]
     patternType = perl
     fullName    = true
-[mergetool "vim-fugitive"]
-    cmd = vim \"+Gdiff\" $MERGED
