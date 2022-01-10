@@ -595,7 +595,7 @@ require("packer").startup(function(use)
 
       require("zen-mode").setup {
         window={
-          width=120,
+          width=200,
           options={
             number=false,
             signcolumn="no",
