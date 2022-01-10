@@ -775,29 +775,26 @@ require("packer").startup(function(use)
   use {
     "jbyuki/venn.nvim",
     config=function()
-      local utils = require("_utils")
-
-      function _G.toggle_venn()
+      vim.keymap.set("n", "<leader>v", function()
         if vim.b.venn_enabled then
           vim.cmd("setlocal ve=")
           vim.cmd("mapclear <buffer>")
           vim.b.venn_enabled = nil
+
           return
         end
 
         vim.b.venn_enabled = true
         vim.cmd("setlocal ve=all")
 
-        local keymap = utils:get_buf_keymap(0, {noremap=true})
+        local keymap = require("_utils"):get_buf_keymap(0, {noremap=true})
 
         keymap("n", "J", "<C-v>j:VBox<cr>")
         keymap("n", "K", "<C-v>k:VBox<cr>")
         keymap("n", "L", "<C-v>l:VBox<cr>")
         keymap("n", "H", "<C-v>h:VBox<cr>")
         keymap("v", "f", ":VBox<cr>")
-      end
-
-      utils:keynmap("n", "<leader>v", "<cmd>lua toggle_venn()<cr>")
+      end)
     end
   }
 
