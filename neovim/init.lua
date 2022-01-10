@@ -295,13 +295,9 @@ require("packer").startup(function(use)
   }
 
   use {
-    "andersevenrud/nordic.nvim",
+    "EdenEast/nightfox.nvim",
     config=function()
-      require('nordic').colorscheme({
-        underline_option="underline",
-        italic=false,
-        italic_comments=true,
-      })
+      require("nightfox").load("nordfox")
     end
   }
 
