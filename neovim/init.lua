@@ -217,10 +217,15 @@ require("packer").startup(function(use)
     opt=false,
     requires={
       "nvim-treesitter/nvim-treesitter-textobjects",
+      "p00f/nvim-ts-rainbow",
     },
     config=function()
       require("nvim-treesitter.configs").setup {
         ensure_installed="maintained",
+
+        rainbow={
+          enable=true,
+        },
 
         autopairs={
           enable=true
