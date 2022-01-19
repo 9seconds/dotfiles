@@ -300,9 +300,12 @@ require("packer").startup(function(use)
   }
 
   use {
-    "EdenEast/nightfox.nvim",
+    "rebelot/kanagawa.nvim",
     config=function()
-      require("nightfox").load("nordfox")
+      require("kanagawa").setup({
+        commentStyle="NONE",
+      })
+      vim.cmd("colorscheme kanagawa")
     end
   }
 
@@ -368,7 +371,6 @@ require("packer").startup(function(use)
 
       require("lualine").setup {
         options={
-          theme="nord",
           section_separators="",
           component_separators="",
         },
