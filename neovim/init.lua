@@ -373,13 +373,29 @@ require("packer").startup(function(use)
           section_separators="",
           component_separators="",
         },
+        extensions={
+          'nvim-tree',
+          'toggleterm',
+          'quickfix',
+        },
         sections={
           lualine_a={"mode"},
-          lualine_b={"branch"},
+          lualine_b={{
+            "b:gitsigns_head",
+            icon = "",
+            fmt=function(line)
+              if vim.fn.winnr("$") > 1 then
+                return ""
+              end
+
+              return line
+            end,
+          }},
           lualine_c={
             {
               "filename",
               path=2,
+              shorting_target=30,
             }
           },
           lualine_x={
