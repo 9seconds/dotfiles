@@ -332,7 +332,13 @@ require("packer").startup(function(use)
       "nvim-lua/plenary.nvim",
     },
     config=function()
-      require("gitsigns").setup()
+      require("gitsigns").setup({
+        watch_gitdir={
+          interval=1000,
+          follow_lines=true,
+        },
+        update_debounce=1000,
+      })
     end
   }
 
