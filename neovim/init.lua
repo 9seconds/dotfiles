@@ -434,7 +434,7 @@ require("packer").startup(function(use)
           enable=false
         },
         view={
-          width=30,
+          width=50,
         },
         filters={
           dotfiles=false,
