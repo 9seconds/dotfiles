@@ -346,13 +346,6 @@ require("packer").startup(function(use)
     end
   }
 
-  -- use {
-  --   "crispgm/nvim-tabline",
-  --   config=function()
-  --     require("tabline").setup {}
-  --   end
-  -- }
-
   use {
     "hoob3rt/lualine.nvim",
     requires={
@@ -569,15 +562,6 @@ require("packer").startup(function(use)
       "nvim-lua/plenary.nvim",
       "neovim/nvim-lspconfig"
     }
-  }
-
-  use {
-    "ray-x/lsp_signature.nvim",
-    config=function()
-      require("lsp_signature").setup {
-        floating_window=false
-      }
-    end
   }
 
   use {
