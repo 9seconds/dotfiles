@@ -446,12 +446,12 @@ require("packer").startup(function(use)
       local utils = require("_utils")
 
       vim.g.nvim_tree_show_icons = {
-        git=0,
+        git=1,
         folders=1,
         files=1,
         folder_arrows=1,
       }
-      vim.g.nvim_tree_git_hl = 0
+      vim.g.nvim_tree_git_hl = 1
 
       require("nvim-tree").setup {
         auto_close=true,
