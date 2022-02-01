@@ -34,7 +34,9 @@
     gcca = !git gcc && git sf git gcc
     sf = submodule foreach --recursive
     psh = push --atomic --set-upstream origin
-    ftch = fetch --prune --all --recurse-submodules=yes
+    ftch = fetch --recurse-submodules --jobs=4 --prune --prune-tags --tags
+    ftchr = ftch --atomic
+    ftcha = ftch --all
     rh = reset --hard
     l = log '--pretty=format:%C(auto)%h %Cgreen%aN%Cblue%d%Creset: %s' --no-merges --abbrev-commit
     lgg = l --graph
