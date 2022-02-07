@@ -30,7 +30,7 @@
     rsp = rs --patch
     df = diff --minimal
     dfc = df --cached
-    gcc = !git reflog expire --expire=all --stale-fix --all && git worktree prune --expire 0 && git gc --prune=all && git gc --aggressive --prune=all && git repack -AFdfb --depth 250 --window 250
+    gcc = !git reflog expire --expire=all --stale-fix --all && git worktree prune --expire 0 && git gc --prune=all && git repack -a -d -b --depth 200 --window 100
     gcca = !git gcc && git sf git gcc
     sf = submodule foreach --recursive
     psh = push --atomic --set-upstream origin
