@@ -40,10 +40,10 @@
   },
 
   "Comprehension": {
-    "prefix": "comp",
+    "prefix": "[for",
     "description": "Base for a list comprehension",
     "body": [
-      "${3:expression} for ${1:item} in ${2:items}"
+      "[${3:expression} for ${1:item} in ${2:items}${4: if ${5:condition}}"
     ]
   },
 
@@ -61,7 +61,16 @@
     "description": "Method declaraction",
     "body": [
       "def ${1:func}(self, ${2:*args, **kwargs}):",
-      "    ${3:${5:${6:result} = }super(${4:Class}, self).$1($2)}"
+      "    ${0:raise NotImplementedError()}"
+    ]
+  },
+
+  "Dunder method": {
+    "prefix": "defm_",
+    "description": "Dunder method declaraction",
+    "body": [
+      "def __${1:func}__(self, ${2:*args, **kwargs}):",
+      "    ${0:raise NotImplementedError()}"
     ]
   },
 

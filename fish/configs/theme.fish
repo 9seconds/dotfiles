@@ -1,18 +1,16 @@
-#!/usr/bin/fish
-
-# Kanagawa Fish shell theme
-# A template was taken and modified from Tokyonight:
-# https://github.com/folke/tokyonight.nvim/blob/main/extras/fish_tokyonight_night.fish
-set -l foreground DCD7BA
-set -l selection 2D4F67
-set -l comment 727169
-set -l red C34043
-set -l orange FF9E64
-set -l yellow C0A36E
-set -l green 76946A
-set -l purple 957FB8
-set -l cyan 7AA89F
-set -l pink D27E99
+# Nightfox Color Palette
+# Style: nordfox
+# Upstream: https://github.com/edeneast/nightfox.nvim/raw/main/extra/nordfox/nightfox_fish.fish
+set -l foreground b9bfca
+set -l selection 3e4655
+set -l comment 60728a
+set -l red bf616a
+set -l orange c9826b
+set -l yellow ebcb8b
+set -l green a3be8c
+set -l purple b48ead
+set -l cyan 88c0d0
+set -l pink bf88bc
 
 # Syntax Highlighting Colors
 set -g fish_color_normal $foreground

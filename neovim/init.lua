@@ -237,6 +237,7 @@ require("packer").startup(function(use)
 
         indent={
           enable=true,
+          disable={"python"},
         },
 
         textobjects={
@@ -304,12 +305,14 @@ require("packer").startup(function(use)
   }
 
   use {
-    "rebelot/kanagawa.nvim",
+    "EdenEast/nightfox.nvim",
     config=function()
-      require("kanagawa").setup({
-        commentStyle="NONE",
+      local nightfox = require("nightfox")
+
+      nightfox.setup({
+        fox="nordfox",
       })
-      vim.cmd("colorscheme kanagawa")
+      nightfox.load()
     end
   }
 
@@ -403,6 +406,7 @@ require("packer").startup(function(use)
 
       require("lualine").setup {
         options={
+          theme="nightfox",
           section_separators="",
           component_separators="",
         },
