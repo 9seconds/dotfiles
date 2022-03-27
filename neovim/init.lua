@@ -404,7 +404,7 @@ require("packer").startup(function(use)
 
       require("lualine").setup {
         options={
-          theme="nightfox",
+          theme="nordfox",
           section_separators="",
           component_separators="",
         },
