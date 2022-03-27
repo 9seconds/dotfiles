@@ -22,6 +22,7 @@ vim.o.hidden = true                    -- do not delete a buffer if file was del
 vim.o.hlsearch = true                  -- highlight search
 vim.o.inccommand = "nosplit"           -- incrementally update replaces
 vim.o.joinspaces = false               -- do not insert 2 spaces after punctuation on each line join
+vim.o.laststatus = 3                   -- do have a global status line
 vim.o.list = true                      -- show hidden characters
 vim.o.listchars = "tab:▸ ,trail:⋅,extends:❯,precedes:❮"
 vim.o.modeline = true                  -- respect file modelines
