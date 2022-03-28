@@ -22,7 +22,7 @@ vim.o.hidden = true                    -- do not delete a buffer if file was del
 vim.o.hlsearch = true                  -- highlight search
 vim.o.inccommand = "nosplit"           -- incrementally update replaces
 vim.o.joinspaces = false               -- do not insert 2 spaces after punctuation on each line join
-vim.o.laststatus = 3                   -- do have a global status line
+vim.o.laststatus = 3                   -- do always set a global status line
 vim.o.list = true                      -- show hidden characters
 vim.o.listchars = "tab:▸ ,trail:⋅,extends:❯,precedes:❮"
 vim.o.modeline = true                  -- respect file modelines
@@ -164,7 +164,6 @@ require("packer").startup(function(use)
   use "junegunn/vim-slash"
   use "machakann/vim-textobj-delimited"
   use "tpope/vim-repeat"
-  use "tpope/vim-sensible"
   use "tpope/vim-surround"
   use "nathom/filetype.nvim"
   use "Vimjas/vim-python-pep8-indent"
@@ -387,7 +386,7 @@ require("packer").startup(function(use)
   }
 
   use {
-    "hoob3rt/lualine.nvim",
+    "nvim-lualine/lualine.nvim",
     requires={
       "kyazdani42/nvim-web-devicons",
       {
@@ -407,6 +406,8 @@ require("packer").startup(function(use)
           theme="nordfox",
           section_separators="",
           component_separators="",
+          always_divide_middle=false,
+          globalstatus=true,
         },
         extensions={
           'nvim-tree',
@@ -433,9 +434,9 @@ require("packer").startup(function(use)
               shorting_target=30,
             }
           },
-          lualine_x={
+          --[[ lualine_x={
             {gps.get_location, cond=gps.is_available}
-          },
+          }, ]]
           lualine_y={},
           lualine_z={"location"},
         }
@@ -460,7 +461,6 @@ require("packer").startup(function(use)
       vim.g.nvim_tree_git_hl = 1
 
       require("nvim-tree").setup {
-        auto_close=true,
         update_cwd=true,
         git={
           ignore=false
@@ -495,7 +495,6 @@ require("packer").startup(function(use)
       vim.g.nvim_tree_respect_buf_cwd = 1
     end
   }
-
 
   use {
     "b3nj5m1n/kommentary",
@@ -625,34 +624,6 @@ require("packer").startup(function(use)
     "max397574/better-escape.nvim",
     config=function()
       require("better_escape").setup()
-    end
-  }
-
-  use {
-    "folke/zen-mode.nvim",
-    requires={
-      "folke/twilight.nvim"
-    },
-    config=function()
-      local utils= require("_utils")
-
-      require("zen-mode").setup {
-        window={
-          width=200,
-          options={
-            number=false,
-            signcolumn="no",
-          }
-        },
-        on_open=function()
-          vim.cmd("setlocal colorcolumn=")
-        end,
-        on_close=function()
-          vim.o.colorcolumn = "80,120"
-        end
-      }
-
-      utils:keynmap("n", "<leader>z", ":ZenMode<cr>")
     end
   }
 
@@ -804,7 +775,6 @@ require("packer").startup(function(use)
       end
     end
   }
-
 end)
 
 
