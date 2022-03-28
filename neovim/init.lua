@@ -345,11 +345,6 @@ require("packer").startup(function(use)
       end
 
       gitsigns.setup({
-        watch_gitdir={
-          interval=1000,
-          follow_lines=true,
-        },
-        update_debounce=1000,
         on_attach=function(bufnr)
           -- Navigation
           map('n', ']c', "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'", {expr=true})
@@ -434,9 +429,9 @@ require("packer").startup(function(use)
               shorting_target=30,
             }
           },
-          --[[ lualine_x={
+          lualine_x={
             {gps.get_location, cond=gps.is_available}
-          }, ]]
+          },
           lualine_y={},
           lualine_z={"location"},
         }
@@ -462,9 +457,6 @@ require("packer").startup(function(use)
 
       require("nvim-tree").setup {
         update_cwd=true,
-        git={
-          ignore=false
-        },
         diagnostics={
           enable=false
         },
