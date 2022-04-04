@@ -175,6 +175,7 @@ require("packer").startup(function(use)
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-nvim-lsp",
       "onsails/lspkind-nvim",
+      "saadparwaiz1/cmp_luasnip",
     },
     config=function()
       local cmp = require("cmp")
@@ -190,6 +191,7 @@ require("packer").startup(function(use)
           {name="nvim_lsp"},
           {name="path"},
           {name="buffer"},
+          {name="luasnip"},
         },
 
         formatting = {
@@ -318,15 +320,7 @@ require("packer").startup(function(use)
     opt=false,
     after="nvim-treesitter",
     config=function()
-      local utils = require("_utils")
-
-      require("tabout").setup {
-        tabkey="",
-        backwards_tabkey="",
-        enable_backwards=false,
-        act_as_tab=false,
-        act_as_shift_tab=false,
-      }
+      require("tabout").setup({})
     end
   }
 
@@ -620,30 +614,50 @@ require("packer").startup(function(use)
   }
 
   use {
-    "hrsh7th/vim-vsnip",
+    "L3MON4D3/LuaSnip",
     opt=false,
-    after="tabout.nvim",
     config=function()
-      local utils = require("_utils")
+      local luasnip = require("luasnip")
+      local loader = require("luasnip.loaders.from_lua")
 
-      vim.g.vsnip_snippet_dir = vim.fn.expand("~/.config/nvim/snippets")
+      luasnip.config.set_config({
+        history=true,
+        update_events="TextChanged,TextChangedI",
+      })
 
-      utils:keyemap(
-        "i", "<c-j>",
-        "vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<Plug>(TaboutMulti)'"
-      )
-      utils:keyemap(
-        "s", "<c-j>",
-        "vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<Plug>(TaboutMulti)'"
-      )
-      utils:keyemap(
-        "i", "<c-k>",
-        "vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)' : '<c-k>'"
-      )
-      utils:keyemap(
-        "s", "<c-k>",
-        "vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)' : '<c-k>'"
-      )
+      loader.load({paths="~/.config/nvim/snippets"})
+
+      vim.api.nvim_add_user_command("LuaSnipEdit", loader.edit_snippet_files, {})
+      vim.keymap.set(
+        {"i", "s"},
+        "<c-j>",
+        function()
+          if luasnip.expand_or_jumpable() then
+            luasnip.expand_or_jump()
+          else
+            vim.fn.feedkeys(
+              vim.api.nvim_replace_termcodes("<Plug>(TaboutMulti)", true, true, true),
+              "")
+          end
+        end,
+        {silent=true})
+      vim.keymap.set(
+        {"i", "s"},
+        "<c-k>",
+        function()
+          if luasnip.jumpable(-1) then
+            luasnip.jump(-1)
+          end
+        end,
+        {silent=true})
+      vim.keymap.set(
+        "i",
+        "<c-l>",
+        function()
+          if luasnip.choice_active() then
+            luasnip.change_choice(1)
+          end
+        end, {silent=true})
     end
   }
 
