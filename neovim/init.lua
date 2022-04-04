@@ -1,3 +1,4 @@
+
 local utils = require("_utils")
 
 -- ----------------------------------------------------------------------------
@@ -78,7 +79,6 @@ utils:keynmap("n", "j", "gj")
 utils:keynmap("n", "k", "gk")
 utils:keynmap("n", "$", "g$")
 utils:keynmap("n", "0", "^")
-
 -- center screen on search operations
 utils:keynmap("n", "n", "nzz")
 utils:keynmap("n", "N", "Nzz")
@@ -584,9 +584,14 @@ require("packer").startup(function(use)
         "<cmd>lua require('telescope.builtin').tags()<cr>"
       )
 
-      vim.cmd([[
-        :command! -nargs=1 Grep :lua require('telescope.builtin').grep_string({search=vim.fn.expand('<args>')})
-      ]])
+      vim.api.nvim_add_user_command(
+        "Grep",
+        function(cmd)
+          require('telescope.builtin').grep_string({
+            search=cmd.args,
+          })
+        end,
+        {nargs=1})
       vim.api.nvim_set_keymap("n", "<leader>fg", ":Grep ", {})
     end
   }
