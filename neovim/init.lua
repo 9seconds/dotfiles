@@ -320,7 +320,9 @@ require("packer").startup(function(use)
     opt=false,
     after="nvim-treesitter",
     config=function()
-      require("tabout").setup({})
+      require("tabout").setup({
+        act_as_tab=false
+      })
     end
   }
 
