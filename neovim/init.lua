@@ -225,7 +225,7 @@ require("packer").startup(function(use)
     },
     config=function()
       require("nvim-treesitter.configs").setup {
-        ensure_installed="maintained",
+        ensure_installed="all",
 
         rainbow={
           enable=true,

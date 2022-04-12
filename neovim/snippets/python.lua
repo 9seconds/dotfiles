@@ -75,7 +75,7 @@ local function snip_except_body()
       end)
     }),
     t({"", "\t"}),
-    i(1, "pass")
+    i(3, "pass")
   })
 end
 
@@ -143,7 +143,7 @@ return {
     end, {2}),
     t("):"),
     t({"", "\t"}),
-    i(1, "pass")
+    i(4, "pass")
   }),
 
   s({trig="dec", dscr="Simple decorator"}, {

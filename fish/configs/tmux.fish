@@ -5,4 +5,4 @@
 
 not command -q tmux; and exit
 
-set -q TMUX; and set -gx TERM tmux-256color
+# set -q TMUX; and set -gx TERM tmux-256color
