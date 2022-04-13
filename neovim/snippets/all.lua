@@ -1,4 +1,5 @@
 local ls = require("luasnip")
+
 local s = ls.snippet
 local sn = ls.snippet_node
 local d = ls.dynamic_node
@@ -12,7 +13,7 @@ local function make_special_comment(title)
       local fmt_string = vim.api.nvim_get_option_value("cms", {}) or "# %s"
       local git_config = snippet_utils.get_git_config()
 
-      local nodes = {t(fmt_string:format(title))}
+      local nodes = {t(title)}
       if git_config["user.name"] then
         table.insert(nodes, f(function(args)
           if args[1][1] ~= "" then
@@ -30,6 +31,15 @@ local function make_special_comment(title)
       end
 
       table.insert(nodes, t(": "))
+      table.insert(nodes, i(2))
+
+      local cms_chunks = vim.split(fmt_string, "%s", {plain=true})
+      if #cms_chunks > 1 then
+        for _, v in ipairs(vim.list_slice(cms_chunks, 2)) do
+          table.insert(nodes, t(v))
+        end
+        table.insert(nodes, 1, t(cms_chunks[1]))
+      end
 
       return sn(nil, nodes)
   end
