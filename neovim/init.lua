@@ -485,13 +485,9 @@ require("packer").startup(function(use)
   }
 
   use {
-    "b3nj5m1n/kommentary",
+    "numToStr/Comment.nvim",
     config=function()
-      require("kommentary.config").configure_language("default", {
-        prefer_single_line_comments=true,
-        use_consistent_indentation=true,
-        ignore_whitespace=false,
-      })
+      require("Comment").setup()
     end
   }
 
@@ -586,7 +582,7 @@ require("packer").startup(function(use)
         "<cmd>lua require('telescope.builtin').tags()<cr>"
       )
 
-      vim.api.nvim_add_user_command(
+      vim.api.nvim_create_user_command(
         "Grep",
         function(cmd)
           require('telescope.builtin').grep_string({
@@ -634,7 +630,7 @@ require("packer").startup(function(use)
 
       loader.load({paths="~/.config/nvim/snippets"})
 
-      vim.api.nvim_add_user_command("LuaSnipEdit", loader.edit_snippet_files, {})
+      vim.api.nvim_create_user_command("LuaSnipEdit", loader.edit_snippet_files, {})
       vim.keymap.set(
         {"i", "s"},
         "<c-j>",
@@ -689,51 +685,6 @@ require("packer").startup(function(use)
   }
 
   use {
-    "akinsho/toggleterm.nvim",
-    config=function()
-      local Terminal = require("toggleterm.terminal").Terminal
-
-      require("toggleterm").setup({
-        hide_numbers=true,
-        shade_terminals=false,
-        shell=vim.env.SHELL or vim.o.shell,
-        size=function(term)
-          if term.direction == "horizontal" then
-            return 23
-          elseif term.direction == "vertical" then
-            return vim.o.columns / 2
-          end
-        end
-      })
-
-      local lazygit = Terminal:new({
-        cmd="lazygit",
-        dir="git_dir",
-        direction="float",
-        float_opts={
-          border="double",
-        },
-        hidden=true,
-        count=3,
-        on_open=function(term)
-          local utils = require("_utils")
-          local keymap = utils:get_buf_keymap(
-            term.bufnr, {
-              noremap=true,
-              silent=true
-            }
-          )
-
-          keymap("t", "<a-g>", "<cmd>close<cr>")
-        end
-      })
-      vim.keymap.set("n", "<a-g>", function()
-        lazygit:toggle()
-      end)
-    end
-  }
-
-  use {
     "mizlan/iswap.nvim",
     opt=false,
     after={
@@ -753,32 +704,6 @@ require("packer").startup(function(use)
   }
 
   use {
-    "jbyuki/venn.nvim",
-    config=function()
-      vim.keymap.set("n", "<leader>v", function()
-        if vim.b.venn_enabled then
-          vim.cmd("setlocal ve=")
-          vim.cmd("mapclear <buffer>")
-          vim.b.venn_enabled = nil
-
-          return
-        end
-
-        vim.b.venn_enabled = true
-        vim.cmd("setlocal ve=all")
-
-        local keymap = require("_utils"):get_buf_keymap(0, {noremap=true})
-
-        keymap("n", "J", "<C-v>j:VBox<cr>")
-        keymap("n", "K", "<C-v>k:VBox<cr>")
-        keymap("n", "L", "<C-v>l:VBox<cr>")
-        keymap("n", "H", "<C-v>h:VBox<cr>")
-        keymap("v", "f", ":VBox<cr>")
-      end)
-    end
-  }
-
-  use {
     "ludovicchabant/vim-gutentags",
     config=function()
       vim.g.gutentags_cache_dir = vim.fn.expand("~/.cache/gutentags")
@@ -786,6 +711,17 @@ require("packer").startup(function(use)
       if vim.fn.executable("fd") then
         vim.g.gutentags_file_list_command = "fd --type f --full-path --color never ."
       end
+    end
+  }
+
+  use {
+    "AckslD/nvim-trevJ.lua",
+    config=function()
+      local trevj = require("trevj")
+
+      trevj.setup()
+
+      vim.keymap.set("n", "K", trevj.format_at_cursor)
     end
   }
 end)
