@@ -1,15 +1,14 @@
 # Nightfox Color Palette
 # Style: nordfox
 # Upstream: https://github.com/edeneast/nightfox.nvim/raw/main/extra/nordfox/nightfox_fish.fish
-set -l foreground b9bfca
-set -l selection 3e4655
-set -l comment 60728a
-set -l red bf616a
-set -l orange c9826b
-set -l yellow ebcb8b
-set -l green a3be8c
-set -l purple b48ead
-set -l cyan 88c0d0
+set -l foreground d3c6aa
+set -l selection 5d4251
+set -l comment 7a8478
+set -l red e67e80
+set -l yellow dbbc7f
+set -l green a7c080
+set -l purple d699b6
+set -l cyan 83c092
 set -l pink bf88bc
 
 # Syntax Highlighting Colors
@@ -18,7 +17,7 @@ set -g fish_color_command $cyan
 set -g fish_color_keyword $pink
 set -g fish_color_quote $yellow
 set -g fish_color_redirection $foreground
-set -g fish_color_end $orange
+set -g fish_color_end $yellow
 set -g fish_color_error $red
 set -g fish_color_param $purple
 set -g fish_color_comment $comment

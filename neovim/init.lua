@@ -181,11 +181,6 @@ require("packer").startup(function(use)
       local cmp = require("cmp")
       local lspkind = require("lspkind")
 
-      local presets = {}
-      for k, v in pairs(lspkind.presets.default) do
-        presets[k] = v .. " " .. k
-      end
-
       cmp.setup {
         sources={
           {name="nvim_lsp"},
@@ -195,10 +190,10 @@ require("packer").startup(function(use)
         },
 
         formatting = {
-          format=function(entry, vim_item)
-            vim_item.kind = presets[vim_item.kind]
-            return vim_item
-          end
+          format = lspkind.cmp_format({
+            mode="symbol",
+            maxwidth=50,
+          })
         },
 
         mapping={
@@ -309,11 +304,21 @@ require("packer").startup(function(use)
   }
 
   use {
-    "EdenEast/nightfox.nvim",
+    "sainnhe/everforest",
     config=function()
-      vim.cmd("colorscheme nordfox")
+      vim.g.everforest_background = "soft"
+      vim.g.everforest_enable_italic = 1
+      vim.g.everforest_better_performance = 1
+      vim.cmd("colorscheme everforest")
     end
   }
+
+  -- use {
+  --   "EdenEast/nightfox.nvim",
+  --   config=function()
+  --     vim.cmd("colorscheme terafox")
+  --   end
+  -- }
 
   use {
     "abecodes/tabout.nvim",
@@ -394,7 +399,7 @@ require("packer").startup(function(use)
 
       require("lualine").setup {
         options={
-          theme="nordfox",
+          theme="everforest",
           section_separators="",
           component_separators="",
           always_divide_middle=false,
