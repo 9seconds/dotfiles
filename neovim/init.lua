@@ -198,7 +198,9 @@ require("packer").startup(function(use)
 
         mapping={
           ["<tab>"]=cmp.mapping.select_next_item(),
+          ["<c-n>"]=cmp.mapping.select_next_item(),
           ["<s-tab>"]=cmp.mapping.select_prev_item(),
+          ["<c-p>"]=cmp.mapping.select_prev_item(),
           ["<c-d>"]=cmp.mapping.scroll_docs(-4),
           ["<c-f>"]=cmp.mapping.scroll_docs(4),
           ["<c-e>"] = cmp.mapping.close(),
