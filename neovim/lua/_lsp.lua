@@ -12,54 +12,57 @@ local M = {
 
 -- this function is executed when LSP attaches to a buffer.
 local function on_attach(client, bufnr)
-  local utils = require("_utils")
+  local function keymap(mode, lhs, rhs)
+    vim.keymap.set(mode, lhs, rhs, {buffer=bufnr})
+  end
 
-  local set_option = utils:get_buf_set_option(bufnr)
-  local keymap = utils:get_buf_keymap(bufnr, {noremap=true})
-
-  set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
+  vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 
   if client.server_capabilities.codeActionProvider then
-    keymap("n", "<leader>fc", "<cmd>lua require('telescope.builtin').lsp_code_actions()<cr>")
-    keymap("v", "<leader>fc", "<cmd>lua require('telescope.builtin).lsp_range_code_actions()<cr>")
+    keymap("n", "<leader>fc", function()
+      require('telescope.builtin').lsp_code_actions()
+    end)
+    keymap("v", "<leader>fc", function()
+      require('telescope.builtin').lsp_range_code_actions()
+    end)
   end
 
   if client.server_capabilities.definitionProvider then
-    keymap("n", "<c-]>", "<cmd>lua require('telescope.builtin').lsp_definitions()<cr>")
+    keymap("n", "<c-]>", function()
+      require('telescope.builtin').lsp_definitions()
+    end)
   end
 
   if client.server_capabilities.documentFormattingProvider then
-    keymap("n", "<leader>f=", "<cmd>lua vim.lsp.buf.formatting()<cr>")
+    keymap("n", "<leader>f=", vim.lsp.buf.formatting)
   end
 
   if client.server_capabilities.documentRangeFormattingProvider then
-    keymap("v", "<leader>f=", "<cmd>lua vim.lsp.buf.range_formatting()<cr>")
+    keymap("n", "<leader>f=", vim.lsp.buf.range_formatting)
   end
 
   if client.server_capabilities.hoverProvider then
-    keymap("n", "<leader>fh", "<cmd>lua vim.lsp.buf.hover()<cr>")
+    keymap("n", "<leader>f=", vim.lsp.buf.hover)
   end
 
   if client.server_capabilities.referencesProvider then
-    keymap(
-      "n", "<leader>fr",
-      "<cmd>lua require('telescope.builtin').lsp_references()<cr>"
-    )
+    keymap("n", "<leader>fr", function()
+      require('telescope.builtin').lsp_references()
+    end)
   end
 
   if client.server_capabilities.documentSymbolProvider then
-    keymap(
-      "n", "<leader>fd",
-      "<cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>"
-    )
+    keymap("n", "<leader>fd", function()
+      require('telescope.builtin').lsp_document_symbols()
+    end)
   end
 
   if client.server_capabilities.signatureHelpProvider then
-    keymap("n", "<leader>fs", "<cmd>lua vim.lsp.buf.signature_help()<cr>")
+    keymap("n", "<leader>fs", vim.lsp.buf.signature_help)
   end
 
   if client.server_capabilities.renameProvider then
-    keymap("n", "<leader>fn", "<cmd>lua vim.lsp.buf.rename()<cr>")
+    keymap("n", "<leader>fn", vim.lsp.buf.rename)
   end
 end
 

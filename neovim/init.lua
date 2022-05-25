@@ -1,6 +1,3 @@
-
-local utils = require("_utils")
-
 -- ----------------------------------------------------------------------------
 -- GLOBAL SETTINGS
 -- ----------------------------------------------------------------------------
@@ -63,58 +60,59 @@ end
 -- ----------------------------------------------------------------------------
 -- GLOBAL KEYMAPS
 -- ----------------------------------------------------------------------------
--- space as a leader
-utils:keynmap("", "<space>", "<nop>")
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+-- space as a leader
+vim.keymap.set({"n", "v"}, "<space>", "<nop>")
+
 -- sudo write
-utils:keynmap("c", "w!!", "w !sudo tee >/dev/null %")
+vim.keymap.set("c", "w!!", "w !sudo tee >/dev/null %")
 
 -- more reasonable indents/unindents
-utils:keynmap("v", "<", "<gv")
-utils:keynmap("v", ">", ">gv")
+vim.keymap.set("v", "<", "<gv")
+vim.keymap.set("v", ">", ">gv")
 
 -- wrapline-aware navigation
-utils:keynmap("n", "j", "gj")
-utils:keynmap("n", "k", "gk")
-utils:keynmap("n", "$", "g$")
-utils:keynmap("n", "0", "^")
+vim.keymap.set("n", "j", "gj")
+vim.keymap.set("n", "k", "gk")
+vim.keymap.set("n", "$", "g$")
+vim.keymap.set("n", "0", "^")
 -- center screen on search operations
-utils:keynmap("n", "n", "nzz")
-utils:keynmap("n", "N", "Nzz")
-utils:keynmap("n", "*", "*zz``")
-utils:keynmap("n", "#", "#zz")
-utils:keynmap("n", "g*", "g*zz")
-utils:keynmap("n", "g#", "g#zz")
-utils:keynmap("n", "<c-d>", "<c-d>zz")
-utils:keynmap("n", "<c-u>", "<c-u>zz")
-utils:keynmap("n", "<c-f>", "<c-f>zz")
-utils:keynmap("n", "<c-b>", "<c-b>zz")
+vim.keymap.set("n", "n", "nzz")
+vim.keymap.set("n", "N", "Nzz")
+vim.keymap.set("n", "*", "*zz``")
+vim.keymap.set("n", "#", "#zz")
+vim.keymap.set("n", "g*", "g*zz")
+vim.keymap.set("n", "g#", "g#zz")
+vim.keymap.set("n", "<c-d>", "<c-d>zz")
+vim.keymap.set("n", "<c-u>", "<c-u>zz")
+vim.keymap.set("n", "<c-f>", "<c-f>zz")
+vim.keymap.set("n", "<c-b>", "<c-b>zz")
 
 -- split navigation
-utils:keynmap("n", "<c-h>", "<c-w>h")
-utils:keynmap("n", "<c-j>", "<c-w>j")
-utils:keynmap("n", "<c-k>", "<c-w>k")
-utils:keynmap("n", "<c-l>", "<c-w>l")
+vim.keymap.set("n", "<c-h>", "<c-w>h")
+vim.keymap.set("n", "<c-j>", "<c-w>j")
+vim.keymap.set("n", "<c-k>", "<c-w>k")
+vim.keymap.set("n", "<c-l>", "<c-w>l")
 
 -- exit insert mode
-utils:keynmap("i", "jk", "<esc>")
-utils:keynmap("i", "jj", "<esc>")
+vim.keymap.set("i", "jk", "<esc>")
+vim.keymap.set("i", "jj", "<esc>")
 
 -- sort
-utils:keynmap("v", "<leader>s", ":sort i<cr>")
+vim.keymap.set("v", "<leader>s", ":sort i<cr>")
 
 -- terminal mappings
-utils:keynmap("t", "<c-j><c-j>", "<c-\\><c-n>")
-utils:keynmap("t", "<c-j><c-k>", "<c-\\><c-n>")
-utils:keynmap("t", "<a-h>", "<c-\\><c-n><c-w>h")
-utils:keynmap("t", "<a-j>", "<c-\\><c-n><c-w>j")
-utils:keynmap("t", "<a-k>", "<c-\\><c-n><c-w>k")
-utils:keynmap("t", "<a-l>", "<c-\\><c-n><c-w>l")
+vim.keymap.set("t", "<c-j><c-j>", "<c-\\><c-n>")
+vim.keymap.set("t", "<c-j><c-k>", "<c-\\><c-n>")
+vim.keymap.set("t", "<a-h>", "<c-\\><c-n><c-w>h")
+vim.keymap.set("t", "<a-j>", "<c-\\><c-n><c-w>j")
+vim.keymap.set("t", "<a-k>", "<c-\\><c-n><c-w>k")
+vim.keymap.set("t", "<a-l>", "<c-\\><c-n><c-w>l")
 
 -- fast access
-utils:keynmap("n", "<leader>w", ":update<cr>")
+vim.keymap.set("n", "<leader>w", ":update<cr>")
 
 
 -- ----------------------------------------------------------------------------
@@ -316,13 +314,6 @@ require("packer").startup(function(use)
     end
   }
 
-  -- use {
-  --   "EdenEast/nightfox.nvim",
-  --   config=function()
-  --     vim.cmd("colorscheme terafox")
-  --   end
-  -- }
-
   use {
     "abecodes/tabout.nvim",
     opt=false,
@@ -342,33 +333,52 @@ require("packer").startup(function(use)
     config=function()
       local gitsigns = require("gitsigns")
 
-      local function map(mode, l, r, opts)
-        opts = opts or {}
-        opts.buffer = bufnr
-        vim.keymap.set(mode, l, r, opts)
-      end
-
       gitsigns.setup({
         on_attach=function(bufnr)
+          local gs = package.loaded.gitsigns
+
+          local function map(mode, l, r, opts)
+            opts = opts or {}
+            opts.buffer = bufnr
+            vim.keymap.set(mode, l, r, opts)
+          end
+
           -- Navigation
-          map('n', ']c', "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'", {expr=true})
-          map('n', '[c', "&diff ? '[c' : '<cmd>Gitsigns prev_hunk<CR>'", {expr=true})
+          map("n", "]c", function()
+            if vim.wo.diff then
+              return ']c'
+            end
+            vim.schedule(function()
+              gs.next_hunk()
+            end)
+            return "<Ignore>"
+          end, {expr=true})
+
+          map("n", "[c", function()
+            if vim.wo.diff then
+              return '[c'
+            end
+            vim.schedule(function()
+              gs.prev_hunk()
+            end)
+            return "<Ignore>"
+          end, {expr=true})
 
           -- Actions
-          map({'n', 'v'}, '<leader>hs', gitsigns.stage_hunk)
-          map({'n', 'v'}, '<leader>hr', gitsigns.reset_hunk)
-          map('n', '<leader>hS', gitsigns.stage_buffer)
-          map('n', '<leader>hu', gitsigns.undo_stage_hunk)
-          map('n', '<leader>hR', gitsigns.reset_buffer)
-          map('n', '<leader>hp', gitsigns.preview_hunk)
-          map('n', '<leader>hb', function() gitsigns.blame_line{full=true} end)
-          map('n', '<leader>tb', gitsigns.toggle_current_line_blame)
-          map('n', '<leader>hd', gitsigns.diffthis)
-          map('n', '<leader>hD', function() gitsigns.diffthis('~') end)
-          map('n', '<leader>td', gitsigns.toggle_deleted)
+          map({'n', 'v'}, '<leader>hs', gs.stage_hunk)
+          map({'n', 'v'}, '<leader>hr', gs.reset_hunk)
+          map('n', '<leader>hS', gs.stage_buffer)
+          map('n', '<leader>hu', gs.undo_stage_hunk)
+          map('n', '<leader>hR', gs.reset_buffer)
+          map('n', '<leader>hp', gs.preview_hunk)
+          map('n', '<leader>hb', function() gs.blame_line({full=true}) end)
+          map('n', '<leader>tb', gs.toggle_current_line_blame)
+          map('n', '<leader>hd', gs.diffthis)
+          map('n', '<leader>hD', function() gs.diffthis('~') end)
+          map('n', '<leader>td', gs.toggle_deleted)
 
           -- Text object
-          map({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+          map({'o', 'x'}, 'ih', gs.select_hunk)
         end
       })
     end
@@ -449,7 +459,7 @@ require("packer").startup(function(use)
       "kyazdani42/nvim-web-devicons"
     },
     config=function()
-      local utils = require("_utils")
+      local nvim_tree = require("nvim-tree")
 
       vim.g.nvim_tree_show_icons = {
         git=1,
@@ -459,7 +469,7 @@ require("packer").startup(function(use)
       }
       vim.g.nvim_tree_git_hl = 1
 
-      require("nvim-tree").setup {
+      nvim_tree.setup {
         update_cwd=true,
         diagnostics={
           enable=false
@@ -478,8 +488,10 @@ require("packer").startup(function(use)
         },
       }
 
-      utils:keynmap("n", "<f2>", ":NvimTreeToggle<cr>")
-      utils:keynmap("n", "<f3>", ":NvimTreeFindFile<cr>")
+      vim.keymap.set("n", "<F2>", nvim_tree.toggle)
+      vim.keymap.set("n", "<F3>", function()
+        nvim_tree.find_file(true)
+      end)
     end
   }
 
@@ -512,7 +524,6 @@ require("packer").startup(function(use)
     config=function()
       local telescope = require("telescope")
       local actions = require("telescope.actions")
-      local utils = require("_utils")
 
       local find_command = {"find", ".", "-type", "f"}
       local vimgrep_arguments = nil
@@ -569,36 +580,31 @@ require("packer").startup(function(use)
       })
       telescope.load_extension("fzf")
 
-      utils:keynmap(
-        "n", "<leader>ff",
-        "<cmd>lua require('telescope.builtin').find_files({previewer=false})<cr>"
-      )
-      utils:keynmap(
-        "n", "<leader>fh",
-        "<cmd>lua require('telescope.builtin').find_files({previewer=false, search_dirs={'~/.dotfiles'}})<cr>"
-      )
-      utils:keynmap(
-        "n", "<leader>fb",
-        "<cmd>lua require('telescope.builtin').buffers()<cr>"
-      )
-      utils:keynmap(
-        "n", "<leader>fl",
-        "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>"
-      )
-      utils:keynmap(
-        "n", "<leader>ft",
-        "<cmd>lua require('telescope.builtin').tags()<cr>"
-      )
+      vim.keymap.set("n", "<leader>ff", function()
+        require('telescope.builtin').find_files({previewer=false})
+      end)
 
-      vim.api.nvim_create_user_command(
-        "Grep",
-        function(cmd)
-          require('telescope.builtin').grep_string({
-            search=cmd.args,
-          })
-        end,
-        {nargs=1})
-      vim.api.nvim_set_keymap("n", "<leader>fg", ":Grep ", {})
+      vim.keymap.set("n", "<leader>fh", function()
+        require('telescope.builtin').find_files(
+          {previewer=false, search_dirs={"~/.dotfiles"}}
+        )
+      end)
+
+      vim.keymap.set("n", "<leader>fb", function()
+        require('telescope.builtin').buffers()
+      end)
+
+      vim.keymap.set("n", "<leader>fl", function()
+        require('telescope.builtin').current_buffer_fuzzy_find()
+      end)
+
+      vim.keymap.set("n", "<leader>ft", function()
+        require('telescope.builtin').tags()
+      end)
+
+      vim.keymap.set("n", "<leader>fg", function()
+        require('telescope.builtin').live_grep()
+      end)
     end
   }
 
@@ -652,6 +658,7 @@ require("packer").startup(function(use)
           end
         end,
         {silent=true})
+
       vim.keymap.set(
         {"i", "s"},
         "<c-k>",
@@ -661,6 +668,7 @@ require("packer").startup(function(use)
           end
         end,
         {silent=true})
+
       vim.keymap.set(
         "i",
         "<c-l>",
@@ -678,17 +686,25 @@ require("packer").startup(function(use)
       "kyazdani42/nvim-web-devicons"
     },
     config=function()
-      require("trouble").setup {
+      local tr = require("trouble")
+
+      tr.setup({
         mode="document_diagnostics",
-      }
+      })
 
-      local utils = require("_utils")
-
-      utils:keynmap("n", "<leader>xx", "<cmd>TroubleToggle<cr>")
-      utils:keynmap("n", "<leader>xw", "<cmd>TroubleToggle workspace_diagnostics<cr>")
-      utils:keynmap("n", "<leader>xd", "<cmd>TroubleToggle document_diagnostics<cr>")
-      utils:keynmap("n", "<leader>xq", "<cmd>TroubleToggle quickfix<cr>")
-      utils:keynmap("n", "<leader>xl", "<cmd>TroubleToggle loclist<cr>")
+      vim.keymap.set("n", "<leader>xx", tr.toggle)
+      vim.keymap.set("n", "<leader>xw", function()
+        tr.toggle("workspace_diagnostics")
+      end)
+      vim.keymap.set("n", "<leader>xd", function()
+        tr.toggle("document_diagnostics")
+      end)
+      vim.keymap.set("n", "<leader>xq", function()
+        tr.toggle("quickfix")
+      end)
+      vim.keymap.set("n", "<leader>xl", function()
+        tr.toggle("loclist")
+      end)
     end
   }
 
@@ -700,14 +716,14 @@ require("packer").startup(function(use)
       "vim-repeat"
     },
     config=function()
-      local utils = require("_utils")
+      local iswap = require("iswap")
 
       require("iswap").setup {
         keys="qwertyuiop",
         autoswap=true,
       }
 
-      utils:keynmap("n", "<leader>s", "<cmd>ISwap<cr>")
+      vim.keymap.set("n", "<leader>s", iswap.iswap)
     end
   }
 
