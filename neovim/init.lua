@@ -120,36 +120,48 @@ vim.keymap.set("n", "<leader>w", ":update<cr>")
 -- ----------------------------------------------------------------------------
 
 -- resize panes on window resize
-vim.cmd([[
-augroup VimResizePanes
-  autocmd!
-  autocmd VimResized * exe "normal \<c-w>="
-augroup END
-]])
+local augroup_resize_panes = vim.api.nvim_create_augroup("ResizePanes", {})
+vim.api.nvim_create_autocmd("VimResized", {
+  group=augroup_resize_panes,
+  command="normal <c-w>="
+})
 
 -- delete trailing whitespaces
-vim.cmd([[
-augroup StripTrailingWhitespaces
-  autocmd!
-  autocmd BufWritePre * let w:wv = winsaveview() | %s/\s\+$//e | call winrestview(w:wv)
-augroup END
-]])
+local augroup_strip_traling_whitespaces = vim.api.nvim_create_augroup(
+  "StripTrailingWhitespaces", {})
+vim.api.nvim_create_autocmd("BufWritePre", {
+  group=augroup_strip_traling_whitespaces,
+  callback=function()
+    local save = vim.fn.winsaveview()
+    vim.cmd [[%s/\s\+$//e]]
+    vim.fn.winrestview(save)
+  end
+})
 
 -- hide cursorline when it makes sense
-vim.cmd([[
-augroup HideCursorline
-  autocmd!
-  autocmd InsertLeave,WinEnter * set cursorline
-  autocmd InsertEnter,WinLeave * set nocursorline
-augroup END
-]])
+local augroup_hide_cursor_line = vim.api.nvim_create_augroup(
+  "HideCursorline", {})
+vim.api.nvim_create_autocmd({"InsertLeave", "WinEnter"}, {
+  group=augroup_hide_cursor_line,
+  callback=function()
+    vim.wo.cursorline = true
+  end
+})
+vim.api.nvim_create_autocmd({"InsertEnter", "WinLeave"}, {
+  group=augroup_hide_cursor_line,
+  callback=function()
+    vim.wo.cursorline = false
+  end
+})
 
-vim.cmd([[
-augroup CorrectCTRLDForTerminal
-  autocmd!
-  autocmd TermClose * call feedkeys("\<esc>")
-augroup END
-]])
+local augroup_correct_ctrld_for_terminal = vim.api.nvim_create_augroup(
+  "CorrectCTRLDForTerminal", {})
+vim.api.nvim_create_autocmd("TermClose", {
+  group=augroup_correct_ctrld_for_terminal,
+  callback=function()
+    vim.fn.feedkeys("<esc>")
+  end
+})
 
 
 -- ----------------------------------------------------------------------------

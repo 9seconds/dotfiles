@@ -115,8 +115,8 @@ function M.setup(self)
   local null_ls = require("null-ls")
 
   lsp_installer.on_server_ready(function(server)
-    local utils = require("_utils")
-    local opts = utils:tbl_merge(
+    local opts = vim.tbl_deep_extend(
+      "force",
       {
         on_attach=on_attach,
         flags={
