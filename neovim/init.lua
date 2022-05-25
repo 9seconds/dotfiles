@@ -631,7 +631,7 @@ require("packer").startup(function(use)
       local loader = require("luasnip.loaders.from_lua")
 
       luasnip.config.set_config({
-        history=true,
+        history=false,
         update_events="TextChanged,TextChangedI",
       })
 
