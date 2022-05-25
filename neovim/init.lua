@@ -5,8 +5,6 @@ local utils = require("_utils")
 -- GLOBAL SETTINGS
 -- ----------------------------------------------------------------------------
 
-utils:set_indent(vim.o, 4)
-
 vim.o.autoread = true                  -- suggest to reload if file was updated outside
 vim.o.backup = false                   -- do not use backup after file is written
 vim.o.breakindent = true               -- indent wrapped line
@@ -47,6 +45,9 @@ vim.o.termguicolors = true             -- enable truecolors
 vim.o.viminfo = ""                     -- do not use viminfo
 vim.o.visualbell = false               -- do not issue visualbell
 vim.o.writebackup = false              -- do not create backup during a file is written
+vim.o.tabstop = 4                      -- number of spaces a <tab> in the file counts for
+vim.o.softtabstop = 4                  -- number of spaces a <tab> counts for on editing (<BS> eg.)
+vim.o.shiftwidth = 4                   -- number of spaces for each step of autoindent
 
 if vim.fn.executable("rg") then
   vim.o.grepprg = "rg --vimgrep --fixed-strings --no-heading --smart-case"
