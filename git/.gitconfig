@@ -34,6 +34,7 @@
     gcca = !git gcc && git sf git gcc
     sf = submodule foreach --recursive
     psh = push --atomic --set-upstream origin
+    pshf = psh -f
     ftch = fetch --recurse-submodules --jobs=4 --prune --prune-tags --tags
     ftchr = ftch --atomic
     ftcha = ftch --all
@@ -59,7 +60,7 @@
     ui = true
 [merge]
     tool = nvimdiff3
-    conflictStyle = diff3
+    conflictstyle = diff3
 [mergetool]
     prompt = true
     keepBackup = false

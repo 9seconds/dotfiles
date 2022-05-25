@@ -19,46 +19,46 @@ local function on_attach(client, bufnr)
 
   set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
 
-  if client.resolved_capabilities.code_action then
+  if client.server_capabilities.codeActionProvider then
     keymap("n", "<leader>fc", "<cmd>lua require('telescope.builtin').lsp_code_actions()<cr>")
     keymap("v", "<leader>fc", "<cmd>lua require('telescope.builtin).lsp_range_code_actions()<cr>")
   end
 
-  if client.resolved_capabilities.goto_definition then
+  if client.server_capabilities.definitionProvider then
     keymap("n", "<c-]>", "<cmd>lua require('telescope.builtin').lsp_definitions()<cr>")
   end
 
-  if client.resolved_capabilities.document_formatting then
+  if client.server_capabilities.documentFormattingProvider then
     keymap("n", "<leader>f=", "<cmd>lua vim.lsp.buf.formatting()<cr>")
   end
 
-  if client.resolved_capabilities.document_range_formatting then
+  if client.server_capabilities.documentRangeFormattingProvider then
     keymap("v", "<leader>f=", "<cmd>lua vim.lsp.buf.range_formatting()<cr>")
   end
 
-  if client.resolved_capabilities.hover then
+  if client.server_capabilities.hoverProvider then
     keymap("n", "<leader>fh", "<cmd>lua vim.lsp.buf.hover()<cr>")
   end
 
-  if client.resolved_capabilities.find_references then
+  if client.server_capabilities.referencesProvider then
     keymap(
       "n", "<leader>fr",
       "<cmd>lua require('telescope.builtin').lsp_references()<cr>"
     )
   end
 
-  if client.resolved_capabilities.document_symbol then
+  if client.server_capabilities.documentSymbolProvider then
     keymap(
       "n", "<leader>fd",
       "<cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>"
     )
   end
 
-  if client.resolved_capabilities.signature_help then
+  if client.server_capabilities.signatureHelpProvider then
     keymap("n", "<leader>fs", "<cmd>lua vim.lsp.buf.signature_help()<cr>")
   end
 
-  if client.resolved_capabilities.rename then
+  if client.server_capabilities.renameProvider then
     keymap("n", "<leader>fn", "<cmd>lua vim.lsp.buf.rename()<cr>")
   end
 end
