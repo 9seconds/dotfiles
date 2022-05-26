@@ -749,6 +749,17 @@ require("packer").startup(function(use)
       vim.keymap.set("n", "K", trevj.format_at_cursor)
     end
   }
+
+  use {
+    "booperlv/nvim-gomove",
+    config=function()
+      require("gomove").setup({
+        map_defaults = true,
+        reindent = true,
+        undojoin = true
+      })
+    end
+  }
 end)
 
 
