@@ -9,19 +9,21 @@ local f = ls.function_node
 local function make_special_comment(title)
   return function()
       local snippet_utils = require("_snippet_utils")
+      local utils = require("_utils")
 
       local fmt_string = vim.api.nvim_get_option_value("cms", {}) or "# %s"
-      local git_config = snippet_utils.get_git_config()
+      local git_config = utils.git_config()
+      local name = vim.tbl_get(git_config, "user", "name")
 
       local nodes = {t(title)}
-      if git_config["user.name"] then
+      if name then
         table.insert(nodes, f(function(args)
           if args[1][1] ~= "" then
             return "("
           end
           return ""
         end, {1}))
-        table.insert(nodes, i(1, git_config["user.name"]))
+        table.insert(nodes, i(1, name))
         table.insert(nodes, f(function(args)
           if args[1][1] ~= "" then
             return ")"

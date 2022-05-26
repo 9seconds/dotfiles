@@ -1,5 +1,4 @@
 local ts_utils = require("nvim-treesitter.ts_utils")
-local utils = require("_utils")
 
 
 local M = {}
@@ -31,31 +30,6 @@ end
 function M.get_ts_scope_at_cursor()
   return _get_ts_scope_at_cursor_by_bufnr(vim.api.nvim_get_current_buf())
 end
-
-
-M.get_git_config = utils.memoized(
-  function()
-    if vim.b.gitsigns_status_dict then
-      return vim.b.gitsigns_status_dict.gitdir
-    end
-
-    return vim.fn.getcwd()
-  end,
-
-  function()
-    local config = {}
-    local stdout, code = utils.git({"config", "--list"})
-
-    if code == 0 then
-      for _, line in ipairs(stdout) do
-        local chunks = vim.split(line, "=", {plain=true, trimempty=true})
-        config[chunks[1]] = table.concat(vim.list_slice(chunks, 2), "=")
-      end
-    end
-
-    return config
-  end
-)
 
 
 return M
