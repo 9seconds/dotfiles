@@ -1,4 +1,5 @@
 local ts_utils = require("nvim-treesitter.ts_utils")
+local utils = require("_utils")
 
 
 local M = {}
@@ -32,57 +33,29 @@ function M.get_ts_scope_at_cursor()
 end
 
 
-M.get_git_config = (function()
-  local job = require("plenary.job")
-
-  local cache = {}
-
-  return function()
-    local gitdir = ""
-    local cwd = vim.fn.getcwd()
-    local cachekey = cwd
-
+M.get_git_config = utils.memoized(
+  function()
     if vim.b.gitsigns_status_dict then
-      gitdir = vim.b.gitsigns_status_dict.gitdir
-      cachekey = gitdir
+      return vim.b.gitsigns_status_dict.gitdir
     end
 
-    if cache[cachekey] then
-      return cache[cachekey]
-    end
+    return vim.fn.getcwd()
+  end,
 
-    local args = {"-P"}
-    if gitdir then
-      table.insert(args, "--git-dir")
-      table.insert(args, gitdir)
-    end
-    table.insert(args, "config")
-    table.insert(args, "--list")
-
-    local cmd = job:new({
-      command="git",
-      args=args,
-      cwd=cwd,
-      enable_recording=true,
-    })
-
-    local stdout, code = cmd:sync()
-    if code ~= 0 then
-      return {}
-    end
-
+  function()
     local config = {}
+    local stdout, code = utils.git({"config", "--list"})
 
-    for _, line in ipairs(stdout) do
-      local chunks = vim.split(line, "=", {plain=true, trimempty=true})
-      config[chunks[1]] = table.concat(vim.list_slice(chunks, 2), "=")
+    if code == 0 then
+      for _, line in ipairs(stdout) do
+        local chunks = vim.split(line, "=", {plain=true, trimempty=true})
+        config[chunks[1]] = table.concat(vim.list_slice(chunks, 2), "=")
+      end
     end
-
-    cache[cachekey] = config
 
     return config
   end
-end)()
+)
 
 
 return M
