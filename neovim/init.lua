@@ -768,6 +768,16 @@ require("packer").startup(function(use)
       })
     end
   }
+
+  use {
+    "haringsrob/nvim_context_vt",
+    config=function()
+      require("nvim_context_vt").setup({
+        enabled=true,
+        prefix="▶",
+      })
+    end
+  }
 end)
 
 
