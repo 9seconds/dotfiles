@@ -131,24 +131,31 @@ function M.setup(self)
 
   local null_ls_sources = {}
 
+  local function add(source, config)
+    if config ~= nil then
+      source = source.with(config)
+    end
+    table.insert(null_ls_sources, source)
+  end
+
   for k, v in pairs(self.null_ls.code_actions) do
-    table.insert(null_ls_sources, null_ls.builtins.code_actions[k].with(v))
+    add(null_ls.builtins.code_actions[k], v)
   end
 
   for k, v in pairs(self.null_ls.diagnostics) do
-    table.insert(null_ls_sources, null_ls.builtins.diagnostics[k].with(v))
+    add(null_ls.builtins.diagnostics[k], v)
   end
 
   for k, v in pairs(self.null_ls.formattings) do
-    table.insert(null_ls_sources, null_ls.builtins.formatting[k].with(v))
+    add(null_ls.builtins.formatting[k], v)
   end
 
   for k, v in pairs(self.null_ls.hovers) do
-    table.insert(null_ls_sources, null_ls.builtins.hover[k].with(v))
+    add(null_ls.builtins.hover[k], v)
   end
 
   for k, v in pairs(self.null_ls.completions) do
-    table.insert(null_ls_sources, null_ls.builtins.completion[k].with(v))
+    add(null_ls.builtins.completion[k], v)
   end
 
   for k, v in pairs(self.null_ls.customs) do
