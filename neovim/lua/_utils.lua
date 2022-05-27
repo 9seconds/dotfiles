@@ -1,6 +1,25 @@
 local M = {}
 
 
+local function char_to_hex(c)
+  return string.format("%%%02X", string.byte(c))
+end
+
+
+local function urlencode(url, pattern)
+  if not url then
+    return ""
+  end
+
+  url = url:gsub("\n", "\r\n")
+  url = url:gsub(pattern, char_to_hex)
+  url = url:gsub(" ", "+")
+
+  return url
+end
+
+
+
 local function memoized(cache_key_func, func)
   local cache = {}
 
@@ -88,6 +107,16 @@ M.git_config = memoized(
     return config
   end
 )
+
+
+function M.urlencode(url)
+  return urlencode(url, "([^%w _%%%-%.~])")
+end
+
+
+function M.urlencode_path(url)
+  return urlencode(url, "([^%w _%%%-%.~/])")
+end
 
 
 return M

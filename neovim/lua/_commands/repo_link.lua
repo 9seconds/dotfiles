@@ -14,6 +14,8 @@ end
 
 
 local function generate_link_for_github(url, branch, path, start_line, finish_line)
+  local utils = require("_utils")
+
   local stripped_url = vim.split(url, ":", {plain=true, trimempty=true})[2] or ""
   local chunks = vim.split(stripped_url, "/", {plain=true, trimempty=true})
   local username = chunks[1] or ""
@@ -33,12 +35,14 @@ local function generate_link_for_github(url, branch, path, start_line, finish_li
     username,
     repo,
     branch,
-    path,
+    utils.urlencode_path(path),
     anchor)
 end
 
 
 local function generate_link_for_bitbucket(url, branch, path, start_line, finish_line)
+  local utils = require("_utils")
+
   local stripped_url = vim.split(url, ":", {plain=true, trimempty=true})[2] or ""
   local chunks = vim.split(stripped_url, "/", {plain=true, trimempty=true})
   local username = chunks[1] or ""
@@ -58,12 +62,14 @@ local function generate_link_for_bitbucket(url, branch, path, start_line, finish
     username,
     repo,
     branch,
-    path,
+    utils.urlencode_path(path),
     anchor)
 end
 
 
 local function generate_link_for_gitlab(url, branch, path, start_line, finish_line)
+  local utils = require("_utils")
+
   local stripped_url = vim.split(url, ":", {plain=true, trimempty=true})[2] or ""
   local chunks = vim.split(stripped_url, "/", {plain=true, trimempty=true})
   local username = chunks[1] or ""
@@ -83,7 +89,7 @@ local function generate_link_for_gitlab(url, branch, path, start_line, finish_li
     username,
     repo,
     branch,
-    path,
+    utils.urlencode_path(path),
     anchor)
 end
 
