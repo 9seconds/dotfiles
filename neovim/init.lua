@@ -481,14 +481,6 @@ require("packer").startup(function(use)
     config=function()
       local nvim_tree = require("nvim-tree")
 
-      vim.g.nvim_tree_show_icons = {
-        git=1,
-        folders=1,
-        files=1,
-        folder_arrows=1,
-      }
-      vim.g.nvim_tree_git_hl = 1
-
       nvim_tree.setup {
         update_cwd=true,
         diagnostics={
@@ -506,6 +498,7 @@ require("packer").startup(function(use)
             "__pycache__",
           },
         },
+        respect_buf_cwd=true,
       }
 
       vim.keymap.set("n", "<F2>", nvim_tree.toggle)
@@ -518,9 +511,7 @@ require("packer").startup(function(use)
   use {
     "ahmedkhalf/project.nvim",
     config=function()
-      require("project_nvim").setup {}
-
-      vim.g.nvim_tree_respect_buf_cwd = 1
+      require("project_nvim").setup({})
     end
   }
 
