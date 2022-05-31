@@ -96,6 +96,8 @@ vim.keymap.set("n", "<c-j>", "<c-w>j")
 vim.keymap.set("n", "<c-k>", "<c-w>k")
 vim.keymap.set("n", "<c-l>", "<c-w>l")
 
+vim.keymap.set("n", "<c-m>", ":noh<cr>", {silent=true})
+
 -- exit insert mode
 vim.keymap.set("i", "jk", "<esc>")
 vim.keymap.set("i", "jj", "<esc>")
