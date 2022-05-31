@@ -186,7 +186,6 @@ require("packer").startup(function(use)
   use "tpope/vim-repeat"
   use "tpope/vim-surround"
   use "nathom/filetype.nvim"
-  use "Vimjas/vim-python-pep8-indent"
 
   use {
     "hrsh7th/nvim-cmp",
@@ -258,7 +257,6 @@ require("packer").startup(function(use)
 
         indent={
           enable=true,
-          disable={"python"},
         },
 
         textobjects={
