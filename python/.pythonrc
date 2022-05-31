@@ -4,7 +4,10 @@
 
 def _install_pprint_displayhook():
     import sys
-    import pprint
+    try:
+        import pprintpp as pprint
+    except ImportError:
+        import pprint
 
     try:
         import __builtin__ as builtins

@@ -1,33 +1,7 @@
-# -*- coding: utf-8 -*-
+exec("try:\n    import jedi.utils as __j__\nexcept ImportError:\n    pass\nelse:\n    __j__.setup_readline()\n    del __j__;")
+exec("try:\n    import pprintpp as __pp__\nexcept ImportError:\n    import pprint as __pp__\n__pp__ = __pp__.PrettyPrinter(indent=2)")
 
-
-import pdb
-import rlcompleter
-import sys
-import termios
-
-from json import dumps as _pj__dump__
-
-pdb.Pdb.complete = rlcompleter.Completer(dict(locals().items() + globals().items())).complete
-
-termios_fd = sys.stdin.fileno()
-termios_echo = termios.tcgetattr(termios_fd)
-termios_echo[3] = termios_echo[3] | termios.ECHO
-termios.tcsetattr(termios_fd, termios.TCSADRAIN, termios_echo)
-
-alias p_ for k, v in sorted(%1.items()): print "%-{0}s = %s".format(max(len(repr(k_)) for k_ in %1.keys())) % (k, repr(v))
-alias pj print _pj__dump__(%1, sort_keys=True, indent=4)
-
-alias pi_ p_ %1.__dict__
-alias pij pj %1.__dict__
-
-alias ps_ pi_ self
-alias pj_ pij self
-
-alias pl_ p_ locals()
-alias pj_ pj locals()
-
-alias nl n;;l
-alias sl s;;l
-
-del termios, sys, rlcompleter, pdb
+alias ppd   for k, v in sorted(%1.items()): print "{} -> {}".format(__pp__.pformat(k), __pp__.pformat(v))
+alias ppo   ppd   vars(%1)
+alias ppl   pp    list(%1)
+alias ppk   __pp__.pprint(sorted(%1))
