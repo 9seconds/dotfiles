@@ -325,12 +325,17 @@ require("packer").startup(function(use)
   }
 
   use {
-    "sainnhe/everforest",
+    "catppuccin/nvim",
+    as="catppuccin",
     config=function()
-      vim.g.everforest_background = "soft"
-      vim.g.everforest_enable_italic = 1
-      vim.g.everforest_better_performance = 1
-      vim.cmd("colorscheme everforest")
+      require("catppuccin").setup({
+        term_colors=true,
+        lsp_trouble=true,
+        lightspeed=true,
+        ts_rainbow=true,
+      })
+      vim.g.catppuccin_flavour = "frappe"
+      vim.cmd("colorscheme catppuccin")
     end
   }
 
@@ -432,7 +437,7 @@ require("packer").startup(function(use)
 
       require("lualine").setup {
         options={
-          theme="everforest",
+          theme="catppuccin",
           section_separators="",
           component_separators="",
           always_divide_middle=false,
