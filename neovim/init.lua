@@ -180,7 +180,6 @@ require("packer").startup(function(use)
   use "wbthomason/packer.nvim"
 
   use "ggandor/lightspeed.nvim"
-  use "junegunn/vim-slash"
   use "machakann/vim-textobj-delimited"
   use "tpope/vim-repeat"
   use "tpope/vim-surround"
