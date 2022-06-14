@@ -349,17 +349,13 @@ require("packer").startup(function(use)
   }
 
   use {
-    "catppuccin/nvim",
-    as="catppuccin",
+    "sainnhe/gruvbox-material",
     config=function()
-      require("catppuccin").setup({
-        term_colors=true,
-        lsp_trouble=true,
-        lightspeed=true,
-        ts_rainbow=true,
-      })
-      vim.g.catppuccin_flavour = "frappe"
-      vim.cmd("colorscheme catppuccin")
+      vim.g.gruvbox_material_background = "soft"
+      vim.g.gruvbox_material_enable_bold = true
+      vim.g.gruvbox_material_enable_italic = true
+
+      vim.cmd("colorscheme gruvbox-material")
     end
   }
 
@@ -461,7 +457,7 @@ require("packer").startup(function(use)
 
       require("lualine").setup {
         options={
-          theme="catppuccin",
+          theme="gruvbox-material",
           section_separators="",
           component_separators="",
           always_divide_middle=false,
