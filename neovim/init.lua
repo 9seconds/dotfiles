@@ -166,31 +166,31 @@ vim.api.nvim_create_autocmd("TermClose", {
   end
 })
 
-local augroup_custom_winbar = vim.api.nvim_create_augroup("CustomWinbar", {})
-vim.api.nvim_create_autocmd({"WinEnter", "BufEnter"}, {
-  group=augroup_custom_winbar,
-  callback=function()
-    local filenames = {}
-
-    for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-      local buf = vim.api.nvim_win_get_buf(win)
-      local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
-
-      if filetype == "help" or filetype == "" then
-        filenames[""] = true
-      else
-        local file = vim.api.nvim_buf_get_name(buf)
-        filenames[file] = true
-      end
-    end
-
-    if vim.tbl_count(filenames) > 1 then
-      vim.o.winbar = "%f%M%H"
-    else
-      vim.o.winbar = ""
-    end
-  end
-})
+-- local augroup_custom_winbar = vim.api.nvim_create_augroup("CustomWinbar", {})
+-- vim.api.nvim_create_autocmd({"WinEnter", "BufEnter"}, {
+--   group=augroup_custom_winbar,
+--   callback=function()
+--     local filenames = {}
+--
+--     for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+--       local buf = vim.api.nvim_win_get_buf(win)
+--       local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
+--
+--       if filetype == "help" or filetype == "" then
+--         filenames[""] = true
+--       else
+--         local file = vim.api.nvim_buf_get_name(buf)
+--         filenames[file] = true
+--       end
+--     end
+--
+--     if vim.tbl_count(filenames) > 1 then
+--       vim.o.winbar = "%f%M%H"
+--     else
+--       vim.o.winbar = ""
+--     end
+--   end
+-- })
 
 -- ----------------------------------------------------------------------------
 -- CUSTOM COMMANDS
