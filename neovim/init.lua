@@ -45,7 +45,6 @@ vim.o.writebackup = false              -- do not create backup during a file is 
 vim.o.tabstop = 4                      -- number of spaces a <tab> in the file counts for
 vim.o.softtabstop = 4                  -- number of spaces a <tab> counts for on editing (<BS> eg.)
 vim.o.shiftwidth = 4                   -- number of spaces for each step of autoindent
-vim.o.cmdheight = 0                    -- get rid of cmdline
 
 if vim.fn.executable("rg") then
   vim.o.grepprg = "rg --vimgrep --fixed-strings --no-heading --smart-case"
@@ -68,7 +67,7 @@ vim.g.maplocalleader = " "
 vim.keymap.set({"n", "v"}, "<space>", "<nop>")
 
 -- sudo write
-vim.keymap.set("c", "w!!", "w !sudo tee >/dev/null %")
+vim.keymap.set("c", "w!!", "w !sudo tee >/dev/null %", {silent=true})
 
 -- more reasonable indents/unindents
 vim.keymap.set("v", "<", "<gv")
@@ -115,7 +114,7 @@ vim.keymap.set("t", "<a-k>", "<c-\\><c-n><c-w>k")
 vim.keymap.set("t", "<a-l>", "<c-\\><c-n><c-w>l")
 
 -- fast access
-vim.keymap.set("n", "<leader>w", ":update<cr>")
+vim.keymap.set("n", "<leader>w", ":update<cr><cr>", {silent=true})
 
 
 -- ----------------------------------------------------------------------------
