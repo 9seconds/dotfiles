@@ -441,20 +441,19 @@ require("packer").startup(function(use)
   }
 
   use {
+    "SmiteshP/nvim-navic",
+    requires={
+      "neovim/nvim-lspconfig"
+    }
+  }
+
+  use {
     "nvim-lualine/lualine.nvim",
     requires={
       "kyazdani42/nvim-web-devicons",
-      {
-        "SmiteshP/nvim-gps",
-        requires={
-          "nvim-treesitter/nvim-treesitter"
-        }
-      }
     },
     config=function()
-      local gps = require("nvim-gps")
-
-      gps.setup()
+      local navic = require("nvim-navic")
 
       require("lualine").setup {
         options={
@@ -490,7 +489,7 @@ require("packer").startup(function(use)
             }
           },
           lualine_x={
-            {gps.get_location, cond=gps.is_available}
+            {navic.get_location, cond=navic.is_available}
           },
           lualine_y={},
           lualine_z={"location"},

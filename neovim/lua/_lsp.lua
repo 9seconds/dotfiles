@@ -12,6 +12,10 @@ local M = {
 
 -- this function is executed when LSP attaches to a buffer.
 local function on_attach(client, bufnr)
+  local navic = require("nvim-navic")
+
+  navic.attach(client, bufnr)
+
   local function keymap(mode, lhs, rhs)
     vim.keymap.set(mode, lhs, rhs, {buffer=bufnr})
   end
