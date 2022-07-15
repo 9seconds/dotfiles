@@ -209,7 +209,6 @@ require("packer").startup(function(use)
   use "ggandor/lightspeed.nvim"
   use "machakann/vim-textobj-delimited"
   use "tpope/vim-repeat"
-  use "tpope/vim-surround"
   use "nathom/filetype.nvim"
 
   use {
@@ -784,6 +783,12 @@ require("packer").startup(function(use)
       })
     end
   }
+
+  use {
+    "kylechui/nvim-surround",
+    config=function()
+      require("nvim-surround").setup({})
+    end
 end)
 
 
