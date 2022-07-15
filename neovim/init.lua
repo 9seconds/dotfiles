@@ -789,6 +789,14 @@ require("packer").startup(function(use)
     config=function()
       require("nvim-surround").setup({})
     end
+  }
+
+  use {
+    "NMAC427/guess-indent.nvim",
+    config=function()
+      require("guess-indent").setup({})
+    end
+  }
 end)
 
 
