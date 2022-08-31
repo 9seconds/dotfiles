@@ -547,11 +547,17 @@ require("packer").startup(function(use)
   }
 
   use {
+    "nvim-telescope/telescope-fzf-native.nvim",
+    run="make"
+  }
+
+  use {
     "nvim-telescope/telescope.nvim",
+    opt=false,
+    after="telescope-fzf-native.nvim",
     requires={
       "nvim-lua/plenary.nvim",
       "kyazdani42/nvim-web-devicons",
-      "natecraddock/telescope-zf-native.nvim",
     },
     config=function()
       local telescope = require("telescope")
@@ -596,13 +602,21 @@ require("packer").startup(function(use)
             },
           },
         },
+        extensions={
+          fzf={
+            fuzzy=true,
+            override_generic_sorter=true,
+            override_file_sorter=true,
+            case_mode="smart_case",
+          }
+        },
         pickers={
           find_files={
             find_command=find_command,
           },
         },
       })
-      require("telescope").load_extension("zf-native")
+      require("telescope").load_extension("fzf")
 
       vim.keymap.set("n", "<leader>ff", function()
         require('telescope.builtin').find_files({previewer=false})
@@ -767,7 +781,20 @@ require("packer").startup(function(use)
     config=function()
       local trevj = require("trevj")
 
-      trevj.setup()
+      trevj.setup({
+        containers={
+          python={
+            argument_list={
+              final_separator=false,
+              final_end_line=false
+            },
+            parameters={
+              final_separator=false,
+              final_end_line=false
+            }
+          }
+        }
+      })
 
       vim.keymap.set("n", "K", trevj.format_at_cursor)
     end
