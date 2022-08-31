@@ -54,6 +54,7 @@
     hunk-header-style = omit
 [push]
     default = simple
+    autoSetupRemote = true
 [rerere]
     enabled = 1
 [color]
