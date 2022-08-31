@@ -34,3 +34,6 @@ if test -d $LOCAL_CONFIG_DIR/completions
   and not contains $LOCAL_CONFIG_DIR/completions $fish_complete_path
   set -gp fish_complete_path $LOCAL_CONFIG_DIR/completions
 end
+
+test -e {$HOME}/.iterm2_shell_integration.fish ; and source {$HOME}/.iterm2_shell_integration.fish
+
