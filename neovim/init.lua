@@ -614,6 +614,13 @@ require("packer").startup(function(use)
           find_files={
             find_command=find_command,
           },
+          buffers={
+            mappings={
+              i={
+                ["<C-k>"]=actions.delete_buffer
+              }
+            }
+          }
         },
       })
       require("telescope").load_extension("fzf")
