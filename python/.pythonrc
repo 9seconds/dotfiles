@@ -59,10 +59,9 @@ def _install_except_hook():
 
     if os.environ.get("TERM") in ANSI_TERMS:
         base = "\001\033[%sm\002"
+        colors = {name: base % value for name, value in COLOR_TEMPLATES}
     else:
-        base = ""
-
-    colors = {name: base % value for name, value in COLOR_TEMPLATES}
+        colors = {name: "" for name, _ in COLOR_TEMPLATES}
 
     def hook(type, value, tb):
         sys.stdout.write(colors["Yellow"])
