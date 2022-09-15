@@ -808,17 +808,6 @@ require("packer").startup(function(use)
   }
 
   use {
-    "booperlv/nvim-gomove",
-    config=function()
-      require("gomove").setup({
-        map_defaults = true,
-        reindent = true,
-        undojoin = true
-      })
-    end
-  }
-
-  use {
     "kylechui/nvim-surround",
     config=function()
       require("nvim-surround").setup({})
