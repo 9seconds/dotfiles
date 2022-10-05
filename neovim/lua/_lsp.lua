@@ -22,94 +22,82 @@ local function on_attach(client, bufnr)
 
   vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 
-  if client.server_capabilities.codeActionProvider then
-    keymap("n", "<leader>fc", function()
-      require('telescope.builtin').lsp_code_actions()
-    end)
-    keymap("v", "<leader>fc", function()
-      require('telescope.builtin').lsp_range_code_actions()
-    end)
-  end
+  keymap("n", "<leader>fc", vim.lsp.buf.code_action)
+  keymap("v", "<leader>fc", function()
+    vim.lsp.buf.code_action({
+      options={
+        range=vim.lsp.util.make_range_params().range
+      }
+    })
+  end)
 
-  if client.server_capabilities.definitionProvider then
-    keymap("n", "<c-]>", function()
-      require('telescope.builtin').lsp_definitions()
-    end)
-  end
+  keymap("n", "<c-]>", function()
+    require('telescope.builtin').lsp_definitions()
+  end)
 
-  if client.server_capabilities.documentFormattingProvider then
-    keymap("n", "<leader>f=", vim.lsp.buf.formatting)
-  end
+  keymap("n", "<leader>f=", vim.lsp.buf.format)
+  keymap("v", "<leader>f=", function()
+    vim.lsp.buf.format({
+      options={
+        range=vim.lsp.util.make_range_params().range
+      }
+    })
+  end)
 
-  if client.server_capabilities.documentRangeFormattingProvider then
-    keymap("n", "<leader>f=", vim.lsp.buf.range_formatting)
-  end
 
-  if client.server_capabilities.hoverProvider then
-    keymap("n", "<leader>f=", vim.lsp.buf.hover)
-  end
+  keymap("n", "<leader>fr", function()
+    require('telescope.builtin').lsp_references()
+  end)
 
-  if client.server_capabilities.referencesProvider then
-    keymap("n", "<leader>fr", function()
-      require('telescope.builtin').lsp_references()
-    end)
-  end
+  keymap("n", "<leader>fd", function()
+    require('telescope.builtin').lsp_document_symbols()
+  end)
 
-  if client.server_capabilities.documentSymbolProvider then
-    keymap("n", "<leader>fd", function()
-      require('telescope.builtin').lsp_document_symbols()
-    end)
-  end
-
-  if client.server_capabilities.signatureHelpProvider then
-    keymap("n", "<leader>fs", vim.lsp.buf.signature_help)
-  end
-
-  if client.server_capabilities.renameProvider then
-    keymap("n", "<leader>fn", vim.lsp.buf.rename)
-  end
+  keymap("n", "<leader>fh", vim.lsp.buf.hover)
+  keymap("n", "<leader>fs", vim.lsp.buf.signature_help)
+  keymap("n", "<leader>fn", vim.lsp.buf.rename)
 end
 
 
 -- add/modify config
 function M.configure_server(self, name, config)
-  self.servers[name] = config
+  self.servers[name] = config or {}
 end
 
 
 -- add/modify null ls source
 function M.null_ls_set_code_action(self, name, config)
-  self.null_ls.code_actions[name] = config
+  self.null_ls.code_actions[name] = config or {}
 end
 
 
 -- add/modify null ls diagnostic
 function M.null_ls_set_diagnostic(self, name, config)
-  self.null_ls.diagnostics[name] = config
+  self.null_ls.diagnostics[name] = config or {}
 end
 
 
 -- add/modify null ls diagnostic
 function M.null_ls_set_formatting(self, name, config)
-  self.null_ls.formattings[name] = config
+  self.null_ls.formattings[name] = config or {}
 end
 
 
 -- add/modify null ls hovers
 function M.null_ls_set_hover(self, name, config)
-  self.null_ls.hovers[name] = config
+  self.null_ls.hovers[name] = config or {}
 end
 
 
 -- add/modify null ls completions
 function M.null_ls_set_hover(self, name, config)
-  self.null_ls.completions[name] = config
+  self.null_ls.completions[name] = config or {}
 end
 
 
 -- add/modify null ls custom server definition
 function M.null_ls_set_custom(self, name, config)
-  self.null_ls.customs[name] = config
+  self.null_ls.customs[name] = config or {}
 end
 
 
