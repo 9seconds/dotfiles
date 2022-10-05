@@ -29,7 +29,7 @@
     rs = restore
     rsp = rs --patch
     df = diff --minimal
-    dfc = df --cached
+    dft = difftool
     gcc = !git reflog expire --expire=all --stale-fix --all && git worktree prune --expire 0 && git gc --prune=all && git repack -a -d -b --depth 200 --window 100
     gcca = !git gcc && git sf git gcc
     sf = submodule foreach --recursive
@@ -44,6 +44,12 @@
     lg = lgg --simplify-by-decoration
     ifix = "!f() { git l | fzf | cut -f1 -d' ' | head -1 | xargs -r -n 1 git fixup; }; f"
     ia = "!f() { git status --porcelain=v2 | awk '{if ($2 != \"M.\") {print $9}}' | fzf -m --print0 | xargs -0 -r git add; }; f"
+[diff]
+    tool = difftastic
+[difftool]
+    prompt = false
+[difftool "difftastic"]
+    cmd = difft "$LOCAL" "$REMOTE"
 [interactive]
     diffFilter = delta --color-only
 [delta]
@@ -65,10 +71,12 @@
 [mergetool]
     prompt = true
     keepBackup = false
+[pager]
+    difftool = true
 [core]
-    pager        = delta
+    ; pager        = delta
     preloadindex = true
-	excludesfile = ~/.gitignore_global
+    excludesfile = ~/.gitignore_global
 [pack]
     compression = 9
     threads     = 8
