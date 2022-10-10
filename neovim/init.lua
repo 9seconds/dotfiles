@@ -46,6 +46,7 @@ vim.o.tabstop = 4                      -- number of spaces a <tab> in the file c
 vim.o.softtabstop = 4                  -- number of spaces a <tab> counts for on editing (<BS> eg.)
 vim.o.shiftwidth = 4                   -- number of spaces for each step of autoindent
 vim.o.cmdheight = 0                    -- disable 1 mandatory line for cmd
+vim.o.splitkeep = "screen"             -- keep horizontal screen position
 
 if vim.fn.executable("rg") then
   vim.o.grepprg = "rg --vimgrep --fixed-strings --no-heading --smart-case"
