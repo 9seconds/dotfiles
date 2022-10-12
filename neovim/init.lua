@@ -26,7 +26,7 @@ vim.o.mouse = "a"                      -- mouse support
 vim.o.number = true                    -- show line numbers
 vim.o.shell = "/bin/bash"              -- use bash as a default shell
 vim.o.shiftround = true                -- round indent to shiftwidth
-vim.o.shortmess = "Ic"                 -- do not show a welcome page
+vim.o.shortmess = "OIWca"              -- do not show a welcome page
 vim.o.showbreak = "↪"                  -- use this symbol to display a wrapped line
 vim.o.showmatch = true                 -- show matching stuff
 vim.o.showmode = false                 -- show current active mode
@@ -107,6 +107,9 @@ vim.keymap.set("i", "jj", "<esc>")
 -- sort
 vim.keymap.set("v", "<leader>s", ":sort i<cr>")
 
+-- fast save
+vim.keymap.set("n", "<leader>w", "silent! update")
+
 -- terminal mappings
 vim.keymap.set("t", "<c-j><c-j>", "<c-\\><c-n>")
 vim.keymap.set("t", "<c-j><c-k>", "<c-\\><c-n>")
@@ -166,32 +169,6 @@ vim.api.nvim_create_autocmd("TermClose", {
     vim.fn.feedkeys("<esc>")
   end
 })
-
--- local augroup_custom_winbar = vim.api.nvim_create_augroup("CustomWinbar", {})
--- vim.api.nvim_create_autocmd({"WinEnter", "BufEnter"}, {
---   group=augroup_custom_winbar,
---   callback=function()
---     local filenames = {}
---
---     for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
---       local buf = vim.api.nvim_win_get_buf(win)
---       local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
---
---       if filetype == "help" or filetype == "" then
---         filenames[""] = true
---       else
---         local file = vim.api.nvim_buf_get_name(buf)
---         filenames[file] = true
---       end
---     end
---
---     if vim.tbl_count(filenames) > 1 then
---       vim.o.winbar = "%f%M%H"
---     else
---       vim.o.winbar = ""
---     end
---   end
--- })
 
 -- ----------------------------------------------------------------------------
 -- CUSTOM COMMANDS
