@@ -98,7 +98,8 @@ vim.keymap.set("n", "<c-j>", "<c-w>j")
 vim.keymap.set("n", "<c-k>", "<c-w>k")
 vim.keymap.set("n", "<c-l>", "<c-w>l")
 
-vim.keymap.set("n", "<c-m>", ":noh<cr>", {silent=true})
+-- clear highlight
+vim.keymap.set("n", "<leader>l", ":noh<cr>", {silent=true})
 
 -- exit insert mode
 vim.keymap.set("i", "jk", "<esc>")
@@ -108,7 +109,7 @@ vim.keymap.set("i", "jj", "<esc>")
 vim.keymap.set("v", "<leader>s", ":sort i<cr>")
 
 -- fast save
-vim.keymap.set("n", "<leader>w", "silent! update")
+vim.keymap.set("n", "<leader>w", ":update<cr>", {silent=true})
 
 -- terminal mappings
 vim.keymap.set("t", "<c-j><c-j>", "<c-\\><c-n>")
@@ -117,9 +118,6 @@ vim.keymap.set("t", "<a-h>", "<c-\\><c-n><c-w>h")
 vim.keymap.set("t", "<a-j>", "<c-\\><c-n><c-w>j")
 vim.keymap.set("t", "<a-k>", "<c-\\><c-n><c-w>k")
 vim.keymap.set("t", "<a-l>", "<c-\\><c-n><c-w>l")
-
--- fast access
-vim.keymap.set("n", "<leader>w", ":update<cr><cr>", {silent=true})
 
 
 -- ----------------------------------------------------------------------------
