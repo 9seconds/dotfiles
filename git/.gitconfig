@@ -54,7 +54,7 @@
     diffFilter = delta --color-only
 [delta]
     features = line-numbers side-by-side
-    syntax-theme = gruvbox-dark
+    syntax-theme = Catpuccin-frappa
     whitespace-error-style = 22 reverse
 [delta "decorations"]
     hunk-header-style = omit

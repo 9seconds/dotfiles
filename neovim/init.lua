@@ -26,7 +26,7 @@ vim.o.mouse = "a"                      -- mouse support
 vim.o.number = true                    -- show line numbers
 vim.o.shell = "/bin/bash"              -- use bash as a default shell
 vim.o.shiftround = true                -- round indent to shiftwidth
-vim.o.shortmess = "OIWca"              -- do not show a welcome page
+vim.o.shortmess = "FOIWca"             -- do not show a welcome page
 vim.o.showbreak = "↪"                  -- use this symbol to display a wrapped line
 vim.o.showmatch = true                 -- show matching stuff
 vim.o.showmode = false                 -- show current active mode
@@ -326,13 +326,46 @@ require("packer").startup(function(use)
   }
 
   use {
-    "sainnhe/gruvbox-material",
+    "catppuccin/nvim",
+    as="catppuccin",
     config=function()
-      vim.g.gruvbox_material_background = "soft"
-      vim.g.gruvbox_material_enable_bold = true
-      vim.g.gruvbox_material_enable_italic = true
+      require("catppuccin").setup({
+        integrations={
+          cmp=true,
+          gitsigns=true,
+          lightspeed=true,
+          lsp_trouble=false,
+          nvimtree=true,
+          telescope=true,
+          treesitter=true,
+          treesitter_context=true,
+          indent_blankline={
+            enabled=true,
+            colored_indent_levels=false,
+          },
+          native_lsp={
+            enabled=true,
+            virtual_text={
+              errors={ "italic" },
+              hints={ "italic" },
+              warnings={ "italic" },
+              information={ "italic" },
+            },
+            underlines={
+              errors={ "underline" },
+              hints={ "underline" },
+              warnings={ "underline" },
+              information={ "underline" },
+            },
+          },
+          navic={
+            enabled=true,
+            custom_bg="NONE",
+          },
+      },
+    })
 
-      vim.cmd("colorscheme gruvbox-material")
+      vim.cmd.colorscheme("catppuccin-frappe")
     end
   }
 
@@ -433,7 +466,7 @@ require("packer").startup(function(use)
 
       require("lualine").setup {
         options={
-          theme="gruvbox-material",
+          theme="catppuccin",
           section_separators="",
           component_separators="",
           always_divide_middle=false,
