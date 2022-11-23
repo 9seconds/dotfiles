@@ -26,6 +26,6 @@ vim.api.nvim_create_autocmd("BufWritePre", {
       end
     end
 
-    vim.lsp.buf.formatting()
+    vim.lsp.buf.format()
   end
 })
