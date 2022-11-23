@@ -183,10 +183,16 @@ end, {range=true})
 require("packer").startup(function(use)
   use "wbthomason/packer.nvim"
 
-  use "ggandor/lightspeed.nvim"
   use "machakann/vim-textobj-delimited"
   use "tpope/vim-repeat"
   use "nathom/filetype.nvim"
+
+  use {
+    "ggandor/leap.nvim",
+    config=function()
+      require("leap").add_default_mappings()
+    end
+  }
 
   use {
     "hrsh7th/nvim-cmp",
@@ -333,8 +339,8 @@ require("packer").startup(function(use)
         integrations={
           cmp=true,
           gitsigns=true,
-          lightspeed=true,
-          lsp_trouble=false,
+          leap=true,
+          lsp_trouble=true,
           nvimtree=true,
           telescope=true,
           treesitter=true,
