@@ -1,0 +1,8 @@
+// this is HJSON: https://hjson.github.io/
+
+{
+  description : Update all apt packages
+  git: no
+  network: false
+  as_user: root
+}

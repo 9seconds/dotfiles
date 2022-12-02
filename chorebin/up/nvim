@@ -1,0 +1,4 @@
+#!/bin/bash
+
+nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync' && \
+nvim --headless -c 'TSInstall all' -c 'TSUpdateSync' -c 'CatppuccinCompile' -c 'qall!'

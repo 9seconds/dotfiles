@@ -1,0 +1,5 @@
+#!/bin/bash
+set -eu -o pipefail
+
+. $ASDF_DIR/asdf.sh
+asdf update && asdf plugin update --all && asdf latest --all
