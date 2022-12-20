@@ -1,0 +1,19 @@
+// this is HJSON: https://hjson.github.io/
+
+{
+  description : Update asdf plugs to latest versions
+
+  git: no
+
+  parameters: {
+    cleanup: {
+      type: bool
+      required: false
+    },
+
+    install: {
+      type: bool
+      required: false
+    },
+  }
+}
