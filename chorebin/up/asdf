@@ -79,19 +79,21 @@ latest_versions = {
 latest_versions = {name: future.result() for name, future in latest_versions.items()}
 
 
-if not os.getenv("CHORE_ARG_INSTALL"):
+if os.getenv("CHORE_ARG_NO_INSTALL") == "t":
     for name in installed_versions:
         print(f">>> {name}: {installed_versions[name]} -> {latest_versions[name]}")
     sys.exit(os.EX_OK)
 
 for name in installed_versions:
-    if latest_versions[name] > installed_versions[name]:
-        print(f">>> update {name} from {installed_versions[name]} to {latest_versions[name]}")
-        asdf_run(["install", name, latest_versions[name]])
-        asdf_run(["global", name, latest_versions[name]])
+    latest = latest_versions[name]
+    installed = installed_versions[name]
+    if latest > installed:
+        print(f">>> update {name} from {installed} to {latest}")
+        asdf_run(["install", name, str(latest)])
+        asdf_run(["global", name, str(latest)])
 
 
-if not os.getenv("CHORE_ARG_CLEANUP"):
+if os.getenv("CHORE_ARG_NO_CLEANUP") == "t":
     sys.exit(os.EX_OK)
 
 

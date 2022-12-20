@@ -6,14 +6,20 @@
   git: no
 
   parameters: {
-    cleanup: {
-      type: bool
+    no-cleanup: {
+      type: enum
       required: false
+      spec: {
+        choices: t,f
+      }
     },
 
-    install: {
-      type: bool
+    no-install: {
+      type: enum
       required: false
+      spec: {
+        choices: t,f
+      }
     },
   }
 }
