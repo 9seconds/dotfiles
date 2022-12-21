@@ -5,21 +5,8 @@
 
   git: no
 
-  parameters: {
-    no-cleanup: {
-      type: enum
-      required: false
-      spec: {
-        choices: t,f
-      }
-    },
-
-    no-install: {
-      type: enum
-      required: false
-      spec: {
-        choices: t,f
-      }
-    },
+  flags: {
+    cleanup: false
+    install: false
   }
 }
