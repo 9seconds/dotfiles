@@ -2,11 +2,5 @@
 
 {
   description : Update asdf plugs to latest versions
-
   git: no
-
-  flags: {
-    cleanup: false
-    install: false
-  }
 }
