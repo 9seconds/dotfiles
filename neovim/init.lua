@@ -532,7 +532,6 @@ require("packer").startup(function(use)
         filters={
           dotfiles=false,
           custom={
-            ".git",
             "*.pyc",
             "*.pyo",
             "__pycache__",

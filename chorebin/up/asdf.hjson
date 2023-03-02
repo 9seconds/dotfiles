@@ -1,6 +1,67 @@
-// this is HJSON: https://hjson.github.io/
+# vim: set ft=toml ts=2 sw=2 sts=2 et:
+#
+# this is a configuration for up/asdf
+# chore script. A configuraion language is TOML
+#
+# https://toml.io/en/
+# https://github.com/9seconds/chore
 
-{
-  description : Update asdf plugs to latest versions
-  git: no
-}
+# A description of the command. It is used mostly for 'chore show' command.
+# You can also use to to describe what this command should do.
+description = "Amazing asdf of up"
+
+# Decide how should we proceed with git-related data injection.
+#
+# Git data retrieval can be painfully slow on huge repositories, especially if
+# they are placed on remote storages mounted to the host (e.g, sshfs, nfs or
+# some virtualbox/vagrant setups). It mightly costly to access it each time
+# especially if your script does not need it at all. Here you can specify
+# how do you want it delivered.
+#
+# valid values are:
+#   * "if_undefined"   inject values if some environment variable
+#                      is not defined yet. Think about 'once per
+#                      execution' here.
+#   * "no"             do not bother at all
+#   * "always"         always populate correct information
+#
+# A difference between "if_undefined" and "always" is that if_undefine avoids
+# repopulation of the data if some bits of it already present in environment
+# variable. For example, if you execute a chore script within another script,
+# "if_undefined" won't repopulate for children with such setting, "always"
+# will.
+#
+# It can be useful if you access many repository as a part of some chore
+# script.
+git = "if_undefined"  # default value
+
+# Decide if network has to be accessed to provide you with a data
+# related to your IP address.
+network = false  # default value
+
+# Flags now.
+#
+# In this section you can define them with optional description and
+# requirement hint. You can be concise though.
+#
+# [flags]
+# flag1 = {}
+# flag2 = { description = "Description is optional" }
+#
+[flags.flag1]
+description = "This is a description for flag1"
+required = false  # default value
+
+# Parameters now.
+#
+# Each parameter has a single mandatory field, type. Other are optional.
+# Usually even specs are optional except of enums.
+[parameters.param]
+description = "Never knows best"
+type = "string"
+required = false  # defautl value
+
+# do no forget about spec
+[paramters.param.spec]
+ascii = true
+regexp = '^\d\w+$'
