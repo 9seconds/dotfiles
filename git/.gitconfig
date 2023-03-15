@@ -39,11 +39,11 @@
     ftchr = ftch --atomic
     ftcha = ftch --all
     rh = reset --hard
-    l = log '--pretty=format:%C(auto)%h %Cgreen%aN%Cblue%d%Creset: %s' --no-merges --abbrev-commit
+    l = log --date=short '--pretty=format:%C(auto)%h (%ad) %Cgreen%aN%Cblue%d%Creset: %s' --no-merges --abbrev-commit
     lgg = l --graph
     lg = lgg --simplify-by-decoration
-    ifix = "!f() { git l | fzf | cut -f1 -d' ' | head -1 | xargs -r -n 1 git fixup; }; f"
-    ia = "!f() { git status --porcelain=v2 | awk '{if ($2 != \"M.\") {print $9}}' | fzf -m --print0 | xargs -0 -r git add; }; f"
+    fix = "!f() { git add $1 && git l $1 | head -n 10 | fzf --height=~20% | cut -f1 -d' ' | head -1 | xargs -r git fixup; }; f"
+    ifix = "!f() { git diff --name-status | grep -vE '^D' | awk '{print $2}' | fzf --height=~20% | xargs -r git fix; }; f"
 [diff]
     tool = difftastic
 [difftool]

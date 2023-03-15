@@ -332,48 +332,95 @@ require("packer").startup(function(use)
   }
 
   use {
-    "catppuccin/nvim",
-    as="catppuccin",
+    "rebelot/kanagawa.nvim",
     config=function()
-      require("catppuccin").setup({
-        integrations={
-          cmp=true,
-          gitsigns=true,
-          leap=true,
-          lsp_trouble=true,
-          nvimtree=true,
-          telescope=true,
-          treesitter=true,
-          treesitter_context=true,
-          indent_blankline={
-            enabled=true,
-            colored_indent_levels=false,
-          },
-          native_lsp={
-            enabled=true,
-            virtual_text={
-              errors={ "italic" },
-              hints={ "italic" },
-              warnings={ "italic" },
-              information={ "italic" },
-            },
-            underlines={
-              errors={ "underline" },
-              hints={ "underline" },
-              warnings={ "underline" },
-              information={ "underline" },
-            },
-          },
-          navic={
-            enabled=true,
-            custom_bg="NONE",
-          },
-      },
-    })
+      local kg = require("kanagawa")
+      kg.setup {
+        compile=true,
+        theme="wave",
+        commentStyle={italic=true},
+        statementStyle={bold=true},
+        overrides=function(colors)
+          local theme = colors.theme
+          return {
+              TelescopeTitle = { fg = theme.ui.special, bold = true },
+              TelescopePromptNormal = { bg = theme.ui.bg_p1 },
+              TelescopePromptBorder = { fg = theme.ui.bg_p1, bg = theme.ui.bg_p1 },
+              TelescopeResultsNormal = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m1 },
+              TelescopeResultsBorder = { fg = theme.ui.bg_m1, bg = theme.ui.bg_m1 },
+              TelescopePreviewNormal = { bg = theme.ui.bg_dim },
+              TelescopePreviewBorder = { bg = theme.ui.bg_dim, fg = theme.ui.bg_dim },
+              Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1 },
+              PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
+              PmenuSbar = { bg = theme.ui.bg_m1 },
+              PmenuThumb = { bg = theme.ui.bg_p2 },
+          }
+        end,
+        colors={
+          theme={
+            all={
+              ui={
+                bg_gutter="none"
+              }
+            }
+          }
+        }
+      }
 
-      vim.cmd.colorscheme("catppuccin-frappe")
+      kg.load("wave")
+
+      vim.api.nvim_create_user_command("KanagawaNight", function()
+        kg.load("dragon")
+      end, {})
+      vim.api.nvim_create_user_command("KanagawaDay", function()
+        kg.load("wave")
+      end, {})
     end
   }
+
+  -- use {
+  --   "catppuccin/nvim",
+  --   as="catppuccin",
+  --   config=function()
+  --     require("catppuccin").setup({
+  --       integrations={
+  --         cmp=true,
+  --         gitsigns=true,
+  --         leap=true,
+  --         lsp_trouble=true,
+  --         nvimtree=true,
+  --         telescope=true,
+  --         treesitter=true,
+  --         treesitter_context=true,
+  --         indent_blankline={
+  --           enabled=true,
+  --           colored_indent_levels=false,
+  --         },
+  --         native_lsp={
+  --           enabled=true,
+  --           virtual_text={
+  --             errors={ "italic" },
+  --             hints={ "italic" },
+  --             warnings={ "italic" },
+  --             information={ "italic" },
+  --           },
+  --           underlines={
+  --             errors={ "underline" },
+  --             hints={ "underline" },
+  --             warnings={ "underline" },
+  --             information={ "underline" },
+  --           },
+  --         },
+  --         navic={
+  --           enabled=true,
+  --           custom_bg="NONE",
+  --         },
+  --     },
+  --   })
+  --
+  --     vim.cmd.colorscheme("catppuccin-frappe")
+  --   end
+  -- }
 
   use {
     "abecodes/tabout.nvim",
@@ -472,7 +519,6 @@ require("packer").startup(function(use)
 
       require("lualine").setup {
         options={
-          theme="catppuccin",
           section_separators="",
           component_separators="",
           always_divide_middle=false,
@@ -522,22 +568,31 @@ require("packer").startup(function(use)
       local nvim_tree = require("nvim-tree")
 
       nvim_tree.setup {
-        update_cwd=true,
-        diagnostics={
-          enable=false
+        disable_netrw=true,
+        hijack_cursor=true,
+        sync_root_with_cwd=true,
+        respect_buf_cwd=true,
+        update_focused_file={
+          enable=true
         },
         view={
+          centralize_selection=true,
           width=50,
         },
+        git={
+          timeout=5000
+        },
+        renderer={
+          highlight_git=true,
+        },
         filters={
-          dotfiles=false,
+          dotfiles=true,
           custom={
             "*.pyc",
             "*.pyo",
             "__pycache__",
           },
         },
-        respect_buf_cwd=true,
       }
 
       vim.keymap.set("n", "<F2>", nvim_tree.toggle)
