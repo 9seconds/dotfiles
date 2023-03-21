@@ -1,0 +1,19 @@
+# vim: set ft=toml ts=2 sw=2 sts=2 et:
+
+description = "Run restic within a harness"
+git = "no"
+
+[parameters.compression]
+description = "Repository compression"
+type = "enum"
+spec = {choices = "auto,max,off"}
+
+[parameters.gogc]
+description = "GOGC value"
+type = "integer"
+spec = {min = "1"}
+
+[parameters.pack_size]
+description = "A size of the pack file"
+type = "integer"
+spec = {min = "1"}

@@ -1,0 +1,19 @@
+#!/bin/bash
+# vim: set ft=bash sw=2 ts=2 sts=2 et:
+set -eu -o pipefail
+
+[[ ${CHORE_DEBUG:-} = "1" ]] && set -x
+
+export GOGC="${CHORE_P_GOGC:-20}"
+export RESTIC_PASSWORD_COMMAND="chore vault get . repository_password"
+export RESTIC_REPOSITORY="$(chore vault get . repository_uri)"
+export RESTIC_COMPRESSION="${CHORE_P_COMPRESSION:-max}"
+export RESTIC_PACK_SIZE="${CHORE_P_PACK_SIZE:-32}"
+
+CMD="$(command -v restic) --cacert /etc/restic/tls_public_key"
+
+if [[ ${CHORE_DEBUG:-} = "1" ]]; then
+  CMD="$CMD --verbose=2"
+fi
+
+exec $CMD "$@"

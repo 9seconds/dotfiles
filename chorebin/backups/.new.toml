@@ -1,0 +1,23 @@
+# vim: set ft=toml ts=2 sw=2 sts=2 et:
+
+description = "Create new backup"
+git = "no"
+network = false
+
+[parameters.tag]
+description = "Tag to mark this backup"
+type = "string"
+required = false
+
+  [parameters.tag.spec]
+  ascii = "true"
+
+[parameters.excludes]
+description = "File with exclude patterns"
+type = "file"
+required = false
+
+  [parameters.excludes.spec]
+  ascii = "true"
+  exists = "true"
+  readable = "true"

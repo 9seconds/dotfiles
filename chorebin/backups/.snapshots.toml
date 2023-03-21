@@ -1,0 +1,24 @@
+# vim: set ft=toml ts=2 sw=2 sts=2 et:
+#
+# This is a configuration for backups/snapshots
+# chore script. A configuraion language is TOML
+#
+# https://toml.io/en/
+# https://github.com/9seconds/chore
+
+description = "Show backup snapshots"
+
+git = "no"
+
+# Flags now.
+#
+# In this section you can define them with optional description and
+# requirement hint. You can be concise though.
+#
+# [flags]
+# flag1 = {}
+# flag2 = { description = "Description is optional" }
+#
+[flags.all]
+description = "This is a description for flag1"
+required = false
