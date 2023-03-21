@@ -11,6 +11,7 @@ if [[ ${CHORE_F_PRUNE:-} == "1" ]]; then
 fi
 
 exec $CHORE_BIN run . restic -- forget $OPTS \
+  --keep-tag "persistent" \
   --keep-last "${CHORE_P_LAST:-$BACKUPS_KEEP_LAST}" \
   --keep-daily "${CHORE_P_DAILY:-$BACKUPS_KEEP_DAILY}" \
   --keep-weekly "${CHORE_P_WEEKLY:-$BACKUPS_KEEP_WEEKLY}" \

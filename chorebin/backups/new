@@ -7,14 +7,13 @@ set -eu -o pipefail
 OPTS="--no-scan --one-file-system"
 OPTS="$OPTS --host ${BACKUPS_HOSTNAME:-$(hostname -fqdn)}"
 
-TAGS="hostid-$(cat /etc/machine-id)"
-while IFS= read -r tag; do
-  if [[ $tag != "" ]]; then
+if [[ ${CHORE_PL_TAG:-} != "" ]]; then
+  TAGS=
+  while IFS= read -r tag; do
     TAGS="$TAGS,$tag"
-  fi
-done <<< "${CHORE_P_TAG:-}"
-
-OPTS="$OPTS --tag $TAGS"
+  done <<< "$CHORE_PL_TAG"
+  OPTS="$OPTS --tag ${TAGS:1}"
+fi
 
 if [[ ${CHORE_P_EXCLUDES:-} != "" ]]; then
   OPTS="$OPTS --exclude-file $CHORE_P_EXCLUDES"
