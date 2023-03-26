@@ -595,9 +595,14 @@ require("packer").startup(function(use)
         },
       }
 
-      vim.keymap.set("n", "<F2>", nvim_tree.toggle)
+      vim.keymap.set("n", "<F2>", function()
+        require("nvim-tree.api").tree.toggle()
+      end)
       vim.keymap.set("n", "<F3>", function()
-        nvim_tree.find_file(true)
+        require("nvim-tree.api").tree.find_file({
+          open=true,
+          focus=true,
+        })
       end)
     end
   }
