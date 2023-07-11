@@ -1,3 +1,1 @@
-vim.bo.tabstop = 2
-vim.bo.softtabstop = 2
-vim.bo.shiftwidth = 2
+require("_.utils").set_indent(2, vim.bo)

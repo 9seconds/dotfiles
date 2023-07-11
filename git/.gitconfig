@@ -50,14 +50,6 @@
     prompt = false
 [difftool "difftastic"]
     cmd = difft "$LOCAL" "$REMOTE"
-[interactive]
-    diffFilter = delta --color-only
-[delta]
-    features = line-numbers side-by-side
-    syntax-theme = Catpuccin-frappa
-    whitespace-error-style = 22 reverse
-[delta "decorations"]
-    hunk-header-style = omit
 [push]
     default = simple
     autoSetupRemote = true
@@ -85,3 +77,5 @@
 [grep]
     patternType = perl
     fullName    = true
+[init]
+	defaultBranch = master
