@@ -32,7 +32,6 @@ return {
     local null_ls = require("null-ls")
 
     local sources = {
-      null_ls.builtins.completion.spell,
       null_ls.builtins.hover.printenv,
       null_ls.builtins.completion.tags,
       null_ls.builtins.formatting.jq,
