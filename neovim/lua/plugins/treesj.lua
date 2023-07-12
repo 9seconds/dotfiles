@@ -8,8 +8,8 @@ return {
     "nvim-treesitter/nvim-treesitter",
   },
   keys = {
-    {"<leader>S", "<cmd>TSJSplit<cr>"},
-    {"<leader>J", "<cmd>TSJJoin<cr>"},
+    {"<leader>s", "<cmd>TSJSplit<cr>"},
+    {"<leader>j", "<cmd>TSJJoin<cr>"},
   },
 
   opts = {
