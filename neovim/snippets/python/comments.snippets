@@ -1,0 +1,7 @@
+# vim: set ft=snippets
+
+snippet #T "TODO comment" b
+	# TODO${1:(`!lua vim.trim(vim.fn.system("git config user.name") or "")`)}: ${0}
+
+snippet #F "TODO comment" b
+	# FIXME${1:(`!lua vim.trim(vim.fn.system("git config user.name") or "")`)}: ${0}

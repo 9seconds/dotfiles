@@ -1,0 +1,19 @@
+# vim: set ft=snippets
+
+snippet pr "Simple print" b
+	print(${0:$TM_SELECTED_TEXT})
+
+snippet prs "Print as string" b
+	print("${0:$TM_SELECTED_TEXT}")
+
+snippet prf "Print as f-string" b
+	print(f"${0:$TM_SELECTED_TEXT}")
+
+snippet prr "Simple redirected print" b
+	print(${0:$TM_SELECTED_TEXT}, file=${1:sys.stderr})
+
+snippet prsr "Simple redirected string print" b
+	print("${0:$TM_SELECTED_TEXT}", file=${1:sys.stderr})
+
+snippet prfr "Simple redirected string print" b
+	print(f"${0:$TM_SELECTED_TEXT}", file=${1:sys.stderr})
