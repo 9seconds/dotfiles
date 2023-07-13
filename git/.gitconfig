@@ -1,35 +1,30 @@
 [user]
     email = nineseconds@yandex.ru
     name  = 9seconds
-    branch-prefix = 9seconds
+    branch-prefix = 9seconds-
 [alias]
     a = add
     ap = a --patch
     apa = ap --all
-    ignore = update-index --skip-worktree
-    no-ingnore = update-index --no-skip-worktree
     bl = blame --show-stats --date iso
     br = branch -vv
     brl = "!f() { git br --all --list \"*$1*\"; }; f"
-    brm = "!f() { git br --all --list \"*$(git config user.branch-prefix)*\"; }; f"
-    brc = !git br | grep -v '*' | awk '/: gone]/{print $1}' | xargs -n 10 -r git brd
+    brm = "!f() { git br --all --list \"$(git config user.branch-prefix)*\"; }; f"
+    brc = !git br | grep -v '*' | awk '/: gone]/{print $1}' | xargs -n 100 -r git brd
     brd = branch -D
     cl = clean -fdq
-    cla = cl -x
+    clx = cl -x
     s = status -sb --find-renames
     cm = commit
-    cmm = cm -m
-    cmma = cm -a -m
     fixup = cm --fixup
     amend = cm --amend
-    rb = rebase --interactive --autosquash
+    rb = rebase --interactive --autosquash --autostash
     co = checkout
     cob = co -b
-    sw = switch
-    rs = restore
-    rsp = rs --patch
     df = diff --minimal
-    dft = difftool
+    dff = difftool
+    dfc = df --cached
+    dffc = dfc --cached
     gcc = !git reflog expire --expire=all --stale-fix --all && git worktree prune --expire 0 && git gc --prune=all && git repack -a -d -b --depth 200 --window 100
     gcca = !git gcc && git sf git gcc
     sf = submodule foreach --recursive
@@ -37,7 +32,6 @@
     pshf = psh --force-with-lease
     ftch = fetch --recurse-submodules --jobs=4 --prune --prune-tags --tags
     ftchr = ftch --atomic
-    ftcha = ftch --all
     rh = reset --hard
     l = log --date=short '--pretty=format:%C(auto)%h (%ad) %Cgreen%aN%Cblue%d%Creset: %s' --no-merges --abbrev-commit
     lgg = l --graph
@@ -58,22 +52,16 @@
 [color]
     ui = true
 [merge]
-    tool = nvimdiff3
     conflictstyle = diff3
-[mergetool]
-    prompt = true
-    keepBackup = false
 [pager]
     difftool = true
 [core]
-    ; pager        = delta
+    compression = -1
     preloadindex = true
     excludesfile = ~/.gitignore_global
 [pack]
     compression = 9
     threads     = 8
-[gitreview]
-    username = sarkhipov
 [grep]
     patternType = perl
     fullName    = true
