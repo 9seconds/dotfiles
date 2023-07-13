@@ -11,14 +11,18 @@ return {
   event = "VeryLazy",
 
   config = function()
-    local navic = require("nvim-navic")
-
     require("lualine").setup({
       options = {
         section_separators = "",
         component_separators = "",
         always_divide_middle = false,
         globalstatus = true,
+      },
+      extensions = {
+        "lazy",
+        "neo-tree",
+        "quickfix",
+        "trouble"
       },
       theme = "tokyonight",
       sections = {
@@ -39,11 +43,12 @@ return {
           path=2,
           shorting_target=30,
         }},
-        lualine_x = {
-          {navic.get_location, cond=navic.is_available}
-        },
-        lualine_y = {},
-        lualine_z = {"location"},
+        lualine_x = {"diagnostics"},
+        lualine_y = {"location"},
+        lualine_z = {{
+          "datetime",
+          style = "%H:%M"
+        }},
       }
     })
   end
