@@ -69,9 +69,6 @@ return {
     imap("jj", "<esc>")
     imap("kk", "<esc>")
 
-    -- sort
-    vmap("<leader>s", ":sort i<cr>")
-
     -- fast save
     nmap("<leader><leader>", ":update<cr>", {silent=true})
 
