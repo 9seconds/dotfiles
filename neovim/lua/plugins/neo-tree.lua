@@ -4,15 +4,15 @@
 
 return {
   "nvim-neo-tree/neo-tree.nvim",
-  branch = "v2.x",
+  branch = "v3.x",
   dependencies = {
     "nvim-lua/plenary.nvim",
     "nvim-tree/nvim-web-devicons",
     "MunifTanjim/nui.nvim",
   },
   keys = {
-    {"<leader>ff", "<cmd>Neotree toggle<cr>"},
-    {"<leader>fc", "<cmd>Neotree reveal<cr>"},
+    {"<leader>ef", "<cmd>Neotree toggle<cr>"},
+    {"<leader>ec", "<cmd>Neotree reveal<cr>"},
   },
 
   opts = function()
