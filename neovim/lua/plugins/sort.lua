@@ -6,7 +6,7 @@ return {
   keys = {
     {"<leader>S", ":Sort in<cr>", mode = {"v", "n", "x"}}
   },
-  event = "CmdlineEnter",
+  cmd = "Sort",
 
   opts = {}
 }

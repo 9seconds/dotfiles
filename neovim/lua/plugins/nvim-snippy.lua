@@ -32,7 +32,7 @@ return {
       mode = {"x"},
     },
   },
-  event = "CmdlineEnter",
+  cmd = { "SnippyEdit", "SnippyReload" },
   ft = "snippets",
 
   opts = {}
