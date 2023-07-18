@@ -1,7 +1,0 @@
-exec("try:\n    import jedi.utils as __j__\nexcept ImportError:\n    pass\nelse:\n    __j__.setup_readline()\n    del __j__;")
-exec("try:\n    import pprintpp as __pp__\nexcept ImportError:\n    import pprint as __pp__\n__pp__ = __pp__.PrettyPrinter(indent=2)")
-
-alias ppd   for k, v in sorted(%1.items()): print "{} -> {}".format(__pp__.pformat(k), __pp__.pformat(v))
-alias ppo   ppd   vars(%1)
-alias ppl   pp    list(%1)
-alias ppk   __pp__.pprint(sorted(%1))

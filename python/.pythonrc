@@ -1,79 +1,73 @@
-# -*- coding: utf-8 -*-
 # vim: set ft=python:
 
 
-def _install_pprint_displayhook():
+def mount_prettyprint():
     import sys
-    try:
-        import pprintpp as pprint
-    except ImportError:
-        import pprint
+    import builtins
 
     try:
-        import __builtin__ as builtins
+        from prettyprinter import cpprint as pprint, install_extras
     except ImportError:
-        import builtins
+        from pprint import pprint
+    else:
+        install_extras(warn_on_error=False)
 
     def displayhook(value):
         """Pretty print stuff by default."""
 
         if value is not None:
+            builtins._ = None
+            pprint(value)
             builtins._ = value
-            pprint.pprint(value)
 
+    builtins._pp = pprint
     sys.displayhook = displayhook
 
 
-def _install_except_hook():
-    import os
-    import sys
-    import traceback
+try:
+    mount_prettyprint()
+finally:
+    del mount_prettyprint
 
-    COLOR_TEMPLATES = (
-        ("Black", "0;30"),
-        ("Red", "0;31"),
-        ("Green", "0;32"),
-        ("Brown", "0;33"),
-        ("Blue", "0;34"),
-        ("Purple", "0;35"),
-        ("Cyan", "0;36"),
-        ("LightGray", "0;37"),
-        ("DarkGray", "1;30"),
-        ("LightRed", "1;31"),
-        ("LightGreen", "1;32"),
-        ("Yellow", "1;33"),
-        ("LightBlue", "1;34"),
-        ("LightPurple", "1;35"),
-        ("LightCyan", "1;36"),
-        ("White", "1;37"),
-        ("Normal", "0"),
-    )
-    ANSI_TERMS = {
-        'xterm-color',
-        'xterm-256color',
-        'linux',
-        'screen',
-        'screen-256color',
-        'screen-bce',
-    }
 
-    if os.environ.get("TERM") in ANSI_TERMS:
-        base = "\001\033[%sm\002"
-        colors = {name: base % value for name, value in COLOR_TEMPLATES}
+def mount_icecream():
+    import builtins
+
+    try:
+        import icecream
+    except ImportError:
+        builtins.ic = lambda *a: None if not a else (a[0] if len(a) == 1 else a)
     else:
-        colors = {name: "" for name, _ in COLOR_TEMPLATES}
-
-    def hook(type, value, tb):
-        sys.stdout.write(colors["Yellow"])
-        traceback.print_exception(type, value, tb, file=sys.stdout)
-        sys.stdout.write(colors["Normal"])
-        sys.stdout.flush()
-
-    sys.excepthook = hook
+        builtins.ic = icecream.ic
+        icecream.ic.configureOutput(includeContext=True, contextAbsPath=True)
 
 
-def _install_src():
+try:
+    mount_icecream()
+finally:
+    del mount_icecream
+
+
+def mount_ex():
+    import builtins
+
+    try:
+        import rich
+    except ImportError:
+        builtins._ex = dir
+    else:
+        builtins._ex = lambda arg: rich.inspect(arg, all=True)
+
+
+try:
+    mount_ex()
+finally:
+    del mount_ex
+
+
+def mount_so():
     import inspect
+    import builtins
 
     try:
         import pygments
@@ -83,94 +77,30 @@ def _install_src():
         lexer = pygments.lexers.PythonLexer()
         formatter = pygments.formatters.TerminalFormatter()
     except Exception:
-        return inspect.getsource
+        builtins._so = inspect.getsource
     else:
-        def src(obj):
-            return pygments.highlight(inspect.getsource(obj), lexer, formatter)
+        builtins._so = lambda obj: pygments.highlight(
+            inspect.getsource(obj),
+            lexer,
+            formatter)
 
-        return src
+
+try:
+    mount_so()
+finally:
+    del mount_so
 
 
-def _install_completer():
-    import atexit
-    import os
-    import os.path
-    import readline
-    import sys
-
+def mount_completer():
     try:
         import jedi.utils
     except ImportError:
-        if sys.version_info.major < 3:
-            import rlcompleter  # noqa
-
-            if "libedit" in readline.__doc__:
-                readline.parse_and_bind("bind ^I rl_complete")
-            else:
-                readline.parse_and_bind("tab: complete")
+        return
     else:
         jedi.utils.setup_readline()
 
-    history_dir = os.path.join(os.path.expanduser("~"), ".pyhistory")
-    if not os.path.isdir(history_dir):
-        try:
-            os.makedirs(history_dir)
-        except Exception:
-            return
-
-    executable_inode = os.stat(sys.executable).st_ino
-    history_file = os.path.join(history_dir, str(executable_inode))
-
-    if os.path.exists(history_file):
-        readline.read_history_file(history_file)
-
-    atexit.register(readline.write_history_file, history_file)
-
 
 try:
-    _install_completer()
-except Exception as exc:
-    import warnings
-    import os
-
-    message = "Cannot inititalize PYTHONSTARTUP file ({0}): {1}".format(
-        os.getenv("PYTHONSTARTUP"), exc)
-    warnings.warn(message, RuntimeWarning)
-
-    del warnings
-    del os
+    mount_completer()
 finally:
-    del _install_completer
-
-
-try:
-    src = _install_src()
-finally:
-    del _install_src
-
-
-try:
-    reload
-except NameError:
-    import importlib
-
-    reload = importlib.reload
-
-    del importlib
-
-
-try:
-    from see import see  # noqa
-except ImportError:
-    see = dir
-
-
-try:
-    _install_pprint_displayhook()
-finally:
-    del _install_pprint_displayhook
-
-try:
-    _install_except_hook()
-finally:
-    del _install_except_hook
+    del mount_completer
