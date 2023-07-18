@@ -1,5 +1,12 @@
 -- telescope stuff
 
+
+local fzf_build = "make"
+
+if vim.fn.executable("cmake") then
+  fzf_build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build"
+end
+
 -- https://github.com/nvim-telescope/telescope.nvim
 local telescope_config = {
   "nvim-telescope/telescope.nvim",
@@ -7,7 +14,10 @@ local telescope_config = {
     "nvim-lua/plenary.nvim",
     "nvim-treesitter/nvim-treesitter",
     "nvim-tree/nvim-web-devicons",
-    "natecraddock/telescope-zf-native.nvim",
+    {
+      "nvim-telescope/telescope-fzf-native.nvim",
+      build = fzf_build
+    }
   },
   version = "*",
   keys = {
@@ -113,29 +123,16 @@ local telescope_config = {
               },
             },
           },
-          ["zf-native"] = {
-            file = {
-              -- override default telescope file sorter
-              enable = true,
-              -- highlight matching text in results
-              highlight_results = true,
-              -- enable zf filename match priority
-              match_filename = true,
-            },
-            -- options for sorting all other items
-            generic = {
-              -- override default telescope generic item sorter
-              enable = true,
-              -- highlight matching text in results
-              highlight_results = true,
-              -- disable zf filename match priority
-              match_filename = false,
-            },
-          },
+          fzf = {
+            fuzzy = true,
+            override_generic_sorter = true,
+            override_file_sorter = true,
+            case_mode = "smart_case",
+          }
         },
       })
 
-      telescope.load_extension("zf-native")
+      telescope.load_extension("fzf")
   end
 }
 
