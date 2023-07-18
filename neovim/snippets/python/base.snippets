@@ -21,9 +21,6 @@ snippet awith "wrap in async with clause" b
 	async with ${1:expr} as ${2:var}:
 	  ${0:$TM_SELECTED_TEXT}
 
-snippet pdb "Insert pdb" b
-	import ${1:pdb}; $1.set_trace()
-
 snippet def "Function definition" b
 	def ${1:name}(${2:`!lua vim.fn.indent(".") > 0 and "self" or ""`}):
 	  ${0:$TM_SELECTED_TEXT}
