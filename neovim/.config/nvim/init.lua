@@ -4,7 +4,9 @@
 -- https://neovim.io/doc/user/lua-guide.html
 
 
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local datapath = vim.fn.stdpath("data") .. "lazy"
+local lazypath = datapath .. "/lazy.nvim"
+
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
     "git",
@@ -18,4 +20,10 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("_").setup()
-require("lazy").setup("plugins")
+require("lazy").setup(
+  "plugins",
+  {
+    root = datapath,
+    lockfile = datapath .. "/lazy-lock.json"
+  }
+)
