@@ -1,0 +1,14 @@
+# do not group by banner
+--no-heading
+
+# ignore bad ignore messages
+--ignore-messages
+
+# ignore files that could not be read
+--no-messages
+
+# activate smartcase
+--smart-case
+
+# search for hidden as well
+--hidden
