@@ -7,3 +7,4 @@ stow -R bat
 stow -R --dotfiles git
 stow -R python
 stow -R fish
+stow -R neovim
