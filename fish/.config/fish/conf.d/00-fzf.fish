@@ -9,11 +9,11 @@ if command -q rg
 end
 
 if command -q fdfind
-  set -gx FZF_DEFAULT_COMMAND 'fdfind --type f --hidden --follow --exclude .git'
+  set -gx FZF_DEFAULT_COMMAND 'fdfind --type f --strip-cwd-prefix --hidden --follow --exclude .git'
 end
 
 if command -q fd
-  set -gx FZF_DEFAULT_COMMAND 'fd --type f --hidden --follow --exclude .git'
+  set -gx FZF_DEFAULT_COMMAND 'fd --type f --strip-cwd-prefix --hidden --follow --exclude .git'
 end
 
 set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
