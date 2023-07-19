@@ -18,3 +18,8 @@ end
 if test -e $HOME/.iterm2_shell_integration.fish
   source $HOME/.iterm2_shell_integration.fish
 end
+
+### configure local fish ------------------------------------------------------
+if test -e $HOME/.local-config.fish
+  source $HOME/.local-config.fish
+end
