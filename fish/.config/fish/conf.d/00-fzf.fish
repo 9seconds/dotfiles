@@ -1,12 +1,4 @@
 #!/usr/bin/env fish
-#
-# This file contains routines related to fzf.
-# https://github.com/junegunn/fzf
-
-if not command -q fzf
-    test -d $HOME/.fzf; and fish_add_path $HOME/.fzf/bin
-end
-not command -q fzf; and exit
 
 if command -q ag
   set -gx FZF_DEFAULT_COMMAND 'ag --nocolor --nogroup -l -g ""'

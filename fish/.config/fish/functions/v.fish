@@ -6,6 +6,6 @@ else
   set editor vim
 end
 
-function v -d 'vim' -w vim -V editor
+function v -d "vim" -w $editor -V editor
   command $editor $argv
 end

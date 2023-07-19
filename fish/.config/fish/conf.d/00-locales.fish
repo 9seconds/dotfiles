@@ -1,6 +1,4 @@
 #!/usr/bin/env fish
-#
-# This file contains all things related to locales
 
 set -l locales (locale -a 2>/dev/null)
 
