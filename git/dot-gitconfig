@@ -4,46 +4,45 @@
     login = 9seconds
 [alias]
     a = add
+    amend = cm --amend --all -C HEAD
     ap = a --patch
     apa = ap --all
     bl = blame --show-stats --date iso
-    branch-prefix = "!f() { echo "$(git config user.login)-"; }; f"
     br = branch -vv
-    brm = "!f() { git br --list \"*$(git branch-prefix)*\" "$@"; }; f"
+    branch-prefix = "!f() { echo "$(git config user.login)-"; }; f"
+    brc = !git br | grep -vF '*' | awk '/: gone]/{print $1}' | xargs -n 100 -r git brd
     brd = branch -D
+    brl = "!f() { git br --list \"*$(git branch-prefix)*\" "$@"; }; f"
+    brn = "!f() { local brname="$1"; shift; git switch -C "$(git branch-prefix)$brname" "$@"; }; f"
     cl = clean -fdq
     clx = cl -x
-    cam = cm -a -m
-    s = status -sb --find-renames
     cm = commit
-    fixup = cm --fixup
-    amend = cm --amend --all -C HEAD
-    rb = rebase --interactive --autosquash --autostash
-    sw = switch
+    cma = cm -a -m
+    cmm = cm -m
     co = checkout
     cob = co -b
     df = diff --minimal
-    dff = difftool
     dfc = df --cached
+    dff = difftool
     dffc = dfc --cached
+    fix = "!f() { git l $1 | head -n 10 | fzf --height=~20% | cut -f1 -d' ' | head -1 | xargs -r git fixup; }; f"
+    fixup = cm --fixup
+    ftch = fetch --tags --atomic
+    gcc = !git reflog expire --expire=all --stale-fix --all && git worktree prune --expire 0 && git gc --prune=all && git repack -a -d -b --depth 200 --window 100
     gcca = !git gcc && git sf git gcc
-    sf = submodule foreach --recursive
+    l = log --date=short '--pretty=format:%C(auto)%h (%ad) %Cgreen%aN%Cblue%d%Creset: %s' --no-merges --abbrev-commit
+    lg = lgg --simplify-by-decoration
+    lgg = l --graph
     psh = push --atomic
     pshf = psh --force-with-lease
-    ftchr = ftch --atomic
+    rb = rebase --interactive --autosquash --autostash
     rh = reset --hard
-    l = log --date=short '--pretty=format:%C(auto)%h (%ad) %Cgreen%aN%Cblue%d%Creset: %s' --no-merges --abbrev-commit
-    lgg = l --graph
-    lg = lgg --simplify-by-decoration
-    gcc = !git reflog expire --expire=all --stale-fix --all && git worktree prune --expire 0 && git gc --prune=all && git repack -a -d -b --depth 200 --window 100
-    nb = "!f() { local brname="$1"; shift; git switch -C "$(git branch-prefix)$brname" "$@"; }; f"
-    brl = "!f() { git br --all --list \"*$1*\"; }; f"
-    brc = !git br | grep -v '*' | awk '/: gone]/{print $1}' | xargs -n 100 -r git brd
-    fix = "!f() { git add $1 && git l $1 | head -n 10 | fzf --height=~20% | cut -f1 -d' ' | head -1 | xargs -r git fixup; }; f"
-    ifix = "!f() { git diff --name-status | grep -vE '^D' | awk '{print $2}' | fzf --height=~20% | xargs -r git fix; }; f"
-    ftch = fetch --recurse-submodules --jobs=4 --prune --prune-tags --tags
+    s = status -sb --find-renames
+    sf = submodule foreach --recursive
+    sw = "!f() { git brl | grep -vF '*' | fzf --height=~20% | awk '{print $1}' | xargs -r git switch; }; f"
 [diff]
     tool = difftastic
+    colorMoved = zebra
 [difftool]
     prompt = false
 [difftool "difftastic"]
@@ -51,6 +50,15 @@
 [push]
     default = simple
     autoSetupRemote = true
+[fetch]
+    parallel = 0
+    recurse-submodules = true
+    prune = true
+    pruneTags = true
+[pull]
+    rebase = true
+[transfer]
+    fsckObjects = true
 [rerere]
     enabled = 1
 [color]
