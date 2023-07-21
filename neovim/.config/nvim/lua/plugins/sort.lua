@@ -4,7 +4,7 @@
 return {
   "sQVe/sort.nvim",
   keys = {
-    {"<leader>S", ":Sort in<cr>", mode = {"v", "n", "x"}}
+    {"<leader>s", ":Sort i<cr>", mode = {"v"}}
   },
   cmd = "Sort",
 
