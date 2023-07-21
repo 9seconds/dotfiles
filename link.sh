@@ -9,5 +9,4 @@ stow -R python
 stow -R fish
 stow -R neovim
 stow -R ripgrep
-stow -R curl
 stow -R aria2
