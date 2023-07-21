@@ -12,3 +12,9 @@
 
 # search for hidden as well
 --hidden
+
+# exclude git itself from search
+--glob=!{.git,.svn,node_modules,vendor,__pycache__}
+
+# also exclude package-lock.json
+--glob=!{package-lock.json}
