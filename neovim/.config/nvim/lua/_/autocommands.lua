@@ -21,14 +21,5 @@ return {
         vim.fn.winrestview(save)
       end
     })
-
-    local augroup_correct_ctrld_for_terminal = vim.api.nvim_create_augroup(
-      "9_CorrectCTRLDForTerminal", {})
-    vim.api.nvim_create_autocmd("TermClose", {
-      group=augroup_correct_ctrld_for_terminal,
-      callback=function()
-        vim.fn.feedkeys("<esc>")
-      end
-    })
   end
 }

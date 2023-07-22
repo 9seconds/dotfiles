@@ -17,10 +17,6 @@ local function cmap(key, action, opts)
   vim.keymap.set("c", key, action, opts)
 end
 
-local function tmap(key, action, opts)
-  vim.keymap.set("t", key, action, opts)
-end
-
 
 return {
   setup = function()
@@ -76,13 +72,5 @@ return {
     nmap("<leader>?", function()
       vim.o.spell = not vim.o.spell
     end)
-
-    -- terminal mappings
-    tmap("<c-j><c-j>", "<c-\\><c-n>")
-    tmap("<c-j><c-k>", "<c-\\><c-n>")
-    tmap("<a-h>", "<c-\\><c-n><c-w>h")
-    tmap("<a-j>", "<c-\\><c-n><c-w>j")
-    tmap("<a-k>", "<c-\\><c-n><c-w>k")
-    tmap("<a-l>", "<c-\\><c-n><c-w>l")
   end
 }

@@ -8,6 +8,7 @@ function M.setup()
   require("_.options").setup()
   require("_.autocommands").setup()
   require("_.commands").setup()
+  require("_.terminal").setup()
 end
 
 
