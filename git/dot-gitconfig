@@ -4,7 +4,7 @@
     login = 9seconds
 [alias]
     a = add
-    amend = cm --amend --all -C HEAD
+    amend = commit --amend --all -C HEAD
     ap = a --patch
     apa = ap --all
     bl = blame --show-stats --date iso

@@ -22,18 +22,9 @@ local telescope_config = {
   version = "*",
   keys = {
     {
-      "<leader>tt",
+      "<leader>tf",
       function()
         require("telescope.builtin").find_files({previewer = false})
-      end,
-    },
-    {
-      "<leader>td",
-      function()
-        require("telescope.builtin").find_files({
-          previewer = false,
-          search_dirs = { "~/.dotfiles" },
-        })
       end,
     },
     {
@@ -43,19 +34,19 @@ local telescope_config = {
       end,
     },
     {
-      "<leader>tc",
+      "<leader>tl",
       function()
         require("telescope.builtin").current_buffer_fuzzy_find()
       end,
     },
     {
-      "<leader>tg",
+      "<leader>tt",
       function()
         require("telescope.builtin").tags()
       end,
     },
     {
-      "<leader>tf",
+      "<leader>tg",
       function()
         require("telescope.builtin").live_grep()
       end,
@@ -176,8 +167,36 @@ local undo_config = {
   end
 }
 
+local neoclip_config = {
+  "AckslD/nvim-neoclip.lua",
+  dependencies = {
+    "kkharji/sqlite.lua"
+  },
+  keys = {
+    {
+      "<leader>tn",
+      function()
+        require("telescope").extensions.neoclip.default()
+      end
+    }
+  },
+
+  config = function()
+    require("neoclip").setup({
+      history = 100,
+      enable_persistent_history = true,
+      continuous_sync = true,
+      default_register = {'"', "+", "*"},
+      enable_macro_history = false,
+    })
+    require("telescope").load_extension("neoclip")
+  end
+
+}
+
 return {
   telescope_config,
   recent_files_config,
   undo_config,
+  neoclip_config,
 }
