@@ -16,9 +16,8 @@
     brn = "!f() { local brname="$1"; shift; git switch -C "$(git branch-prefix)$brname" "$@"; }; f"
     cl = clean -fdq
     clx = cl -x
-    cm = commit
-    cma = cm -a -m
-    cmm = cm -m
+    cm = commit -m
+    cma = commit -a -m
     co = checkout
     cob = co -b
     df = diff --minimal
@@ -26,7 +25,7 @@
     dff = difftool
     dffc = dfc --cached
     fix = "!f() { git l $1 | head -n 10 | fzf --height=~20% | cut -f1 -d' ' | head -1 | xargs -r git fixup; }; f"
-    fixup = cm --fixup
+    fixup = commit --fixup
     ftch = fetch --tags --atomic
     gcc = !git reflog expire --expire=all --stale-fix --all && git worktree prune --expire 0 && git gc --prune=all && git repack -a -d -b --depth 200 --window 100
     gcca = !git gcc && git sf git gcc
