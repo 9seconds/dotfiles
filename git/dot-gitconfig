@@ -40,6 +40,12 @@
     s = status -sb --find-renames
     sf = submodule foreach --recursive
     sw = "!f() { git brl | grep -vF '*' | fzf --height=~20% | awk '{print $1}' | xargs -r git switch; }; f"
+    domerges = "!nvim -c DiffviewOpen"
+[merge]
+    tool = nvimdiff
+    conflictstyle = diff3
+[mergetool]
+    prompt = false
 [diff]
     tool = difftastic
     colorMoved = zebra
@@ -63,8 +69,6 @@
     enabled = 1
 [color]
     ui = true
-[merge]
-    conflictstyle = diff3
 [pager]
     difftool = true
 [core]
