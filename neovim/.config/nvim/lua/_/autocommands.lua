@@ -21,5 +21,11 @@ return {
         vim.fn.winrestview(save)
       end
     })
+
+    local augroup_unfold = vim.api.nvim_create_augroup("9_Unfold", {})
+    vim.api.nvim_create_autocmd("BufWinEnter", {
+      group=augroup_unfold,
+      command="normal zR"
+    })
   end
 }

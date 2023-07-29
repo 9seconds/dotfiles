@@ -13,6 +13,10 @@ return {
   },
   event = "InsertEnter",
 
+  init = function()
+    vim.o.completeopt = "menu,menuone,preview"
+  end,
+
   config = function()
     local cmp = require("cmp")
 

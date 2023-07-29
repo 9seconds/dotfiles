@@ -21,6 +21,9 @@ return {
     -- actually we will use https://github.com/ojroques/nvim-osc52 here
     vim.o.clipboard = "unnamedplus"
 
+    -- by default we use manual folding
+    vim.o.foldmethod = "manual"
+
     -- Disable mandatory 1 line for cmd
     -- https://neovim.io/doc/user/options.html#'cmdheight'
     vim.o.cmdheight = 0
@@ -28,8 +31,6 @@ return {
     -- ruler lines on columns
     -- https://neovim.io/doc/user/options.html#'colorcolumn'
     vim.o.colorcolumn = "80,120"
-
-    -- vim.o.completeopt = "menu,menuone,preview" -- required for nvim-cmp
 
     -- highlight a line where cursor is placed
     -- https://neovim.io/doc/user/options.html#'cursorline'
