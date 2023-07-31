@@ -8,7 +8,11 @@ return {
     "anuvyklack/middleclass"
   },
   keys = {
-    {"<leader>Z", "<cmd>WindowsMaximize<cr>"}
+    {
+      "<leader>Z",
+      "<cmd>WindowsMaximize<cr>",
+      desc = "Maximize window",
+    }
   },
 
   opts = {}

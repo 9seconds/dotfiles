@@ -15,6 +15,7 @@ return {
       end,
       mode = {"i", "s"},
       expr = true,
+      desc = "Expand or advance snippet",
     },
     {
       "<c-k>",
@@ -26,10 +27,13 @@ return {
       end,
       mode = {"i", "s"},
       expr = true,
+      desc = "Jump to the previous snippet position",
     },
     {
-      "<tab>", "<plug>(snippy-cut-text)",
+      "<tab>",
+      "<plug>(snippy-cut-text)",
       mode = {"x"},
+      desc = "Cut text for the snippet",
     },
   },
   cmd = { "SnippyEdit", "SnippyReload" },

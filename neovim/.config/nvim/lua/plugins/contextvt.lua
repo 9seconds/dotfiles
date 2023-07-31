@@ -9,7 +9,11 @@ return {
   },
   main = "nvim_context_vt",
   keys = {
-    {"<leader>v", ":NvimContextVtToggle<cr>"}
+    {
+      "<leader>v",
+      ":NvimContextVtToggle<cr>",
+      desc = "Show context at the end of the function"
+    }
   },
 
   opts = {

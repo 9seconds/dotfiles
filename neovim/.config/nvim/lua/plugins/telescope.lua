@@ -26,30 +26,35 @@ local telescope_config = {
       function()
         require("telescope.builtin").find_files({previewer = false})
       end,
+      desc = "Find files",
     },
     {
       "<leader>tb",
       function()
         require("telescope.builtin").buffers()
       end,
+      desc = "Find buffers",
     },
     {
       "<leader>tl",
       function()
         require("telescope.builtin").current_buffer_fuzzy_find()
       end,
+      desc = "Find a line within a buffer",
     },
     {
       "<leader>tt",
       function()
         require("telescope.builtin").tags()
       end,
+      desc = "Find in tags",
     },
     {
       "<leader>tg",
       function()
         require("telescope.builtin").live_grep()
       end,
+      desc = "Live grep",
     },
   },
 
@@ -139,6 +144,7 @@ local recent_files_config = {
       function()
         require("telescope").extensions.recent_files.pick()
       end,
+      desc = "Find recent file",
     }
   },
 
@@ -159,6 +165,7 @@ local undo_config = {
       function()
         require("telescope").extensions.undo.undo()
       end,
+      desc = "Find undo position",
     }
   },
 
@@ -177,7 +184,8 @@ local neoclip_config = {
       "<leader>tn",
       function()
         require("telescope").extensions.neoclip.default()
-      end
+      end,
+      desc = "Find previous yank",
     }
   },
 

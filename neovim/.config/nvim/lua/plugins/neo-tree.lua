@@ -18,8 +18,16 @@ return {
     }
   },
   keys = {
-    {"<leader>ef", "<cmd>Neotree toggle<cr>"},
-    {"<leader>ec", "<cmd>Neotree reveal<cr>"},
+    {
+      "<leader>ef",
+      "<cmd>Neotree toggle<cr>",
+      desc = "Open neotree"
+    },
+    {
+      "<leader>ec",
+      "<cmd>Neotree reveal<cr>",
+      desc = "Reveal current file in neotree"
+    },
   },
 
   opts = function()

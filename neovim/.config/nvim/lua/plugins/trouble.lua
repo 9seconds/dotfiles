@@ -12,31 +12,36 @@ return {
       "<leader>xx",
       function()
         require("trouble").toggle()
-      end
+      end,
+      desc = "Toggle diagnostics",
     },
     {
       "<leader>xw",
       function()
         require("trouble").toggle("workspace_diagnostics")
-      end
+      end,
+      desc = "Toggle workspace diagnostics",
     },
     {
       "<leader>xd",
       function()
         require("trouble").toggle("document_diagnostics")
-      end
+      end,
+      desc = "Toggle document diagnostics",
     },
     {
       "<leader>xq",
       function()
         require("trouble").toggle("quickfix")
-      end
+      end,
+      desc = "Toggle quickfix",
     },
     {
       "<leader>xl",
       function()
         require("trouble").toggle("loclist")
-      end
+      end,
+      desc = "Toggle location list",
     },
   },
 
