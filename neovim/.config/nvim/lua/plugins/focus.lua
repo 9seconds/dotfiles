@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 -- autofocus
 -- https://github.com/nvim-focus/focus.nvim
 
