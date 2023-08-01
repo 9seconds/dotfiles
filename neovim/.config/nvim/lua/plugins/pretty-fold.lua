@@ -4,14 +4,7 @@
 
 return {
   "anuvyklack/pretty-fold.nvim",
-  dependencies = {
-    "nvim-treesitter/nvim-treesitter"
-  },
+  event = "VeryLazy",
 
-  config = function()
-    vim.o.foldmethod= "expr"
-    vim.o.foldexpr = "nvim_treesitter#foldexpr()"
-
-    require("pretty-fold").setup({})
-  end
+  opts = {}
 }
