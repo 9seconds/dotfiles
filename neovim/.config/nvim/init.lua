@@ -3,6 +3,7 @@
 -- https://github.com/9seconds
 -- https://neovim.io/doc/user/lua-guide.html
 
+vim.loader.enable()
 
 local datapath = vim.fn.stdpath("data") .. "lazy"
 local lazypath = datapath .. "/lazy.nvim"
