@@ -47,14 +47,14 @@ return {
 
           lookahead = true,
           keymaps = {
-            ["af"]="@function.outer",
-            ["if"]="@function.inner",
-            ["ac"]="@class.outer",
-            ["ic"]="@class.inner",
-            ["ia"]="@parameter.inner",
-            ["aa"]="@parameter.outer",
-            ["ab"]="@block.outer",
-            ["ib"]="@block.inner",
+            ["af"] = "@function.outer",
+            ["if"] = "@function.inner",
+            ["ac"] = "@class.outer",
+            ["ic"] = "@class.inner",
+            ["ia"] = "@parameter.inner",
+            ["aa"] = "@parameter.outer",
+            ["ab"] = "@block.outer",
+            ["ib"] = "@block.inner",
           }
         }
       },
