@@ -90,7 +90,8 @@ local telescope_config = {
 
       telescope.setup({
         defaults = {
-          vimgrep_arguments = vimgrep_arguments
+          vimgrep_arguments = vimgrep_arguments,
+          dynamic_preview_title = true,
         },
         pickers = {
           find_files = {
@@ -174,37 +175,8 @@ local undo_config = {
   end
 }
 
-local neoclip_config = {
-  "AckslD/nvim-neoclip.lua",
-  dependencies = {
-    "kkharji/sqlite.lua"
-  },
-  keys = {
-    {
-      "<leader>tn",
-      function()
-        require("telescope").extensions.neoclip.default()
-      end,
-      desc = "Find previous yank",
-    }
-  },
-
-  config = function()
-    require("neoclip").setup({
-      history = 100,
-      enable_persistent_history = true,
-      continuous_sync = true,
-      default_register = {'"', "+", "*"},
-      enable_macro_history = false,
-    })
-    require("telescope").load_extension("neoclip")
-  end
-
-}
-
 return {
   telescope_config,
   recent_files_config,
   undo_config,
-  neoclip_config,
 }

@@ -2,18 +2,6 @@
 
 
 local function on_attach(client, bufnr)
-  if client.server_capabilities.documentSymbolProvider then
-      require("nvim-navic").attach(client, bufnr)
-  end
-
-  require("lsp_signature").on_attach({
-    bind = true,
-    hint_prefix = "💡 ",
-    handler_opts = {
-      border = "rounded"
-    }
-  }, bufnr)
-
   local function keymap(mode, lhs, rhs)
     vim.keymap.set(mode, lhs, rhs, {buffer = bufnr})
   end

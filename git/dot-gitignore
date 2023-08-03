@@ -2,3 +2,4 @@ __pycache__/
 *.py[co]
 .gutctags
 .nvim.lua
+*.orig
