@@ -6,30 +6,6 @@ local opts = {
   skip_comments = true,
 }
 
-local function and_select(callback)
-  return function()
-    callback()
-    return require("tree-climber").select_node(opts)
-  end
-end
-
-local function parent()
-  return require("tree-climber").goto_parent(opts)
-end
-
-local function child()
-  return require("tree-climber").goto_child(opts)
-end
-
-local function next()
-  return require("tree-climber").goto_next(opts)
-end
-
-local function prev()
-  return require("tree-climber").goto_prev(opts)
-end
-
-
 return {
   "drybalka/tree-climber.nvim",
   dependencies = {
@@ -37,44 +13,60 @@ return {
   },
   keys = {
     {
-      "<up>", parent,
+      "<up>",
+      function()
+        return require("tree-climber").goto_parent(opts)
+      end,
       mode = {"n", "v"},
       desc = "Jump to the treesitter parent"
     },
     {
-      "<leader><up>", and_select(parent),
+      "<leader><up>",
+      function()
+        local mod = require("tree-climber")
+
+        mod.goto_parent(opts)
+
+        return mod.select_node(opts)
+      end,
       mode = {"n", "v"},
       desc = "Select treesitter parent node"
     },
     {
-      "<down>", child,
+      "<down>",
+      function()
+        return require("tree-climber").goto_child(opts)
+      end,
       mode = {"n", "v"},
       desc = "Jump to the treesitter child"
     },
     {
-      "<leader><down>", and_select(child),
+      "<leader><down>",
+      function()
+        local mod = require("tree-climber")
+
+        mod.goto_child(opts)
+
+        return mod.select_node(opts)
+      end,
       mode = {"n", "v"},
       desc = "Select treesitter child node"
     },
     {
-      "<left>", prev,
+      "<left>",
+      function()
+        return require("tree-climber").goto_prev(opts)
+      end,
       mode = {"n", "v"},
       desc = "Jump to the previous treesitter node"
     },
     {
-      "<leader><left>", and_select(prev),
-      mode = {"n", "v"},
-      desc = "Select treesitter previous node"
-    },
-    {
-      "<right>", next,
+      "<right>",
+      function()
+        return require("tree-climber").goto_next(opts)
+      end,
       mode = {"n", "v"},
       desc = "Jump to the next treesitter node"
-    },
-    {
-      "<leader><right>", and_select(next),
-      mode = {"n", "v"},
-      desc = "Select treesitter next node"
     },
   },
 }

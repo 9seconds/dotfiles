@@ -4,6 +4,7 @@
 
 return {
   "ludovicchabant/vim-gutentags",
+  event = "VeryLazy",
 
   config = function()
     vim.g.gutentags_cache_dir = vim.fn.expand("~/.cache/gutentags")
