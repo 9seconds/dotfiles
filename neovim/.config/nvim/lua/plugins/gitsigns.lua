@@ -50,10 +50,12 @@ return {
           "v",
           "<leader>hr",
           function()
-            gitsigns.reset_hunk({
-              vim.fn.line("."),
-              vim.fn.line("v"),
-            })
+            vim.schedule(function()
+              gitsigns.reset_hunk({
+                vim.fn.line("."),
+                vim.fn.line("v"),
+              })
+            end)
           end,
           {desc = "Reset git hunk", buffer = bufnr}
         )
@@ -61,7 +63,9 @@ return {
         vim.keymap.set(
           "n",
           "<leader>hp",
-          gitsigns.preview_hunk,
+          function()
+            vim.schedule(gitsigns.preview_hunk)
+          end,
           {desc = "Preview git hunk", buffer = bufnr}
         )
 
@@ -69,10 +73,12 @@ return {
           "n",
           "<leader>hb",
           function()
-            gitsigns.blame_line({
-              full = true,
-              ignore_whitespace = true,
-            })
+            vim.schedule(function()
+              gitsigns.blame_line({
+                full = true,
+                ignore_whitespace = true,
+              })
+            end)
           end,
           {desc = "Git blame this line", buffer = bufnr}
         )

@@ -34,14 +34,8 @@ return {
       "y", "<Plug>(YankyYank)",
       mode = {"n", "x"}
     },
-    {
-      "<c-n>", "<Plug>(YankyCycleForward)",
-      mode = "n"
-    },
-    {
-      "<c-p>", "<Plug>(YankyCycleBackward)",
-      mode = "n"
-    },
+    {"<c-n>", "<Plug>(YankyCycleForward)"},
+    {"<c-p>", "<Plug>(YankyCycleBackward)"},
   },
 
   config = function()
