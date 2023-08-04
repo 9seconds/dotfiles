@@ -121,6 +121,6 @@ return {
     vim.o.shiftround = true
 
     -- set global indentation
-    utils.set_indent(2)
+    utils.set_indent(4)
   end
 }
