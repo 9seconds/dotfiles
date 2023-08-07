@@ -13,11 +13,6 @@ return {
   event = "VeryLazy",
   main = "nvim-treesitter.configs",
 
-  init = function()
-    vim.o.foldmethod = "expr"
-    vim.o.foldexpr = "nvim_treesitter#foldexpr()"
-  end,
-
   opts = {
     ensure_installed = "all",
     sync_install = true,
