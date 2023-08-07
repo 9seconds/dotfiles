@@ -8,6 +8,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     "JoosepAlviste/nvim-ts-context-commentstring",
   },
+  version = "*",
   event = "VeryLazy",
 
   config = function()

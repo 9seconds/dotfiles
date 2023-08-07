@@ -21,36 +21,12 @@ return {
       desc = "Jump to the treesitter parent"
     },
     {
-      "<leader><up>",
-      function()
-        local mod = require("tree-climber")
-
-        mod.goto_parent(opts)
-
-        return mod.select_node(opts)
-      end,
-      mode = {"n", "v"},
-      desc = "Select treesitter parent node"
-    },
-    {
       "<down>",
       function()
         return require("tree-climber").goto_child(opts)
       end,
       mode = {"n", "v"},
       desc = "Jump to the treesitter child"
-    },
-    {
-      "<leader><down>",
-      function()
-        local mod = require("tree-climber")
-
-        mod.goto_child(opts)
-
-        return mod.select_node(opts)
-      end,
-      mode = {"n", "v"},
-      desc = "Select treesitter child node"
     },
     {
       "<left>",

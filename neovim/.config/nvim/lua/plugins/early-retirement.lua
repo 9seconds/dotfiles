@@ -5,7 +5,6 @@
 return {
   "chrisgrieser/nvim-early-retirement",
   event = "VeryLazy",
-  main = "early-retirement",
 
   opts = {
     retirementAgeMins = 30,

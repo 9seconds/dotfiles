@@ -17,6 +17,7 @@ return {
       opts = {}
     }
   },
+  cmd = "Neotree",
   keys = {
     {
       "<leader>ef",

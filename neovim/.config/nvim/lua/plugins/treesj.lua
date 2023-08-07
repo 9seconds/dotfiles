@@ -7,15 +7,24 @@ return {
   dependencies = {
     "nvim-treesitter/nvim-treesitter",
   },
+  cmd = {
+    "TSJToggle",
+    "TSJSplit",
+    "TSJJoin",
+  },
   keys = {
     {
       "<leader>s",
-      "<cmd>TSJSplit<cr>",
+      function()
+        return require("treesj").split()
+      end,
       desc = "Split long lines with treesj"
     },
     {
       "<leader>j",
-      "<cmd>TSJJoin<cr>",
+      function()
+        return require("treesj").join()
+      end,
       desc = "Join long lines with treesj"
     },
   },

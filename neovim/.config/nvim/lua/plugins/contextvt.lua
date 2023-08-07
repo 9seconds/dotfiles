@@ -8,6 +8,7 @@ return {
     "nvim-treesitter/nvim-treesitter"
   },
   main = "nvim_context_vt",
+  cmd = "NvimContextVtToggle",
   keys = {
     {
       "<leader>v",

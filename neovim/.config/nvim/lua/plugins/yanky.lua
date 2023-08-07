@@ -6,6 +6,7 @@ return {
   dependencies = {
     "nvim-telescope/telescope.nvim",
   },
+  version = "*",
   keys = {
     {
       "<leader>ty",
