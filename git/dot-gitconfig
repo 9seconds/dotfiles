@@ -24,7 +24,7 @@
     dfc = df --cached
     dff = difftool
     dffc = dfc --cached
-    fix = "!f() { git l $1 | head -n 10 | fzf --height=~20% | cut -f1 -d' ' | head -1 | xargs -r git fixup; }; f"
+    fix = "!f() { git l $1 | head -n 10 | fzf --prompt 'Commit> ' --height=~50% --layout=reverse --border=none --no-separator --no-scrollbar --info=hidden | cut -f1 -d' ' | head -1 | xargs -r git fixup; }; f"
     fixup = commit --fixup
     ftch = fetch --tags --atomic
     gcc = !git reflog expire --expire=all --stale-fix --all && git worktree prune --expire 0 && git gc --prune=all && git repack -a -d -b --depth 200 --window 100
@@ -38,7 +38,7 @@
     rh = reset --hard
     s = status -sb --find-renames
     sf = submodule foreach --recursive
-    sw = "!f() { git brl | grep -vF '*' | fzf --height=~20% | awk '{print $1}' | xargs -r git switch; }; f"
+    sw = "!f() { git brl | grep -vF '*' | fzf --prompt 'Branch> ' --height=~50% --layout=reverse --border=none --no-separator --no-scrollbar --info=hidden | awk '{print $1}' | xargs -r git switch; }; f"
     domerges = "!nvim -c DiffviewOpen"
 [merge]
     tool = nvimdiff
