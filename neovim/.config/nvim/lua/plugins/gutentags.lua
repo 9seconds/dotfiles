@@ -4,6 +4,9 @@
 
 return {
   "ludovicchabant/vim-gutentags",
+  dependencies = {
+    "ahmedkhalf/project.nvim"
+  },
   event = "VeryLazy",
 
   config = function()
