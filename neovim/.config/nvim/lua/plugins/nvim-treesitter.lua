@@ -2,6 +2,24 @@
 -- https://github.com/nvim-treesitter/nvim-treesitter
 
 
+local max_file_size = 100 * 1024  -- 100 kilobytes
+
+
+local function disable_on_max_filesize(_, bufnr)
+  local buf_name = vim.api.nvim_buf_get_name(bufnr)
+  if not buf_name then
+    return false
+  end
+
+  local stat = vim.uv.fs_stat(buf_name, nil)
+  if not stat then
+    return false
+  end
+
+  return stat.size >= max_file_size
+end
+
+
 return {
   "nvim-treesitter/nvim-treesitter",
   build = ":TSUpdate",
@@ -17,16 +35,16 @@ return {
     ensure_installed = "all",
     sync_install = true,
 
+    -- :h nvim-treesitter-highlight-mod
     highlight = {
-      enable = true
+      enable = true,
+      disable = disable_on_max_filesize,
     },
 
-    incremental_selection = {
-      enable = true
-    },
-
+    -- :h nvim-treesitter-indentation-mod
     indent = {
-      enable = true
+      enable = true,
+      disable = disable_on_max_filesize,
     },
 
     -- nvim-treesitter-textobjects
@@ -34,6 +52,7 @@ return {
     textobjects = {
       swap = {
         enable = true,
+        disable = disable_on_max_filesize,
 
         swap_next = {
           ["<leader>a"] = "@parameter.inner",
@@ -45,6 +64,7 @@ return {
 
       select = {
         enable = true,
+        disable = disable_on_max_filesize,
 
         lookahead = true,
         keymaps = {
@@ -65,23 +85,16 @@ return {
     refactor = {
       highlight_definitions = {
         enable = true,
+        disable = disable_on_max_filesize,
 
         clear_on_cursor_move = true,
       },
-
-      smart_rename = {
-        enable = true,
-
-        keymaps = {
-          smart_rename = "grr",
-        },
-      }
     },
 
     -- set commentstring based on a position in a file
     -- https://github.com/JoosepAlviste/nvim-ts-context-commentstring
     context_commentstring = {
       enable = true,
-    },
+    }
   }
 }
