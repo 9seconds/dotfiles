@@ -59,7 +59,7 @@ return {
     nmap("<c-l>", "<c-w>l")
 
     -- clear highlight
-    nmap("<C-l>", ":noh<cr>", {silent=true})
+    nmap("<leader>l", ":noh<cr>", {silent=true})
 
     -- exit insert mode
     imap("jj", "<esc>")
