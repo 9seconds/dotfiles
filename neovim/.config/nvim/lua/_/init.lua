@@ -13,8 +13,9 @@ end
 
 
 function M.lsp(server_name, opts)
-  opts = vim.tbl_extend("keep", opts or {}, require("_.lsp")())
-  require("lspconfig")[server_name].setup(opts)
+  local lsp = require("_.lsp")
+
+  require("lspconfig")[server_name].setup(lsp.make_setup(opts))
 end
 
 

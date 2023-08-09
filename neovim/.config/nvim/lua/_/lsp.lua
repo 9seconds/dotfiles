@@ -1,7 +1,9 @@
 -- different LSP helpers
 
+local M = {}
 
-local function on_attach(client, bufnr)
+
+function M.on_attach(client, bufnr)
   local function keymap(mode, lhs, rhs)
     vim.keymap.set(mode, lhs, rhs, {buffer = bufnr})
   end
@@ -44,11 +46,54 @@ local function on_attach(client, bufnr)
 end
 
 
-return function()
-  local capabilities = require("cmp_nvim_lsp").default_capabilities()
+function M.efm_config(opts)
+  local conf = {}
 
-  return {
-    on_attach = on_attach,
-    capabilities = capabilities,
-  }
+  for language, linters in pairs(opts) do
+    local lang_config = {}
+
+    for _, linter in ipairs(linters) do
+      if not linter[1] then
+        table.insert(lang_config, linter[2])
+      else
+        local ok, entity = pcall(require, "efmls-configs.linters." .. linter[1])
+
+        if not ok then
+          entity = require("efmls-configs.formatters." .. linter[1])
+        end
+
+        table.insert(
+          lang_config,
+          vim.tbl_deep_extend("force", entity, linter[2] or {})
+        )
+      end
+    end
+
+    conf[language] = {
+      linter = lang_config
+    }
+  end
+
+  return conf
 end
+
+
+function M.setup(server_name, opts)
+  if server_name == "efm" then
+    return require("efmls-configs").setup(opts)
+  end
+
+  local lspconfig = require("lspconfig")
+
+  opts = opts or {}
+  opts.on_attach = on_attach
+
+  if not opts.capabilities then
+    opts.capabilities = require("cmp_nvim_lsp").default_capabilities()
+  end
+
+  lspconfig[server_name].setup(opts)
+end
+
+
+return M
