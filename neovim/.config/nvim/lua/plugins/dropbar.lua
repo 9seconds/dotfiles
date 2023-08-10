@@ -5,5 +5,4 @@
 return {
   "Bekaboo/dropbar.nvim",
   version = "*",
-  event = "VeryLazy",
 }
