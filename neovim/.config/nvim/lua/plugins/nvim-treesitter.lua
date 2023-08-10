@@ -17,12 +17,12 @@ return {
     "nvim-treesitter/nvim-treesitter-textobjects",
     "nvim-treesitter/nvim-treesitter-refactor",
     "JoosepAlviste/nvim-ts-context-commentstring",
+    "andymass/vim-matchup"
   },
   event = "VeryLazy",
   main = "nvim-treesitter.configs",
 
   config = function()
-
     require("nvim-treesitter.configs").setup({
       ensure_installed = "all",
       sync_install = true,
@@ -35,6 +35,12 @@ return {
 
       -- :h nvim-treesitter-indentation-mod
       indent = {
+        enable = true,
+        disable = disable_on_max_filesize,
+      },
+
+      -- https://github.com/andymass/vim-matchup
+      matchup = {
         enable = true,
         disable = disable_on_max_filesize,
       },
