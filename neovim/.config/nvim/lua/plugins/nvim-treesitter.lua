@@ -16,8 +16,8 @@ return {
   dependencies = {
     "nvim-treesitter/nvim-treesitter-textobjects",
     "nvim-treesitter/nvim-treesitter-refactor",
+    "theHamsta/nvim-treesitter-pairs",
     "JoosepAlviste/nvim-ts-context-commentstring",
-    "andymass/vim-matchup"
   },
   event = "VeryLazy",
   main = "nvim-treesitter.configs",
@@ -39,10 +39,19 @@ return {
         disable = disable_on_max_filesize,
       },
 
-      -- https://github.com/andymass/vim-matchup
-      matchup = {
+      -- nvim-treesitter-pairs
+      -- https://github.com/theHamsta/nvim-treesitter-pairs
+      pairs = {
         enable = true,
         disable = disable_on_max_filesize,
+
+        highlight_pair_events = {"CursorMoved"},
+        highlight_self = true,
+        fallback_cmd_normal = "call matchit#Match_wrapper('',1,'n')",
+
+        keymaps = {
+          goto_partner = "<leader>%",
+        },
       },
 
       -- nvim-treesitter-textobjects
