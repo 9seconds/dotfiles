@@ -10,3 +10,4 @@ stow -R fish
 stow -R neovim
 stow -R ripgrep
 stow -R aria2
+stow -R chore

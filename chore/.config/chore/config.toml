@@ -1,0 +1,12 @@
+# vim: set ft=toml ts=2 sw=2 sts=2 et:
+
+[env.backups]
+BACKUPS_HOSTNAME = "leblon-jammy"
+BACKUPS_KEEP_LAST = "10"
+BACKUPS_KEEP_DAILY = "1"
+BACKUPS_KEEP_WEEKLY = "4"
+BACKUPS_KEEP_MONTHLY = "2"
+BACKUPS_KEEP_YEARLY = "0"
+
+[vault]
+backups = "sOd!fTZS)1sC~L40"
