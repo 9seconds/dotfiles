@@ -5,7 +5,7 @@
 
 vim.loader.enable()
 
-local datapath = vim.fn.stdpath("data") .. "lazy"
+local datapath = vim.fn.stdpath("data") .. "/lazy"
 local lazypath = datapath .. "/lazy.nvim"
 
 if not vim.loop.fs_stat(lazypath) then
