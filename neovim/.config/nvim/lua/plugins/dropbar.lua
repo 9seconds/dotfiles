@@ -5,4 +5,5 @@
 return {
   "Bekaboo/dropbar.nvim",
   version = "*",
+  event = "BufReadPre",
 }
