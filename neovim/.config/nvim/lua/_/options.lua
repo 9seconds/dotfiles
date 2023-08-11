@@ -120,6 +120,10 @@ return {
     -- https://neovim.io/doc/user/options.html#'shiftround'
     vim.o.shiftround = true
 
+    -- disable internal pager
+    -- https://neovim.io/doc/user/options.html#'more'
+    vim.o.more = false
+
     -- set global indentation
     utils.set_indent(4)
   end
