@@ -10,4 +10,6 @@ stow -R fish
 stow -R neovim
 stow -R ripgrep
 stow -R aria2
+
+mkdir -p $HOME/.config/chore || true # to prevent folding at this level
 stow -R chore
