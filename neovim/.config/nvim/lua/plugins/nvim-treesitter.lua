@@ -2,7 +2,7 @@
 -- https://github.com/nvim-treesitter/nvim-treesitter
 
 
-local max_file_size = 100 * 1024  -- 100 kilobytes
+local max_file_size = 120 * 1024  -- 100 kilobytes
 
 
 local function disable_on_max_filesize(_, bufnr)
