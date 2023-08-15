@@ -14,8 +14,10 @@ local get_remote_url = (function()
   local plenary_jobs = require("plenary.job")
 
   return function(root, name)
-    if cache[root] then
-      return cache[root]
+    local key = name .. "::" .. root
+
+    if cache[key] then
+      return cache[key]
     end
 
     local proc = plenary_jobs:new({
@@ -43,10 +45,10 @@ end)()
 local function parse_ssh(url)
   local host, user, project = string.match(
     url,
-    "^git@([^:]+):([^/]+)/(.-)%.git"
+    "^git@([^:]+):([^/]+)/(.+)%.git"
   )
 
-  if host ~= "" and user ~= "" and project ~= "" then
+  if host and user and project then
     return {
       host = host,
       user = user,
@@ -59,10 +61,10 @@ end
 local function parse_https(url)
   local host, user, project = string.match(
     url,
-    "^https?://([^/]+)/([^/]+)/(.-)%.git"
+    "^https?://([^/]+)/([^/]+)/(.+)%.git"
   )
 
-  if host ~= "" and user ~= "" and project ~= "" then
+  if host and user and project then
     return {
       host = host,
       user = user,
