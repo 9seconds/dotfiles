@@ -12,18 +12,6 @@ function M.setup()
 
   vim.cmd("command! -nargs=+ -complete=file Grep noautocmd grep! <args> | redraw! | copen")
   vim.cmd("command! -nargs=+ -complete=file LGrep noautocmd lgrep! <args> | redraw! | lopen")
-
-  vim.api.nvim_create_user_command("RepoLink", function(args)
-    require("_.commands.repo_link").make({
-      branch = args.fargs[1],
-      repo = args.fargs[2] or "origin",
-      start_line = args.line1,
-      end_line = args.line2,
-    })
-  end, {
-    nargs = "?",
-    range = true,
-  })
 end
 
 
