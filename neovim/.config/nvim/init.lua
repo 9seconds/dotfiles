@@ -27,6 +27,6 @@ require("lazy").setup("plugins", {
   dev = {
     path = "~/.nvim-plugins",
     patterns = { "9seconds" },
-    fallback = false,
+    fallback = true,
   },
 })
