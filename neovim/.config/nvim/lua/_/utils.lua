@@ -28,7 +28,7 @@ function M.get_buf_file_size(bufnr)
     return 0
   end
 
-  local stat = vim.uv.fs_stat(buf_name, nil)
+  local stat = vim.loop.fs_stat(buf_name, nil)
   if not stat then
     return 0
   end
