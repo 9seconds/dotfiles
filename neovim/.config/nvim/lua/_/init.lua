@@ -2,7 +2,6 @@
 
 local M = {}
 
-
 function M.setup()
   require("_.keymappings").setup()
   require("_.options").setup()
@@ -11,12 +10,10 @@ function M.setup()
   require("_.terminal").setup()
 end
 
-
 function M.lsp(server_name, opts)
   local lsp = require("_.lsp")
 
   require("lspconfig")[server_name].setup(lsp.make_setup(opts))
 end
-
 
 return M

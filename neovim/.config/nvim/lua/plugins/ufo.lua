@@ -1,7 +1,6 @@
 -- sensible folding
 -- https://github.com/kevinhwang91/nvim-ufo
 
-
 return {
   "kevinhwang91/nvim-ufo",
   version = "*",
@@ -21,30 +20,20 @@ return {
   config = function()
     local ufo = require("ufo")
 
-    vim.keymap.set(
-      "n",
-      "zR",
-      ufo.openAllFolds,
-      {
-        desc = "Open all folds",
-      }
-    )
-    vim.keymap.set(
-      "n",
-      "zM",
-      ufo.closeAllFolds,
-      {
-        desc = "Close all folds",
-      }
-    )
+    vim.keymap.set("n", "zR", ufo.openAllFolds, {
+      desc = "Open all folds",
+    })
+    vim.keymap.set("n", "zM", ufo.closeAllFolds, {
+      desc = "Close all folds",
+    })
 
     ufo.setup({
       provider_selector = function()
         return {
-          'treesitter',
+          "treesitter",
           "indent",
         }
-      end
+      end,
     })
-  end
+  end,
 }

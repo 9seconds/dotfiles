@@ -21,15 +21,12 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("_").setup()
-require("lazy").setup(
-  "plugins",
-  {
-    root = datapath,
-    lockfile = datapath .. "/lazy-lock.json",
-    dev = {
-      path = "~/.nvim-plugins",
-      patterns = { "9seconds" },
-      fallback = false,
-    }
-  }
-)
+require("lazy").setup("plugins", {
+  root = datapath,
+  lockfile = datapath .. "/lazy-lock.json",
+  dev = {
+    path = "~/.nvim-plugins",
+    patterns = { "9seconds" },
+    fallback = false,
+  },
+})

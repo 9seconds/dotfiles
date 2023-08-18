@@ -1,7 +1,6 @@
 -- git integration
 -- https://github.com/lewis6991/gitsigns.nvim
 
-
 return {
   "lewis6991/gitsigns.nvim",
   version = "*",
@@ -39,57 +38,37 @@ return {
           noremap = false,
         })
 
-        vim.keymap.set(
-          "n",
-          "<leader>hr",
-          function()
-            vim.schedule(gitsigns.reset_hunk)
-          end,
-          {desc = "Reset git hunk", buffer = bufnr}
-        )
-        vim.keymap.set(
-          "v",
-          "<leader>hr",
-          function()
-            vim.schedule(function()
-              gitsigns.reset_hunk({
-                vim.fn.line("."),
-                vim.fn.line("v"),
-              })
-            end)
-          end,
-          {desc = "Reset git hunk", buffer = bufnr}
-        )
+        vim.keymap.set("n", "<leader>hr", function()
+          vim.schedule(gitsigns.reset_hunk)
+        end, { desc = "Reset git hunk", buffer = bufnr })
+        vim.keymap.set("v", "<leader>hr", function()
+          vim.schedule(function()
+            gitsigns.reset_hunk({
+              vim.fn.line("."),
+              vim.fn.line("v"),
+            })
+          end)
+        end, { desc = "Reset git hunk", buffer = bufnr })
 
-        vim.keymap.set(
-          "n",
-          "<leader>hp",
-          function()
-            vim.schedule(gitsigns.preview_hunk)
-          end,
-          {desc = "Preview git hunk", buffer = bufnr}
-        )
+        vim.keymap.set("n", "<leader>hp", function()
+          vim.schedule(gitsigns.preview_hunk)
+        end, { desc = "Preview git hunk", buffer = bufnr })
 
-        vim.keymap.set(
-          "n",
-          "<leader>hb",
-          function()
-            vim.schedule(function()
-              gitsigns.blame_line({
-                full = true,
-                ignore_whitespace = true,
-              })
-            end)
-          end,
-          {desc = "Git blame this line", buffer = bufnr}
-        )
+        vim.keymap.set("n", "<leader>hb", function()
+          vim.schedule(function()
+            gitsigns.blame_line({
+              full = true,
+              ignore_whitespace = true,
+            })
+          end)
+        end, { desc = "Git blame this line", buffer = bufnr })
         vim.keymap.set(
           "n",
           "<leader>hd",
           gitsigns.toggle_deleted,
-          {desc = "Toggle deleted lines", buffer = bufnr}
+          { desc = "Toggle deleted lines", buffer = bufnr }
         )
-      end
+      end,
     })
-  end
+  end,
 }

@@ -1,15 +1,13 @@
 -- paint parens in different colors
 -- https://gitlab.com/HiPhish/rainbow-delimiters.nvim
 
-
 local big_size = 30 * 1024
 local max_file_size = 80 * 1024
-
 
 return {
   url = "https://gitlab.com/HiPhish/rainbow-delimiters.nvim",
   dependencies = {
-    "nvim-treesitter/nvim-treesitter"
+    "nvim-treesitter/nvim-treesitter",
   },
   event = "BufReadPre",
 
@@ -27,8 +25,8 @@ return {
           end
 
           return strategies["local"]
-        end
-      }
+        end,
+      },
     }
-  end
+  end,
 }

@@ -1,6 +1,5 @@
 -- This module contains basic keymappings
 
-
 local function imap(key, action, opts)
   vim.keymap.set("i", key, action, opts)
 end
@@ -16,7 +15,6 @@ end
 local function cmap(key, action, opts)
   vim.keymap.set("c", key, action, opts)
 end
-
 
 return {
   setup = function()
@@ -59,18 +57,18 @@ return {
     nmap("<c-l>", "<c-w>l")
 
     -- clear highlight
-    nmap("<leader>l", ":noh<cr>", {silent=true})
+    nmap("<leader>l", ":noh<cr>", { silent = true })
 
     -- exit insert mode
     imap("jj", "<esc>")
     imap("kk", "<esc>")
 
     -- fast save
-    nmap("<leader><leader>", ":update<cr>", {silent=true})
+    nmap("<leader><leader>", ":update<cr>", { silent = true })
 
     -- spellcheck
     nmap("<leader>?", function()
       vim.o.spell = not vim.o.spell
     end)
-  end
+  end,
 }

@@ -1,7 +1,6 @@
 -- use OSC52 to copy back to a system clipboard
 -- https://github.com/ojroques/nvim-osc52
 
-
 local function copy(lines, _)
   require("osc52").copy(table.concat(lines, "\n"))
 end
@@ -12,7 +11,6 @@ local function paste()
     vim.fn.getregtype(""),
   }
 end
-
 
 return {
   "ojroques/nvim-osc52",
@@ -33,5 +31,5 @@ return {
         ["*"] = paste,
       },
     }
-  end
+  end,
 }

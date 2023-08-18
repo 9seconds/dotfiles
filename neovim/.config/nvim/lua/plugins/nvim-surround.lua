@@ -1,7 +1,6 @@
 -- surround plugin
 -- github.com/kylechui/nvim-surround
 
-
 return {
   "kylechui/nvim-surround",
   version = "*",
@@ -11,5 +10,5 @@ return {
     "nvim-treesitter/nvim-treesitter-textobjects",
   },
 
-  opts = {}
+  opts = {},
 }

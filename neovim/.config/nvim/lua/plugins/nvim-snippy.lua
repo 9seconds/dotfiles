@@ -1,7 +1,6 @@
 -- snippets!
 -- https://github.com/dcampos/nvim-snippy
 
-
 return {
   "dcampos/nvim-snippy",
   keys = {
@@ -13,7 +12,7 @@ return {
         end
         return "<c-j>"
       end,
-      mode = {"i", "s"},
+      mode = { "i", "s" },
       expr = true,
       desc = "Expand or advance snippet",
     },
@@ -25,19 +24,19 @@ return {
         end
         return "<c-k>"
       end,
-      mode = {"i", "s"},
+      mode = { "i", "s" },
       expr = true,
       desc = "Jump to the previous snippet position",
     },
     {
       "<tab>",
       "<plug>(snippy-cut-text)",
-      mode = {"x"},
+      mode = { "x" },
       desc = "Cut text for the snippet",
     },
   },
   cmd = { "SnippyEdit", "SnippyReload" },
   ft = "snippets",
 
-  opts = {}
+  opts = {},
 }

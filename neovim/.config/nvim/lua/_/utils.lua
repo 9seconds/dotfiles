@@ -2,7 +2,6 @@
 
 local M = {}
 
-
 function M.set_indent(length, obj)
   if obj == nil then
     obj = vim.o
@@ -21,7 +20,6 @@ function M.set_indent(length, obj)
   obj.shiftwidth = length
 end
 
-
 function M.get_buf_file_size(bufnr)
   bufnr = bufnr or 0
 
@@ -37,6 +35,5 @@ function M.get_buf_file_size(bufnr)
 
   return stat.size
 end
-
 
 return M

@@ -1,15 +1,13 @@
 -- LSP configuration for mason
 -- https://github.com/williamboman/mason.nvim
 
-
 local mason_config = {
   "williamboman/mason.nvim",
   version = "*",
   build = ":MasonUpdate",
 
-  opts = {}
+  opts = {},
 }
-
 
 local mason_tool_installer = {
   "WhoIsSethDaniel/mason-tool-installer.nvim",
@@ -27,10 +25,9 @@ local mason_tool_installer = {
       "prettier",
       "shellcheck",
       "yamllint",
-    }
-  }
+    },
+  },
 }
-
 
 return {
   mason_config,

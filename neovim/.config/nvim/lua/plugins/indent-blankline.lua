@@ -1,9 +1,7 @@
 -- fancy guidelines
 -- https://github.com/lukas-reineke/indent-blankline.nvim
 
-
 local max_file_size = 50 * 1024
-
 
 return {
   "lukas-reineke/indent-blankline.nvim",
@@ -26,5 +24,5 @@ return {
       end,
       desc = "Disable or enable indent blankline plugin",
     })
-  end
+  end,
 }

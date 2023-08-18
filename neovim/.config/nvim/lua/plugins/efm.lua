@@ -1,7 +1,6 @@
 -- configuration for efm
 -- https://github.com/creativenull/efmls-configs-nvim
 
-
 return {
   "creativenull/efmls-configs-nvim",
   version = "*",
@@ -20,5 +19,5 @@ return {
         documentFormatting = true,
       },
     })
-  end
+  end,
 }

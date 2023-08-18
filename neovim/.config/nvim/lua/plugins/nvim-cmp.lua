@@ -9,7 +9,7 @@ return {
     "FelipeLema/cmp-async-path",
     "hrsh7th/cmp-nvim-lsp",
     "onsails/lspkind.nvim",
-    "ray-x/lsp_signature.nvim"
+    "ray-x/lsp_signature.nvim",
   },
   event = "InsertEnter",
 
@@ -22,7 +22,7 @@ return {
 
     cmp.setup({
       view = {
-        entries = "native"
+        entries = "native",
       },
 
       formatting = {
@@ -75,13 +75,13 @@ return {
         {
           name = "async_path",
           option = {
-            trailing_slash = true
-          }
+            trailing_slash = true,
+          },
         },
-      }
+      },
     })
 
-    local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+    local cmp_autopairs = require("nvim-autopairs.completion.cmp")
     cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
-  end
+  end,
 }

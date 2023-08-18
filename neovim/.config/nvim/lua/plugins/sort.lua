@@ -7,11 +7,11 @@ return {
     {
       "<leader>s",
       ":Sort i<cr>",
-      mode = {"v"},
-      desc = "Sort lines"
-    }
+      mode = { "v" },
+      desc = "Sort lines",
+    },
   },
   cmd = "Sort",
 
-  opts = {}
+  opts = {},
 }

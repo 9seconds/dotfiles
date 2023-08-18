@@ -1,7 +1,6 @@
 -- tab to escape pairs
 -- https://github.com/abecodes/tabout.nvim
 
-
 return {
   "abecodes/tabout.nvim",
   dependencies = {
@@ -10,6 +9,6 @@ return {
   event = "InsertEnter",
 
   opts = {
-    enable_backwards = false
-  }
+    enable_backwards = false,
+  },
 }

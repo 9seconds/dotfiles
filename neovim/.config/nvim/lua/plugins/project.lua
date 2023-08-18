@@ -8,6 +8,6 @@ return {
 
   opts = {
     detection_methods = { "pattern", "lsp" },
-    patterns = { ".git", "Makefile", "package.json", "go.mod" }
-  }
+    patterns = { ".git", "Makefile", "package.json", "go.mod" },
+  },
 }

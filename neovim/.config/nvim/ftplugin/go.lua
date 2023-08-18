@@ -7,7 +7,7 @@ vim.bo.expandtab = true
 -- vim.g._go_auto_organize_imports = true for automatic imports organize
 -- vim.g._go_auto_format = true for automatic formatting
 vim.api.nvim_create_autocmd("BufWritePre", {
-  pattern = {"*.go"},
+  pattern = { "*.go" },
   group = vim.api.nvim_create_augroup("Golang", {}),
   callback = function()
     if vim.g._go_auto_organize_imports then
@@ -26,5 +26,5 @@ vim.api.nvim_create_autocmd("BufWritePre", {
       -- this is required to avoid a message that formatting is done
       vim.fn.feedkeys("<cr>")
     end
-  end
+  end,
 })

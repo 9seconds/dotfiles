@@ -1,7 +1,6 @@
 -- fancy notifications
 -- https://github.com/rcarriga/nvim-notify
 
-
 return {
   "rcarriga/nvim-notify",
   version = "*",
@@ -16,9 +15,9 @@ return {
 
     notify.setup({
       render = "compact",
-      stages = "fade"
+      stages = "fade",
     })
 
     vim.notify = notify
-  end
+  end,
 }

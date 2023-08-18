@@ -4,13 +4,13 @@
 local leap_config = {
   "ggandor/leap.nvim",
   dependencies = {
-    "tpope/vim-repeat"
+    "tpope/vim-repeat",
   },
   event = "VeryLazy",
 
   config = function()
     require("leap").add_default_mappings()
-  end
+  end,
 }
 
 -- https://github.com/ggandor/flit.nvim
@@ -21,9 +21,8 @@ local flit_config = {
   },
   event = "VeryLazy",
 
-  opts = {}
+  opts = {},
 }
-
 
 return {
   leap_config,

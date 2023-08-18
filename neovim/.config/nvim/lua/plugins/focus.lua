@@ -1,7 +1,6 @@
 -- autofocus
 -- https://github.com/nvim-focus/focus.nvim
 
-
 local ignore_filetypes = {
   "neo-tree",
 }
@@ -10,7 +9,6 @@ local ignore_buftypes = {
   "prompt",
   "popup",
 }
-
 
 return {
   "nvim-focus/focus.nvim",
@@ -41,5 +39,5 @@ return {
       end,
       desc = "Disable focus autoresize for FileType",
     })
-  end
+  end,
 }

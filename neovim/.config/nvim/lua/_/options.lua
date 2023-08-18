@@ -1,7 +1,6 @@
 -- This module contains these options you usually expect to be set with
 -- :set or vim.o
 
-
 return {
   setup = function()
     local utils = require("_.utils")
@@ -46,7 +45,7 @@ return {
 
     -- show some hidden characters
     -- https://neovim.io/doc/user/options.html#'list'
-    vim.o.list = true                      -- show hidden characters
+    vim.o.list = true -- show hidden characters
     vim.o.listchars = "tab:▸ ,trail:⋅,extends:❯,precedes:❮"
 
     -- show line numbers
@@ -126,5 +125,5 @@ return {
 
     -- set global indentation
     utils.set_indent(4)
-  end
+  end,
 }

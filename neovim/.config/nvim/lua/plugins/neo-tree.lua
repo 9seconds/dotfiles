@@ -1,7 +1,6 @@
 -- configuration for a drawer
 -- https://github.com/nvim-neo-tree/neo-tree.nvim
 
-
 return {
   "nvim-neo-tree/neo-tree.nvim",
   branch = "v3.x",
@@ -14,20 +13,20 @@ return {
       version = "2.*",
       event = "VeryLazy",
 
-      opts = {}
-    }
+      opts = {},
+    },
   },
   cmd = "Neotree",
   keys = {
     {
       "<leader>ef",
       "<cmd>Neotree toggle<cr>",
-      desc = "Open neotree"
+      desc = "Open neotree",
     },
     {
       "<leader>ec",
       "<cmd>Neotree reveal<cr>",
-      desc = "Reveal current file in neotree"
+      desc = "Reveal current file in neotree",
     },
   },
 
@@ -37,14 +36,14 @@ return {
     return {
       sources = {
         "filesystem",
-        "document_symbols"
+        "document_symbols",
       },
 
       source_selector = {
         winbar = true,
         sources = {
           { source = "filesystem", display_name = " 󰉓 Files " },
-          { source = "document_symbols", display_name = "  Symbols"}
+          { source = "document_symbols", display_name = "  Symbols" },
         },
       },
 
@@ -55,8 +54,8 @@ return {
         },
         git_status = {
           symbols = {
-            renamed   = "󰁕",
-            unstaged  = "",
+            renamed = "󰁕",
+            unstaged = "",
           },
         },
       },
@@ -77,8 +76,8 @@ return {
           Struct = { icon = "󰌗", hl = "Type" },
           Operator = { icon = "󰆕", hl = "Operator" },
           TypeParameter = { icon = "󰊄", hl = "Type" },
-          StaticMethod = { icon = '󰠄 ', hl = 'Function' },
-        }
+          StaticMethod = { icon = "󰠄 ", hl = "Function" },
+        },
       },
 
       filesystem = {
@@ -88,5 +87,5 @@ return {
       close_if_last_window = false,
       sort_case_insensitive = true,
     }
-  end
+  end,
 }

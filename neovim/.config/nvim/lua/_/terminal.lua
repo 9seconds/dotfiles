@@ -1,10 +1,8 @@
 -- custom terminal wrapper
 
-
 local function open_terminal(how)
   vim.cmd(how .. " term://" .. (vim.env.SHELL or vim.o.shell))
 end
-
 
 local function setup_keymappings()
   -- move between windows
@@ -34,39 +32,38 @@ local function setup_keymappings()
   end)
 end
 
-
 local function setup_autogroup()
   local group = vim.api.nvim_create_augroup("9_Terminal", {})
 
   vim.api.nvim_create_autocmd("TermOpen", {
-    group=group,
-    callback=function()
+    group = group,
+    callback = function()
       vim.wo.number = false
       vim.cmd("startinsert!")
-    end
+    end,
   })
 
   vim.api.nvim_create_autocmd("TermEnter", {
-    group=group,
-    callback=function()
+    group = group,
+    callback = function()
       vim.wo.number = false
-    end
+    end,
   })
 
   vim.api.nvim_create_autocmd("WinEnter", {
-    group=group,
-    callback=function()
+    group = group,
+    callback = function()
       if vim.bo.buftype == "terminal" then
         vim.cmd("startinsert!")
       end
-    end
+    end,
   })
 
   vim.api.nvim_create_autocmd("TermClose", {
-    group=group,
-    callback=function()
+    group = group,
+    callback = function()
       vim.fn.feedkeys("<esc>")
-    end
+    end,
   })
 end
 
@@ -74,5 +71,5 @@ return {
   setup = function()
     setup_keymappings()
     setup_autogroup()
-  end
+  end,
 }

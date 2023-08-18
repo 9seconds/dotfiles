@@ -1,14 +1,11 @@
 -- treesitter configuration
 -- https://github.com/nvim-treesitter/nvim-treesitter
 
-
-local max_file_size = 120 * 1024  -- 100 kilobytes
-
+local max_file_size = 120 * 1024 -- 100 kilobytes
 
 local function disable_on_max_filesize(_, bufnr)
   return require("_.utils").get_buf_file_size(bufnr) >= max_file_size
 end
-
 
 return {
   "nvim-treesitter/nvim-treesitter",
@@ -45,7 +42,7 @@ return {
         enable = true,
         disable = disable_on_max_filesize,
 
-        highlight_pair_events = {"CursorMoved"},
+        highlight_pair_events = { "CursorMoved" },
         highlight_self = true,
         fallback_cmd_normal = "call matchit#Match_wrapper('',1,'n')",
 
@@ -83,8 +80,8 @@ return {
             ["aa"] = "@parameter.outer",
             ["ab"] = "@block.outer",
             ["ib"] = "@block.inner",
-          }
-        }
+          },
+        },
       },
 
       -- nvim-treesitter-refactor
@@ -102,7 +99,7 @@ return {
       -- https://github.com/JoosepAlviste/nvim-ts-context-commentstring
       context_commentstring = {
         enable = true,
-      }
+      },
     })
-  end
+  end,
 }
