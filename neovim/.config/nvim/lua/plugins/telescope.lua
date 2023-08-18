@@ -57,6 +57,7 @@ local telescope_config = {
       desc = "Live grep",
     },
   },
+  cmd = { "Telescope" },
 
   config = function()
       local telescope = require("telescope")
