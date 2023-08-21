@@ -5,6 +5,7 @@ return {
   "9seconds/repolink.nvim",
   dependencies = {
     "nvim-lua/plenary.nvim",
+    "ahmedkhalf/project.nvim",
   },
   cmd = { "RepoLink" },
 
