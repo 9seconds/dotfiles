@@ -18,9 +18,7 @@ return {
     vim.api.nvim_create_autocmd("BufRead", {
       group = augroup,
       callback = function()
-        vim.b.indent_blankline_enabled = (
-          require("_.utils").get_buf_file_size() < max_file_size
-        )
+        vim.b.indent_blankline_enabled = (require("_.utils").get_buf_file_size() < max_file_size)
       end,
       desc = "Disable or enable indent blankline plugin",
     })

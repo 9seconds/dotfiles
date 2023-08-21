@@ -60,10 +60,7 @@ function M.efm_config(opts)
           entity = require("efmls-configs.formatters." .. linter[1])
         end
 
-        table.insert(
-          lang_config,
-          vim.tbl_deep_extend("force", entity, linter[2] or {})
-        )
+        table.insert(lang_config, vim.tbl_deep_extend("force", entity, linter[2] or {}))
       end
     end
 

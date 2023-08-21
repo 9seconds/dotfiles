@@ -62,12 +62,7 @@ return {
             })
           end)
         end, { desc = "Git blame this line", buffer = bufnr })
-        vim.keymap.set(
-          "n",
-          "<leader>hd",
-          gitsigns.toggle_deleted,
-          { desc = "Toggle deleted lines", buffer = bufnr }
-        )
+        vim.keymap.set("n", "<leader>hd", gitsigns.toggle_deleted, { desc = "Toggle deleted lines", buffer = bufnr })
       end,
     })
   end,

@@ -9,12 +9,8 @@ function M.setup()
     vim.o.grepprg = "ag --vimgrep --nocolor --follow --smart-case"
   end
 
-  vim.cmd(
-    "command! -nargs=+ -complete=file Grep noautocmd grep! <args> | redraw! | copen"
-  )
-  vim.cmd(
-    "command! -nargs=+ -complete=file LGrep noautocmd lgrep! <args> | redraw! | lopen"
-  )
+  vim.cmd("command! -nargs=+ -complete=file Grep noautocmd grep! <args> | redraw! | copen")
+  vim.cmd("command! -nargs=+ -complete=file LGrep noautocmd lgrep! <args> | redraw! | lopen")
 end
 
 return M
