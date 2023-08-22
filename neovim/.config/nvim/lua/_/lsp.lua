@@ -44,39 +44,7 @@ function M.on_attach(client, bufnr)
   keymap("n", "<leader>ln", vim.lsp.buf.rename)
 end
 
-function M.efm_config(opts)
-  local conf = {}
-
-  for language, linters in pairs(opts) do
-    local lang_config = {}
-
-    for _, linter in ipairs(linters) do
-      if not linter[1] then
-        table.insert(lang_config, linter[2])
-      else
-        local ok, entity = pcall(require, "efmls-configs.linters." .. linter[1])
-
-        if not ok then
-          entity = require("efmls-configs.formatters." .. linter[1])
-        end
-
-        table.insert(lang_config, vim.tbl_deep_extend("force", entity, linter[2] or {}))
-      end
-    end
-
-    conf[language] = {
-      linter = lang_config,
-    }
-  end
-
-  return conf
-end
-
 function M.setup(server_name, opts)
-  if server_name == "efm" then
-    return require("efmls-configs").setup(opts)
-  end
-
   local lspconfig = require("lspconfig")
 
   opts = opts or {}
@@ -87,6 +55,48 @@ function M.setup(server_name, opts)
   end
 
   lspconfig[server_name].setup(opts)
+end
+
+function M.efm_setup(languages)
+  local imported = {}
+  local can_format = false
+
+  for language, specs in pairs(languages) do
+    imported[language] = {}
+
+    for _, spec in ipairs(specs) do
+      if spec[1] == nil then
+        table.insert(imported[language], spec[2])
+      else
+        local ok, value = pcall(require, "efmls-configs.linters." .. spec[1])
+        if not ok then
+          ok, value = pcall(require, "efmls-configs.formatters." .. spec[1])
+          can_format = can_format or ok
+        end
+
+        if ok then
+          table.insert(
+            imported[language],
+            vim.tbl_deep_extend("force", value, spec[2] or {})
+          )
+        else
+          vim.api.nvim_err_writeln("cannot import " .. spec[1] .. " from efmls-configs")
+        end
+      end
+    end
+  end
+
+  M.setup("efm", {
+    filetypes = vim.tbl_keys(imported),
+    settings = {
+      rootMarkers = { ".git/" },
+      languages = imported,
+    },
+    init_options = {
+      documentFormatting = can_format,
+      documentRangeFormatting = can_format,
+    },
+  })
 end
 
 return M
