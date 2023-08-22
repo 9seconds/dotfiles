@@ -7,6 +7,8 @@ return {
     "nvim-treesitter/nvim-treesitter",
   },
   keys = {
-    { "<leader>T", ":Twilight<cr>", desc = "Toggle twilight" },
+    { "<leader>T", "<cmd>Twilight<cr>", desc = "Toggle twilight" },
   },
+
+  opts = {},
 }

@@ -22,7 +22,7 @@ return {
   keys = {
     {
       "<leader>td",
-      "<cmd>DevdocsOpenFloat<cr>",
+      "<cmd>DevdocsOpen<cr>",
       desc = "Open DevDocs",
     },
   },
