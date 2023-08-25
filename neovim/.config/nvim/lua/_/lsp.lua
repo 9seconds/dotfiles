@@ -80,7 +80,9 @@ function M.efm_setup(languages)
             vim.tbl_deep_extend("force", value, spec[2] or {})
           )
         else
-          vim.api.nvim_err_writeln("cannot import " .. spec[1] .. " from efmls-configs")
+          vim.api.nvim_err_writeln(
+            "cannot import " .. spec[1] .. " from efmls-configs"
+          )
         end
       end
     end
