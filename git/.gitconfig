@@ -73,6 +73,8 @@
 [core]
     compression = -1
     preloadindex = true
+    autocrlf = false
+    eol = lf
 [pack]
     compression = 9
     threads     = 8
