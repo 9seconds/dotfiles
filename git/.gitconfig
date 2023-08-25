@@ -73,7 +73,6 @@
 [core]
     compression = -1
     preloadindex = true
-    excludesfile = ~/.gitignore
 [pack]
     compression = 9
     threads     = 8
