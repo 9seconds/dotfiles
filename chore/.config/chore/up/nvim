@@ -4,6 +4,4 @@ set -eu -o pipefail
 
 [[ ${CHORE_DEBUG:-} = "1" ]] && set -x
 
-
-nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync' && \
-nvim --headless -c 'TSInstall all' -c 'TSUpdateSync' -c 'CatppuccinCompile' -c 'qall!'
+nvim --headless +MasonUpdate +'Lazy! sync' +TSUpdateSync +qa
