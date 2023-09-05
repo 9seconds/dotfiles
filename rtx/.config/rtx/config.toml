@@ -1,14 +1,16 @@
 [tools]
-fd = "8.7.0"
 bat = "0.23.0"
-ripgrep = "13.0.0"
-fzf = "0.42.0"
-exa = "0.10.1"
-tmux = "3.3a"
-difftastic = "0.51.1"
-lazygit = "0.40.2"
 ccache = "4.8.2"
+difftastic = "0.51.1"
+exa = "0.10.1"
+fd = "8.7.0"
+fzf = "0.42.0"
 glow = "1.5.1"
+go = "1.21.0"
+lazygit = "0.40.2"
+python = ["2.7.18", "3.11.5"]
+ripgrep = "13.0.0"
+tmux = "3.3a"
 
 [settings]
 legacy_version_file = false
