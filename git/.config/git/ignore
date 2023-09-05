@@ -3,3 +3,4 @@ __pycache__/
 .gutctags
 .nvim.lua
 *.orig
+.rtx.toml
