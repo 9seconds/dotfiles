@@ -10,7 +10,9 @@ glow = "1.5.1"
 go = "1.21.0"
 lazygit = "0.40.2"
 node = "18.17.1"
+poetry = "1.6.1"
 python = ["2.7.18", "3.11.5"]
+restic = "0.16.0"
 ripgrep = "13.0.0"
 tmux = "3.3a"
 
