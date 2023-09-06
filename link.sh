@@ -11,6 +11,7 @@ stow -R neovim
 stow -R ripgrep
 stow -R aria2
 stow -R rtx
+stow -R bin
 
 mkdir -p $HOME/.config/chore || true # to prevent folding at this level
 stow -R chore
