@@ -11,6 +11,7 @@ end
 local telescope_config = {
   "nvim-telescope/telescope.nvim",
   dependencies = {
+    "ahmedkhalf/project.nvim",
     "nvim-lua/plenary.nvim",
     "nvim-treesitter/nvim-treesitter",
     "nvim-tree/nvim-web-devicons",
@@ -86,6 +87,11 @@ local telescope_config = {
         "--strip-cwd-prefix",
         "--color",
         "never",
+        "--type",
+        "file",
+        "--type",
+        "symlink",
+        "--",
       }
     end
 
