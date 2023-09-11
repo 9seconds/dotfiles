@@ -22,3 +22,4 @@ always_keep_download = false
 always_keep_install = false
 plugin_autoupdate_last_check_duration = '1 week'
 asdf_compat = false
+experimental = true
