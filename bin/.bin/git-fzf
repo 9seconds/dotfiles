@@ -1,11 +1,91 @@
 #!/usr/bin/env bash
 set -eu -o pipefail
 
-CMD="fzf --ansi --tabstop=4 --select-1 --height=~50% --layout=reverse --border=none --no-separator --no-scrollbar --info=hidden '--prompt=$1> '"
-QUERY="${2:-}"
+#
+# This is just a wrapper for a common fzf stuff I use in git
+#
 
-if [[ $QUERY != "" ]]; then
-  CMD="$CMD '--query=$QUERY'"
+echoerr() {
+  echo "$@" >&2
+  exit 1
+}
+
+
+PROMPT=""
+PREVIEW=""
+QUERY=""
+MULTI=0
+
+
+export DFT_DISPLAY=inline
+export DFT_COLOR=always
+export DFT_TAB_WIDTH=4
+
+
+while getopts ":hp:v:q:m" opt; do
+  case $opt in
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1
+      ;;
+    h)
+      echo "fzf wrapper for various git output"
+      echo "  -p  Prompt text"
+      echo "  -v  fzf preview script"
+      echo "  -q  query"
+      exit 0
+      ;;
+    v)
+      PREVIEW="$OPTARG"
+      ;;
+    p)
+      PROMPT="$OPTARG"
+      ;;
+    q)
+      QUERY="$OPTARG"
+      ;;
+    m)
+      MULTI=1
+      ;;
+  esac
+done
+
+
+fzf_args=(
+  "--ansi"              # respect ansi colors
+  "--tabstop=4"         # tab is 4 spaces
+  "--select-1"          # always select 1st option if there are no other ones
+  "--exit-0"            # exit if not prompt
+  "--height=~60%"       # occupy max 60% of screen
+  "--layout=reverse"    # show results in reverse (below promp)
+  "--border=none"       # do not draw any funky borders
+  "--no-separator"      # do not show any separator between prompt
+  "--no-scrollbar"      # no visual scrollbar
+  "--info=hidden"       # do not show useless stats
+  "--prompt=$PROMPT> "  # prompt symbol
+
+  # ctrl-n for scrolling preview down
+  "--bind=ctrl-n:preview-down"
+
+  # ctrl-p for scrolling preview up
+  "--bind=ctrl-p:preview-up"
+)
+
+if [[ $PREVIEW != "" ]]; then
+  fzf_args+=("--preview=$PREVIEW")
 fi
 
-exec sh -c "exec $CMD"
+if [[ $QUERY != "" ]]; then
+  fzf_args+=("--query=$QUERY")
+fi
+
+if [[ $MULTI == 1 ]]; then
+  fzf_args+=("--multi")
+fi
+
+
+exec fzf "${fzf_args[@]}"
