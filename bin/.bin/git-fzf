@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -eu -o pipefail
+
+CMD="fzf --ansi --tabstop=4 --select-1 --height=~50% --layout=reverse --border=none --no-separator --no-scrollbar --info=hidden '--prompt=$1> '"
+QUERY="${2:-}"
+
+if [[ $QUERY != "" ]]; then
+  CMD="$CMD '--query=$QUERY'"
+fi
+
+exec sh -c "exec $CMD"

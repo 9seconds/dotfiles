@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -eu -o pipefail
+
+git branch --color=always --sort=-committerdate -vv \
+  | grep -vF '*' \
+  | grep -F "${1:-}" \
+  | git fzf Branch \
+  | awk '{print $1}' \
+  | xargs -r git switch

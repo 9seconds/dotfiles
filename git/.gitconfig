@@ -37,7 +37,6 @@
     rh = reset --hard
     s = status -sb --find-renames
     sf = submodule foreach --recursive
-    sw = "!f() { git brl | grep -vF '*' | fzf --prompt 'Branch> ' --height=~50% --layout=reverse --border=none --no-separator --no-scrollbar --info=hidden | awk '{print $1}' | xargs -r git switch; }; f"
     domerges = "!nvim -c DiffviewOpen"
 [merge]
     tool = nvimdiff
