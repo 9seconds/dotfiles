@@ -1,55 +1,58 @@
 #!/usr/bin/env bash
+# vim: set ft=bash et ts=2 sw=2 sts=2:
 set -eu -o pipefail
 
 #
 # This is just a wrapper for a common fzf stuff I use in git
 #
 
-echoerr() {
-  echo "$@" >&2
-  exit 1
-}
-
-
-PROMPT=""
-PREVIEW=""
-QUERY=""
-MULTI=0
-
-
 export DFT_DISPLAY=inline
 export DFT_COLOR=always
 export DFT_TAB_WIDTH=4
 
+PROMPT=""
+PREVIEW=""
+QUERY=""
+MULTI=false
 
-while getopts ":hp:v:q:m" opt; do
-  case $opt in
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
-      exit 1
-      ;;
-    :)
-      echo "Option -$OPTARG requires an argument." >&2
-      exit 1
-      ;;
-    h)
-      echo "fzf wrapper for various git output"
-      echo "  -p  Prompt text"
-      echo "  -v  fzf preview script"
-      echo "  -q  query"
+ARGS=$(getopt \
+  -n "git fzf" \
+  --longoptions "help,preview:,prompt:,query:,multi" \
+  --options "hv:p:q:m" \
+  -- "$@")
+[[ $? -ne 0 ]] && exit 1
+eval set -- "$ARGS"
+
+while [ : ]; do
+  case "$1" in
+    -h | --help)
+      echo "fzf wrapper for various git output (* means is accepts value)"
+      echo "  -h, --help        Display this help message"
+      echo "  -v, --preview   * Script to use for a fzf preview"
+      echo "  -p, --prompt    * A symbol to use as a prompt"
+      echo "  -q, --query     * Preseed fzf query"
+      echo "  -m, --multi       Enable multiselection"
       exit 0
       ;;
-    v)
-      PREVIEW="$OPTARG"
+    --)
+      shift;
+      break
       ;;
-    p)
-      PROMPT="$OPTARG"
+    -p | --prompt)
+      PROMPT="$2"
+      shift 2
       ;;
-    q)
-      QUERY="$OPTARG"
+    -v | --preview)
+      PREVIEW="$2"
+      shift 2
       ;;
-    m)
-      MULTI=1
+    -q | --query)
+      QUERY="$2"
+      shift 2
+      ;;
+    -m | --multi)
+      MULTI=true
+      shift
       ;;
   esac
 done
@@ -83,7 +86,7 @@ if [[ $QUERY != "" ]]; then
   fzf_args+=("--query=$QUERY")
 fi
 
-if [[ $MULTI == 1 ]]; then
+if $MULTI; then
   fzf_args+=("--multi")
 fi
 
