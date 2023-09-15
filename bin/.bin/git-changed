@@ -82,7 +82,7 @@ LC_ALL=C sort \
     |  xargs realpath "--relative-to=$CURRENT_DIR" 2>/dev/null) \
   <(cd "$GIT_ROOT" \
     && git ls-files "${ls_files_opts[@]}" \
-    |  awk 'NF == 2 {print $2 }; NF > 2 {print $NF}' \
+    |  awk '{print $NF}' \
     |  xargs realpath "--relative-to=$CURRENT_DIR" 2>/dev/null) \
 | git fzf \
     --prompt File \
