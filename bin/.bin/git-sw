@@ -8,7 +8,7 @@ set -eu -o pipefail
 
 git branch --color=always --sort=-committerdate \
   | grep -vF '*' \
-  | grep -F "${1:-}" \
+  | fzf --filter "${1:-}" --no-sort \
   | git fzf \
       -p Branch \
       -v 'git show --format=medium --no-patch {..} | bat -p -l "Git Log" --color=always' \
