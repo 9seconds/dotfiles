@@ -35,9 +35,11 @@
     pshf = psh --force-with-lease
     rb = rebase --interactive --autosquash --autostash
     rh = reset --hard
+    rs = restore -SW
+    rsw = restore -W
+    rss = restore -S
     s = status -sb --find-renames
     sf = submodule foreach --recursive
-    domerges = "!nvim -c DiffviewOpen"
 [merge]
     tool = nvimdiff
     conflictstyle = diff3

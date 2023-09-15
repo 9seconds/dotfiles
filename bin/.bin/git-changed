@@ -9,12 +9,11 @@ set -eu -o pipefail
 ARGS=$(getopt \
   -n "git changed" \
   --longoptions "help,compare:,untracked" \
-  --options "hc:u" \
+  --options "hu" \
   -- "$@")
 [[ $? -ne 0 ]] && exit 1
 eval set -- "$ARGS"
 
-COMPARE=""
 UNTRACKED=false
 
 while [ : ]; do
@@ -22,7 +21,6 @@ while [ : ]; do
     -h | --help)
       echo "Select changed files"
       echo "  -h, --help         Display this help message"
-      echo "  -c, --compare    * A name of the git object to compare with"
       echo "  -u, --untracked  * Include untracked files"
       exit 0
       ;;
@@ -30,20 +28,14 @@ while [ : ]; do
       shift;
       break
       ;;
-    -c | --compare)
-      COMPARE="$2"
-      shift 2
-      ;;
     -u | --untracked)
       UNTRACKED=true
       shift
       ;;
-    -s | --stdin)
-      STDIN=true
-      shift
-      ;;
   esac
 done
+
+COMPARE="${1:-}"
 
 
 GIT_ROOT="$(git rev-parse --show-toplevel)"
