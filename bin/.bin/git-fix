@@ -10,7 +10,7 @@ set -eu -o pipefail
 FILES=("$@")
 if [[ ${#FILES[@]} == 0 ]]; then
   mapfile -t FILES < <(git status --porcelain=v2 \
-    | awk '$2 ~ "M." {print $NF}' \
+    | awk '$2 ~ "[MD]." {print $NF}' \
     | fzf --prompt "File> " -m)
 fi
 if [[ ${#FILES[@]} == 0 ]]; then
