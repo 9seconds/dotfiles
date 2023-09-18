@@ -45,7 +45,7 @@ return {
     },
     {
       "<leader>ef",
-      "<cmd>NvimTreeFindFile<cr>",
+      "<cmd>NvimTreeFindFileToggle<cr>",
     },
   },
 
