@@ -2,7 +2,7 @@
 -- https://github.com/nvim-focus/focus.nvim
 
 local ignore_filetypes = {
-  "neo-tree",
+  "NvimTree",
 }
 local ignore_buftypes = {
   "nofile",
