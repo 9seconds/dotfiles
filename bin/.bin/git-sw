@@ -7,7 +7,7 @@ set -eu -o pipefail
 #
 
 git branch --color=always --sort=-committerdate \
-  | grep -vF '*' \
+  | grep -v '[*+]' \
   | fzf --filter "${1:-}" --no-sort \
   | git fzf \
       -p Branch \
