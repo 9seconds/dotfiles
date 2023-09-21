@@ -3,6 +3,12 @@
 
 -- https://github.com/nvim-tree/nvim-tree.lua/wiki/Recipes#sorting-files-naturally-respecting-numbers-within-files-names
 local function natural_cmp(left, right)
+  if left.type ~= "directory" and right.type == "directory" then
+    return false
+  elseif left.type == "directory" and right.type ~= "directory" then
+    return true
+  end
+
   left = left.name:lower()
   right = right.name:lower()
 
