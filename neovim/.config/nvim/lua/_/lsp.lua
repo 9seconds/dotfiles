@@ -3,52 +3,52 @@
 local M = {}
 
 function M.on_attach(client, bufnr)
-  local function keymap(mode, lhs, rhs)
-    vim.keymap.set(mode, lhs, rhs, { buffer = bufnr })
+  local function keymap(mode, lhs, rhs, desc)
+    vim.keymap.set(mode, lhs, rhs, { desc = desc, buffer = bufnr })
   end
 
   vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 
-  keymap("n", "<leader>lc", vim.lsp.buf.code_action)
+  keymap("n", "<leader>lc", vim.lsp.buf.code_action, "Get code actions")
   keymap("v", "<leader>lc", function()
     vim.lsp.buf.code_action({
       options = {
         range = vim.lsp.util.make_range_params().range,
       },
-    })
+    }, "Get range code actions")
   end)
 
   keymap("n", "<c-]>", function()
     require("telescope.builtin").lsp_definitions()
-  end)
+  end, "Go to LSP definitions")
 
-  keymap("n", "<leader>l=", vim.lsp.buf.format)
+  keymap("n", "<leader>l=", vim.lsp.buf.format, "Format buffer")
   keymap("v", "<leader>l=", function()
     vim.lsp.buf.format({
       options = {
         range = vim.lsp.util.make_range_params().range,
       },
     })
-  end)
+  end, "Format range of lines")
 
   keymap("n", "<leader>lr", function()
     require("telescope.builtin").lsp_references()
-  end)
+  end, "Get references")
 
   keymap("n", "<leader>ld", function()
     require("telescope.builtin").lsp_document_symbols()
-  end)
+  end, "List document symbols")
 
-  keymap("n", "<leader>lh", vim.lsp.buf.hover)
-  keymap("n", "<leader>ls", vim.lsp.buf.signature_help)
-  keymap("n", "<leader>ln", vim.lsp.buf.rename)
+  keymap("n", "<leader>lh", vim.lsp.buf.hover, "Show hover")
+  keymap("n", "<leader>ls", vim.lsp.buf.signature_help, "Show signature help")
+  keymap("n", "<leader>ln", vim.lsp.buf.rename, "Rename")
 end
 
 function M.setup(server_name, opts)
   local lspconfig = require("lspconfig")
 
   opts = opts or {}
-  opts.on_attach = on_attach
+  opts.on_attach = M.on_attach
 
   if not opts.capabilities then
     opts.capabilities = require("cmp_nvim_lsp").default_capabilities()
