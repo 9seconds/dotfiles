@@ -1,8 +1,8 @@
 #!/usr/bin/env fish
 
-if command -q exa
-  set cmd exa --classify --icons --git --long --binary --header
-  set wraps exa
+if command -q eza
+  set cmd eza --classify --icons --git --long --binary --header
+  set wraps eza
 else
   set cmd ls -lh
   set wraps ls
