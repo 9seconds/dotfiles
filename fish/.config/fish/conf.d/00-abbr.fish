@@ -25,3 +25,9 @@ function __9s_logfile -d 'Add a tee prefix'
   echo {$prefix}(date +%s)-(xxd -l 8 -p /dev/random).log
 end
 abbr --add --position anywhere --function __9s_logfile -- LF
+
+function __9s_gitroot -d 'Show git root'
+  git rev-parse --show-toplevel 2>/dev/null
+  or echo GR
+end
+abbr --add --position anywhere --function __9s_gitroot -- GR
