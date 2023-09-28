@@ -1,20 +1,20 @@
 [tools]
-bat = "0.23.0"
-ccache = "4.8.3"
-difftastic = "0.51.1"
-eza = "0.13.0"
-fd = "8.7.0"
-fzf = "0.42.0"
-git = "2.42.0"
-glow = "1.5.1"
-go = "1.21.0"
-lazygit = "0.40.2"
-node = "18.17.1"
-poetry = "1.6.1"
-python = ["2.7.18", "3.11.5"]
-restic = "0.16.0"
-ripgrep = "13.0.0"
-tmux = "3.3a"
+bat = "latest"
+ccache = "latest"
+difftastic = "latest"
+eza = "latest"
+fd = "latest"
+fzf = "latest"
+git = "latest"
+glow = "latest"
+go = "latest"
+lazygit = "latest"
+node = "lts"
+poetry = "latest"
+python = ["2.7", "latest"]
+restic = "latest"
+ripgrep = "latest"
+tmux = "latest"
 
 [settings]
 legacy_version_file = false
