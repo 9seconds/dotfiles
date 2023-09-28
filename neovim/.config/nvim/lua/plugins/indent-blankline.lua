@@ -8,7 +8,7 @@ return {
   event = "VeryLazy",
 
   config = function()
-    require("indent_blankline").setup({
+    require("ibl").setup({
       use_treesitter = true,
       show_current_context = true,
       use_treesitter_scope = true,
