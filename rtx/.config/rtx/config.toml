@@ -1,20 +1,29 @@
 [tools]
+aria2 = "latest"
 bat = "latest"
 ccache = "latest"
+cmake = "latest"
 difftastic = "latest"
+direnv = "latest"
 eza = "latest"
 fd = "latest"
 fzf = "latest"
 git = "latest"
 glow = "latest"
 go = "latest"
+hadolint = "latest"
+jq = "latest"
 lazygit = "latest"
+make = "latest"
 node = "lts"
+packer = "latest"
 poetry = "latest"
 python = ["2.7", "latest"]
 restic = "latest"
 ripgrep = "latest"
+shellcheck = "latest"
 tmux = "latest"
+vim = "latest"
 
 [settings]
 legacy_version_file = false
