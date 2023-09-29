@@ -1,0 +1,4 @@
+[global]
+use_stdin = false
+strict_env = true
+load_dotenv = false
