@@ -9,9 +9,9 @@ return {
 
   config = function()
     require("ibl").setup({
-      use_treesitter = true,
-      show_current_context = true,
-      use_treesitter_scope = true,
+      scope = {
+        enabled = true,
+      },
     })
 
     local augroup = vim.api.nvim_create_augroup("9_IndentBlankline", {})
