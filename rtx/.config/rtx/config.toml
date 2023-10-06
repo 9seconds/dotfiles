@@ -22,6 +22,7 @@ poetry = "latest"
 python = ["2.7", "latest"]
 restic = "latest"
 ripgrep = "latest"
+rust = "latest"
 shellcheck = "latest"
 tmux = "latest"
 vim = "latest"
