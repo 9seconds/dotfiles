@@ -9,7 +9,6 @@ return {
     "FelipeLema/cmp-async-path",
     "hrsh7th/cmp-nvim-lsp",
     "onsails/lspkind.nvim",
-    "ray-x/lsp_signature.nvim",
   },
   event = "InsertEnter",
 
