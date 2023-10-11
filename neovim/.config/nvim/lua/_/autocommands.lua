@@ -36,20 +36,25 @@ return {
         local uv = vim.uv or vim.loop
         local p_path = require("plenary.path")
 
+        local sourced_files = vim.tbl_map(function(el)
+          return el.name
+        end, vim.fn.getscriptinfo())
         local root = p_path:new(uv.cwd())
+
         for i, v in ipairs(exrc_files) do
           local filepath = tostring(root:joinpath(v))
-          local content = vim.secure.read(filepath)
 
-          if content ~= nil then
-            vim.cmd("source " .. filepath)
+          if not vim.tbl_contains(sourced_files, filepath) then
+            if vim.secure.read(filepath) then
+              vim.cmd("source " .. filepath)
 
-            if package.loaded.lspconfig ~= nil then
-              vim.api.nvim_exec2("LspStop", {})
-              vim.api.nvim_exec2("LspStart", {})
+              if package.loaded.lspconfig ~= nil then
+                vim.api.nvim_exec2("LspStop", {})
+                vim.api.nvim_exec2("LspStart", {})
+              end
+
+              return
             end
-
-            return
           end
         end
       end,
