@@ -13,6 +13,7 @@ stow -R aria2
 stow -R rtx
 stow -R bin
 stow -R direnv
+stow -R tmux
 
 mkdir -p $HOME/.config/chore || true # to prevent folding at this level
 stow -R chore
