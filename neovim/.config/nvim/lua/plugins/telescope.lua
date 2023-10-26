@@ -57,6 +57,13 @@ local telescope_config = {
       end,
       desc = "Live grep",
     },
+    {
+      "<leader>ts",
+      function()
+        require("telescope.builtin").git_status({})
+      end,
+      desc = "Git status",
+    },
   },
   cmd = { "Telescope" },
 
