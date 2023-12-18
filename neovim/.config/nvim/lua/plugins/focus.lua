@@ -16,7 +16,11 @@ return {
   event = "VeryLazy",
 
   config = function()
-    require("focus").setup({})
+    require("focus").setup({
+      autoresize = {
+        enable = false
+      },
+    })
 
     local augroup = vim.api.nvim_create_augroup("9_Focus", {})
 
