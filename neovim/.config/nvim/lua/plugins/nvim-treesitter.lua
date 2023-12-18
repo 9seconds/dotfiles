@@ -94,12 +94,6 @@ return {
           clear_on_cursor_move = true,
         },
       },
-
-      -- set commentstring based on a position in a file
-      -- https://github.com/JoosepAlviste/nvim-ts-context-commentstring
-      context_commentstring = {
-        enable = true,
-      },
     })
   end,
 }
