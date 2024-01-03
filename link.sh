@@ -10,7 +10,7 @@ stow -R fish
 stow -R neovim
 stow -R ripgrep
 stow -R aria2
-stow -R rtx
+stow -R mise
 stow -R bin
 stow -R direnv
 stow -R tmux

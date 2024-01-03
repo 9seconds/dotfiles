@@ -27,7 +27,6 @@ rust = "latest"
 shellcheck = "latest"
 stylua = "latest"
 tmux = "latest"
-vim = "latest"
 
 [settings]
 legacy_version_file = false
