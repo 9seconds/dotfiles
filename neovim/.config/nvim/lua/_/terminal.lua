@@ -16,10 +16,10 @@ local function setup_keymappings()
   vim.keymap.set("t", "<A-l>", "<c-\\><c-n><c-w>l")
 
   -- exit normal mode
-  vim.keymap.set("t", "<A-q>", "<c-\\><c-n>")
+  vim.keymap.set("t", "<A-]>", "<c-\\><c-n>")
 
   -- run terminal mappings
-  vim.keymap.set("n", "<leader>]e", function()
+  vim.keymap.set("n", "<leader>]]", function()
     open_terminal("edit")
   end)
 
@@ -29,6 +29,10 @@ local function setup_keymappings()
 
   vim.keymap.set("n", "<leader>]v", function()
     open_terminal("vsplit")
+  end)
+
+  vim.keymap.set("n", "<leader>]t", function()
+    open_terminal("tabedit")
   end)
 end
 
