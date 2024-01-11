@@ -16,7 +16,6 @@ return {
     "theHamsta/nvim-treesitter-pairs",
     "JoosepAlviste/nvim-ts-context-commentstring",
   },
-  event = "VeryLazy",
   main = "nvim-treesitter.configs",
 
   config = function()
