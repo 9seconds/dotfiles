@@ -106,6 +106,11 @@ local telescope_config = {
       defaults = {
         vimgrep_arguments = vimgrep_arguments,
         dynamic_preview_title = true,
+        mappings = {
+          i = {
+            ["<esc>"] = actions.close
+          },
+        },
       },
       pickers = {
         find_files = {
