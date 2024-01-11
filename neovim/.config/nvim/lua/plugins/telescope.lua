@@ -194,8 +194,27 @@ local undo_config = {
   end,
 }
 
+local frecency_config = {
+  "nvim-telescope/telescope-frecency.nvim",
+  dependencies = {
+    "nvim-telescope/telescope.nvim",
+  },
+  keys = {
+    {
+      "<leader>to",
+      "<cmd>Telescope frecency workspace=CWD<cr>",
+      desc = "List frecent files",
+    },
+  },
+
+  config = function()
+    require("telescope").load_extension("frecency")
+  end,
+}
+
 return {
   telescope_config,
   recent_files_config,
   undo_config,
+  frecency_config,
 }
