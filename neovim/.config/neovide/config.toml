@@ -1,0 +1,6 @@
+idle = true
+grid = "200x60"
+
+[font]
+normal = {family = "FiraCode Nerd Font Mono", style = "Retina"}
+size = 13
