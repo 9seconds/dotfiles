@@ -28,6 +28,19 @@ function M.setup()
   vim.keymap.set("n", "<A-=>", function()
     vim.g.neovide_scale_factor = 1.0
   end, {desc = "Return Neovide back to normal font"})
+
+  vim.api.nvim_create_autocmd("UIEnter", {
+    group = vim.api.nvim_create_augroup("9_Neovide", {}),
+    callback = function()
+      -- https://github.com/neovide/neovide/issues/1331#issuecomment-1261545158
+      if vim.v.event.chan > 1 then
+        if vim.g.loaded_clipboard_provider then
+          vim.g.loaded_clipboard_provider = nil
+          vim.api.nvim_cmd( { cmd = 'runtime', args = { 'autoload/provider/clipboard.vim' } }, {} )
+        end
+      end
+    end,
+  })
 end
 
 return M
