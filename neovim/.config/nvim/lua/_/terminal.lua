@@ -50,15 +50,6 @@ local function setup_autogroup()
     end,
   })
 
-  vim.api.nvim_create_autocmd("WinEnter", {
-    group = group,
-    callback = function()
-      if vim.bo.buftype == "terminal" then
-        vim.cmd("startinsert!")
-      end
-    end,
-  })
-
   vim.api.nvim_create_autocmd("TermClose", {
     group = group,
     callback = function()
