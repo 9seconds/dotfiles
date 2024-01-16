@@ -15,6 +15,7 @@ local telescope_config = {
     "nvim-lua/plenary.nvim",
     "nvim-treesitter/nvim-treesitter",
     "nvim-tree/nvim-web-devicons",
+    "natecraddock/telescope-zf-native.nvim",
     {
       "nvim-telescope/telescope-fzf-native.nvim",
       build = fzf_build,
@@ -139,16 +140,27 @@ local telescope_config = {
             },
           },
         },
+        ["zf-native"] = {
+          file = {
+            enable = true,
+            highlight_result = true,
+            match_filename = true,
+          },
+          generic = {
+            enable = false,
+          }
+        },
         fzf = {
-          fuzzy = false,
+          fuzzy = true,
           override_generic_sorter = true,
-          override_file_sorter = true,
+          override_file_sorter = false,
           case_mode = "smart_case",
         },
       },
     })
 
     telescope.load_extension("fzf")
+    telescope.load_extension("zf-native")
   end,
 }
 
