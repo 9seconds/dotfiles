@@ -82,4 +82,6 @@
     patternType = perl
     fullName    = true
 [init]
-	defaultBranch = master
+    defaultBranch = master
+[includeIf "gitdir:/vobs/"]
+    path = /vobs/gitconfig
