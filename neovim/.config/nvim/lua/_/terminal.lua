@@ -1,7 +1,7 @@
 -- custom terminal wrapper
 
 local function open_terminal(how)
-  vim.cmd(how .. " term://" .. (vim.env.SHELL or vim.o.shell))
+  vim.cmd(how .. " term://" .. (vim.g.global_shell or vim.env.SHELL or vim.o.shell))
 end
 
 local function setup_keymappings()
