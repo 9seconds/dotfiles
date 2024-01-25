@@ -19,15 +19,15 @@ function M.setup()
 
   vim.keymap.set("n", "<A-->", function()
     vim.g.neovide_scale_factor = vim.g.neovide_scale_factor * (1 / 1.1)
-  end, {desc = "Increase Neovide editor font"})
+  end, { desc = "Increase Neovide editor font" })
 
   vim.keymap.set("n", "<A-+>", function()
     vim.g.neovide_scale_factor = vim.g.neovide_scale_factor * 1.1
-  end, {desc = "Decrease Neovide editor font"})
+  end, { desc = "Decrease Neovide editor font" })
 
   vim.keymap.set("n", "<A-=>", function()
     vim.g.neovide_scale_factor = 1.0
-  end, {desc = "Return Neovide back to normal font"})
+  end, { desc = "Return Neovide back to normal font" })
 
   vim.api.nvim_create_autocmd("UIEnter", {
     group = vim.api.nvim_create_augroup("9_Neovide", {}),
@@ -36,7 +36,10 @@ function M.setup()
       if vim.v.event.chan > 1 then
         if vim.g.loaded_clipboard_provider then
           vim.g.loaded_clipboard_provider = nil
-          vim.api.nvim_cmd( { cmd = 'runtime', args = { 'autoload/provider/clipboard.vim' } }, {} )
+          vim.api.nvim_cmd(
+            { cmd = "runtime", args = { "autoload/provider/clipboard.vim" } },
+            {}
+          )
         end
       end
     end,
