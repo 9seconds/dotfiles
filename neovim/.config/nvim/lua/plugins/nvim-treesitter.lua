@@ -20,6 +20,7 @@ return {
 
   config = function()
     require("nvim-treesitter.configs").setup({
+      ensure_installed = "all",
       sync_install = true,
 
       -- :h nvim-treesitter-highlight-mod

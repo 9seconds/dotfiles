@@ -18,7 +18,7 @@ return {
   config = function()
     require("focus").setup({
       autoresize = {
-        enable = false
+        enable = false,
       },
     })
 

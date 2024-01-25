@@ -1,19 +1,17 @@
 -- custom terminal wrapper
 
 local function open_terminal(how)
-  vim.cmd(how .. " term://" .. (vim.g.global_shell or vim.env.SHELL or vim.o.shell))
+  vim.cmd(
+    how .. " term://" .. (vim.g.global_shell or vim.env.SHELL or vim.o.shell)
+  )
 end
 
 local function setup_keymappings()
   -- move between windows
-  vim.keymap.set("n", "<A-h>", "<c-w>h")
-  vim.keymap.set("t", "<A-h>", "<c-\\><c-n><c-w>h")
-  vim.keymap.set("n", "<A-j>", "<c-w>j")
-  vim.keymap.set("t", "<A-j>", "<c-\\><c-n><c-w>j")
-  vim.keymap.set("n", "<A-k>", "<c-w>k")
-  vim.keymap.set("t", "<A-k>", "<c-\\><c-n><c-w>k")
-  vim.keymap.set("n", "<A-l>", "<c-w>l")
-  vim.keymap.set("t", "<A-l>", "<c-\\><c-n><c-w>l")
+  vim.keymap.set("t", "<C-h>", "<c-\\><c-n><c-w>h")
+  vim.keymap.set("t", "<C-j>", "<c-\\><c-n><c-w>j")
+  vim.keymap.set("t", "<C-k>", "<c-\\><c-n><c-w>k")
+  vim.keymap.set("t", "<C-l>", "<c-\\><c-n><c-w>l")
 
   -- exit normal mode
   vim.keymap.set("t", "<A-i>", "<c-\\><c-n>")
