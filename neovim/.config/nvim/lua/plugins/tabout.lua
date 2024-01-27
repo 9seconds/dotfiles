@@ -8,7 +8,5 @@ return {
   },
   event = "InsertEnter",
 
-  opts = {
-    enable_backwards = false,
-  },
+  opts = {},
 }
