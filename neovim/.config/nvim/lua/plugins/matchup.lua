@@ -1,7 +1,6 @@
 -- better matching of pairs
 -- https://github.com/andymass/vim-matchup
 
-
 return {
   "andymass/vim-matchup",
   dependencies = {
@@ -16,5 +15,5 @@ return {
 
   init = function()
     vim.g.loaded_matchit = 1
-  end
+  end,
 }

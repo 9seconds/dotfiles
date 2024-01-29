@@ -30,7 +30,7 @@ return {
       -- see matchup.lua
       -- https://github.com/andymass/vim-matchup
       matchup = {
-        enable = true
+        enable = true,
       },
 
       -- :h nvim-treesitter-indentation-mod

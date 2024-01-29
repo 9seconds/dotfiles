@@ -1,7 +1,6 @@
 -- better formatting
 -- https://github.com/stevearc/conform.nvim
 
-
 return {
   "stevearc/conform.nvim",
   keys = {
@@ -13,7 +12,7 @@ return {
           lsp_fallback = true,
         })
       end,
-      mode = {"n", "v"},
+      mode = { "n", "v" },
       desc = "Format with conform",
     },
   },
@@ -26,5 +25,5 @@ return {
       formatters_by_ft = tools.configs.formatters.filetypes,
       formatters = tools.configs.formatters.settings,
     })
-  end
+  end,
 }

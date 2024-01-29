@@ -1,7 +1,6 @@
 -- lsp configuration
 -- https://github.com/neovim/nvim-lspconfig
 
-
 return {
   "neovim/nvim-lspconfig",
   event = "VeryLazy",
@@ -13,10 +12,10 @@ return {
     vim.api.nvim_create_autocmd("LspAttach", {
       group = vim.api.nvim_create_augroup("_9_LSP", {}),
       callback = function(ev)
-        vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+        vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
 
         local function keymap(mode, lhs, rhs, desc)
-          vim.keymap.set(mode, lhs, rhs, {desc = desc, buffer = ev.buf})
+          vim.keymap.set(mode, lhs, rhs, { desc = desc, buffer = ev.buf })
         end
 
         keymap("n", "<leader>lc", vim.lsp.buf.code_action, "Get code actions")
@@ -41,7 +40,12 @@ return {
         end, "List document symbols")
 
         keymap("n", "<leader>lh", vim.lsp.buf.hover, "Show hover")
-        keymap("n", "<leader>ls", vim.lsp.buf.signature_help, "Show signature help")
+        keymap(
+          "n",
+          "<leader>ls",
+          vim.lsp.buf.signature_help,
+          "Show signature help"
+        )
         keymap("n", "<leader>ln", vim.lsp.buf.rename, "Rename")
       end,
     })
@@ -49,5 +53,5 @@ return {
     for name, opts in pairs(tools.configs.lsp) do
       lspconfig[name].setup(opts)
     end
-  end
+  end,
 }
