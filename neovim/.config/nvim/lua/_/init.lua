@@ -11,10 +11,4 @@ function M.setup()
   require("_.neovide").setup()
 end
 
-function M.lsp(server_name, opts)
-  local lsp = require("_.lsp")
-
-  require("lspconfig")[server_name].setup(lsp.make_setup(opts))
-end
-
 return M
