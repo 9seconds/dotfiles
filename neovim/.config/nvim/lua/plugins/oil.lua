@@ -3,24 +3,34 @@
 
 return {
   "stevearc/oil.nvim",
-  event = "VimEnter",
+  dependencies = { "nvim-tree/nvim-web-devicons" },
+  keys = {
+    {
+      "-",
+      function()
+        require("oil").open()
+      end,
+      mode = {"n"},
+      desc = "Open directory with Oil"
+    }
+  },
+  cmd = "Oil",
 
-  config = function()
-    local oil = require("oil")
+  opts = {
+    columns = {
+      "icon",
+      "permissions",
+      "size",
+    },
+    keymaps = {
+      ["<C-h>"] = false,
+      ["<C-l>"] = false,
+      ["<C-x>"] = "actions.select_split",
+    },
+  },
 
-    oil.setup({
-      columns = {
-        "icon",
-        "permissions",
-        "size",
-      },
-      keymaps = {
-        ["<C-h>"] = false,
-        ["<C-l>"] = false,
-        ["<C-x>"] = "actions.select_split",
-      },
-    })
-
-    vim.keymap.set("n", "-", oil.open, { desc = "Open directory with Oil" })
-  end,
+  init = function()
+    vim.g.loaded_netrwPlugin = 1
+    vim.g.loaded_netrw = 1
+  end
 }
