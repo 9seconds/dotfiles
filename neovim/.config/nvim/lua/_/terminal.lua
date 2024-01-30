@@ -18,19 +18,19 @@ local function setup_keymappings()
   vim.keymap.set("t", "JJ", "<c-\\><c-n>")
 
   -- run terminal mappings
-  vim.keymap.set("n", "<leader>]]", function()
+  vim.keymap.set("n", "<leader>]o", function()
     open_terminal("edit")
   end)
 
-  vim.keymap.set("n", "<leader>]s", function()
+  vim.keymap.set("n", "<leader>][", function()
     open_terminal("split")
   end)
 
-  vim.keymap.set("n", "<leader>]v", function()
+  vim.keymap.set("n", "<leader>]]", function()
     open_terminal("vsplit")
   end)
 
-  vim.keymap.set("n", "<leader>]t", function()
+  vim.keymap.set("n", "<leader>]p", function()
     open_terminal("tabedit")
   end)
 end
