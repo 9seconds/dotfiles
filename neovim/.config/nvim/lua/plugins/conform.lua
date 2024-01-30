@@ -3,23 +3,12 @@
 
 return {
   "stevearc/conform.nvim",
-  keys = {
-    {
-      "<leader>f",
-      function()
-        require("conform").format({
-          async = true,
-          lsp_fallback = true,
-        })
-      end,
-      mode = { "n", "v" },
-      desc = "Format with conform",
-    },
-  },
-  cmd = { "ConformInfo" },
+  event = "VeryLazy",
 
   config = function()
     local tools = require("_.tools")
+
+    vim.o.formatexpr = "v:lua.require('conform').formatexpr()"
 
     require("conform").setup({
       formatters_by_ft = tools.configs.formatters.filetypes,
