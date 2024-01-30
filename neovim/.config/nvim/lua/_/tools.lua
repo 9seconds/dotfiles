@@ -15,12 +15,7 @@ local M = {
 }
 
 function M.lsp(server_name, opts)
-  local settings = M.configs.lsp
-
-  settings[server_name] =
-    vim.tbl_deep_extend("force", settings[server_name] or {
-      capabilities = require("cmp_nvim_lsp").default_capabilities(),
-    }, opts or {})
+  M.configs.lsp[server_name] = opts or {}
 end
 
 function M.fmt(name, opts)

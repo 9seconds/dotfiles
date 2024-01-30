@@ -3,7 +3,10 @@
 
 return {
   "mfussenegger/nvim-lint",
-  event = "BufWritePre",
+  event = {
+    "FileType",
+    "BufReadPre",
+  },
 
   config = function()
     local tools = require("_.tools")
@@ -15,7 +18,7 @@ return {
         vim.tbl_extend("force", lint.linters[name] or {}, config or {})
     end
 
-    vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+    vim.api.nvim_create_autocmd({ "BufReadPost", "BufWritePost" }, {
       group = vim.api.nvim_create_augroup("9_Lint", {}),
       callback = function()
         lint.try_lint()

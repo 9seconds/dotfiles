@@ -3,11 +3,17 @@
 
 return {
   "neovim/nvim-lspconfig",
-  event = "VeryLazy",
+  dependencies = {
+    "hrsh7th/cmp-nvim-lsp",
+  },
+  event = {
+    "Filetype",
+  },
 
   config = function()
     local lspconfig = require("lspconfig")
     local tools = require("_.tools")
+    local nvim_lsp = require("cmp_nvim_lsp")
 
     vim.api.nvim_create_autocmd("LspAttach", {
       group = vim.api.nvim_create_augroup("_9_LSP", {}),
@@ -51,7 +57,10 @@ return {
     })
 
     for name, opts in pairs(tools.configs.lsp) do
-      lspconfig[name].setup(opts)
+      lspconfig[name].setup(
+        vim.tbl_extend("force", { capabilities = nvim_lsp.default_capabilities() },
+        opts or {})
+      )
     end
   end,
 }
