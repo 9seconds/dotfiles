@@ -5,10 +5,12 @@ return {
   "stevearc/conform.nvim",
   event = "VeryLazy",
 
+  init = function()
+    vim.o.formatexpr = "v:lua.require('conform').formatexpr()"
+  end,
+
   config = function()
     local tools = require("_.tools")
-
-    vim.o.formatexpr = "v:lua.require('conform').formatexpr()"
 
     require("conform").setup({
       formatters_by_ft = tools.configs.formatters.filetypes,
