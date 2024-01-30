@@ -8,6 +8,7 @@ return {
     "abecodes/tabout.nvim",
     "FelipeLema/cmp-async-path",
     "hrsh7th/cmp-nvim-lsp",
+    "hrsh7th/cmp-nvim-lsp-signature-help",
     "onsails/lspkind.nvim",
   },
   event = "InsertEnter",
@@ -71,6 +72,7 @@ return {
 
       sources = {
         { name = "nvim_lsp" },
+        { name = "nvim_lsp_signature_help" },
         {
           name = "async_path",
           option = {
