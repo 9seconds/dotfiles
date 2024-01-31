@@ -57,8 +57,16 @@ return {
     })
 
     for name, opts in pairs(tools.configs.lsp) do
+      local capabilities = vim.tbl_extend(
+        "force",
+        vim.lsp.protocol.make_client_capabilities(),
+        nvim_lsp.default_capabilities()
+      )
+      -- see https://github.com/neovim/neovim/issues/23291
+      capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
+
       lspconfig[name].setup(
-        vim.tbl_extend("force", { capabilities = nvim_lsp.default_capabilities() },
+        vim.tbl_extend("force", { capabilities = capabilities },
         opts or {})
       )
     end

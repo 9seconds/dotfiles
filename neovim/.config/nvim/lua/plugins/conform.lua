@@ -10,11 +10,11 @@ return {
   end,
 
   config = function()
-    local tools = require("_.tools")
+    local formatters = require("_.tools").configs.formatters
 
     require("conform").setup({
-      formatters_by_ft = tools.configs.formatters.filetypes,
-      formatters = tools.configs.formatters.settings,
+      formatters_by_ft = formatters.filetypes,
+      formatters = formatters.settings,
     })
   end,
 }

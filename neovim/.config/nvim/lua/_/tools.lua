@@ -18,26 +18,32 @@ function M.lsp(server_name, opts)
   M.configs.lsp[server_name] = opts or {}
 end
 
-function M.fmt(name, opts)
-  local settings = M.configs.formatters.settings
+function M.fmt(name, filetypes, opts)
+  local fmts = M.configs.formatters
 
-  settings[name] =
-    vim.tbl_deep_extend("force", settings[name] or {}, opts or {})
+  fmts.settings[name] =
+    vim.tbl_deep_extend("force", fmts.settings[name] or {}, opts or {})
+
+  for _, value in ipairs(filetypes or {}) do
+    if fmts.filetypes[value] == nil then
+      fmts.filetypes[value] = {}
+    end
+    table.insert(fmts.filetypes[value], name)
+  end
 end
 
-function M.fmt_by_ft(filetype, names)
-  M.configs.formatters.filetypes[filetype] = names
-end
+function M.lint(name, filetypes, opts)
+  local lnt = M.configs.linters
 
-function M.lint(name, opts)
-  local settings = M.configs.linters.settings
+  lnt.settings[name] =
+    vim.tbl_deep_extend("force", lnt.settings[name] or {}, opts or {})
 
-  settings[name] =
-    vim.tbl_deep_extend("force", settings[name] or {}, opts or {})
-end
-
-function M.lint_by_ft(filetype, names)
-  M.configs.linters.filetypes[filetype] = names
+  for _, value in ipairs(filetypes or {}) do
+    if lnt.filetypes[value] == nil then
+      lnt.filetypes[value] = {}
+    end
+    table.insert(lnt.filetypes[value], name)
+  end
 end
 
 return M
