@@ -1,6 +1,8 @@
 -- lsp configuration
 -- https://github.com/neovim/nvim-lspconfig
 
+local max_file_size = 120 * 1024 -- 100 kilobytes
+
 return {
   "neovim/nvim-lspconfig",
   dependencies = {
@@ -12,8 +14,9 @@ return {
 
   config = function()
     local lspconfig = require("lspconfig")
-    local tools = require("_.tools")
     local nvim_lsp = require("cmp_nvim_lsp")
+    local tools = require("_.tools")
+    local utils = require("_.utils")
 
     vim.api.nvim_create_autocmd("LspAttach", {
       group = vim.api.nvim_create_augroup("_9_LSP", {}),
@@ -65,10 +68,19 @@ return {
       -- see https://github.com/neovim/neovim/issues/23291
       capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
 
-      lspconfig[name].setup(
-        vim.tbl_extend("force", { capabilities = capabilities },
-        opts or {})
-      )
+      do
+        local conf = lspconfig[name]
+        conf.setup(
+          vim.tbl_extend("force", { capabilities = capabilities }, opts or {})
+        )
+
+        local try_add = conf.manager.try_add
+        conf.manager.try_add = function(_, bufnr)
+          if utils.get_buf_file_size(bufnr) < max_file_size then
+            return try_add(bufnr)
+          end
+        end
+      end
     end
   end,
 }

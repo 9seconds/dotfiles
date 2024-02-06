@@ -31,6 +31,7 @@ return {
       -- https://github.com/andymass/vim-matchup
       matchup = {
         enable = true,
+        disable = disable_on_max_filesize,
       },
 
       -- :h nvim-treesitter-indentation-mod
