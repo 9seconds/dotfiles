@@ -32,5 +32,5 @@ return function(config)
   config.front_end = "WebGpu"
 
   -- https://wezfurlong.org/wezterm/config/lua/config/tab_max_width.html
-  config.tab_max_width = 32
+  config.tab_max_width = 48
 end
