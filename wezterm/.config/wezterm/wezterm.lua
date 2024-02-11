@@ -16,6 +16,8 @@ keys_configure(config)
 local ok, local_configure = pcall(require, "local")
 if ok then
   local_configure(config)
+else
+  wezterm.log_warn("Cannot load local configuration", local_configure)
 end
 
 return config
