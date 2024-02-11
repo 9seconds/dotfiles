@@ -117,6 +117,11 @@ end
 
 
 local function right_statusline(win, pane)
+  local ok, domain = pcall(pane.get_domain_name, pane)
+  if not ok then
+    return
+  end
+
   local texts = {
     { Background = {AnsiColor = "White"}},
     { Foreground = {AnsiColor = "Black"}},
@@ -164,7 +169,12 @@ end
 
 
 local function set_left_statusline(win, pane)
-  local user_vars = pane:get_user_vars()
+  local ok, user_vars = pcall(pane.get_user_vars, pane)
+  if not ok then
+    win:set_left_status("")
+    return
+  end
+
   local text = ""
 
   if user_vars.IS_SSH == "1" then
