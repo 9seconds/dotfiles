@@ -2,6 +2,7 @@
 
 local wezterm = require("wezterm")
 
+-- mapping of charging / battery bucket (number of tens) to a nerdfont icon
 local BATTERY_INDICATORS = {
   [false] = { -- charging
     wezterm.nerdfonts.md_battery_10,
@@ -29,9 +30,16 @@ local BATTERY_INDICATORS = {
   },
 }
 
+-- a percentage when we need to mark battery as yellow
 local BATTERY_WARNING = 25
+
+-- a percentage when we need to mark battery as red
 local BATTERY_CRITICAL = 10
+
+-- a percentage when we consider battery as charged enough
 local BATTERY_OK = 95
+
+-- default max width of a title if nothing is defined
 local DEFAULT_MAX_WIDTH = 255
 
 function basename(str)
@@ -47,8 +55,8 @@ local function get_process_name(pane)
 end
 
 local function get_pwd(pane)
-  local home = os.getenv("HOME")
-  local path = nil
+  local home = wezterm.home_dir
+  local path
 
   if pane.user_vars.IS_SSH == "1" then
     home = pane.user_vars.HOME
@@ -64,7 +72,7 @@ local function get_pwd(pane)
   return string.gsub(path, home, "~")
 end
 
-local function format_tab_title(tab, tabs, panes, config, hover, max_width)
+local function format_tab_title(tab, tabs, _, config, _, max_width)
   if tab.tab_title ~= "" then
     return tab.tab_title
   end
@@ -81,26 +89,50 @@ local function format_tab_title(tab, tabs, panes, config, hover, max_width)
   local title = string.format(" %d: %s ➜ %s ", tabref, process, pwd)
 
   if #title > config.tab_max_width then
-    title = wezterm.truncate_right(title, config.tab_max_width) .. "… "
+    title = wezterm.truncate_right(title, config.tab_max_width - 2) .. "… "
   end
 
   return title
 end
 
-local function format_window_title(_, pane)
-  return "domain: " .. wezterm.mux.get_pane(pane.pane_id):get_domain_name()
+local function format_window_title(win, pane)
+  local pane_obj = wezterm.mux.get_pane(pane.pane_id)
+
+  local domain = pane_obj:get_domain_name()
+  local window = pane_obj:window()
+
+  if not window then
+    return domain
+  end
+
+  return domain .. ": " .. window:get_workspace()
 end
 
-local function right_statusline(win)
-  if not win:get_dimensions().is_full_screen then
-    win:set_right_status("")
+local function right_statusline(win, pane)
+  local ok, domain = pcall(pane.get_domain_name, pane)
+  if not ok then
     return
   end
 
   local texts = {
-    { Text = wezterm.strftime("%a, %d %b %H:%M ") },
+    { Background = { AnsiColor = "White" } },
+    { Foreground = { AnsiColor = "Black" } },
+    { Text = " " .. pane:get_domain_name() .. " " },
+
+    { Background = { AnsiColor = "Blue" } },
+    { Foreground = { AnsiColor = "Black" } },
+    { Text = " " .. win:active_workspace() .. " " },
     "ResetAttributes",
   }
+
+  if not win:get_dimensions().is_full_screen then
+    win:set_right_status(wezterm.format(texts))
+    return
+  end
+
+  table.insert(texts, {
+    Text = " " .. wezterm.strftime("%a, %d %b %H:%M ") .. " ",
+  })
 
   for _, battery in ipairs(wezterm.battery_info()) do
     local is_charging = battery.state == "Full" or battery.state == "Charging"
@@ -126,6 +158,26 @@ local function right_statusline(win)
   win:set_right_status(wezterm.format(texts))
 end
 
+local function set_left_statusline(win, pane)
+  local ok, user_vars = pcall(pane.get_user_vars, pane)
+  if not ok then
+    win:set_left_status("")
+    return
+  end
+
+  local text = ""
+
+  if user_vars.IS_SSH == "1" then
+    text = wezterm.format({
+      { Background = { AnsiColor = "Yellow" } },
+      { Foreground = { AnsiColor = "Black" } },
+      { Text = " " .. user_vars.HOSTNAME .. " " },
+    })
+  end
+
+  win:set_left_status(text)
+end
+
 local function set_gpu(win)
   local overrides = win:get_config_overrides() or {}
 
@@ -147,37 +199,13 @@ local function set_gpu(win)
   win:set_config_overrides(overrides)
 end
 
-local function left_statusline(win, pane)
-  local user_vars = pane:get_user_vars()
-
-  if user_vars.IS_SSH ~= "1" then
-    win:set_left_status("")
-    return
-  end
-
-  local bg_color = "Grey"
-  local fg_color = "White"
-
-  if user_vars.REAL_UID == "0" then
-    bg_color = "Red"
-    fg_color = "Black"
-  end
-
-  win:set_left_status(wezterm.format({
-    { Background = { AnsiColor = bg_color } },
-    { Foreground = { AnsiColor = fg_color } },
-    { Text = " " .. user_vars.HOSTNAME .. " " },
-    "ResetAttributes",
-  }))
-end
-
 return function(config)
   -- https://wezfurlong.org/wezterm/config/lua/config/status_update_interval.html
   config.status_update_interval = 500 -- each half of second
 
   wezterm.on("update-right-status", right_statusline)
   wezterm.on("update-status", set_gpu)
-  wezterm.on("update-status", left_statusline)
+  wezterm.on("update-status", set_left_statusline)
   wezterm.on("format-tab-title", format_tab_title)
   wezterm.on("format-window-title", format_window_title)
 end
