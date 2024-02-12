@@ -171,46 +171,47 @@ return function(config)
     {
       key = "w",
       mods = "CMD",
-      action = wezterm.action_callback(function(win, pane)
-        local workspaces = { { label = ":: Create new workspace ::" } }
+      action = wezterm.action_callback(function(win1, pane1)
+        local workspaces = {}
         for _, v in ipairs(wezterm.mux.get_workspace_names()) do
           table.insert(workspaces, { id = v, label = v })
         end
+        table.insert(workspaces, { label = "+ Create new workspace" })
 
-        win:perform_action(
+        win1:perform_action(
           act.InputSelector({
             title = "Workspaces",
             choices = workspaces,
             fuzzy = true,
-            action = wezterm.action_callback(function(_win, _pane, id, label)
+            action = wezterm.action_callback(function(win2, pane2, id, label)
               if not label then
                 return
               end
 
               if id then
-                _win:perform_action(act.SwitchToWorkspace({ name = id }), _pane)
+                win2:perform_action(act.SwitchToWorkspace({ name = id }), pane2)
                 return
               end
 
-              win:perform_action(
+              win2:perform_action(
                 act.PromptInputLine({
                   description = "Enter a name of the new workspace",
                   action = wezterm.action_callback(
-                    function(__win, __pane, line)
+                    function(win3, pane3, line)
                       if line then
-                        __win:perform_action(
+                        win3:perform_action(
                           act.SwitchToWorkspace({ name = line }),
-                          __pane
+                          pane3
                         )
                       end
                     end
                   ),
                 }),
-                _pane
+                pane2
               )
             end),
           }),
-          pane
+          pane1
         )
       end),
     },
