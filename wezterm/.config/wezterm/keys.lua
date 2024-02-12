@@ -196,16 +196,14 @@ return function(config)
               win2:perform_action(
                 act.PromptInputLine({
                   description = "Enter a name of the new workspace",
-                  action = wezterm.action_callback(
-                    function(win3, pane3, line)
-                      if line then
-                        win3:perform_action(
-                          act.SwitchToWorkspace({ name = line }),
-                          pane3
-                        )
-                      end
+                  action = wezterm.action_callback(function(win3, pane3, line)
+                    if line then
+                      win3:perform_action(
+                        act.SwitchToWorkspace({ name = line }),
+                        pane3
+                      )
                     end
-                  ),
+                  end),
                 }),
                 pane2
               )
