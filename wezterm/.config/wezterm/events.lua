@@ -2,7 +2,6 @@
 
 local wezterm = require("wezterm")
 
-
 local BATTERY_INDICATORS = {
   [false] = { -- charging
     wezterm.nerdfonts.md_battery_10,
@@ -27,7 +26,7 @@ local BATTERY_INDICATORS = {
     wezterm.nerdfonts.md_battery_charging_80,
     wezterm.nerdfonts.md_battery_charging_90,
     wezterm.nerdfonts.md_battery_charging_100,
-  }
+  },
 }
 
 local BATTERY_WARNING = 25
@@ -35,11 +34,9 @@ local BATTERY_CRITICAL = 10
 local BATTERY_OK = 95
 local DEFAULT_MAX_WIDTH = 255
 
-
 function basename(str)
   return string.gsub(str, "(.*[/\\])(.*)", "%2")
 end
-
 
 local function get_process_name(pane)
   if pane.user_vars.IS_SSH == "1" then
@@ -48,7 +45,6 @@ local function get_process_name(pane)
 
   return basename(pane.foreground_process_name)
 end
-
 
 local function get_pwd(pane)
   local home = os.getenv("HOME")
@@ -67,7 +63,6 @@ local function get_pwd(pane)
 
   return string.gsub(path, home, "~")
 end
-
 
 local function format_tab_title(tab, tabs, panes, config, hover, max_width)
   if tab.tab_title ~= "" then
@@ -96,7 +91,6 @@ local function format_window_title(_, pane)
   return "domain: " .. wezterm.mux.get_pane(pane.pane_id):get_domain_name()
 end
 
-
 local function right_statusline(win)
   if not win:get_dimensions().is_full_screen then
     win:set_right_status("")
@@ -105,23 +99,22 @@ local function right_statusline(win)
 
   local texts = {
     { Text = wezterm.strftime("%a, %d %b %H:%M ") },
-    "ResetAttributes"
+    "ResetAttributes",
   }
 
   for _, battery in ipairs(wezterm.battery_info()) do
     local is_charging = battery.state == "Full" or battery.state == "Charging"
-    local percent = 100 * (
-      battery.state == "Full" and 1 or battery.state_of_charge
-    )
+    local percent = 100
+      * (battery.state == "Full" and 1 or battery.state_of_charge)
 
     local icon = BATTERY_INDICATORS[is_charging][math.floor(percent / 10)]
 
     if percent < BATTERY_CRITICAL then
-      table.insert(texts, { Foreground = {AnsiColor = "Red"} })
+      table.insert(texts, { Foreground = { AnsiColor = "Red" } })
     elseif percent < BATTERY_WARNING then
-      table.insert(texts, { Foreground = {AnsiColor = "Yellow"} })
+      table.insert(texts, { Foreground = { AnsiColor = "Yellow" } })
     elseif percent > BATTERY_OK then
-      table.insert(texts, { Foreground = {AnsiColor = "Green"} })
+      table.insert(texts, { Foreground = { AnsiColor = "Green" } })
     end
 
     table.insert(texts, {
@@ -132,7 +125,6 @@ local function right_statusline(win)
 
   win:set_right_status(wezterm.format(texts))
 end
-
 
 local function set_gpu(win)
   local overrides = win:get_config_overrides() or {}
@@ -151,10 +143,9 @@ local function set_gpu(win)
     end
   end
 
-    overrides.webgpu_power_preference = "LowPower"
-    win:set_config_overrides(overrides)
+  overrides.webgpu_power_preference = "LowPower"
+  win:set_config_overrides(overrides)
 end
-
 
 local function left_statusline(win, pane)
   local user_vars = pane:get_user_vars()
@@ -173,17 +164,16 @@ local function left_statusline(win, pane)
   end
 
   win:set_left_status(wezterm.format({
-    { Background = { AnsiColor = bg_color }},
-    { Foreground = {AnsiColor = fg_color} },
+    { Background = { AnsiColor = bg_color } },
+    { Foreground = { AnsiColor = fg_color } },
     { Text = " " .. user_vars.HOSTNAME .. " " },
-    "ResetAttributes"
+    "ResetAttributes",
   }))
 end
 
-
 return function(config)
   -- https://wezfurlong.org/wezterm/config/lua/config/status_update_interval.html
-  config.status_update_interval = 500  -- each half of second
+  config.status_update_interval = 500 -- each half of second
 
   wezterm.on("update-right-status", right_statusline)
   wezterm.on("update-status", set_gpu)
