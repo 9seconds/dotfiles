@@ -8,10 +8,8 @@ function __set_uservars --on-event fish_prompt
   end
 
   if set -q SSH_CONNECTION
-    set_user_var IP (string replace -r '.+?(\S+)\s+\d+$' '$1' $SSH_CONNECTION)
     set_user_var IS_SSH 1
   else
-    set_user_var IP (string replace -r '^(\S+).*' '$1' (hostname -i))
     set_user_var IS_SSH 0
   end
 
