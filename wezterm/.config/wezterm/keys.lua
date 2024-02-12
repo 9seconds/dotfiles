@@ -3,7 +3,6 @@
 local wezterm = require("wezterm")
 local act = wezterm.action
 
-
 return function(config)
   -- https://wezfurlong.org/wezterm/config/default-keys.html
   config.disable_default_key_bindings = true
@@ -13,196 +12,207 @@ return function(config)
     {
       key = "c",
       mods = "CMD",
-      action = act.CopyTo("Clipboard")
+      action = act.CopyTo("Clipboard"),
     },
     {
       key = "v",
       mods = "CMD",
-      action = act.PasteFrom("Clipboard")
+      action = act.PasteFrom("Clipboard"),
     },
 
     {
       key = "Enter",
       mods = "CMD",
-      action = act.ToggleFullScreen
+      action = act.ToggleFullScreen,
     },
     {
       key = "k",
       mods = "CMD",
-      action = act.ClearScrollback("ScrollbackOnly")
+      action = act.ClearScrollback("ScrollbackOnly"),
     },
     {
       key = "k",
       mods = "CMD|OPT",
-      action = act.ClearScrollback("ScrollbackAndViewport")
+      action = act.ClearScrollback("ScrollbackAndViewport"),
     },
     {
       key = "p",
       mods = "CMD",
-      action = act.ShowLauncherArgs({flags = "FUZZY|COMMANDS"})
+      action = act.ShowLauncherArgs({ flags = "FUZZY|COMMANDS" }),
     },
 
     {
       key = "-",
       mods = "CMD",
-      action = act.IncreaseFontSize
+      action = act.IncreaseFontSize,
     },
     {
       key = "-",
       mods = "CMD|OPT",
-      action = act.DecreaseFontSize
+      action = act.DecreaseFontSize,
     },
     {
       key = "0",
       mods = "CMD",
-      action = act.ResetFontSize
+      action = act.ResetFontSize,
     },
 
     {
       key = "n",
       mods = "CMD",
-      action = act.SpawnWindow
+      action = act.SpawnWindow,
     },
     {
       key = "t",
       mods = "CMD",
-      action = act.SpawnTab("CurrentPaneDomain")
+      action = act.SpawnTab("CurrentPaneDomain"),
     },
     {
       key = "`",
       mods = "CMD",
-      action = act.ShowTabNavigator
+      action = act.ShowTabNavigator,
     },
     {
       key = "x",
       mods = "CMD",
-      action = act.CloseCurrentPane({confirm = false})
+      action = act.CloseCurrentPane({ confirm = false }),
     },
     {
       key = "x",
       mods = "CMD|OPT",
-      action = act.CloseCurrentTab({confirm = false})
+      action = act.CloseCurrentTab({ confirm = false }),
     },
     {
       key = "d",
       mods = "CMD",
-      action = act.SplitHorizontal({domain = "CurrentPaneDomain"})
+      action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
     },
     {
       key = "d",
       mods = "CMD|SHIFT",
-      action = act.SplitVertical({domain = "CurrentPaneDomain"})
+      action = act.SplitVertical({ domain = "CurrentPaneDomain" }),
     },
 
     {
       key = "f",
       mods = "CMD",
-      action = act.Search({CaseSensitiveString = ""})
+      action = act.Search({ CaseSensitiveString = "" }),
     },
     {
       key = "f",
       mods = "CMD|OPT",
-      action = act.QuickSelect
+      action = act.QuickSelect,
     },
 
     {
       key = "h",
       mods = "CMD",
-      action = act.ActivatePaneDirection("Left")
+      action = act.ActivatePaneDirection("Left"),
     },
     {
       key = "j",
       mods = "CMD",
-      action = act.ActivatePaneDirection("Down")
+      action = act.ActivatePaneDirection("Down"),
     },
     {
       key = "k",
       mods = "CMD",
-      action = act.ActivatePaneDirection("Up")
+      action = act.ActivatePaneDirection("Up"),
     },
     {
       key = "l",
       mods = "CMD",
-      action = act.ActivatePaneDirection("Right")
+      action = act.ActivatePaneDirection("Right"),
     },
 
     {
       key = "LeftArrow",
       mods = "CMD",
-      action = act.AdjustPaneSize({"Left", 1})
+      action = act.AdjustPaneSize({ "Left", 1 }),
     },
     {
       key = "RightArrow",
       mods = "CMD",
-      action = act.AdjustPaneSize({"Right", 1})
+      action = act.AdjustPaneSize({ "Right", 1 }),
     },
     {
       key = "UpArrow",
       mods = "CMD",
-      action = act.AdjustPaneSize({"Up", 1})
+      action = act.AdjustPaneSize({ "Up", 1 }),
     },
     {
       key = "DownArrow",
       mods = "CMD",
-      action = act.AdjustPaneSize({"Down", 1})
+      action = act.AdjustPaneSize({ "Down", 1 }),
     },
 
     {
       key = "LeftArrow",
       mods = "CMD|OPT",
-      action = act.MoveTabRelative(-1)
+      action = act.MoveTabRelative(-1),
     },
     {
       key = "RightArrow",
       mods = "CMD|OPT",
-      action = act.MoveTabRelative(1)
+      action = act.MoveTabRelative(1),
     },
     {
       key = "UpArrow",
       mods = "CMD|OPT",
-      action = act.MoveTab(0)
+      action = act.MoveTab(0),
     },
 
     {
       key = "z",
       mods = "CMD",
-      action = act.TogglePaneZoomState
+      action = act.TogglePaneZoomState,
     },
 
     {
       key = "w",
       mods = "CMD",
       action = wezterm.action_callback(function(win, pane)
-        local workspaces = {{label = ":: Create new workspace ::"}}
+        local workspaces = { { label = ":: Create new workspace ::" } }
         for _, v in ipairs(wezterm.mux.get_workspace_names()) do
-          table.insert(workspaces, {id = v, label = v})
+          table.insert(workspaces, { id = v, label = v })
         end
 
-        win:perform_action(act.InputSelector({
-          title = "Workspaces",
-          choices = workspaces,
-          fuzzy = true,
-          action = wezterm.action_callback(function(_win, _pane, id, label)
-            if not label then
-              return
-            end
+        win:perform_action(
+          act.InputSelector({
+            title = "Workspaces",
+            choices = workspaces,
+            fuzzy = true,
+            action = wezterm.action_callback(function(_win, _pane, id, label)
+              if not label then
+                return
+              end
 
-            if id then
-              _win:perform_action(act.SwitchToWorkspace({name = id}), _pane)
-              return
-            end
+              if id then
+                _win:perform_action(act.SwitchToWorkspace({ name = id }), _pane)
+                return
+              end
 
-            win:perform_action(act.PromptInputLine({
-              description = "Enter a name of the new workspace",
-              action = wezterm.action_callback(function(__win, __pane, line)
-                if line then
-                  __win:perform_action(act.SwitchToWorkspace({name = line}), __pane)
-                end
-              end)
-            }), _pane)
-          end)
-        }), pane)
-      end)
+              win:perform_action(
+                act.PromptInputLine({
+                  description = "Enter a name of the new workspace",
+                  action = wezterm.action_callback(
+                    function(__win, __pane, line)
+                      if line then
+                        __win:perform_action(
+                          act.SwitchToWorkspace({ name = line }),
+                          __pane
+                        )
+                      end
+                    end
+                  ),
+                }),
+                _pane
+              )
+            end),
+          }),
+          pane
+        )
+      end),
     },
   }
 
@@ -210,21 +220,21 @@ return function(config)
     table.insert(config.keys, {
       key = tostring(i),
       mods = "CMD",
-      action = act.ActivateTab(i - 1)
+      action = act.ActivateTab(i - 1),
     })
   end
 
   config.mouse_bindings = {
     {
       event = { Up = { streak = 1, button = "Left" } },
-      mods = 'CMD',
+      mods = "CMD",
       action = wezterm.action_callback(function(win, pane)
         if win:get_selection_text_for_pane(pane) ~= "" then
           win:perform_action(act.ExtendSelectionToMouseCursor("Word"), pane)
         else
           win:perform_action(act.OpenLinkAtMouseCursor, pane)
         end
-      end)
+      end),
     },
     {
       event = { Down = { streak = 3, button = "Left" } },

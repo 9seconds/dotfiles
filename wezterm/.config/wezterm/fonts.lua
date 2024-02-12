@@ -3,7 +3,6 @@
 
 local wezterm = require("wezterm")
 
-
 return function(config)
   -- use Fira Code and fallback to default font
   -- https://wezfurlong.org/wezterm/config/lua/config/font.html
@@ -12,7 +11,7 @@ return function(config)
   config.font = wezterm.font_with_fallback({
     {
       family = "Fira Code",
-      weight = 450  -- retina
+      weight = 450, -- retina
     },
     "Fira Code",
   })

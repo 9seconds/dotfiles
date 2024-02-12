@@ -3,7 +3,6 @@
 
 local wezterm = require("wezterm")
 
-
 return function(config)
   -- https://wezfurlong.org/wezterm/colorschemes/t/index.html#tokyo-night-storm
   config.color_scheme = "Tokyo Night Storm"
