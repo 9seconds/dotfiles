@@ -1,7 +1,7 @@
 -- fancy guidelines
 -- https://github.com/lukas-reineke/indent-blankline.nvim
 
-local max_file_size = 50 * 1024
+local max_file_size = 120 * 1024
 
 return {
   "lukas-reineke/indent-blankline.nvim",
