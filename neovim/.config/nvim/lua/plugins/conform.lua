@@ -1,13 +1,23 @@
 -- better formatting
 -- https://github.com/stevearc/conform.nvim
 
+local FORMAT_TIMEOUT = 10000
+
 return {
   "stevearc/conform.nvim",
-  event = "VeryLazy",
-
-  init = function()
-    vim.o.formatexpr = "v:lua.require('conform').formatexpr()"
-  end,
+  keys = {
+    {
+      "<leader>f",
+      function()
+        require("conform").format({
+          timeout_ms = FORMAT_TIMEOUT,
+          lsp_fallback = true
+        })
+      end,
+      mode = {"n", "x", "v"},
+      desc = "Run formatter"
+    }
+  },
 
   config = function()
     local formatters = require("_.tools").configs.formatters
