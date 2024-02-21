@@ -5,6 +5,7 @@ local FORMAT_TIMEOUT = 10000
 
 return {
   "stevearc/conform.nvim",
+  version = "*",
   keys = {
     {
       "<leader>f",
