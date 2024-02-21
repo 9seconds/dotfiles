@@ -74,12 +74,12 @@ return {
           vim.tbl_extend("force", { capabilities = capabilities }, opts or {})
         )
 
-        local try_add = conf.manager.try_add
-        conf.manager.try_add = function(self, bufnr)
-          if utils.get_buf_file_size(bufnr) < max_file_size then
-            return try_add(self, bufnr)
-          end
-        end
+        -- local try_add = conf.manager.try_add
+        -- conf.manager.try_add = function(self, bufnr)
+        --   if utils.get_buf_file_size(bufnr) < max_file_size then
+        --     return try_add(self, bufnr)
+        --   end
+        -- end
       end
     end
   end,
