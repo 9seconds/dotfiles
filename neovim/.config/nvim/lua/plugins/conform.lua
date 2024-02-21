@@ -11,12 +11,12 @@ return {
       function()
         require("conform").format({
           timeout_ms = FORMAT_TIMEOUT,
-          lsp_fallback = true
+          lsp_fallback = true,
         })
       end,
-      mode = {"n", "x", "v"},
-      desc = "Run formatter"
-    }
+      mode = { "n", "x", "v" },
+      desc = "Run formatter",
+    },
   },
 
   config = function()
