@@ -20,6 +20,7 @@ make = "latest"
 node = "latest"
 packer = "latest"
 pipx = "latest"
+poetry = "latest"
 python = ["2.7", "latest"]
 restic = "latest"
 ripgrep = "latest"
