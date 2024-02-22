@@ -71,10 +71,11 @@
 [pager]
     difftool = true
 [core]
-    compression = -1
-    preloadindex = true
     autocrlf = false
+    compression = -1
     eol = lf
+    fsmonitor = true
+    preloadindex = true
     untrackedCache = true
 [pack]
     compression = 9
