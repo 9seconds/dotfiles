@@ -27,7 +27,6 @@ literal-multiline-quotes = "double"
 enable-extensions = "G"
 max-cognitive-complexity = 10
 
-
 [tool.isort]
 profile = "black"
 balanced_wrapping = true
@@ -49,6 +48,7 @@ honor_noqa = true
 [tool.mypy]
 python_version = "3.12"
 strict = true
+incremental = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
