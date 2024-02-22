@@ -54,7 +54,7 @@ STATE_DBPATH: t.Final[pathlib.Path] = XDG_STATE_HOME.joinpath(
 class FS:
     changes: dict[pathlib.Path, pathlib.Path | None]
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.changes = {}
 
     def delete(self, target: pathlib.Path, source: pathlib.Path) -> None:
@@ -92,9 +92,9 @@ class FS:
         changes = self.changes.copy()
 
         for target, source in list(self.changes.items()):
-            if source is None and not target.exists():
-                del changes[target]
-            elif target.exists() and target.resolve() == source:
+            if (source is None and not target.exists()) or (
+                target.exists() and target.resolve() == source
+            ):
                 del changes[target]
 
         if dry_run:
@@ -154,7 +154,7 @@ def main() -> None:
             for k, v in json.loads(STATE_DBPATH.read_text()).items()
         }
 
-    fs = FS()
+    fs: FS = FS()
 
     options.action(options, fs, snapshot)
     fs.apply(options.target, options.dry_run)
