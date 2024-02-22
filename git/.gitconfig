@@ -75,6 +75,7 @@
     preloadindex = true
     autocrlf = false
     eol = lf
+    untrackedCache = true
 [pack]
     compression = 9
     threads     = 8
