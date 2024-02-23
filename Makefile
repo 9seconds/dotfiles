@@ -8,7 +8,7 @@ lua:
 python: python-black python-isort python-flake8 python-mypy
 
 python-%: .venv
-	fd -H -e py -X poetry run $*
+	fd -H -e py -X $*
 
 .venv:
 	poetry install --sync
