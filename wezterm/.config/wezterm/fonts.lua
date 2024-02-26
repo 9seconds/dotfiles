@@ -10,10 +10,24 @@ return function(config)
   -- https://wezfurlong.org/wezterm/config/lua/wezterm/font.html
   config.font = wezterm.font_with_fallback({
     {
-      family = "Fira Code",
-      weight = 450, -- retina
+      family = "Monaspace Neon",
+      harfbuzz_features = {
+        "ss01",
+        "ss02",
+        "ss03",
+        "ss04",
+        "ss05",
+        "ss06",
+        "ss07",
+        "ss08",
+        "calt",
+        "dlig",
+      }
     },
-    "Fira Code",
+    {
+      family = "Fira Code",
+      font_weight = { 450 }
+    }
   })
 
   -- https://wezfurlong.org/wezterm/config/lua/config/font_size.html
@@ -23,5 +37,5 @@ return function(config)
   config.freetype_load_target = "Normal"
 
   -- https://wezfurlong.org/wezterm/config/lua/config/line_height.html
-  config.line_height = 1.2
+  config.line_height = 1.3
 end
