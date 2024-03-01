@@ -89,13 +89,15 @@ class FS:
             self.changes[path] = resolved if resolved.exists() else None
 
     def apply(self, root: pathlib.Path, dry_run: bool = False) -> None:
-        changes = self.changes.copy()
+        def is_need_to_do(
+            target: pathlib.Path, source: pathlib.Path | None
+        ) -> bool:
+            target_exists = target.exists(follow_symlinks=False)
+            return (source is None and target_exists) or (
+                target_exists and target.resolve() != source
+            )
 
-        for target, source in list(self.changes.items()):
-            if (source is None and not target.exists()) or (
-                target.exists() and target.resolve() == source
-            ):
-                del changes[target]
+        changes = {k: v for k, v in self.changes.items() if is_need_to_do(k, v)}
 
         if dry_run:
             self.printout(changes)
