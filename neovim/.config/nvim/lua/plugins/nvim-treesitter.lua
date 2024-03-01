@@ -1,10 +1,10 @@
 -- treesitter configuration
 -- https://github.com/nvim-treesitter/nvim-treesitter
 
-local max_file_size = 120 * 1024 -- 100 kilobytes
+local max_file_size_kb = 200 * 1024
 
 local function disable_on_max_filesize(_, bufnr)
-  return require("_.utils").get_buf_file_size(bufnr) >= max_file_size
+  return require("_.utils").get_buf_file_size(bufnr) >= 1024 * max_file_size_kb
 end
 
 return {
