@@ -1,14 +1,34 @@
 # vim: set noet ft=make:
 
-.PHONY: lua
-lua:
-	fd -H -e lua -X stylua
+PYTHON_FILES := dots $(shell fd -H -e py)
+PYTHON_TARGETS := $(addprefix black-,$(PYTHON_FILES)) \
+				  $(addprefix flake8-,$(PYTHON_FILES)) \
+				  $(addprefix mypy-,$(PYTHON_FILES))
 
-.PHONY: python
-python: python-black python-isort python-flake8 python-mypy
+LUA_FILES := $(shell fd -H -e lua)
+LUA_TARGETS := $(addprefix stylua-,$(LUA_FILES))
+ALL_TARGETS = $(PYTHON_TARGETS) $(LUA_TARGETS)
 
-python-%: .venv
-	fd -H -e py -X $*
+.PHONY: $(PYTHON_FILES) $(PYTHON_TARGETS) \
+		$(LUA_FILES) $(LUA_TARGETS)
+
+all: $(PYTHON_FILES) $(LUA_FILES)
+
+$(PYTHON_FILES): %: black-% flake8-% mypy-%
+
+$(filter black-%,$(PYTHON_TARGETS)): black-%: .venv
+	black $*
+
+$(filter flake8-%,$(PYTHON_TARGETS)): flake8-%: .venv
+	flake8 $*
+
+$(filter mypy-%,$(PYTHON_TARGETS)): mypy-%: .venv
+	mypy $*
+
+$(LUA_FILES): %: stylua-%
+
+$(filter stylua-%,$(LUA_TARGETS)): stylua-%:
+	stylua $*
 
 .venv:
 	poetry install --sync
