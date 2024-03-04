@@ -3,6 +3,7 @@
 PYTHON_FILES := dots $(shell fd -H -e py)
 PYTHON_TARGETS := $(addprefix black-,$(PYTHON_FILES)) \
 				  $(addprefix flake8-,$(PYTHON_FILES)) \
+				  $(addprefix isort-,$(PYTHON_FILES)) \
 				  $(addprefix mypy-,$(PYTHON_FILES))
 
 LUA_FILES := $(shell fd -H -e lua)
@@ -16,14 +17,17 @@ all: $(PYTHON_FILES) $(LUA_FILES)
 
 $(PYTHON_FILES): %: black-% flake8-% mypy-%
 
-$(filter black-%,$(PYTHON_TARGETS)): black-%: .venv
+$(filter black-%,$(PYTHON_TARGETS)): black-%: isort-% .venv
 	black $*
 
-$(filter flake8-%,$(PYTHON_TARGETS)): flake8-%: .venv
+$(filter flake8-%,$(PYTHON_TARGETS)): flake8-%: black-% isort-% .venv
 	flake8 $*
 
 $(filter mypy-%,$(PYTHON_TARGETS)): mypy-%: .venv
 	mypy $*
+
+$(filter isort-%,$(PYTHON_TARGETS)): isort-%: .venv
+	isort $*
 
 $(LUA_FILES): %: stylua-%
 
