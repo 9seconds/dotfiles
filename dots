@@ -24,11 +24,21 @@
 from __future__ import annotations
 
 import argparse
+import functools
+import inspect
 import json
 import logging
 import os
 import pathlib
 import typing as t
+
+
+if t.TYPE_CHECKING:
+    SnapshotT: t.TypeAlias = dict[pathlib.Path, pathlib.Path]
+    ChangesT: t.TypeAlias = dict[pathlib.Path, pathlib.Path | None]
+    ActionT: t.TypeAlias = t.Callable[
+        ["FS", SnapshotT, argparse.Namespace], None
+    ]
 
 
 LOG: t.Final[logging.Logger] = logging.getLogger(__name__)
@@ -52,7 +62,7 @@ STATE_DBPATH: t.Final[pathlib.Path] = XDG_STATE_HOME.joinpath(
 
 
 class FS:
-    changes: dict[pathlib.Path, pathlib.Path | None]
+    changes: ChangesT
 
     def __init__(self) -> None:
         self.changes = {}
@@ -104,20 +114,14 @@ class FS:
         else:
             self.execute(root, changes)
 
-    def printout(
-        self, changes: dict[pathlib.Path, pathlib.Path | None]
-    ) -> None:
+    def printout(self, changes: ChangesT) -> None:
         for k, v in sorted((k, v) for k, v in changes.items() if v):
             print(f"Link {k} -> {v}")
 
         for k in sorted(k for k, v in changes.items() if not v):
             print(f"Delete {k}")
 
-    def execute(
-        self,
-        root: pathlib.Path,
-        changes: dict[pathlib.Path, pathlib.Path | None],
-    ) -> None:
+    def execute(self, root: pathlib.Path, changes: ChangesT) -> None:
         for target, source in changes.items():
             if source is None:
                 target.unlink()
@@ -129,9 +133,7 @@ class FS:
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.symlink_to(source)
 
-    def update_snapshot(
-        self, snapshot: dict[pathlib.Path, pathlib.Path]
-    ) -> None:
+    def update_snapshot(self, snapshot: SnapshotT) -> None:
         for target, source in self.changes.items():
             if source is None:
                 snapshot.pop(target, None)
@@ -149,27 +151,14 @@ def main() -> None:
     LOG.debug("Parameters: %s", options)
     STATE_DBPATH.parent.mkdir(parents=True, exist_ok=True)
 
-    snapshot: dict[pathlib.Path, pathlib.Path] = {}
+    snapshot: SnapshotT = {}
     if STATE_DBPATH.exists():
         snapshot = {
             pathlib.Path(k): pathlib.Path(v)
             for k, v in json.loads(STATE_DBPATH.read_text()).items()
         }
 
-    fs: FS = FS()
-
-    options.action(options, fs, snapshot)
-    fs.apply(options.target, options.dry_run)
-
-    if not options.dry_run:
-        fs.update_snapshot(snapshot)
-        STATE_DBPATH.write_text(
-            json.dumps(
-                {str(k): str(v) for k, v in snapshot.items()},
-                sort_keys=True,
-                indent=2,
-            )
-        )
+    options.action(FS(), snapshot, options)
 
 
 def get_options() -> argparse.Namespace:
@@ -244,12 +233,44 @@ def get_options() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def action_write_snapshot(func: ActionT) -> ActionT:
+    @functools.wraps(func)
+    def decorator(
+        fs: FS, snapshot: SnapshotT, options: argparse.Namespace
+    ) -> None:
+        func(fs, snapshot, options)
+        if not options.dry_run:
+            fs.update_snapshot(snapshot)
+            STATE_DBPATH.write_text(
+                json.dumps(
+                    {str(k): str(v) for k, v in snapshot.items()},
+                    sort_keys=True,
+                    indent=2,
+                )
+            )
+
+    return decorator
+
+
+def action_apply_fs(func: ActionT) -> ActionT:
+    @functools.wraps(func)
+    def decorator(
+        fs: FS, snapshot: SnapshotT, options: argparse.Namespace
+    ) -> None:
+        func(fs, snapshot, options)
+        fs.apply(options.target, options.dry_run)
+
+    return decorator
+
+
+@action_write_snapshot
+@action_apply_fs
 def action_plug(
-    options: argparse.Namespace,
     fs: FS,
-    snapshot: dict[pathlib.Path, pathlib.Path],
+    snapshot: SnapshotT,
+    options: argparse.Namespace,
 ) -> None:
-    action_unplug(options, fs, snapshot)
+    inspect.unwrap(action_unplug)(fs, snapshot, options)
 
     for module in options.module:
         for dirpath, _, filenames in module.walk():
@@ -260,10 +281,12 @@ def action_plug(
                 fs.add(target_dir / filename, dirpath / filename)
 
 
+@action_write_snapshot
+@action_apply_fs
 def action_unplug(
-    options: argparse.Namespace,
     fs: FS,
-    snapshot: dict[pathlib.Path, pathlib.Path],
+    snapshot: SnapshotT,
+    options: argparse.Namespace,
 ) -> None:
     to_filter = tuple(f"{path}/" for path in options.module)
 
