@@ -109,9 +109,14 @@ class FS:
             target: pathlib.Path, source: pathlib.Path | None
         ) -> bool:
             target_exists = target.exists(follow_symlinks=False)
-            return (source is None and target_exists) or (
-                target_exists and target.resolve() != source
-            )
+
+            if source is None:
+                return target_exists
+
+            if target_exists:
+                return target.resolve() != source
+
+            return True
 
         changes = {k: v for k, v in self.changes.items() if is_need_to_do(k, v)}
 
