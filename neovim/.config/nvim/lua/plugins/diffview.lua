@@ -10,15 +10,15 @@ return {
     "DiffviewToggleFiles",
     "DiffviewFocusFiles",
     "DiffviewRefresh",
-    "DiffviewLog"
+    "DiffviewLog",
   },
 
   opts = {
     enhanced_diff_hl = true,
     view = {
       merge_tool = {
-        layout = "diff4_mixed"
-      }
-    }
-  }
+        layout = "diff4_mixed",
+      },
+    },
+  },
 }

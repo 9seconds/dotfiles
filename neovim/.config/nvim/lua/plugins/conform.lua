@@ -7,7 +7,7 @@ return {
   "stevearc/conform.nvim",
   version = "*",
   cmd = {
-    "ConformInfo"
+    "ConformInfo",
   },
   keys = {
     {

@@ -4,25 +4,25 @@
 return {
   "nvim-treesitter/nvim-treesitter-context",
   dependencies = {
-    "nvim-treesitter/nvim-treesitter"
+    "nvim-treesitter/nvim-treesitter",
   },
   cmd = {
     "TSContextEnable",
     "TSContextDisable",
-    "TSContextToggle"
+    "TSContextToggle",
   },
   keys = {
     {
       "<leader>C",
       "<cmd>TSContextToggle<cr>",
-      desc = "Show treesitter context"
-    }
+      desc = "Show treesitter context",
+    },
   },
 
   config = function()
     require("treesitter-context").setup({
       enable = true,
-      line_numbers = false
+      line_numbers = false,
     })
-  end
+  end,
 }
