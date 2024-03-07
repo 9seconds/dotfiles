@@ -4,6 +4,7 @@
 return {
   setup = function()
     local utils = require("_.utils")
+    local clipboard = require("vim.ui.clipboard.osc52")
 
     -- suggest to reload if file was updated outside
     -- https://neovim.io/doc/user/options.html#'autoread'
@@ -16,9 +17,17 @@ return {
     vim.o.showbreak = "↪"
 
     -- Use integration with a system clipboard
-    -- https://neovim.io/doc/user/options.html#'clipboard'
-    -- actually we will use https://github.com/ojroques/nvim-osc52 here
-    vim.o.clipboard = "unnamedplus"
+    vim.g.clipboard = {
+      name = "OSC 52",
+      copy = {
+        ["+"] = clipboard.copy("+"),
+        ["*"] = clipboard.copy("*"),
+      },
+      paste = {
+        ["+"] = clipboard.paste("+"),
+        ["*"] = clipboard.paste("*"),
+      },
+    }
 
     -- by default we use manual folding
     vim.o.foldmethod = "manual"
