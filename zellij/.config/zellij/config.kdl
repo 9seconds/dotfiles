@@ -1,0 +1,88 @@
+keybinds clear-defaults=true {
+    locked {
+        bind "Alt `" { SwitchToMode "Normal"; }
+    }
+    shared_except "locked" {
+        bind "Alt `" { SwitchToMode "Locked"; }
+        bind "Alt c" { Copy; }
+    }
+
+    entersearch {
+        bind "Esc" { SwitchToMode "Normal"; }
+        bind "Enter" { SwitchToMode "Search"; }
+    }
+
+    renametab {
+        bind "Esc" { UndoRenameTab; SwitchToMode "Normal"; }
+        bind "Enter" { SwitchToMode "Normal"; }
+    }
+
+    normal {
+        bind "Alt /" { SwitchToMode "EnterSearch"; SearchInput 0; }
+        bind "Alt t" { NewTab; }
+        bind "Alt d" { NewPane "Right"; }
+        bind "Alt s" { NewPane "Down"; }
+        bind "Alt r" { SwitchToMode "RenameTab"; TabNameInput 0; }
+        bind "Alt x" { CloseFocus; }
+        bind "Alt w" { SwitchToMode "Session"; }
+        bind "Alt e" { EditScrollback; }
+
+        bind "Alt 1" { GoToTab 1; }
+        bind "Alt 2" { GoToTab 2; }
+        bind "Alt 3" { GoToTab 3; }
+        bind "Alt 4" { GoToTab 4; }
+        bind "Alt 5" { GoToTab 5; }
+        bind "Alt 6" { GoToTab 6; }
+        bind "Alt 7" { GoToTab 7; }
+        bind "Alt 8" { GoToTab 8; }
+        bind "Alt 9" { GoToTab 9; }
+
+        bind "Alt h" { MoveFocus "Left"; }
+        bind "Alt j" { MoveFocus "Down"; }
+        bind "Alt k" { MoveFocus "Up"; }
+        bind "Alt l" { MoveFocus "Right"; }
+
+        bind "Alt Left" { Resize "Increase"; }
+        bind "Alt Right" { Resize "Decrease"; }
+        bind "Alt Up" { ToggleFocusFullscreen; }
+        bind "Alt Down" { ToggleFloatingPanes; }
+    }
+
+    search {
+        bind "d" { HalfPageScrollDown; }
+        bind "u" { HalfPageScrollUp; }
+        bind "D" "PageDown" { PageScrollDown; }
+        bind "U" "PageUp" { PageScrollUp; }
+        bind "j" "Down" { ScrollDown; }
+        bind "k" "Up" { ScrollUp; }
+        bind "n" { Search "down"; }
+        bind "p" { Search "up"; }
+        bind "c" { SearchToggleOption "CaseSensitivity"; }
+        bind "w" { SearchToggleOption "Wrap"; }
+        bind "o" { SearchToggleOption "WholeWord"; }
+    }
+
+    session {
+        bind "q" { Quit; }
+        bind "d" { Detach; }
+        bind "w" {
+            LaunchOrFocusPlugin "zellij:session-manager" {
+                floating true
+                move_to_focused_tab true
+            };
+            SwitchToMode "Normal"
+        }
+    }
+}
+
+plugins {
+    session-manager { path "session-manager"; }
+}
+
+pane_frames false
+mirror_session false
+copy_on_select true
+session_serialization false
+default_mode "normal"
+scroll_buffer_size 50000
+mouse_mode true

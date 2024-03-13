@@ -1,0 +1,16 @@
+layout {
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="file:~/.local/share/zellij/zjstatus.wasm" {
+                format_left "{mode}#[bg=#292e42,fg=#545c7e,bold] {session} {tabs}"
+
+                mode_normal ""
+                mode_locked "#[bg=#e0af68,fg=#545c7e,bold]   "
+
+                tab_normal "#[bg=#24283b,fg=#7aa2f7] {index}: {name} "
+                tab_active "#[bg=#7aa2f7,fg=#1f2335] {index}: {name} "
+            }
+        }
+    }
+}
