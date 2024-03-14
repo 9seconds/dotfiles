@@ -22,12 +22,10 @@ return function(config)
         "ss08",
         "calt",
         "dlig",
-      }
+      },
     },
-    {
-      family = "Fira Code",
-      font_weight = { 450 }
-    }
+    "Fira Code",
+    "Fira Mono",
   })
 
   -- https://wezfurlong.org/wezterm/config/lua/config/font_size.html
