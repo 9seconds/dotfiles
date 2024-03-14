@@ -134,7 +134,7 @@ return {
 
     -- disable termsync unless all terminals start to support it well
     -- https://neovim.io/doc/user/options.html#'termsync'
-    vim.o.termsync = false
+    -- vim.o.termsync = false
 
     -- set global indentation
     utils.set_indent(4)
