@@ -8,7 +8,7 @@ keybinds clear-defaults=true {
     }
 
     entersearch {
-        bind "Esc" { SwitchToMode "Normal"; }
+        bind "Esc" { TogglePaneFrames; SwitchToMode "Normal"; }
         bind "Enter" { SwitchToMode "Search"; }
     }
 
@@ -18,7 +18,7 @@ keybinds clear-defaults=true {
     }
 
     normal {
-        bind "Alt /" { SwitchToMode "EnterSearch"; SearchInput 0; }
+        bind "Alt /" { TogglePaneFrames; SwitchToMode "EnterSearch"; SearchInput 0; }
         bind "Alt t" { NewTab; }
         bind "Alt d" { NewPane "Right"; }
         bind "Alt s" { NewPane "Down"; }
@@ -49,6 +49,7 @@ keybinds clear-defaults=true {
     }
 
     search {
+        bind "Esc" { TogglePaneFrames; SwitchToMode "Normal"; }
         bind "d" { HalfPageScrollDown; }
         bind "u" { HalfPageScrollUp; }
         bind "D" "PageDown" { PageScrollDown; }
