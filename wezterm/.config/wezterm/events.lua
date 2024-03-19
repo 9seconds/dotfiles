@@ -141,18 +141,20 @@ local function right_statusline(win, pane)
 
     local icon = BATTERY_INDICATORS[is_charging][math.floor(percent / 10)]
 
-    if percent < BATTERY_CRITICAL then
-      table.insert(texts, { Foreground = { AnsiColor = "Red" } })
-    elseif percent < BATTERY_WARNING then
-      table.insert(texts, { Foreground = { AnsiColor = "Yellow" } })
-    elseif percent > BATTERY_OK then
-      table.insert(texts, { Foreground = { AnsiColor = "Green" } })
-    end
+    if percent < 100 or not is_charging then
+      if percent < BATTERY_CRITICAL then
+        table.insert(texts, { Foreground = { AnsiColor = "Red" } })
+      elseif percent < BATTERY_WARNING then
+        table.insert(texts, { Foreground = { AnsiColor = "Yellow" } })
+      elseif percent > BATTERY_OK then
+        table.insert(texts, { Foreground = { AnsiColor = "Green" } })
+      end
 
-    table.insert(texts, {
-      Text = string.format("%s %.0f%% ", icon, math.floor(percent)),
-    })
-    table.insert(texts, "ResetAttributes")
+      table.insert(texts, {
+        Text = string.format("%s %.0f%% ", icon, math.floor(percent)),
+      })
+      table.insert(texts, "ResetAttributes")
+    end
   end
 
   win:set_right_status(wezterm.format(texts))
