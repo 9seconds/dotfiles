@@ -17,7 +17,7 @@ return function(config)
   config.use_fancy_tab_bar = false
 
   -- https://wezfurlong.org/wezterm/config/lua/config/hide_tab_bar_if_only_one_tab.html
-  config.hide_tab_bar_if_only_one_tab = true
+  config.hide_tab_bar_if_only_one_tab = false
 
   -- https://wezfurlong.org/wezterm/config/lua/config/native_macos_fullscreen_mode.html
   config.native_macos_fullscreen_mode = true
