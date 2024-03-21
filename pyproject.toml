@@ -54,7 +54,7 @@ incremental = false
 python = "^3.12"
 
 [tool.poetry.group.dev.dependencies]
-black = "^24.2.0"
+black = "^24.3.0"
 flake8 = "^7.0.0"
 flake8-2020 = "^1.8.1"
 flake8-absolute-import = "^1.0.0.2"
@@ -90,7 +90,7 @@ flake8-useless-assert = "^0.4.4"
 flake8-variables-names = "^0.0.6"
 flake8-warnings = "^0.4.1"
 isort = "^5.13.2"
-mypy = "^1.8.0"
+mypy = "^1.9.0"
 pep8-naming = "^0.13.3"
 
 [build-system]

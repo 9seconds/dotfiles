@@ -40,3 +40,10 @@ $(filter stylua-%,$(LUA_TARGETS)): stylua-%:
 .PHONY: clean
 clean:
 	rm -rf .venv .mypy-cache
+
+.PHONY: up
+up: poetry-up
+
+.PHONY: poetry-up
+poetry-up:
+	poetry up --latest
