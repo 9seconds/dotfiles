@@ -42,6 +42,20 @@ return {
       end,
       desc = "Toggle location list",
     },
+    {
+      "]d",
+      function()
+        require("trouble").next({ skip_groups = true, jump = true })
+      end,
+      desc = "Jump to the next diagnostic issue",
+    },
+    {
+      "[d",
+      function()
+        require("trouble").next({ skip_groups = true, jump = true })
+      end,
+      desc = "Jump to the previous diagnostic issue",
+    },
   },
 
   opts = {},
