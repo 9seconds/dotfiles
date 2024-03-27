@@ -24,8 +24,8 @@ return {
         ["*"] = clipboard.copy("*"),
       },
       paste = {
-        ["+"] = clipboard.paste("+"),
-        ["*"] = clipboard.paste("*"),
+        -- ["+"] = clipboard.paste("+"),
+        -- ["*"] = clipboard.paste("*"),
       },
     }
 
