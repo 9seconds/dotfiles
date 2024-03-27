@@ -10,11 +10,11 @@ snippet fr "from/import clause" b
 	from ${1:module} import ${0:something}
 
 snippet wh "wrap in while loop" b
-	while ${1:expr}:
+	while ${1:True}:
 	  ${0:$TM_SELECTED_TEXT}
 
 snippet with "wrap in with clause" b
-	with ${1:expr} as ${2:var}:
+	with ${1:expr} as ${2:_$1}:
 	  ${0:$TM_SELECTED_TEXT}
 
 snippet awith "wrap in async with clause" b
@@ -49,3 +49,6 @@ snippet prop "Property definition" b
 	@$1.setter
 	def $1(self, value):
 		self.$2 = value
+
+snippet dor "Define variable or default value" b
+	${1:variable} = ${1} or ${0:default}

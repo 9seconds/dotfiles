@@ -5,3 +5,6 @@ snippet #T "TODO comment" b
 
 snippet #F "TODO comment" b
 	# FIXME${1:(`!lua vim.trim(vim.fn.system("git config user.name") or "")`)}: ${0}
+
+snippet #pyd "Disable pylint comment"
+	# pylint: disable=${0}
