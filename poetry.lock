@@ -466,12 +466,12 @@ flake8 = ">3.0.0"
 
 [[package]]
 name = "flake8-picky-parentheses"
-version = "0.5.4"
+version = "0.5.5"
 description = "flake8 plugin to nitpick about parenthesis, brackets, and braces"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "flake8-picky-parentheses-0.5.4.tar.gz", hash = "sha256:218e122bb0cc512d0ba7b0ffa2c58ebc2a2f81bf23bde884f036f92dc0402884"},
+    {file = "flake8-picky-parentheses-0.5.5.tar.gz", hash = "sha256:a0f31711fab93e90e2cef215ebb8aea081f75af5759f585dc59666315f1e76a0"},
 ]
 
 [package.dependencies]
