@@ -233,13 +233,13 @@ dev = ["coverage", "hypothesis", "hypothesmith (>=0.2)", "pre-commit", "pytest",
 
 [[package]]
 name = "flake8-builtins"
-version = "2.2.0"
+version = "2.4.0"
 description = "Check for python builtins being used as variables or parameters"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "flake8_builtins-2.2.0-py3-none-any.whl", hash = "sha256:7ee5766d9c60e5d579dfda84e65c6d0e6c26005f6f59cb9bf722462d7987a807"},
-    {file = "flake8_builtins-2.2.0.tar.gz", hash = "sha256:392d5af3a0720c5a863aa93dc47f48c879081345a143fe9f20d995fe9ff5686a"},
+    {file = "flake8_builtins-2.4.0-py3-none-any.whl", hash = "sha256:a9a2002855947081019a14e292200ab6e17ed637c0056aaa87ef23ea46fe8070"},
+    {file = "flake8_builtins-2.4.0.tar.gz", hash = "sha256:03ddfdbb40c6a0ad5375668b89d9d919970d026d65e6bb53185081c99822e466"},
 ]
 
 [package.dependencies]
@@ -466,12 +466,12 @@ flake8 = ">3.0.0"
 
 [[package]]
 name = "flake8-picky-parentheses"
-version = "0.5.4"
+version = "0.5.5"
 description = "flake8 plugin to nitpick about parenthesis, brackets, and braces"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "flake8-picky-parentheses-0.5.4.tar.gz", hash = "sha256:218e122bb0cc512d0ba7b0ffa2c58ebc2a2f81bf23bde884f036f92dc0402884"},
+    {file = "flake8-picky-parentheses-0.5.5.tar.gz", hash = "sha256:a0f31711fab93e90e2cef215ebb8aea081f75af5759f585dc59666315f1e76a0"},
 ]
 
 [package.dependencies]
@@ -820,4 +820,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "92e9f5f2c23e21e262f7d390ab243fd4df9b8470debb5443b5c8eb32e6456d1e"
+content-hash = "d09ac478a8f3c8f25208f51a51b0ae9c8eca90446a8e7fac618f683e9943a07e"
