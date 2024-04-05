@@ -44,8 +44,8 @@ keybinds clear-defaults=true {
 
         bind "Alt Left" { Resize "Increase"; }
         bind "Alt Right" { Resize "Decrease"; }
-        bind "Alt Up" { ToggleFocusFullscreen; }
-        bind "Alt Down" { ToggleFloatingPanes; }
+        bind "Alt [" { ToggleFocusFullscreen; }
+        bind "Alt ]" { ToggleFloatingPanes; }
     }
 
     search {
