@@ -14,7 +14,6 @@ return {
     "nvim-treesitter/nvim-treesitter-textobjects",
     "JoosepAlviste/nvim-ts-context-commentstring",
   },
-  main = "nvim-treesitter.configs",
 
   config = function()
     require("nvim-treesitter.configs").setup({
