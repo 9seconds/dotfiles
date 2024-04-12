@@ -6,6 +6,7 @@ return {
   dependencies = {
     "lewis6991/gitsigns.nvim",
     "nvim-tree/nvim-web-devicons",
+    "SmiteshP/nvim-navic",
   },
   event = "VeryLazy",
 
@@ -23,6 +24,18 @@ return {
       "trouble",
     },
     theme = "tokyonight",
+    winbar = {
+      lualine_c = {
+        {
+          function()
+            return require("nvim-navic").get_location()
+          end,
+          cond = function()
+            return require("nvim-navic").is_available()
+          end,
+        },
+      },
+    },
     sections = {
       lualine_a = { "mode" },
       lualine_b = {
