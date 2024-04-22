@@ -51,7 +51,6 @@ local telescope_config = {
     "nvim-treesitter/nvim-treesitter",
     "nvim-tree/nvim-web-devicons",
     "nvim-telescope/telescope-fzy-native.nvim",
-    "nvim-telescope/telescope-live-grep-args.nvim",
   },
   version = "*",
   keys = {
@@ -103,7 +102,6 @@ local telescope_config = {
   config = function()
     local telescope = require("telescope")
     local actions = require("telescope.actions")
-    local lga_actions = require("telescope-live-grep-args.actions")
 
     telescope.setup({
       defaults = {
@@ -117,24 +115,20 @@ local telescope_config = {
       },
 
       extensions = {
-        live_grep_args = {
-          auto_quoting = true,
-          mappings = {
-            i = {
-              ["<C-t>"] = lga_actions.quote_prompt({
-                postfix = " -t ",
-              }),
-              ["<C-k>"] = lga_actions.quote_prompt(),
-              ["<C-g>"] = lga_actions.quote_prompt({
-                postfix = " -g ",
-              }),
-            },
-          },
-        },
         fzy_native = {
           override_generic_sorter = true,
           override_file_sorter = true,
         },
+        egrepify = {
+          prefixes = {
+            ["^"] = {
+              flag = "fixed-strings",
+            },
+            ["!"] = {
+              flag = "invert-match",
+            }
+          }
+        }
       },
     })
 
@@ -142,51 +136,33 @@ local telescope_config = {
   end,
 }
 
-local frecency_config = {
-  "nvim-telescope/telescope-frecency.nvim",
-  dependencies = {
-    "nvim-telescope/telescope.nvim",
-  },
-  keys = {
-    {
-      "<leader>tf",
-      "<cmd>Telescope frecency workspace=CWD<cr>",
-      desc = "List frecent files",
+-- wrappers for ripgrep
+-- https://github.com/fdschmidt93/telescope-egrepify.nvim
+local egrepify_config = {}
+if vim.fn.executable("rg") then
+  egrepify_config = {
+    "fdschmidt93/telescope-egrepify.nvim",
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+      "nvim-lua/plenary.nvim",
     },
-  },
-
-  config = function()
-    require("telescope").load_extension("frecency")
-  end,
-}
-
-local live_grep_args_config = {
-  "nvim-telescope/telescope-live-grep-args.nvim",
-  version = "*",
-  keys = {
-    {
-      "<leader>tg",
-      function()
-        require("telescope").extensions.live_grep_args.live_grep_args()
-      end,
-      desc = "Live grep",
+    keys = {
+      {
+        "<leader>tg",
+        function()
+          return require("telescope").extensions.egrepify.egrepify({})
+        end,
+        desc = "Live grep with egrepify"
+      }
     },
-    {
-      "<leader>tw",
-      function()
-        require("telescope-live-grep-args.shortcuts").grep_word_under_cursor()
-      end,
-      desc = "Grep word under cursor",
-    },
-  },
 
-  config = function()
-    require("telescope").load_extension("live_grep_args")
-  end,
-}
+    config = function()
+      require("telescope").load_extension("egrepify")
+    end
+  }
+end
 
 return {
   telescope_config,
-  frecency_config,
-  live_grep_args_config,
+  egrepify_config
 }
