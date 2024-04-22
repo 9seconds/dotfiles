@@ -42,18 +42,6 @@ return {
       -- nvim-treesitter-textobjects
       -- https://github.com/nvim-treesitter/nvim-treesitter-textobjects
       textobjects = {
-        swap = {
-          enable = true,
-          disable = disable_on_max_filesize,
-
-          swap_next = {
-            ["<leader>a"] = "@parameter.inner",
-          },
-          swap_previous = {
-            ["<leader>A"] = "@parameter.inner",
-          },
-        },
-
         select = {
           enable = true,
           disable = disable_on_max_filesize,
