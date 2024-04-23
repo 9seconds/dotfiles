@@ -7,13 +7,6 @@ local find_files_command = {
   "-type",
   "f,l",
 }
-local find_directories_command = {
-  "find",
-  "-L",
-  ".",
-  "-type",
-  "d",
-}
 local vimgrep_arguments = nil
 
 if vim.fn.executable("rg") then
@@ -32,21 +25,12 @@ if vim.fn.executable("fd") then
     "--type",
     "symlink",
   }
-  find_directories_command = {
-    "fd",
-    "--strip-cwd-prefix",
-    "--color",
-    "never",
-    "--type",
-    "directory",
-  }
 end
 
 -- https://github.com/nvim-telescope/telescope.nvim
 local telescope_config = {
   "nvim-telescope/telescope.nvim",
   dependencies = {
-    "ahmedkhalf/project.nvim",
     "nvim-lua/plenary.nvim",
     "nvim-treesitter/nvim-treesitter",
     "nvim-tree/nvim-web-devicons",
@@ -57,7 +41,16 @@ local telescope_config = {
     {
       "<leader>tt",
       function()
-        require("telescope.builtin").find_files({
+        local mod = require("telescope.builtin")
+
+        vim.fn.system("git rev-parse --is-inside-work-tree")
+        if vim.v.shell_error == 0 then
+          return mod.git_files({
+            previewer = false,
+          })
+        end
+
+        mod.find_files({
           previewer = false,
           find_command = find_files_command,
         })
@@ -65,20 +58,16 @@ local telescope_config = {
       desc = "Find files",
     },
     {
-      "<leader>td",
-      function()
-        require("telescope.builtin").find_files({
-          previewer = false,
-          find_command = find_directories_command,
-          prompt_title = "Find directories",
-        })
-      end,
-      desc = "Find directories",
-    },
-    {
       "<leader>tb",
       function()
         require("telescope.builtin").buffers()
+      end,
+      desc = "Find buffers",
+    },
+    {
+      "<leader>tw",
+      function()
+        require("telescope.builtin").grep_string()
       end,
       desc = "Find buffers",
     },
@@ -126,9 +115,9 @@ local telescope_config = {
             },
             ["!"] = {
               flag = "invert-match",
-            }
-          }
-        }
+            },
+          },
+        },
       },
     })
 
@@ -152,17 +141,17 @@ if vim.fn.executable("rg") then
         function()
           return require("telescope").extensions.egrepify.egrepify({})
         end,
-        desc = "Live grep with egrepify"
-      }
+        desc = "Live grep with egrepify",
+      },
     },
 
     config = function()
       require("telescope").load_extension("egrepify")
-    end
+    end,
   }
 end
 
 return {
   telescope_config,
-  egrepify_config
+  egrepify_config,
 }
