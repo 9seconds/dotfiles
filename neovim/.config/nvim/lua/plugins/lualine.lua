@@ -19,7 +19,7 @@ return {
     },
     extensions = {
       "lazy",
-      "neo-tree",
+      "oil",
       "quickfix",
       "trouble",
     },
