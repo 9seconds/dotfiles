@@ -46,12 +46,18 @@ return {
           shorting_target = 30,
         },
       },
-      lualine_x = { "diagnostics" },
-      lualine_y = { "location" },
-      lualine_z = { {
-        "datetime",
-        style = "%H:%M",
-      } },
+      lualine_x = {
+        {
+          function()
+            return require("nvim-navic").get_location()
+          end,
+          cond = function()
+            return require("nvim-navic").is_available()
+          end,
+        },
+      },
+      lualine_y = { "diagnostics" },
+      lualine_z = { "location" },
     },
   },
 }
