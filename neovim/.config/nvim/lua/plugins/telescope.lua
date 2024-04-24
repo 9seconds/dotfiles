@@ -1,5 +1,7 @@
 -- telescope stuff
 
+local GIT_ROOTS = {}
+
 local find_files_command = {
   "find",
   "-L",
@@ -27,6 +29,26 @@ if vim.fn.executable("fd") then
   }
 end
 
+local function is_git()
+  local path = vim.uv.cwd()
+  local result = GIT_ROOTS[path]
+
+  if result == nil then
+    local _, code = require("plenary.job")
+      :new({
+        command = "git",
+        args = { "rev-parse", "--is-inside-work-tree" },
+        cwd = path,
+      })
+      :sync()
+
+    GIT_ROOTS[path] = code == 0
+    result = GIT_ROOTS[path]
+  end
+
+  return result
+end
+
 -- https://github.com/nvim-telescope/telescope.nvim
 local telescope_config = {
   "nvim-telescope/telescope.nvim",
@@ -43,8 +65,7 @@ local telescope_config = {
       function()
         local mod = require("telescope.builtin")
 
-        vim.fn.system("git rev-parse --is-inside-work-tree")
-        if vim.v.shell_error == 0 then
+        if is_git() then
           return mod.git_files({
             previewer = false,
           })
