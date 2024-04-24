@@ -56,6 +56,9 @@ return {
     nmap("<c-k>", "<c-w>k")
     nmap("<c-l>", "<c-w>l")
 
+    -- select just pasted
+    nmap("gp", "`[v`]")
+
     -- clear highlight
     nmap("<leader>l", ":noh<cr>", { silent = true })
 
