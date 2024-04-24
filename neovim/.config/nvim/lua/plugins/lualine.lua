@@ -30,13 +30,6 @@ return {
         {
           "b:gitsigns_head",
           icon = "",
-          fmt = function(line)
-            if vim.fn.winnr("$") > 1 then
-              return ""
-            end
-
-            return line
-          end,
         },
       },
       lualine_c = {
