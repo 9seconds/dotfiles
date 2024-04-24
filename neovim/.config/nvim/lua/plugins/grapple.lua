@@ -36,14 +36,14 @@ return {
       desc = "Toggle Grapple menu",
     },
     {
-      "gp",
+      "g[",
       function()
         return require("grapple").cycle_tags("prev", {})
       end,
       desc = "Toggle Grapple menu",
     },
     {
-      "gp",
+      "g]",
       function()
         return require("grapple").cycle_tags("next", {})
       end,
@@ -53,14 +53,15 @@ return {
 
   config = function()
     local mod = require("grapple")
-    local timer = vim.uv.new_timer()
 
     mod.setup({
       icons = true,
       scope = "git_branch",
       style = "basename",
-      prune = "1d",
+      prune = "7d",
     })
-    timer:start(0, 1000 * 60 * 60, vim.schedule_wrap(mod.prune))
+
+    local timer = vim.uv.new_timer()
+    timer:start(0, CLEANUP_EACH, vim.schedule_wrap(mod.prune))
   end,
 }
