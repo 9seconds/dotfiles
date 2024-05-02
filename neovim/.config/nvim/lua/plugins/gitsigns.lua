@@ -55,6 +55,10 @@ return {
           vim.schedule(gitsigns.preview_hunk)
         end, { desc = "Preview git hunk", buffer = bufnr })
 
+        vim.keymap.set("n", "<leader>ht", function()
+          vim.schedule(gitsigns.toggle_current_line_blame)
+        end, { desc = "Toggle git blame line", buffer = bufnr })
+
         vim.keymap.set("n", "<leader>hb", function()
           vim.schedule(function()
             gitsigns.blame_line({
