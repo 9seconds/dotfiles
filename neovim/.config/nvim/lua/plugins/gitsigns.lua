@@ -41,6 +41,7 @@ return {
         vim.keymap.set("n", "<leader>hr", function()
           vim.schedule(gitsigns.reset_hunk)
         end, { desc = "Reset git hunk", buffer = bufnr })
+
         vim.keymap.set("v", "<leader>hr", function()
           vim.schedule(function()
             gitsigns.reset_hunk({
@@ -62,6 +63,7 @@ return {
             })
           end)
         end, { desc = "Git blame this line", buffer = bufnr })
+
         vim.keymap.set(
           "n",
           "<leader>hd",
