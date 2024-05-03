@@ -45,10 +45,10 @@ return {
     nmap("#", "#zz")
     nmap("g*", "g*zz")
     nmap("g#", "g#zz")
-    nmap("<c-d>", "<c-d>")
-    nmap("<c-u>", "<c-u>")
-    nmap("<c-f>", "<c-f>")
-    nmap("<c-b>", "<c-b>")
+    nmap("<c-d>", "<c-d>zz")
+    nmap("<c-u>", "<c-u>zz")
+    nmap("<c-f>", "<c-f>zz")
+    nmap("<c-b>", "<c-b>zz")
 
     -- split navigation
     nmap("<c-h>", "<c-w>h")
