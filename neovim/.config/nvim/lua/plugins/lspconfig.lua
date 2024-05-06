@@ -11,9 +11,6 @@ return {
   },
 
   config = function()
-    local lspconfig = require("lspconfig")
-    local nvim_lsp = require("cmp_nvim_lsp")
-    local tools = require("_.tools")
     local utils = require("_.utils")
 
     vim.api.nvim_create_autocmd("LspAttach", {
@@ -57,19 +54,6 @@ return {
       end,
     })
 
-    for name, opts in pairs(tools.configs.lsp) do
-      local capabilities = vim.tbl_extend(
-        "force",
-        vim.lsp.protocol.make_client_capabilities(),
-        nvim_lsp.default_capabilities()
-      )
-      -- see https://github.com/neovim/neovim/issues/23291
-      capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
-
-      local conf = lspconfig[name]
-      conf.setup(
-        vim.tbl_extend("force", { capabilities = capabilities }, opts or {})
-      )
-    end
+    require("_.tools"):update_lsp()
   end,
 }

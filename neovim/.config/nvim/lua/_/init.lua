@@ -9,6 +9,7 @@ function M.setup()
   require("_.commands").setup()
   require("_.terminal").setup()
   require("_.neovide").setup()
+  require("_.exrc").setup()
 end
 
 return M

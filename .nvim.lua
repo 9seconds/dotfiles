@@ -1,6 +1,6 @@
 local tools = require("_.tools")
 
-tools.lsp("pyright", {
+tools:lsp("pyright", {
   settings = {
     pyright = {
       disableOrganizeImports = false,
@@ -14,6 +14,6 @@ tools.lsp("pyright", {
     },
   },
 })
-tools.lint("flake8", { "python" })
-tools.lint("mypy", { "python" })
-tools.fmt("black", { "python" })
+tools:lint("flake8", { "python" })
+tools:lint("mypy", { "python" })
+tools:fmt("black", { "python" })

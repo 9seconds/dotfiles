@@ -120,10 +120,6 @@ return {
     -- https://neovim.io/doc/user/options.html#'updatetime'
     vim.o.updatetime = 100
 
-    -- enable local config
-    -- https://neovim.io/doc/user/options.html#'exrc'
-    vim.o.exrc = true
-
     -- always round indentation by a given length
     -- https://neovim.io/doc/user/options.html#'shiftround'
     vim.o.shiftround = true
