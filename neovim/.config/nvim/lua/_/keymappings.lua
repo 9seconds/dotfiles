@@ -66,9 +66,6 @@ return {
     imap("jj", "<esc>")
     imap("kk", "<esc>")
 
-    -- fast save
-    nmap("<leader><leader>", ":update<cr>", { silent = true })
-
     -- spellcheck
     nmap("<leader>?", function()
       vim.o.spell = not vim.o.spell

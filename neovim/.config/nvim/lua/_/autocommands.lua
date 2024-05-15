@@ -3,22 +3,28 @@
 return {
   setup = function()
     -- resize panes on window resize
-    local augroup_resize_panes =
-      vim.api.nvim_create_augroup("9_ResizePanes", {})
     vim.api.nvim_create_autocmd("VimResized", {
-      group = augroup_resize_panes,
+      group = vim.api.nvim_create_augroup("9_ResizePanes", {}),
       command = "normal <c-w>=",
     })
 
     -- delete trailing whitespaces
-    local augroup_strip_traling_whitespaces =
-      vim.api.nvim_create_augroup("9_StripTrailingWhitespaces", {})
     vim.api.nvim_create_autocmd("BufWritePre", {
-      group = augroup_strip_traling_whitespaces,
+      group = vim.api.nvim_create_augroup("9_StripTrailingWhitespaces", {}),
       callback = function()
         local save = vim.fn.winsaveview()
         vim.cmd([[%s/\s\+$//e]])
         vim.fn.winrestview(save)
+      end,
+    })
+
+    -- autosave on insert leave
+    vim.api.nvim_create_autocmd("BufModifiedSet", {
+      group = vim.api.nvim_create_augroup("9_AutoSave", {}),
+      callback = function()
+        if vim.bo.buftype == "" then
+          vim.cmd("update")
+        end
       end,
     })
   end,
