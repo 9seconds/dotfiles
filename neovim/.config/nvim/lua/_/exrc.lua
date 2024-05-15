@@ -39,16 +39,20 @@ end
 function M.setup()
   vim.o.exrc = false
 
-  vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile", "DirChanged" }, {
-    group = vim.api.nvim_create_augroup("9_ExRC", {}),
-    callback = function()
-      M:react(vim.uv.cwd())
+  local function callback()
+    M:react(vim.uv.cwd())
 
-      if package.loaded["lspconfig"] ~= nil then
-        require("_.tools"):update_lsp()
-      end
-    end,
+    if package.loaded["lspconfig"] ~= nil then
+      require("_.tools"):update_lsp()
+    end
+  end
+
+  vim.api.nvim_create_autocmd({ "DirChanged" }, {
+    group = vim.api.nvim_create_augroup("9_ExRC", {}),
+    callback = callback,
   })
+
+  callback()
 end
 
 return M
