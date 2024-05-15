@@ -29,7 +29,7 @@ return {
       desc = "Jump to the previous snippet position",
     },
     {
-      "<tab>",
+      "<c-tab>",
       "<plug>(snippy-cut-text)",
       mode = { "x" },
       desc = "Cut text for the snippet",
