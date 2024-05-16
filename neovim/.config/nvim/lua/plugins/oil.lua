@@ -13,6 +13,14 @@ return {
       mode = { "n" },
       desc = "Open directory with Oil",
     },
+    {
+      "<leader>-",
+      function()
+        require("oil").open_float()
+      end,
+      mode = { "n" },
+      desc = "Open directory with Oil within a floating window",
+    },
   },
   cmd = "Oil",
 
