@@ -13,7 +13,9 @@ ALL_TARGETS = $(PYTHON_TARGETS) $(LUA_TARGETS)
 .PHONY: $(PYTHON_FILES) $(PYTHON_TARGETS) \
 		$(LUA_FILES) $(LUA_TARGETS)
 
-all: $(PYTHON_FILES) $(LUA_FILES)
+python: $(PYTHON_FILES)
+lua: $(LUA_FILES)
+all: python lua
 
 $(PYTHON_FILES): %: black-% flake8-% mypy-%
 
