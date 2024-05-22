@@ -56,11 +56,13 @@ return {
     nmap("<c-k>", "<c-w>k")
     nmap("<c-l>", "<c-w>l")
 
+    nmap("<leader><space>", "<cmd>update<cr>", { silent = true })
+
     -- select just pasted
     nmap("gp", "`[v`]")
 
     -- clear highlight
-    nmap("<leader>l", ":noh<cr>", { silent = true })
+    nmap("<leader>l", "<cmd>nohlsearch<cr>", { silent = true })
 
     -- exit insert mode
     imap("jj", "<esc>")

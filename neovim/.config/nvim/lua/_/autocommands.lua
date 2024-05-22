@@ -17,15 +17,5 @@ return {
         vim.fn.winrestview(save)
       end,
     })
-
-    -- autosave on insert leave
-    vim.api.nvim_create_autocmd("BufModifiedSet", {
-      group = vim.api.nvim_create_augroup("9_AutoSave", {}),
-      callback = function()
-        if vim.bo.buftype == "" then
-          vim.cmd("update")
-        end
-      end,
-    })
   end,
 }
