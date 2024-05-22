@@ -43,7 +43,10 @@ return {
           require("telescope.builtin").lsp_document_symbols()
         end, "List document symbols")
 
-        keymap("n", "<leader>lh", vim.lsp.buf.hover, "Show hover")
+        keymap("n", "<leader>lh", function()
+          vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+        end, "Toggle inlay hints")
+
         keymap(
           "n",
           "<leader>ls",
@@ -55,5 +58,6 @@ return {
     })
 
     require("_.tools"):update_lsp()
+    vim.lsp.inlay_hint.enable(true)
   end,
 }
