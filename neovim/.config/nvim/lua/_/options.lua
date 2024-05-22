@@ -16,19 +16,6 @@ return {
     vim.o.breakindentopt = "sbr"
     vim.o.showbreak = "↪"
 
-    -- Use integration with a system clipboard
-    vim.g.clipboard = {
-      name = "OSC 52",
-      copy = {
-        ["+"] = clipboard.copy("+"),
-        ["*"] = clipboard.copy("*"),
-      },
-      paste = {
-        -- ["+"] = clipboard.paste("+"),
-        -- ["*"] = clipboard.paste("*"),
-      },
-    }
-
     -- by default we use manual folding
     vim.o.foldmethod = "manual"
 
