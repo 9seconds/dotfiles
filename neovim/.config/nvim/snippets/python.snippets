@@ -1,0 +1,72 @@
+# vim: set ft=snippets noet:
+
+extends comments
+
+snippet #! "Insert shebang" b
+	#/usr/bin/${1:env ${2:python3}}
+
+snippet im "Import clause" b
+	import ${0:module}
+
+snippet fr "from/import clause" b
+	from ${1:module} import ${0:something}
+
+snippet wh "wrap in while loop" b
+	while ${1:True}:
+		${0:$VISUAL}
+
+snippet with "wrap in with clause" b
+	with ${1:expr}${2: as ${3:_$1}}:
+		${0:$VISUAL}
+
+snippet awith "wrap in async with clause" b
+	async with ${1:expr}${2: as ${3:_$1}}:
+		${0:$VISUAL}
+
+snippet def "Function definition" b
+	def ${1:name}(${2:`!lua vim.fn.indent(".") > 0 and "self, " or ""`${3:*args, **kwargs}})${4: -> ${5:object}}:
+		${0:$VISUAL}
+
+snippet adef "Function definition" b
+	async def ${1:name}(${2:`!lua vim.fn.indent(".") > 0 and "self, " or ""`${3:*args, **kwargs}})${4: -> ${5:object}}:
+		${0:$VISUAL}
+
+snippet tryex "try/except clause" b
+	try:
+		${0:$VISUAL}
+	except ${1:Exception}${2: as ${3:exc}}:
+		${4:pass}
+
+snippet tryfi "try/finally clause" b
+	try:
+		${0:$VISUAL}
+	finally:
+		${1:pass}
+
+snippet prop "Property definition" b
+	@property
+	def ${1:name}(self):
+		return self.${2:_$1}
+
+	@$1.setter
+	def $1(self, value):
+		self.$2 = value
+
+snippet vor "Define variable or default value" b
+	${1:var} = $1 or ${0:default}
+
+snippet brc "Insert conditional debugger" b
+	if ${1:condition}:
+		breakpoint()
+
+snippet dbg "Debug code snippet" b
+	try:
+		${0:$VISUAL}
+	except Exception:
+		import sys
+		import traceback
+
+		typ_, val_, tb_ = sys.exc_info()
+		tbf_ = traceback.format_tb(tb_)
+		breakpoint()
+		assert True
