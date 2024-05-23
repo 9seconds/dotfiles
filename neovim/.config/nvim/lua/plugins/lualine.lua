@@ -64,6 +64,7 @@ return {
             shorting_target = 30,
           },
         },
+        lualine_x = {},
         lualine_y = {
           {
             function()

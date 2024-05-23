@@ -5,6 +5,7 @@ return {
   "neovim/nvim-lspconfig",
   dependencies = {
     "nvim-telescope/telescope.nvim",
+    "hrsh7th/cmp-nvim-lsp",
   },
   event = {
     "Filetype",

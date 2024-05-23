@@ -1,7 +1,6 @@
 -- lsp niceties
 -- https://github.com/nvimdev/lspsaga.nvim
 
-
 return {
   "nvimdev/lspsaga.nvim",
   dependencies = {
@@ -15,7 +14,7 @@ return {
     {
       "<leader>lc",
       "<cmd>:Lspsaga code_action<cr>",
-      mode = {"n", "v"},
+      mode = { "n", "v" },
       desc = "Get code actions",
     },
     {
@@ -36,6 +35,6 @@ return {
     },
     ligthbulb = {
       virtual_text = false,
-    }
-  }
+    },
+  },
 }

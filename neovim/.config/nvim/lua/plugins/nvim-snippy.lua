@@ -7,14 +7,14 @@ return {
     {
       "<c-j>",
       function()
-        if require("snippy").can_expand_or_advance() then
-          return "<plug>(snippy-expand-or-advance)"
+        if require("snippy").can_jump(1) then
+          return "<plug>(snippy-next)"
         end
         return "<c-j>"
       end,
       mode = { "i", "s" },
       expr = true,
-      desc = "Expand or advance snippet",
+      desc = "Advance snippet",
     },
     {
       "<c-k>",
