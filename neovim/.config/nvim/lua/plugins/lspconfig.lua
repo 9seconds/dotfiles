@@ -4,59 +4,83 @@
 return {
   "neovim/nvim-lspconfig",
   dependencies = {
-    "hrsh7th/cmp-nvim-lsp",
+    "nvim-telescope/telescope.nvim",
   },
   event = {
     "Filetype",
   },
+  keys = {
+    {
+      "<leader>lc",
+      function()
+        return vim.lsp.buf.code_action()
+      end,
+      desc = "Get code actions",
+    },
+    {
+      "<leader>lc",
+      function()
+        return vim.lsp.buf.code_action({
+          options = {
+            range = vim.lsp.util.make_range_params().range,
+          },
+        })
+      end,
+      mode = "v",
+      desc = "Get range code actions",
+    },
+    {
+      "<c-]>",
+      function()
+        return require("telescope.builtin").lsp_definitions()
+      end,
+      desc = "Go to definition",
+    },
+    {
+      "<leader>lr",
+      function()
+        return require("telescope.builtin").lsp_references()
+      end,
+      desc = "Show references",
+    },
+    {
+      "<leader>ld",
+      function()
+        return require("telescope.builtin").lsp_document_symbols()
+      end,
+      desc = "Show document symbols",
+    },
+    {
+      "<leader>lt",
+      function()
+        return vim.lsp.buf.type_definition()
+      end,
+      desc = "Show types",
+    },
+    {
+      "<leader>lh",
+      function()
+        return vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+      end,
+      desc = "Toggle inlay hints",
+    },
+    {
+      "<leader>ls",
+      function()
+        return vim.lsp.buf.signature_help()
+      end,
+      desc = "Show signature help",
+    },
+    {
+      "<leader>ln",
+      function()
+        return vim.lsp.buf.rename()
+      end,
+      desc = "Rename",
+    },
+  },
 
   config = function()
-    local utils = require("_.utils")
-
-    vim.api.nvim_create_autocmd("LspAttach", {
-      group = vim.api.nvim_create_augroup("_9_LSP", {}),
-      callback = function(ev)
-        vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
-
-        local function keymap(mode, lhs, rhs, desc)
-          vim.keymap.set(mode, lhs, rhs, { desc = desc, buffer = ev.buf })
-        end
-
-        keymap("n", "<leader>lc", vim.lsp.buf.code_action, "Get code actions")
-        keymap("v", "<leader>lc", function()
-          vim.lsp.buf.code_action({
-            options = {
-              range = vim.lsp.util.make_range_params().range,
-            },
-          }, "Get range code actions")
-        end)
-
-        keymap("n", "<c-]>", function()
-          require("telescope.builtin").lsp_definitions()
-        end, "Go to LSP definitions")
-
-        keymap("n", "<leader>lr", function()
-          require("telescope.builtin").lsp_references()
-        end, "Get references")
-
-        keymap("n", "<leader>ld", function()
-          require("telescope.builtin").lsp_document_symbols()
-        end, "List document symbols")
-
-        keymap("n", "<leader>lh", function()
-          vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-        end, "Toggle inlay hints")
-
-        keymap(
-          "n",
-          "<leader>ls",
-          vim.lsp.buf.signature_help,
-          "Show signature help"
-        )
-        keymap("n", "<leader>ln", vim.lsp.buf.rename, "Rename")
-      end,
-    })
-
     require("_.tools"):update_lsp()
     vim.lsp.inlay_hint.enable(true)
   end,
