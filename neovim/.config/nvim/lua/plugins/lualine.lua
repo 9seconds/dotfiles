@@ -12,12 +12,10 @@ return {
   dependencies = {
     "lewis6991/gitsigns.nvim",
     "nvim-tree/nvim-web-devicons",
-    "SmiteshP/nvim-navic",
   },
   event = "VeryLazy",
 
   config = function()
-    local navic = require("nvim-navic")
     local lualine = require("lualine")
 
     require("lualine").setup({
@@ -64,16 +62,6 @@ return {
             "filename",
             path = 2,
             shorting_target = 30,
-          },
-        },
-        lualine_x = {
-          {
-            function()
-              return navic.get_location()
-            end,
-            cond = function()
-              return navic.is_available()
-            end,
           },
         },
         lualine_y = {

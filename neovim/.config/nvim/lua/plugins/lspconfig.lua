@@ -11,25 +11,6 @@ return {
   },
   keys = {
     {
-      "<leader>lc",
-      function()
-        return vim.lsp.buf.code_action()
-      end,
-      desc = "Get code actions",
-    },
-    {
-      "<leader>lc",
-      function()
-        return vim.lsp.buf.code_action({
-          options = {
-            range = vim.lsp.util.make_range_params().range,
-          },
-        })
-      end,
-      mode = "v",
-      desc = "Get range code actions",
-    },
-    {
       "<c-]>",
       function()
         return require("telescope.builtin").lsp_definitions()
