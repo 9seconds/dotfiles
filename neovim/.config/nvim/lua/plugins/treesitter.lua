@@ -12,7 +12,6 @@ local treesitter_config = {
   build = function()
     require("nvim-treesitter.install").update({ with_sync = true })()
   end,
-  event = { "BufReadPre", "BufNewFile" },
 
   main = "nvim-treesitter.configs",
   opts = {
@@ -62,11 +61,11 @@ local treesitter_config = {
 }
 
 local commentstring_config = {
-  "JoosepAlviste/nvim-ts-context-commentstring",
+  "folke/ts-comments.nvim",
   dependencies = {
     "nvim-treesitter/nvim-treesitter",
   },
-  event = { "FileType" },
+  event = { "VeryLazy" },
 
   opts = {},
 }
