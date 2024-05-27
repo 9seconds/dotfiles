@@ -6,26 +6,22 @@ authors = ["Sergey Arkhipov <nineseconds@yandex.ru>"]
 license = "MIT"
 readme = "README.md"
 
-[tool.black]
+[tool.ruff]
 line-length = 80
-target-version = ["py312"]
+target-version = "py312"
 
-[tool.flake8]
-max-line-length = 80
-exclude = [
-  '.git',
-  '__pycache__'
-]
-ignore = [
-  'IND101',
-  'VNE001',
-  'E203',
-  'W503',
-]
-literal-inline-quotes = "double"
-literal-multiline-quotes = "double"
-enable-extensions = "G"
-max-cognitive-complexity = 10
+[tool.ruff.lint]
+ignore = []
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
 
 [tool.isort]
 profile = "black"

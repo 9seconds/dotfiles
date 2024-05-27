@@ -43,7 +43,7 @@ function M.setup()
     M:react(vim.uv.cwd())
 
     if package.loaded["lspconfig"] ~= nil then
-      require("_.tools"):update_lsp()
+      require("_.lsp"):update()
     end
   end
 

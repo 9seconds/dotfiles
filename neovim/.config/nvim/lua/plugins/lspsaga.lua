@@ -33,7 +33,7 @@ return {
       show_server_name = true,
       extend_gitsigns = true,
     },
-    ligthbulb = {
+    lightbulb = {
       virtual_text = false,
     },
   },

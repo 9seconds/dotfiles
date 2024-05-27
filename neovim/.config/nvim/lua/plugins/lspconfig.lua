@@ -54,6 +54,14 @@ return {
       desc = "Show signature help",
     },
     {
+      "<leader>lf",
+      function()
+        return vim.lsp.buf.format()
+      end,
+      mode = { "n", "v" },
+      desc = "Format",
+    },
+    {
       "<leader>ln",
       function()
         return vim.lsp.buf.rename()
@@ -63,7 +71,7 @@ return {
   },
 
   config = function()
-    require("_.tools"):update_lsp()
+    require("_.lsp"):update()
     vim.lsp.inlay_hint.enable(true)
   end,
 }
