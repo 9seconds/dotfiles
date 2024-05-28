@@ -4,7 +4,6 @@
 return {
   setup = function()
     local utils = require("_.utils")
-    local clipboard = require("vim.ui.clipboard.osc52")
 
     -- suggest to reload if file was updated outside
     -- https://neovim.io/doc/user/options.html#'autoread'

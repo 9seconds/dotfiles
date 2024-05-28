@@ -39,9 +39,6 @@ local BATTERY_CRITICAL = 10
 -- a percentage when we consider battery as charged enough
 local BATTERY_OK = 95
 
--- default max width of a title if nothing is defined
-local DEFAULT_MAX_WIDTH = 255
-
 function basename(str)
   return string.gsub(str, "(.*[/\\])(.*)", "%2")
 end
@@ -72,7 +69,7 @@ local function get_pwd(pane)
   return string.gsub(path, home, "~")
 end
 
-local function format_tab_title(tab, tabs, _, config, _, max_width)
+local function format_tab_title(tab, _, _, config, _)
   if tab.tab_title ~= "" then
     return tab.tab_title
   end
@@ -95,7 +92,7 @@ local function format_tab_title(tab, tabs, _, config, _, max_width)
   return title
 end
 
-local function format_window_title(win, pane)
+local function format_window_title(_, pane)
   local pane_obj = wezterm.mux.get_pane(pane.pane_id)
 
   local domain = pane_obj:get_domain_name()
@@ -109,8 +106,7 @@ local function format_window_title(win, pane)
 end
 
 local function right_statusline(win, pane)
-  local ok, domain = pcall(pane.get_domain_name, pane)
-  if not ok then
+  if not pcall(pane.get_domain_name, pane) then
     return
   end
 

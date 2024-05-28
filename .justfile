@@ -14,6 +14,7 @@ set shell := ["bash", "-cu"]
   poetry self add -- poetry-plugin-up@latest
   poetry install --no-root
 
+
 [group("update")]
 @poetry-up:
   poetry up --latest
@@ -21,14 +22,23 @@ set shell := ["bash", "-cu"]
 [group("update")]
 @up: poetry-up
 
+
 [group("lua")]
 [group("format")]
 @stylua +filename:
   stylua {{filename}}
 
 [group("lua")]
+[group("lint")]
+@selene +filename:
+  selene {{filename}}
+
+@_lua +filename: (stylua filename) (selene filename)
+
+[group("lua")]
 @lua:
-  fd -H -e lua -t f -X just stylua
+  fd -H -e lua -t f -X just _lua
+
 
 [group("python")]
 [group("format")]

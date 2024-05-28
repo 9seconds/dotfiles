@@ -1,6 +1,7 @@
 [tools]
-poetry = "latest"
-stylua = "latest"
 just = "latest"
-ruff = "latest"
 lazygit = "latest"
+poetry = "latest"
+ruff = "latest"
+rust = "latest"
+stylua = "latest"

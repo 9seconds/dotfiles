@@ -16,8 +16,6 @@ return {
   event = "VeryLazy",
 
   config = function()
-    local lualine = require("lualine")
-
     require("lualine").setup({
       theme = "tokyonight",
 
