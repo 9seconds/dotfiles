@@ -18,7 +18,7 @@ return {
       desc = "Get code actions",
     },
     {
-      "<leader>lf",
+      "<leader>li",
       "<cmd>:Lspsaga finder<cr>",
       desc = "Find a symbol",
     },
