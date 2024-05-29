@@ -1,7 +1,9 @@
 local M = {}
 
 function M.setup()
-  vim.o.linespace = 2
+  vim.o.guifont = "Monaspace Neon:h13:#e-subpixelantialias"
+
+  vim.o.linespace = 5
   vim.g.neovide_scale_factor = 1.0
   vim.g.neovide_floating_shadow = true
   vim.g.neovide_floating_z_height = 15
