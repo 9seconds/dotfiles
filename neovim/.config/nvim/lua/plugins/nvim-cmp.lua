@@ -2,15 +2,14 @@
 -- https://github.com/hrsh7th/nvim-cmp
 
 local function has_words_before()
-  local unpack = unpack or table.unpack
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
 
-  return col ~= 0
-    and vim.api
-        .nvim_buf_get_lines(0, line - 1, line, true)[1]
-        :sub(col, col)
-        :match("%s")
-      == nil
+  if col == 0 then
+    return false
+  end
+
+  local lne = vim.api.nvim_buf_get_lines(0, line-1, line, true)[1]
+  return not lne:sub(col, col):match("%s")
 end
 
 local function tab_action(action, fallback)
@@ -25,11 +24,11 @@ local function tab_action(action, fallback)
   elseif has_words_before() then
     cmp.complete()
     if #cmp.get_entries() == 1 then
-      cmp.confirm({ select = true })
+      return cmp.confirm({ select = true })
     end
-  else
-    return fallback()
   end
+
+  return fallback()
 end
 
 return {
@@ -59,10 +58,9 @@ return {
         -- https://github.com/hrsh7th/nvim-cmp/wiki/Advanced-techniques
         if vim.api.nvim_get_mode().mode == "c" then
           return true
-        else
-          return not ctx.in_treesitter_capture("comment")
-            and not ctx.in_syntax_group("Comment")
         end
+        return not ctx.in_treesitter_capture("comment")
+          and not ctx.in_syntax_group("Comment")
       end,
 
       snippet = {
@@ -96,13 +94,12 @@ return {
         ["<CR>"] = cmp.mapping({
           i = function(fallback)
             if cmp.visible() and cmp.get_active_entry() then
-              cmp.confirm({
+              return cmp.confirm({
                 behavior = cmp.ConfirmBehavior.Replace,
                 select = false,
               })
-            else
-              fallback()
             end
+            return fallback()
           end,
           s = cmp.mapping.confirm({ select = true }),
           c = cmp.mapping.confirm({
