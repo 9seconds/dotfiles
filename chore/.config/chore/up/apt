@@ -1,7 +1,0 @@
-#!/bin/bash
-# vim: set ft=bash sw=2 ts=2 sts=2 et:
-set -eu -o pipefail
-
-[[ ${CHORE_DEBUG:-} = "1" ]] && set -x
-
-sudo apt -qq -y update && sudo apt full-upgrade -y && sudo apt autoremove -y --purge
