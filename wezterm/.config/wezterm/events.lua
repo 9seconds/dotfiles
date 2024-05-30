@@ -39,7 +39,7 @@ local BATTERY_CRITICAL = 10
 -- a percentage when we consider battery as charged enough
 local BATTERY_OK = 95
 
-function basename(str)
+local function basename(str)
   return string.gsub(str, "(.*[/\\])(.*)", "%2")
 end
 

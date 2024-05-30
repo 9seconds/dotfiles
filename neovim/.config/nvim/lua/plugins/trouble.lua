@@ -4,59 +4,37 @@
 return {
   "folke/trouble.nvim",
   dependencies = {
+    "nvim-treesitter/nvim-treesitter",
     "nvim-tree/nvim-web-devicons",
   },
   keys = {
     {
       "<leader>xx",
-      function()
-        require("trouble").toggle()
-      end,
-      desc = "Toggle diagnostics",
+      "<cmd>Trouble diagnostics toggle focus=false filter.buf=0<cr>",
+      desc = "Toggle buffer diagnostics",
     },
     {
-      "<leader>xw",
-      function()
-        require("trouble").toggle("workspace_diagnostics")
-      end,
+      "<leader>xX",
+      "<cmd>Trouble diagnostics toggle focus=false<cr>",
       desc = "Toggle workspace diagnostics",
     },
     {
-      "<leader>xd",
-      function()
-        require("trouble").toggle("document_diagnostics")
-      end,
-      desc = "Toggle document diagnostics",
+      "<leader>xi",
+      "<cmd>Trouble lsp_incoming_calls toggle<cr>",
+      desc = "Show incoming calls",
     },
     {
-      "<leader>xq",
-      function()
-        require("trouble").toggle("quickfix")
-      end,
+      "<leader>xo",
+      "<cmd>Trouble lsp_outgoing_calls toggle<cr>",
+      desc = "Show outgoing calls",
+    },
+    {
+      "<leader>xr",
+      "<cmd>Trouble lsp_references toggle<cr>",
       desc = "Toggle quickfix",
     },
-    {
-      "<leader>xl",
-      function()
-        require("trouble").toggle("loclist")
-      end,
-      desc = "Toggle location list",
-    },
-    {
-      "]d",
-      function()
-        require("trouble").next({ skip_groups = true, jump = true })
-      end,
-      desc = "Jump to the next diagnostic issue",
-    },
-    {
-      "[d",
-      function()
-        require("trouble").next({ skip_groups = true, jump = true })
-      end,
-      desc = "Jump to the previous diagnostic issue",
-    },
   },
+  cmd = {"Trouble"},
 
   opts = {},
 }
