@@ -34,7 +34,7 @@ return {
       desc = "Toggle quickfix",
     },
   },
-  cmd = {"Trouble"},
+  cmd = { "Trouble" },
 
   opts = {},
 }

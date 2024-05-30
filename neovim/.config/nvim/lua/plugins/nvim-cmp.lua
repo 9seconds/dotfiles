@@ -8,7 +8,7 @@ local function has_words_before()
     return false
   end
 
-  local lne = vim.api.nvim_buf_get_lines(0, line-1, line, true)[1]
+  local lne = vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]
   return not lne:sub(col, col):match("%s")
 end
 
