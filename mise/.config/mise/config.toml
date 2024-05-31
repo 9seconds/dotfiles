@@ -1,6 +1,7 @@
 [tools]
 aria2 = "latest"
 bat = "latest"
+cargo-binstall = "latest"
 ccache = "latest"
 cmake = "latest"
 difftastic = "latest"
@@ -31,3 +32,4 @@ tmux = "latest"
 usage = "latest"
 zellij = "latest"
 zoxide = "latest"
+"cargo:ubi" = "latest"
