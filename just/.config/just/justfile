@@ -1,0 +1,15 @@
+# vim: set ft=just sts=2 sw=2 ts=2:
+
+@default:
+  just -g --list
+
+# run apt upgrade
+[linux]
+@apt:
+  sudo apt update -q
+  sudo apt full-upgrade --yes
+  sudo apt autoremove --yes --purge
+
+# update nvim packages
+@nvim:
+  nvim --headless "+Lazy! sync" "+TSUpdateSync" "+MasonUpdate" "+MasonToolsUpdateSync" +qa
