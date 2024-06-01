@@ -14,36 +14,29 @@ return {
   },
   keys = {
     {
-      "<leader>a",
+      "<leader>ga",
       function()
         local mod = require("grapple")
 
         if mod.exists() then
-          vim.notify(" Removed from grapple ", "info")
+          vim.api.nvim_notify(" Removed from grapple ", "info")
           mod.untag()
         else
-          vim.notify(" Added to grapple ", "info")
+          vim.api.nvim_notify(" Added from grapple ", "info")
           mod.tag()
         end
       end,
       desc = "Toggle Grapple",
     },
     {
-      "<leader>th",
-      function()
-        return require("grapple").toggle_tags()
-      end,
-      desc = "Toggle Grapple menu",
-    },
-    {
-      "g[",
+      "[g",
       function()
         return require("grapple").cycle_tags("prev", {})
       end,
       desc = "Toggle Grapple menu",
     },
     {
-      "g]",
+      "]g",
       function()
         return require("grapple").cycle_tags("next", {})
       end,
