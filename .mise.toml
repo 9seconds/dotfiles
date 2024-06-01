@@ -1,8 +1,8 @@
 [tools]
-just = "latest"
+"cargo:just" = "latest"
+"cargo:selene" = "latest"
 lazygit = "latest"
 poetry = "latest"
 ruff = "latest"
 rust = "latest"
 stylua = "latest"
-"cargo:selene" = "latest"
