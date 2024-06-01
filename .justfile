@@ -14,6 +14,9 @@ set shell := ["bash", "-cu"]
   poetry self add -- poetry-plugin-up@latest
   poetry install --no-root
 
+@plug what:
+  ./dots plug {{what}}
+
 
 [group("update")]
 @poetry-up:
