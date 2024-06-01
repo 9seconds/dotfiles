@@ -70,16 +70,7 @@ local commentstring_config = {
   opts = {},
 }
 
-local textobjects_config = {
-  "nvim-treesitter/nvim-treesitter-textobjects",
-  dependencies = {
-    "nvim-treesitter/nvim-treesitter",
-  },
-  event = { "FileType" },
-}
-
 return {
   treesitter_config,
   commentstring_config,
-  textobjects_config,
 }
