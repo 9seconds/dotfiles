@@ -13,3 +13,10 @@
 # update nvim packages
 @nvim:
   nvim --headless "+Lazy! sync" "+TSUpdateSync" "+MasonUpdate" "+MasonToolsUpdateSync" +qa
+
+# update mise stuff
+@mise:
+  mise up
+
+# update all
+@up: apt nvim mise
