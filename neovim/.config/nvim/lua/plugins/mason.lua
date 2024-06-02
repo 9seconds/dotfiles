@@ -12,7 +12,7 @@ local mason = {
     },
     ui = {
       check_outdated_packages_on_open = false,
-    }
+    },
   },
 }
 
@@ -21,7 +21,7 @@ local mason = {
 local tool_installer = {
   "WhoIsSethDaniel/mason-tool-installer.nvim",
   dependencies = {
-    "williamboman/mason.nvim"
+    "williamboman/mason.nvim",
   },
   cmd = {
     "MasonToolsInstall",
@@ -41,7 +41,7 @@ local tool_installer = {
     },
     auto_update = true,
     run_on_start = false,
-  }
+  },
 }
 
 return {

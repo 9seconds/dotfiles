@@ -5,11 +5,11 @@
 -- https://github.com/echasnovski/mini.bracketed
 local mini_bracketed = {
   "echasnovski/mini.bracketed",
-  lazy = true,
+  event = { "VeryLazy" },
 
   opts = {
-    comment = "",
-    diagnostic = "",
+    comment = { suffix = "" },
+    diagnostic = { suffix = "" },
   },
 }
 
@@ -37,8 +37,18 @@ local mini_splitjoin = {
   },
 }
 
+-- Automatic highlighting of word under cursor
+-- https://github.com/echasnovski/mini.cursorword
+local mini_cursorword = {
+  "echasnovski/mini.cursorword",
+  event = { "VeryLazy" },
+
+  opts = {},
+}
+
 return {
   mini_bracketed,
   mini_ai,
   mini_splitjoin,
+  mini_cursorword,
 }
