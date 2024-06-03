@@ -12,7 +12,7 @@
 
 # update nvim packages
 @nvim:
-  nvim --headless "+Lazy! sync" "+TSUpdateSync" "+MasonUpdate" "+MasonToolsUpdateSync" +qa
+  nvim --headless '+Lazy! sync' +TSUpdateSync '+lua require("mason-registry").refresh()' +MasonToolsUpdateSync +qa
 
 # update mise stuff
 @mise:
