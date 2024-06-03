@@ -10,7 +10,7 @@ return {
     {
       "<leader>a",
       "<cmd>Twilight<cr>",
-      desc = "Toggle twilight"
+      desc = "Toggle twilight",
     },
   },
 

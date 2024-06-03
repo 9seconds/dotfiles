@@ -12,7 +12,7 @@ function M:react(path)
   end
 
   local exrc_path = vim.fs.joinpath(path, ".nvim.lua")
-  if self.loaded[exrc_path] ~= nil then
+  if self.loaded[exrc_path] then
     return
   end
   self.loaded[exrc_path] = true
@@ -39,13 +39,13 @@ end
 function M.setup()
   vim.o.exrc = false
 
-  local function callback()
+  local callback = vim.schedule_wrap(function()
     M:react(vim.uv.cwd())
 
-    if package.loaded["lspconfig"] ~= nil then
+    if vim.g.lspconfig then
       require("_.lsp"):update()
     end
-  end
+  end)
 
   vim.api.nvim_create_autocmd({ "DirChanged" }, {
     group = vim.api.nvim_create_augroup("9_ExRC", {}),

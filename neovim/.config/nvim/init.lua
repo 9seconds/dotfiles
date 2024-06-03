@@ -8,7 +8,7 @@ vim.loader.enable()
 local datapath = vim.fn.stdpath("data") .. "/lazy"
 local lazypath = datapath .. "/lazy.nvim"
 
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   vim.fn.system({
     "git",
     "clone",
