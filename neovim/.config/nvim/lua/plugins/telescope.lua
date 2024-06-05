@@ -130,14 +130,14 @@ local telescope_config = {
           override_file_sorter = true,
         },
         egrepify = {
-          prefixes = {
+          prefixes = vim.tbl_extend("force", {
             ["^"] = {
               flag = "fixed-strings",
             },
-            ["!"] = {
-              flag = "invert-match",
+            ["@"] = {
+              flag = "type",
             },
-          },
+          }, vim.g.telescope_egrepify_prefixes or {}),
         },
       },
     })
