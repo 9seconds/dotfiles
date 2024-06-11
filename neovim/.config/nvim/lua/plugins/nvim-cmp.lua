@@ -16,16 +16,9 @@ local function tab_action(action, fallback)
   local cmp = require("cmp")
 
   if cmp.visible() then
-    if #cmp.get_entries() == 1 then
-      cmp.confirm({ select = true })
-    else
-      return action()
-    end
+    return action()
   elseif has_words_before() then
-    cmp.complete()
-    if #cmp.get_entries() == 1 then
-      return cmp.confirm({ select = true })
-    end
+    return cmp.complete()
   end
 
   return fallback()
