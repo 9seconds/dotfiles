@@ -2,11 +2,17 @@
 
 alias e := edit
 
+# -----------------------------------------------------------------------------
+
+export MAKEFLAGS := `printf -- "-j %d -l %d" $(nproc) $(echo "$(nproc) / 2" | bc)`
+
+# -----------------------------------------------------------------------------
+
 @default:
   just -g --list
 
 @edit:
-  nvim {{justfile()}}
+  $EDITOR {{justfile()}}
 
 # run apt upgrade
 [linux]
