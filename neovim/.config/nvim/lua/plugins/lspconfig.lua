@@ -42,16 +42,9 @@ return {
     {
       "<leader>lh",
       function()
-        return vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+        return vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({}))
       end,
       desc = "Toggle inlay hints",
-    },
-    {
-      "<leader>ls",
-      function()
-        return vim.lsp.buf.signature_help()
-      end,
-      desc = "Show signature help",
     },
     {
       "<leader>lf",
@@ -61,17 +54,10 @@ return {
       mode = { "n", "v" },
       desc = "Format",
     },
-    {
-      "<leader>ln",
-      function()
-        return vim.lsp.buf.rename()
-      end,
-      desc = "Rename",
-    },
   },
 
   config = function()
     require("_.lsp"):update()
-    vim.lsp.inlay_hint.enable(true)
+    vim.lsp.inlay_hint.enable(false)
   end,
 }
