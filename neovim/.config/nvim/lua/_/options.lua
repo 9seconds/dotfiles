@@ -1,6 +1,20 @@
 -- This module contains these options you usually expect to be set with
 -- :set or vim.o
 
+local function is_gui_attached()
+  if vim.g.neovide then
+    return true
+  end
+
+  local uis = vim.api.nvim_list_uis()
+  if vim.tbl_count(uis) == 1 then
+    -- Neovide and other editors have std{in,out}_tty properties set to false
+    return not (uis[1].stdin_tty or uis[1].stdout_tty)
+  end
+
+  return true
+end
+
 return {
   setup = function()
     local utils = require("_.utils")
@@ -116,5 +130,22 @@ return {
 
     -- set global indentation
     utils.set_indent(4)
+
+    -- set clipboard
+    if not (is_gui_attached() or os.getenv("SSH_TTY") == nil) then
+      local copy = require("vim.ui.clipboard.osc52").copy
+
+      vim.g.clipboard = {
+        name = "OSC 52",
+        copy = {
+          ["+"] = copy("+"),
+          ["*"] = copy("*"),
+        },
+        paste = {
+          ["+"] = function() end,
+          ["*"] = function() end,
+        },
+      }
+    end
   end,
 }
