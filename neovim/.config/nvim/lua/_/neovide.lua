@@ -3,7 +3,7 @@ local M = {}
 function M.setup()
   vim.o.guifont = "Monaspace Neon:h13:#e-subpixelantialias"
 
-  vim.o.linespace = 5
+  vim.o.linespace = 10
   vim.g.neovide_scale_factor = 1.0
   vim.g.neovide_floating_shadow = true
   vim.g.neovide_floating_z_height = 15
@@ -31,8 +31,9 @@ function M.setup()
     vim.g.neovide_scale_factor = 1.0
   end, { desc = "Return Neovide back to normal font" })
 
+  local group = vim.api.nvim_create_augroup("9_Neovide", {})
   vim.api.nvim_create_autocmd("UIEnter", {
-    group = vim.api.nvim_create_augroup("9_Neovide", {}),
+    group = group,
     callback = function()
       -- https://github.com/neovide/neovide/issues/1331#issuecomment-1261545158
       if vim.v.event.chan > 1 then
@@ -44,6 +45,24 @@ function M.setup()
           )
         end
       end
+    end,
+  })
+
+  -- Neovide has a weird flickering bug for commandheight 0
+  local old_height
+  vim.api.nvim_create_autocmd("CmdlineEnter", {
+    group = group,
+    callback = function()
+      if vim.o.ch == 0 then
+        old_height = vim.o.ch
+        vim.o.ch = 1
+      end
+    end,
+  })
+  vim.api.nvim_create_autocmd("CmdlineLeave", {
+    group = group,
+    callback = function()
+      vim.o.ch = old_height
     end,
   })
 end
