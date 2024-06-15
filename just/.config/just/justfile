@@ -26,7 +26,7 @@ export MAKEFLAGS := `printf -- "-j %d -l %d" $(nproc) $(echo "$(nproc) / 2" | bc
   nvim --headless '+Lazy! sync' +TSUpdateSync '+lua require("mason-registry").refresh()' +MasonToolsUpdateSync +qa
 
 # update mise stuff
-@mise:
+@mise $RUSTUP_INIT_SKIP_PATH_CHECK="1":
   mise up
 
 # update all
