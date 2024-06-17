@@ -1,0 +1,50 @@
+tap "homebrew/bundle"
+tap "homebrew/services"
+# Memory training application
+cask "anki"
+# Display management tool
+cask "betterdisplay"
+# Desktop password and login vault
+cask "bitwarden"
+# Screen capturing tool
+cask "cleanshot"
+# Web browser
+cask "firefox"
+cask "font-fira-code"
+cask "font-monaspace"
+# Web browser
+cask "google-chrome"
+# Tools to protect your emails and files
+cask "gpg-suite"
+# Terminal emulator as alternative to Apple's Terminal app
+cask "iterm2"
+# Menu bar manager
+cask "jordanbaird-ice"
+# End-to-end encryption software
+cask "keybase"
+# Neovim Client
+cask "neovide"
+# Knowledge base that works on top of a local folder of plain text Markdown files
+cask "obsidian"
+# Control your tools with a few keystrokes
+cask "raycast"
+# Team communication and collaboration software
+cask "slack"
+# Notepad with a built-in calculator
+cask "soulver"
+# Music streaming service
+cask "spotify"
+# Real time file synchronisation software
+cask "syncthing"
+# Messaging app with a focus on speed and security
+cask "telegram"
+# Development environment
+cask "vagrant"
+# Virtualiser for x86 hardware
+cask "virtualbox"
+# OpenVPN client with AppleScript support
+cask "viscosity"
+# GPU-accelerated cross-platform terminal emulator and multiplexer
+cask "wezterm"
+# Video communication and virtual meeting platform
+cask "zoom"
