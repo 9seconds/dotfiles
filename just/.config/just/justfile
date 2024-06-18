@@ -21,12 +21,7 @@ alias e := edit
 
 # run brew upgrade
 [macos]
-@up-system:
-  brew update
-  brew upgrade --greedy-latest
-  brew autoremove
-  brew cleanup --prune=all --scrub
-  rm -rf "$(brew --cache)"
+@up-system: brew-upgrade
 
 # update nvim packages
 @up-nvim:
@@ -40,17 +35,30 @@ alias e := edit
 @up: up-system up-nvim up-mise
 
 # wrapper for brew install that updates bundle
+[group("brew")]
 [macos]
 @brew-install name: && brew-update-bundle
   brew install '{{name}}'
 
 # wrapper for brew uninstall that updates bundle
+[group("brew")]
 [macos]
 @brew-uninstall name: && brew-update-bundle
   brew uninstall '{{name}}'
   brew autoremove
 
 # update brew bundle
+[group("brew")]
 [macos]
 @brew-update-bundle:
   brew bundle dump --force --cask --describe --taps --mas
+
+# upgrade brew packages
+[group("brew")]
+[macos]
+@brew-upgrade:
+  brew update
+  brew upgrade --greedy-latest
+  brew autoremove
+  brew cleanup --prune=all --scrub
+  rm -rf "$(brew --cache)"
