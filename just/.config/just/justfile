@@ -4,30 +4,53 @@ alias e := edit
 
 # -----------------------------------------------------------------------------
 
-export MAKEFLAGS := `printf -- "-j %d -l %d" $(nproc) $(echo "$(nproc) / 2" | bc)`
-
-# -----------------------------------------------------------------------------
-
+# list targets
 @default:
   just -g --list
 
+# edit justfile
 @edit:
   $EDITOR {{justfile()}}
 
 # run apt upgrade
 [linux]
-@apt:
+@up-system:
   sudo apt update -q
   sudo apt full-upgrade --yes
   sudo apt autoremove --yes --purge
 
+# run brew upgrade
+[macos]
+@up-system:
+  brew update
+  brew upgrade --greedy-latest
+  brew autoremove
+  brew cleanup --prune=all --scrub
+  rm -rf "$(brew --cache)"
+
 # update nvim packages
-@nvim:
+@up-nvim:
   nvim --headless '+Lazy! sync' +TSUpdateSync '+lua require("mason-registry").refresh()' +MasonToolsUpdateSync +qa
 
 # update mise stuff
-@mise $RUSTUP_INIT_SKIP_PATH_CHECK="1":
-  mise up
+@up-mise $RUSTUP_INIT_SKIP_PATH_CHECK="1":
+  MAKEFLAGS='-j {{num_cpus()}}' mise up
 
 # update all
-@up: apt nvim mise
+@up: up-system up-nvim up-mise
+
+# wrapper for brew install that updates bundle
+[macos]
+@brew-install name: && brew-update-bundle
+  brew install '{{name}}'
+
+# wrapper for brew uninstall that updates bundle
+[macos]
+@brew-uninstall name: && brew-update-bundle
+  brew uninstall '{{name}}'
+  brew autoremove
+
+# update brew bundle
+[macos]
+@brew-update-bundle:
+  brew bundle dump --force --cask --describe --taps --mas

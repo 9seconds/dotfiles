@@ -42,9 +42,11 @@ cask "telegram"
 cask "vagrant"
 # Virtualiser for x86 hardware
 cask "virtualbox"
-# OpenVPN client with AppleScript support
-cask "viscosity"
 # GPU-accelerated cross-platform terminal emulator and multiplexer
 cask "wezterm"
 # Video communication and virtual meeting platform
 cask "zoom"
+mas "Bitwarden", id: 1352778147
+mas "iA Writer", id: 775737590
+mas "Magnet", id: 441258766
+mas "Omnivore", id: 1564031042
