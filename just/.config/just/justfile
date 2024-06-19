@@ -23,6 +23,7 @@ alias e := edit
 [macos]
 @up-system: brew-upgrade
   mise self-update --yes
+  mas upgrade
 
 # update nvim packages
 @up-nvim:
