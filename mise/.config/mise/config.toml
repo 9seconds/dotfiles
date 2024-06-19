@@ -11,7 +11,6 @@
 "cargo:ubi" = "latest"
 "cargo:zellij" = "latest"
 "cargo:zoxide" = "latest"
-ccache = "latest"
 direnv = "latest"
 dyff = "latest"
 fzf = "latest"
