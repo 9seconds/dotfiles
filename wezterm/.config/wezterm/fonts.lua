@@ -35,5 +35,5 @@ return function(config)
   config.freetype_load_target = "Light"
 
   -- https://wezfurlong.org/wezterm/config/lua/config/line_height.html
-  config.line_height = 1.3
+  config.line_height = 1.4
 end
