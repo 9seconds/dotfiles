@@ -29,10 +29,10 @@ return function(config)
   })
 
   -- https://wezfurlong.org/wezterm/config/lua/config/font_size.html
-  config.font_size = 13
+  config.font_size = 14
 
   -- https://wezfurlong.org/wezterm/config/lua/config/freetype_load_target.html
-  config.freetype_load_target = "Normal"
+  config.freetype_load_target = "Light"
 
   -- https://wezfurlong.org/wezterm/config/lua/config/line_height.html
   config.line_height = 1.3
