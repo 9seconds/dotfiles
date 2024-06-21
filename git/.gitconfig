@@ -14,6 +14,7 @@
     brd = branch -D
     brl = "!f() { git br --list \"*$(git branch-prefix)*\" "$@"; }; f"
     brn = "!f() { local brname="$1"; shift; git switch -C "$(git branch-prefix)$brname" "$@"; }; f"
+    arev = "!f() { git absorb --base $(git merge-base HEAD "${1:-origin/master}"); } ; f"
     cl = clean -fdq
     clx = cl -x
     cm = commit -m
