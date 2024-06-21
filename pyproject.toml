@@ -1,15 +1,3 @@
-[tool.poetry]
-name = "dotfiles"
-version = "0.0.0"
-description = "My dotfiles"
-authors = ["Sergey Arkhipov <nineseconds@yandex.ru>"]
-license = "MIT"
-readme = "README.md"
-
-[tool.poetry.group.dev.dependencies]
-mypy = "^1.10.0"
-isort = "^5.13.2"
-
 [tool.ruff]
 line-length = 80
 target-version = "py312"
@@ -49,10 +37,3 @@ honor_noqa = true
 python_version = "3.12"
 strict = true
 incremental = false
-
-[tool.poetry.dependencies]
-python = "^3.12"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"

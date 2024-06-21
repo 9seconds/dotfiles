@@ -1,8 +1,6 @@
 [tools]
 "cargo:just" = "latest"
 "cargo:selene" = "latest"
-"pipx:poetry" = "latest"
+"cargo:stylua" = "latest"
+"pipx:isort" = "latest"
 "pipx:ruff" = "latest"
-lazygit = "latest"
-rust = "latest"
-stylua = "latest"
