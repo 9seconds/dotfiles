@@ -6,10 +6,10 @@ return function(config)
   config.color_scheme = "Tokyo Night Storm"
 
   -- https://wezfurlong.org/wezterm/config/lua/config/initial_cols.html
-  config.initial_cols = 250
+  config.initial_cols = 270
 
   -- https://wezfurlong.org/wezterm/config/lua/config/initial_rows.html
-  config.initial_rows = 60
+  config.initial_rows = 70
 
   -- https://wezfurlong.org/wezterm/config/lua/config/use_fancy_tab_bar.html
   config.use_fancy_tab_bar = false
