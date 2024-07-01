@@ -8,12 +8,6 @@
     ap = a --patch
     apa = ap --all
     bl = blame --show-stats --date iso
-    br = branch -vv
-    branch-prefix = "!f() { echo "$(git config user.login)-"; }; f"
-    brc = !git br | grep -vF '*' | awk '/: gone]/{print $1}' | xargs -n 100 -r git brd
-    brd = branch -D
-    brl = "!f() { git br --list \"*$(git branch-prefix)*\" "$@"; }; f"
-    brn = "!f() { local brname="$1"; shift; git switch -C "$(git branch-prefix)$brname" "$@"; }; f"
     arev = "!f() { git absorb --base $(git merge-base HEAD "${1:-origin/master}"); } ; f"
     cl = clean -fdq
     clx = cl -x

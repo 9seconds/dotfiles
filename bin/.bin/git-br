@@ -350,7 +350,12 @@ def get_options() -> argparse.Namespace:
     )
     gc_parser.set_defaults(run=cmd_gc)
 
-    return parser.parse_args()
+    ns = parser.parse_args()
+    if not hasattr(ns, "run"):
+        parser.print_help()
+        sys.exit(1)
+
+    return ns
 
 
 def cmd_new(options: argparse.Namespace) -> str | None:
@@ -426,13 +431,15 @@ def cmd_delete(options: argparse.Namespace) -> str | None:
     ]
     git_simple("branch", "-D", *[ref.short_local_ref for ref in to_delete])
 
-    upstreams = {}
+    upstreams: dict[str, list[str]] = {}
     for ref in to_delete:
         if options.upstream and ref.remote:
             upstreams.setdefault(ref.remote, []).append(ref.remote_ref)
 
     for remote, branches in upstreams.items():
         git_simple("push", "--delete", remote, *branches)
+
+    return None
 
 
 def cmd_describe(options: argparse.Namespace) -> str | None:
@@ -519,6 +526,8 @@ def cmd_gc(_: argparse.Namespace) -> str | None:
     if deleted_refs:
         git_simple("branch", "-D", *deleted_refs)
 
+    return None
+
 
 def git_simple(*command: str) -> subprocess.CompletedProcess[str]:
     proc = subprocess.run(
@@ -534,7 +543,7 @@ def git_simple(*command: str) -> subprocess.CompletedProcess[str]:
 
 @functools.lru_cache(maxsize=1)
 def get_git_user_name() -> str:
-    return git_simple("config", "--local", "--get", "user.name").stdout.rstrip()
+    return git_simple("config", "--get", "user.name").stdout.rstrip()
 
 
 @functools.lru_cache(maxsize=1)
