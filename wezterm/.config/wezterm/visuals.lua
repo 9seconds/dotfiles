@@ -9,7 +9,7 @@ return function(config)
   config.initial_cols = 270
 
   -- https://wezfurlong.org/wezterm/config/lua/config/initial_rows.html
-  config.initial_rows = 70
+  config.initial_rows = 60
 
   -- https://wezfurlong.org/wezterm/config/lua/config/use_fancy_tab_bar.html
   config.use_fancy_tab_bar = false
