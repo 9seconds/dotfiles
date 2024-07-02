@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import argparse
 import base64
-import bisect
 import dataclasses
 import datetime
 import functools
@@ -13,6 +12,7 @@ import json
 import logging
 import os
 import re
+import shutil
 import subprocess
 import sys
 import typing as t
@@ -28,7 +28,7 @@ CURRENT_BRANCH: t.Final[str] = "."
 ENV_PREFIX: t.Final[str] = "GITBR_"
 ENV_ISSUE_URL_FORMAT: t.Final[str] = f"{ENV_PREFIX}ISSUE_URL"
 ENV_ISSUE_RE: t.Final[str] = f"{ENV_PREFIX}ISSUE_RE"
-ENV_DEFAULT_UPSTREAM_BRANCH: t.Final[str] = f"{ENV_PREFIX}DEFAULT_UPSTREAM"
+ENV_USERNAME: t.Final[str] = f"{ENV_PREFIX}USERNAME"
 
 ISSUE_URL_FORMAT: t.Final[str] = os.getenv(ENV_ISSUE_URL_FORMAT, "")
 if ISSUE_URL_FORMAT and not ISSUE_URL_FORMAT.startswith(
@@ -44,7 +44,7 @@ if ENV_ISSUE_RE in os.environ:
         sys.exit(f"Incorrect regular expression at ${ENV_ISSUE_RE}: {exc}")
 
 
-@dataclasses.dataclass(kw_only=True)
+@dataclasses.dataclass(kw_only=True, frozen=True)
 class RefInfo:
     local_ref: str
     remote: str
@@ -52,18 +52,17 @@ class RefInfo:
     head: bool
     gone: bool
 
+    @functools.lru_cache(maxsize=1)
     def is_local(self) -> bool:
         return self.local_ref.startswith("refs/heads/")
 
-    @property
+    @functools.cached_property
     def short_local_ref(self) -> str:
         return make_short_ref_name(self.local_ref)
 
-    @property
+    @functools.cached_property
     def short_remote_ref(self) -> str:
-        if not self.remote:
-            return ""
-        return f"{self.remote}/{make_short_ref_name(self.remote_ref)}"
+        return make_short_ref_name(self.remote_ref)
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -108,34 +107,30 @@ class Branch:
     @functools.cached_property
     def upstream(self) -> str:
         try:
-            proc = git_simple(
-                "rev-parse",
-                "--abbrev-ref",
-                "--symbolic-full-name",
-                f"{self.name}@{{upstream}}",
-            )
-        except subprocess.CalledProcessError:
+            ref = get_git_refs()[self.name]
+        except KeyError:
             return ""
 
-        return proc.stdout.rstrip()
+        if not ref.remote:
+            return ""
+
+        return f"{ref.remote}/{ref.short_remote_ref}"
 
     @functools.cached_property
-    def unique_commits(self) -> tuple[tuple[datetime.datetime, str, str], ...]:
+    def unique_commits(self) -> tuple[tuple[datetime.datetime, str], ...]:
         if not self.upstream:
             return ()
 
-        proc = git_simple(
+        proc = git(
             "log",
-            "--pretty=format:%cI\t%aN\t%H",
+            "--pretty=format:%cI\t%aN",
             f"{self.upstream}..{self.name}",
         )
 
         lines = []
         for line in proc.stdout.splitlines():
-            date, author, commit_hash = line.split("\t")
-            lines.append(
-                (datetime.datetime.fromisoformat(date), author, commit_hash)
-            )
+            date, author = line.split("\t")
+            lines.append((datetime.datetime.fromisoformat(date), author))
 
         return tuple(lines)
 
@@ -152,7 +147,7 @@ class Branch:
             return {}
 
         stats: dict[str, int] = {}
-        for _, author, _ in self.unique_commits:
+        for _, author in self.unique_commits:
             stats.setdefault(author, 0)
             stats[author] += 1
 
@@ -160,7 +155,7 @@ class Branch:
 
     def save(self) -> None:
         if self.metadata:
-            git_simple(
+            git(
                 "config",
                 "--local",
                 "--replace-all",
@@ -173,7 +168,7 @@ class Branch:
         branch = Branch(name=name)
 
         try:
-            value = git_simple(
+            value = git(
                 "config",
                 "--local",
                 "--get",
@@ -187,7 +182,7 @@ class Branch:
         return branch
 
 
-def main() -> str | None:
+def main() -> str | int | None:
     options = get_options()
 
     if options.debug:
@@ -197,13 +192,19 @@ def main() -> str | None:
     else:
         logging.basicConfig(format="%(message)s", level=logging.INFO)
 
-    return t.cast(str | None, options.run(options))
+    try:
+        return t.cast(str | None, options.run(options))
+    except subprocess.CalledProcessError as exc:
+        LOG.error("Command %s has finished with %d", exc.cmd, exc.returncode)
+        LOG.error("Stdout: %s", exc.stdout)
+        LOG.error("Stderr: %s", exc.stderr)
+        return 1
 
 
 def get_options() -> argparse.Namespace:
     def type_upstream_branch(value: str) -> str:
         try:
-            git_simple("rev-parse", f"refs/remotes/{value}")
+            git("rev-parse", f"refs/remotes/{value}")
         except subprocess.CalledProcessError as exc:
             first_line = next(iter(exc.stderr.splitlines()))
             raise argparse.ArgumentTypeError(first_line)
@@ -212,15 +213,15 @@ def get_options() -> argparse.Namespace:
     def type_branch(value: str) -> str:
         if value == CURRENT_BRANCH:
             try:
-                proc = git_simple("symbolic-ref", "--short", "--quiet", "HEAD")
+                proc = git("symbolic-ref", "--short", "--quiet", "HEAD")
             except subprocess.CalledProcessError as exc:
                 raise argparse.ArgumentTypeError(exc.stderr.rstrip())
             else:
                 value = proc.stdout.rstrip()
 
         if not any(
-            ref.is_local() and ref.short_local_ref == value
-            for ref in get_git_refs()
+            ref.is_local() and name == value
+            for name, ref in get_git_refs().items()
         ):
             raise argparse.ArgumentTypeError("Unknown reference")
 
@@ -254,6 +255,13 @@ def get_options() -> argparse.Namespace:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     new_parser.add_argument(
+        "-t",
+        "--track",
+        action="store_true",
+        default=False,
+        help="Set upstream configuration.",
+    )
+    new_parser.add_argument(
         "-i",
         "--issue",
         type=str,
@@ -270,6 +278,14 @@ def get_options() -> argparse.Namespace:
         help="Branch description.",
     )
     new_parser.set_defaults(run=cmd_new)
+
+    switch_parser = subparsers.add_parser(
+        "switch",
+        aliases=["w"],
+        description="Switch to another branch. Requires fzf.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    switch_parser.set_defaults(run=cmd_switch)
 
     delete_parser = subparsers.add_parser(
         "delete",
@@ -324,8 +340,8 @@ def get_options() -> argparse.Namespace:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     list_parser.add_argument(
-        "-v",
-        "--verbose",
+        "-m",
+        "--more",
         action="count",
         default=0,
         help=(
@@ -334,11 +350,11 @@ def get_options() -> argparse.Namespace:
         ),
     )
     list_parser.add_argument(
-        "-s",
-        "--short",
+        "-v",
+        "--verbose",
         action="count",
         default=0,
-        help="Show short output. Repeat option to get even shorter output.",
+        help="Increase verbosity of output. Repeat option to increase.",
     )
     list_parser.set_defaults(run=cmd_list)
 
@@ -378,13 +394,13 @@ def cmd_new(options: argparse.Namespace) -> str | None:
     branch_chunks = [get_git_user_name(), issue_stem, options.stem]
     branch_name = "-".join(chunk for chunk in branch_chunks if chunk).lower()
 
-    try:
-        git_simple("branch", branch_name)
-    except subprocess.CalledProcessError as exc:
-        return f"Cannot create branch: {exc.stderr.strip()}"
+    cli_opts = ["switch", "--create", branch_name]
+    if options.track:
+        cli_opts.append("--guess")
     else:
-        LOG.info("Branch %s created", branch_name)
+        cli_opts.append("--no-track")
 
+    git(*cli_opts)
     branch = Branch(
         name=branch_name,
         metadata=Metadata(
@@ -394,6 +410,53 @@ def cmd_new(options: argparse.Namespace) -> str | None:
         ),
     )
     branch.save()
+
+    return None
+
+
+def cmd_switch(_: argparse.Namespace) -> str | None:
+    if not shutil.which("fzf"):
+        return "fzf is not available"
+
+    if not os.isatty(sys.stdin.fileno()):
+        return "Available only with interactive terminal"
+
+    refs = [ref for ref in get_git_refs().values() if not ref.head]
+    refs.sort(
+        key=lambda ref: (
+            ref.is_local(),
+            ref.short_local_ref.startswith(get_git_user_name()),
+            ref.short_local_ref,
+        )
+    )
+
+    fzf_proc = subprocess.run(
+        [
+            "fzf",
+            "--height=~20%",
+            "--ignore-case",
+            "--no-sort",
+            "--tiebreak=end,index",
+            "--border=none",
+            "--info=hidden",
+            "--prompt=Branch> ",
+            f"--preview={__file__} show {{}} 2>/dev/null",
+        ],
+        stderr=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        check=False,
+        input="\n".join(ref.short_local_ref for ref in refs),
+        text=True,
+    )
+    match fzf_proc.returncode:
+        case 0:
+            git("checkout", fzf_proc.stdout.rstrip())
+        case 130:
+            return None
+        case value:
+            return (
+                f"fzf has finished with {value} return code: {fzf_proc.stderr}"
+            )
 
     return None
 
@@ -426,10 +489,10 @@ def cmd_show(options: argparse.Namespace) -> str | None:
 def cmd_delete(options: argparse.Namespace) -> str | None:
     to_delete = [
         ref
-        for ref in get_git_refs()
-        if ref.is_local() and ref.short_local_ref in set(options.branch)
+        for name, ref in get_git_refs().items()
+        if ref.is_local() and name in set(options.branch)
     ]
-    git_simple("branch", "-D", *[ref.short_local_ref for ref in to_delete])
+    git("branch", "-D", *[ref.short_local_ref for ref in to_delete])
 
     upstreams: dict[str, list[str]] = {}
     for ref in to_delete:
@@ -437,7 +500,7 @@ def cmd_delete(options: argparse.Namespace) -> str | None:
             upstreams.setdefault(ref.remote, []).append(ref.remote_ref)
 
     for remote, branches in upstreams.items():
-        git_simple("push", "--delete", remote, *branches)
+        git("push", "--delete", remote, *branches)
 
     return None
 
@@ -454,32 +517,28 @@ def cmd_describe(options: argparse.Namespace) -> str | None:
 
 
 def cmd_list(options: argparse.Namespace) -> str | None:
-    all_refs = get_git_refs()
-    all_refs.sort(key=lambda x: x.short_local_ref)
+    all_refs = sorted(get_git_refs().items())
 
-    match options.verbose:
+    match options.more:
         case 0:
             all_refs = [
-                ref
-                for ref in all_refs
-                if ref.short_local_ref.startswith(f"{get_git_user_name()}-")
-                and ref.is_local()
+                (name, ref)
+                for name, ref in all_refs
+                if name.startswith(f"{get_git_user_name()}-") and ref.is_local()
             ]
         case 1:
-            all_refs = [ref for ref in all_refs if ref.is_local()]
+            all_refs = [(name, ref) for name, ref in all_refs if ref.is_local()]
 
     branches: list[Branch] = []
     first_branch = Branch(name="")
 
-    for ref in all_refs:
+    for name, ref in all_refs:
         if ref.head:
-            first_branch = Branch(name=ref.short_local_ref)
+            first_branch = Branch(name=name)
         else:
-            bisect.insort(
-                branches,
-                Branch.load_from(ref.short_local_ref),
-                key=lambda x: x.name,
-            )
+            branches.append(Branch.load_from(name))
+
+    branches.sort(key=lambda x: x.name)
     branches.insert(0, first_branch)
 
     for branch in branches:
@@ -487,88 +546,75 @@ def cmd_list(options: argparse.Namespace) -> str | None:
             print()
             continue
 
-        values = {
-            "upstream": branch.upstream or "",
-            "created": "",
-            "updated": "",
-            "commits": len(branch.unique_commits) or 0,
-        }
-        if branch.metadata:
-            values["created"] = format_days_ago(branch.metadata.timestamp)
-        if branch.last_updated:
-            values["updated"] = format_days_ago(
-                datetime.datetime.fromisoformat(branch.last_updated)
-            )
+        if options.verbose == 0:
+            print(branch.name)
+            continue
 
-        match options.short:
-            case 0:
-                print(branch.name)
-                if chunks := [f"{k}: {v}" for k, v in values.items() if v]:
-                    print(f"  {', '.join(chunks)}")
-            case 1:
-                print(branch.name)
-                del values["created"]
-                del values["updated"]
-                if chunks := [f"{k}: {v}" for k, v in values.items() if v]:
-                    print(f"  {', '.join(chunks)}")
-            case _:
-                print(branch.name)
+        updated = "-"
+        if up := branch.last_updated:
+            updated = format_days_ago(datetime.datetime.fromisoformat(up))
+        print(
+            f"{branch.name} (upstream:{branch.upstream or '-'} updated:{updated} commits:{len(branch.unique_commits)})"
+        )
 
     return None
 
 
 def cmd_gc(_: argparse.Namespace) -> str | None:
     deleted_refs = [
-        ref.short_local_ref
-        for ref in get_git_refs()
+        name
+        for name, ref in get_git_refs().items()
         if ref.is_local() and ref.gone
     ]
     if deleted_refs:
-        git_simple("branch", "-D", *deleted_refs)
+        git("branch", "-D", *deleted_refs)
 
     return None
 
 
-def git_simple(*command: str) -> subprocess.CompletedProcess[str]:
-    proc = subprocess.run(
+def git(*command: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
         ["git"] + list(command),
         capture_output=True,
+        check=True,
         text=True,
         timeout=GIT_TIMEOUT,
     )
-    proc.check_returncode()
-
-    return proc
 
 
 @functools.lru_cache(maxsize=1)
 def get_git_user_name() -> str:
-    return git_simple("config", "--get", "user.name").stdout.rstrip()
+    if name := os.getenv(ENV_USERNAME):
+        return name
+    return git("config", "--get", "user.name").stdout.rstrip()
 
 
 @functools.lru_cache(maxsize=1)
-def get_git_refs() -> list[RefInfo]:
-    proc = git_simple(
+def get_git_refs() -> t.Mapping[str, RefInfo]:
+    proc = git(
         "for-each-ref",
         "--no-stdin",
         "--omit-empty",
         "--format",
         "%(refname)&%(upstream:remotename)&%(upstream:remoteref)&%(upstream:track)&%(HEAD)",
     )
-    data: list[RefInfo] = []
+    data: dict[str, RefInfo] = {}
 
     for line in proc.stdout.splitlines():
         refname, remotename, remoteref, track, head = line.split("&")
-        if re.match("refs/(?:heads|remotes)/", refname):
-            data.append(
-                RefInfo(
-                    local_ref=refname,
-                    remote=remotename,
-                    remote_ref=remoteref,
-                    head=head == "*",
-                    gone=track == "[gone]",
-                )
-            )
+        if refname.endswith("HEAD"):
+            continue
+        if not re.match("refs/(?:heads|remotes)/", refname):
+            continue
+
+        info = RefInfo(
+            local_ref=refname,
+            remote=remotename,
+            remote_ref=remoteref,
+            head=head == "*",
+            gone=track == "[gone]",
+        )
+        data[info.short_local_ref] = info
 
     return data
 

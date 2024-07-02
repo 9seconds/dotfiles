@@ -44,12 +44,12 @@ alias e := edit
 [group("python")]
 [group("format")]
 @isort +filename:
-  poetry run isort --atomic --jobs {{num_cpus()}} {{filename}}
+  isort --atomic --jobs {{num_cpus()}} {{filename}}
 
 [group("python")]
 [group("lint")]
 @mypy +filename:
-  poetry run mypy --no-incremental {{filename}}
+  mypy --no-incremental {{filename}}
 
 [group("python")]
 [group("lint")]
@@ -64,5 +64,5 @@ alias e := edit
 @_python +filename: (isort filename) (mypy filename) (ruff-c filename) (ruff-f filename)
 
 [group("python")]
-@python: (_python "dots")
+@python: (_python "dots") (_python "bin/.bin/git-br")
   fd -H -e py -t f -X just _python
