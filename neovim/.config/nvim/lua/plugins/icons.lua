@@ -1,5 +1,15 @@
 -- different icons niceties
 
+local function flatten_pallete(tbl)
+  local rv = vim.iter(tbl):map(function(_, v)
+    if type(v) == "table" then
+      return flatten_pallete(v)
+    end
+    return v
+  end):totable()
+  return vim.iter(vim.tbl_values(rv)):flatten():totable()
+end
+
 -- development icons
 -- https://github.com/nvim-tree/nvim-web-devicons
 local devicons = {
@@ -15,21 +25,13 @@ local color_fix = {
   "rachartier/tiny-devicons-auto-colors.nvim",
   dependencies = {
     "nvim-tree/nvim-web-devicons",
+    "folke/tokyonight.nvim",
   },
   event = { "VeryLazy" },
 
   config = function()
-    local scheme = require("tokyonight.colors").default
-    local palette = {}
-
-    for _, v in pairs(scheme) do
-      if type(v) == "string" and string.sub(v, 1, 1) == "#" then
-        table.insert(palette, v)
-      end
-    end
-
     require("tiny-devicons-auto-colors").setup({
-      colors = palette,
+      colors = flatten_pallete(require("tokyonight.colors.storm")),
     })
   end,
 }

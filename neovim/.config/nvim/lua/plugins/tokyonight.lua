@@ -9,10 +9,11 @@ return {
 
   config = function()
     require("tokyonight").setup({
+      style = "storm",
       hide_inactive_statusline = true,
       dim_inactive = true,
       lualine_bold = true,
     })
-    vim.cmd("colorscheme tokyonight")
+    vim.cmd("colorscheme tokyonight-storm")
   end,
 }
