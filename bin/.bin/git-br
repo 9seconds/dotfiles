@@ -1,5 +1,25 @@
 #!/usr/bin/env python3
-# vim: set ft=python:
+# MIT License
+#
+# Copyright (c) 2024 Sergey Arkhipov
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 from __future__ import annotations
 
@@ -366,6 +386,11 @@ def get_options() -> argparse.Namespace:
     )
     gc_parser.set_defaults(run=cmd_gc)
 
+    env_parser = subparsers.add_parser(
+        "env", description="Show relevant environment and its settings."
+    )
+    env_parser.set_defaults(run=cmd_env)
+
     ns = parser.parse_args()
     if not hasattr(ns, "run"):
         parser.print_help()
@@ -569,6 +594,12 @@ def cmd_gc(_: argparse.Namespace) -> str | None:
     if deleted_refs:
         git("branch", "-D", *deleted_refs)
 
+    return None
+
+
+def cmd_env(_: argparse.Namespace) -> str | None:
+    for name in sorted((ENV_ISSUE_RE, ENV_ISSUE_URL_FORMAT, ENV_USERNAME)):
+        print(f"${name} = {os.getenv(name)}")
     return None
 
 
