@@ -248,11 +248,11 @@ def get_options() -> argparse.Namespace:
         return value
 
     def type_branch_stem(value: str) -> str:
-        if not re.fullmatch(r"[a-zA-Z0-9/-]+", value):
+        if not re.fullmatch(r"[a-zA-Z0-9/-_]+", value):
             raise argparse.ArgumentTypeError(
-                "Stem should be alphanumeric, dash and /"
+                "Stem should be alphanumeric, dash, underscore and /"
             )
-        return value
+        return value.replace("-", "_")
 
     parser = argparse.ArgumentParser(
         description="9seconds manages git branches.",
@@ -275,8 +275,8 @@ def get_options() -> argparse.Namespace:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     new_parser.add_argument(
-        "-t",
-        "--track",
+        "-u",
+        "--upstream",
         action="store_true",
         default=False,
         help="Set upstream configuration.",
@@ -284,20 +284,39 @@ def get_options() -> argparse.Namespace:
     new_parser.add_argument(
         "-i",
         "--issue",
-        type=str,
         help="Some text that contains issue ID (could be a link).",
+    )
+    new_parser.add_argument(
+        "-t",
+        "--description",
+        default=None,
+        help="Branch description.",
     )
     new_parser.add_argument(
         "stem",
         type=type_branch_stem,
         help="Suffix of the branch, short description.",
     )
-    new_parser.add_argument(
-        "description",
-        nargs=argparse.ZERO_OR_MORE,
+    new_parser.set_defaults(run=cmd_new)
+
+    edit_parser = subparsers.add_parser(
+        "edit", aliases=["e"], help="Edit branch metadata."
+    )
+    edit_parser.add_argument(
+        "-i",
+        "--issue",
+        help="Some text that contains issue ID (could be a link).",
+    )
+    edit_parser.add_argument(
+        "-t",
+        "--description",
+        default=None,
         help="Branch description.",
     )
-    new_parser.set_defaults(run=cmd_new)
+    edit_parser.add_argument(
+        "branch", type=type_branch, default=CURRENT_BRANCH, help="Branch name."
+    )
+    edit_parser.set_defaults(run=cmd_edit)
 
     switch_parser = subparsers.add_parser(
         "switch",
@@ -327,20 +346,6 @@ def get_options() -> argparse.Namespace:
         help="Branch to delete.",
     )
     delete_parser.set_defaults(run=cmd_delete)
-
-    describe_parser = subparsers.add_parser(
-        "describe",
-        aliases=["e"],
-        description="Describe a branch.",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
-    describe_parser.add_argument(
-        "name", type=type_branch, default=CURRENT_BRANCH, help="Branch name."
-    )
-    describe_parser.add_argument(
-        "description", nargs=argparse.ZERO_OR_MORE, help="Branch description."
-    )
-    describe_parser.set_defaults(run=cmd_describe)
 
     show_parser = subparsers.add_parser(
         "show",
@@ -400,43 +405,71 @@ def get_options() -> argparse.Namespace:
 
 
 def cmd_new(options: argparse.Namespace) -> str | None:
-    issue: None | re.Match[str] = None
-    if options.issue:
-        if not ISSUE_RE:
-            return f"${ENV_ISSUE_RE} is not defined"
-        issue = ISSUE_RE.search(options.issue)
-        if not issue:
-            return (
-                "Cannot find a correct issue. " f"Pattern is {ISSUE_RE.pattern}"
-            )
-
     issue_stem = ""
-    issue_url = ""
-    if issue is not None:
-        issue_stem = re.sub(r"[^a-zA-Z0-9]", "", issue.group(0)).lower()
-        issue_url = issue.expand(ISSUE_URL_FORMAT)
+    if options.issue:
+        try:
+            issue = get_issue(options.issue)
+        except ValueError as exc:
+            return str(exc)
+        else:
+            issue_stem = re.sub(r"[^a-zA-Z0-9]", "", issue.group(0)).lower()
 
     branch_chunks = [get_git_user_name(), issue_stem, options.stem]
     branch_name = "-".join(chunk for chunk in branch_chunks if chunk).lower()
 
     cli_opts = ["switch", "--create", branch_name]
-    if options.track:
+    if options.upstream:
         cli_opts.append("--guess")
     else:
         cli_opts.append("--no-track")
 
     git(*cli_opts)
-    branch = Branch(
-        name=branch_name,
-        metadata=Metadata(
-            issue=issue.group(0) if issue is not None else "",
-            issue_url=issue_url,
-            description=" ".join(options.description),
-        ),
-    )
+    branch = Branch(name=branch_name, metadata=Metadata())
+    branch.save()
+
+    options.branch = branch_name
+
+    if options.issue or options.description is not None:
+        return cmd_edit(options)
+    return None
+
+
+def cmd_edit(options: argparse.Namespace) -> str | None:
+    if options.description is None and not options.issue:
+        return "Please define either description or issue"
+
+    branch = Branch.load_from(options.branch)
+    if not branch.metadata:
+        branch.metadata = Metadata()
+
+    if options.description is not None:
+        branch.metadata.description = options.description
+
+    if options.issue:
+        try:
+            match = get_issue(options.issue)
+        except ValueError as exc:
+            return str(exc)
+        else:
+            branch.metadata.issue = match.group(0)
+            branch.metadata.issue_url = match.expand(ISSUE_URL_FORMAT)
+
     branch.save()
 
     return None
+
+
+def get_issue(text: str) -> re.Match[str]:
+    if not ISSUE_RE:
+        raise ValueError(f"${ENV_ISSUE_RE} is not defined")
+
+    issue = ISSUE_RE.search(text)
+    if not issue:
+        raise ValueError(
+            f"Cannot find a correct issue. Pattern is {ISSUE_RE.pattern}"
+        )
+
+    return issue
 
 
 def cmd_switch(_: argparse.Namespace) -> str | None:
@@ -459,9 +492,8 @@ def cmd_switch(_: argparse.Namespace) -> str | None:
         [
             "fzf",
             "--height=~20%",
-            "--ignore-case",
             "--no-sort",
-            "--tiebreak=end,index",
+            "--tiebreak=length,end,index",
             "--border=none",
             "--info=hidden",
             "--prompt=Branch> ",
@@ -526,17 +558,6 @@ def cmd_delete(options: argparse.Namespace) -> str | None:
 
     for remote, branches in upstreams.items():
         git("push", "--delete", remote, *branches)
-
-    return None
-
-
-def cmd_describe(options: argparse.Namespace) -> str | None:
-    branch = Branch.load_from(options.name)
-    if not branch.metadata:
-        branch.metadata = Metadata()
-
-    branch.metadata.description = " ".join(options.description)
-    branch.save()
 
     return None
 
