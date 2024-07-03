@@ -49,6 +49,12 @@ local function is_git()
   return result
 end
 
+-- https://github.com/nvim-telescope/telescope-fzf-native.nvim
+local fzf_native_config = {
+  "nvim-telescope/telescope-fzf-native.nvim",
+  build = "make",
+}
+
 -- https://github.com/nvim-telescope/telescope.nvim
 local telescope_config = {
   "nvim-telescope/telescope.nvim",
@@ -56,7 +62,7 @@ local telescope_config = {
     "nvim-lua/plenary.nvim",
     "nvim-treesitter/nvim-treesitter",
     "nvim-tree/nvim-web-devicons",
-    "nvim-telescope/telescope-fzy-native.nvim",
+    "nvim-telescope/telescope-fzf-native.nvim",
   },
   version = "*",
   keys = {
@@ -125,9 +131,11 @@ local telescope_config = {
       },
 
       extensions = {
-        fzy_native = {
+        fzf = {
+          fuzzy = true,
           override_generic_sorter = true,
           override_file_sorter = true,
+          case_mode = "smart_case",
         },
         egrepify = {
           prefixes = vim.tbl_extend("force", {
@@ -142,7 +150,7 @@ local telescope_config = {
       },
     })
 
-    telescope.load_extension("fzy_native")
+    telescope.load_extension("fzf")
   end,
 }
 
@@ -173,6 +181,7 @@ if vim.fn.executable("rg") then
 end
 
 return {
+  fzf_native_config,
   telescope_config,
   egrepify_config,
 }
