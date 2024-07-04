@@ -59,5 +59,6 @@ return {
   config = function()
     require("_.lsp"):update()
     vim.lsp.inlay_hint.enable(false)
+    vim.g.lspconfig = true
   end,
 }

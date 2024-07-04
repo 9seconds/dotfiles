@@ -39,7 +39,7 @@ end
 function M.setup()
   vim.o.exrc = false
 
-  local callback = vim.schedule_wrap(function()
+  local dir_changed = vim.schedule_wrap(function()
     M:react(vim.uv.cwd())
 
     if vim.g.lspconfig then
@@ -47,12 +47,23 @@ function M.setup()
     end
   end)
 
+  local root = vim.fs.root(vim.env.PWD, {
+    ".editorconfig",
+    ".git",
+    "Makefile",
+    "package.json",
+    "pyproject.toml",
+  })
+  if root and root ~= vim.uv.cwd() then
+    vim.fn.chdir(root)
+  end
+
   vim.api.nvim_create_autocmd({ "DirChanged" }, {
     group = vim.api.nvim_create_augroup("9_ExRC", {}),
-    callback = callback,
+    callback = dir_changed,
   })
 
-  callback()
+  dir_changed()
 end
 
 return M
