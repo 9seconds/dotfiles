@@ -1,12 +1,15 @@
 -- different icons niceties
 
 local function flatten_pallete(tbl)
-  local rv = vim.iter(tbl):map(function(_, v)
-    if type(v) == "table" then
-      return flatten_pallete(v)
-    end
-    return v
-  end):totable()
+  local rv = vim
+    .iter(tbl)
+    :map(function(_, v)
+      if type(v) == "table" then
+        return flatten_pallete(v)
+      end
+      return v
+    end)
+    :totable()
   return vim.iter(vim.tbl_values(rv)):flatten():totable()
 end
 
