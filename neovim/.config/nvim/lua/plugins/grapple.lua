@@ -29,20 +29,28 @@ return {
       desc = "Toggle Grapple",
     },
     {
+      "<leader>gt",
+      function()
+        return require("grapple").toggle_tags()
+      end,
+      desc = "Toggle grapple tags",
+    },
+    {
       "[g",
       function()
         return require("grapple").cycle_tags("prev", {})
       end,
-      desc = "Toggle Grapple menu",
+      desc = "Go to previous grapple tag",
     },
     {
       "]g",
       function()
         return require("grapple").cycle_tags("next", {})
       end,
-      desc = "Toggle Grapple menu",
+      desc = "Go to next grapple tag",
     },
   },
+  cmd = "Grapple",
 
   config = function()
     local mod = require("grapple")
