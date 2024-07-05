@@ -7,8 +7,8 @@ return {
     {
       "<c-j>",
       function()
-        if require("snippy").can_jump(1) then
-          return "<plug>(snippy-next)"
+        if require("snippy").can_expand_or_advance() then
+          return "<plug>(snippy-expand-or-advance)"
         end
         return "<c-j>"
       end,

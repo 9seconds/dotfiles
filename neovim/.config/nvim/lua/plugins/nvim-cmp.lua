@@ -1,40 +1,15 @@
 -- autocomplete configuraiton
 -- https://github.com/hrsh7th/nvim-cmp
 
-local function has_words_before()
-  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-
-  if col == 0 then
-    return false
-  end
-
-  local lne = vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]
-  return not lne:sub(col, col):match("%s")
-end
-
-local function tab_action(action, fallback)
-  local cmp = require("cmp")
-
-  if cmp.visible() then
-    return action()
-  elseif has_words_before() then
-    return cmp.complete()
-  end
-
-  return fallback()
-end
-
 return {
   "hrsh7th/nvim-cmp",
   dependencies = {
     "windwp/nvim-autopairs",
-    "abecodes/tabout.nvim",
     "FelipeLema/cmp-async-path",
     "hrsh7th/cmp-nvim-lsp",
     "hrsh7th/cmp-nvim-lsp-signature-help",
     "onsails/lspkind.nvim",
     "dcampos/nvim-snippy",
-    "dcampos/cmp-snippy",
   },
   event = "InsertEnter",
 
@@ -56,12 +31,6 @@ return {
           and not ctx.in_syntax_group("Comment")
       end,
 
-      snippet = {
-        expand = function(args)
-          return require("snippy").expand_snippet(args.body)
-        end,
-      },
-
       view = {
         entries = "native",
       },
@@ -76,10 +45,18 @@ return {
 
       mapping = {
         ["<Tab>"] = cmp.mapping(function(fallback)
-          return tab_action(cmp.select_next_item, fallback)
+          if cmp.visible() then
+            cmp.select_next_item()
+          else
+            fallback()
+          end
         end, { "i", "s" }),
         ["<S-Tab>"] = cmp.mapping(function(fallback)
-          return tab_action(cmp.select_prev_item, fallback)
+          if cmp.visible() then
+            cmp.select_prev_item()
+          else
+            fallback()
+          end
         end, { "i", "s" }),
         ["<Down>"] = cmp.mapping.select_next_item(),
         ["<Up>"] = cmp.mapping.select_prev_item(),
@@ -103,7 +80,6 @@ return {
       },
 
       sources = {
-        { name = "snippy" },
         { name = "nvim_lsp" },
         { name = "nvim_lsp_signature_help" },
         {
