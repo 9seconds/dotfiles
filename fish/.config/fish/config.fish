@@ -19,4 +19,4 @@ if test -e $HOME/.local-config.fish
   source $HOME/.local-config.fish
 end
 
-fzf_configure_bindings --directory=\cg
+fzf_configure_bindings --directory=\cf
