@@ -396,6 +396,17 @@ def get_options() -> argparse.Namespace:
     )
     env_parser.set_defaults(run=cmd_env)
 
+    retarget_parser = subparsers.add_parser(
+        "retarget", description="Change branch upstream in case of PR"
+    )
+    retarget_parser.add_argument(
+        "old", type=type_upstream_branch, help="Old upstream"
+    )
+    retarget_parser.add_argument(
+        "new", type=type_upstream_branch, help="New upstream"
+    )
+    retarget_parser.set_defaults(run=cmd_retarget)
+
     ns = parser.parse_args()
     if not hasattr(ns, "run"):
         parser.print_help()
@@ -621,6 +632,14 @@ def cmd_gc(_: argparse.Namespace) -> str | None:
 def cmd_env(_: argparse.Namespace) -> str | None:
     for name in sorted((ENV_ISSUE_RE, ENV_ISSUE_URL_FORMAT, ENV_USERNAME)):
         print(f"${name} = {os.getenv(name)}")
+    return None
+
+
+def cmd_retarget(options: argparse.Namespace) -> str | None:
+    base = git(
+        "merge-base", "--fork-point", options.old, "HEAD"
+    ).stdout.rstrip()
+    git("rebase", "--onto", options.new, base)
     return None
 
 
