@@ -496,7 +496,8 @@ def cmd_switch(_: argparse.Namespace) -> str | None:
             ref.is_local(),
             ref.short_local_ref.startswith(get_git_user_name()),
             ref.short_local_ref,
-        )
+        ),
+        reverse=True,
     )
 
     fzf_proc = subprocess.run(
@@ -504,7 +505,7 @@ def cmd_switch(_: argparse.Namespace) -> str | None:
             "fzf",
             "--height=~20%",
             "--no-sort",
-            "--tiebreak=length,end,index",
+            "--tiebreak=index",
             "--border=none",
             "--info=hidden",
             "--prompt=Branch> ",
