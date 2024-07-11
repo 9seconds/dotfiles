@@ -31,6 +31,7 @@ alias e := edit
 
 # update mise stuff
 @up-mise $RUSTUP_INIT_SKIP_PATH_CHECK="1":
+  mise plugins update
   MAKEFLAGS='-j {{num_cpus()}}' mise up
 
 # update all
