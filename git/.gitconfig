@@ -48,7 +48,7 @@
 [difftool "difftastic"]
     cmd = difft --skip-unchanged --tab-width 4 --context 5 "$LOCAL" "$REMOTE"
 [push]
-    default = simple
+    default = upstream
     autoSetupRemote = true
 [fetch]
     parallel = 0
