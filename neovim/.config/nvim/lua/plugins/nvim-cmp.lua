@@ -4,12 +4,13 @@
 return {
   "hrsh7th/nvim-cmp",
   dependencies = {
-    "windwp/nvim-autopairs",
     "FelipeLema/cmp-async-path",
+    "dcampos/nvim-snippy",
     "hrsh7th/cmp-nvim-lsp",
     "hrsh7th/cmp-nvim-lsp-signature-help",
     "onsails/lspkind.nvim",
-    "dcampos/nvim-snippy",
+    "windwp/nvim-autopairs",
+    "zbirenbaum/copilot.lua",
   },
   event = "InsertEnter",
 
@@ -45,14 +46,22 @@ return {
 
       mapping = {
         ["<Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
+          local copilot = require("copilot.suggestion")
+
+          if copilot.is_visible() then
+            copilot.accept()
+          elseif cmp.visible() then
             cmp.select_next_item()
           else
             fallback()
           end
         end, { "i", "s" }),
         ["<S-Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
+          local copilot = require("copilot.suggestion")
+
+          if copilot.is_visible() then
+            copilot.dismiss()
+          elseif cmp.visible() then
             cmp.select_prev_item()
           else
             fallback()
@@ -94,5 +103,16 @@ return {
 
     local cmp_autopairs = require("nvim-autopairs.completion.cmp")
     cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+
+    cmp.event:on("menu_opened", function()
+      vim.api.nvim_exec_autocmds("User", {
+        pattern = "_9CopilotHide",
+      })
+    end)
+    cmp.event:on("menu_closed", function()
+      vim.api.nvim_exec_autocmds("User", {
+        pattern = "_9CopilotShow",
+      })
+    end)
   end,
 }

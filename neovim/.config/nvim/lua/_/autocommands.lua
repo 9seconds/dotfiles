@@ -18,4 +18,18 @@ return {
       end,
     })
   end,
+
+  -- what to do on exrc read
+  vim.api.nvim_create_autocmd({ "User" }, {
+    group = vim.api.nvim_create_augroup("9_Lsp", {}),
+    pattern = "_9ExrcUpdated",
+    callback = function()
+      if vim.g.lspconfig then
+        require("_.lsp"):update()
+      end
+      vim.api.nvim_exec_autocmds("User", {
+        pattern = "_9CopilotUse",
+      })
+    end,
+  }),
 }
