@@ -7,43 +7,48 @@ local M = {
 
 function M:react(path)
   local dirname = vim.fs.dirname(path)
+  local read = false
+
   if dirname ~= path then
-    self:react(dirname)
+    read = self:react(dirname) or read
   end
 
   local exrc_path = vim.fs.joinpath(path, ".nvim.lua")
   if self.loaded[exrc_path] then
-    return
+    return read
   end
   self.loaded[exrc_path] = true
 
   local stat = vim.uv.fs_stat(exrc_path)
   if not stat then
-    return
+    return read
   end
 
   if not vim.secure.read(exrc_path) then
-    return
+    return read
   end
 
-  local ok = xpcall(vim.cmd.source, debug.traceback, exrc_path)
-  if not ok then
-    vim.api.nvim_notify(
-      string.format("Cannot load %s exrc", exrc_path),
-      vim.log.levels.WARN,
-      {}
-    )
+  if xpcall(vim.cmd.source, debug.traceback, exrc_path) then
+    return true
   end
+
+  vim.api.nvim_notify(
+    string.format("Cannot load %s exrc", exrc_path),
+    vim.log.levels.WARN,
+    {}
+  )
+
+  return false
 end
 
 function M.setup()
   vim.o.exrc = false
 
   local dir_changed = vim.schedule_wrap(function()
-    M:react(vim.uv.cwd())
-
-    if vim.g.lspconfig then
-      require("_.lsp"):update()
+    if M:react(vim.uv.cwd()) then
+      vim.api.nvim_exec_autocmds("User", {
+        pattern = "_9ExrcUpdated",
+      })
     end
   end)
 
@@ -59,7 +64,7 @@ function M.setup()
   end
 
   vim.api.nvim_create_autocmd({ "DirChanged" }, {
-    group = vim.api.nvim_create_augroup("9_ExRC", {}),
+    group = vim.api.nvim_create_augroup("9_Exrc", {}),
     callback = dir_changed,
   })
 

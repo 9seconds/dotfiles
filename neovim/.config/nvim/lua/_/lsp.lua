@@ -7,6 +7,18 @@ local M = {
   },
 }
 
+function M:setup()
+  vim.api.nvim_create_autocmd({ "User" }, {
+    group = vim.api.nvim_create_augroup("9_Lsp", {}),
+    pattern = "_9ExrcUpdated",
+    callback = function()
+      if vim.g.lspconfig then
+        self:update()
+      end
+    end,
+  })
+end
+
 function M:set(server_name, opts)
   self.data.opts[server_name] = opts or {}
   self.data.changed[server_name] = true
