@@ -6,93 +6,38 @@ local copilot_config = {
   cmd = "Copilot",
   event = "InsertEnter",
 
+  opts = {
+    panel = {
+      enabled = false,
+    },
+    suggestion = {
+      enabled = false,
+    },
+  },
+}
+
+local cmp_config = {
+  "zbirenbaum/copilot-cmp",
+  dependencies = {
+    "zbirenbaum/copilot.lua",
+    "onsails/lspkind.nvim",
+  },
+
   config = function()
-    local copilot = require("copilot")
+    require("copilot_cmp").setup()
 
-    copilot.setup({
-      panel = {
-        enabled = false,
-      },
-      suggestion = {
-        auto_trigger = true,
-        keymap = {
-          -- gonna use tab, so setup it in cmp
-          accept = false,
-          accept_word = "<M-w>",
-          accept_line = "<M-l>",
-          next = "<M-]>",
-          prev = "<M-[>",
-          -- gonna use s-tab so setup in cmp
-          dismiss = false,
-        },
+    require("lspkind").init({
+      symbol_map = {
+        Copilot = "",
       },
     })
 
-    local group = vim.api.nvim_create_augroup("9_Copilot", {})
-
-    vim.api.nvim_create_autocmd({ "User" }, {
-      group = group,
-      pattern = "_9CopilotShow",
-      callback = function()
-        vim.b.copilot_suggestion_auto_trigger = true
-        vim.b.copilot_suggestion_hidden = false
-      end,
-    })
-
-    vim.api.nvim_create_autocmd({ "User" }, {
-      group = group,
-      pattern = "_9CopilotHide",
-      callback = function()
-        vim.b.copilot_suggestion_auto_trigger = false
-        vim.b.copilot_suggestion_hidden = true
-      end,
-    })
-
-    local function trigger()
-      local commands = require("copilot.command")
-      if vim.g.use_copilot then
-        commands.enable()
-        commands.attach()
-      else
-        commands.detach()
-        commands.disable()
-      end
-    end
-
-    vim.api.nvim_create_autocmd({ "User" }, {
-      group = group,
-      pattern = "_9CopilotUse",
-      callback = trigger,
-    })
-
-    trigger()
+    -- https://github.com/folke/tokyonight.nvim/blob/main/lua/tokyonight/colors/storm.lua#L20
+    vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#9ece6a" })
   end,
 }
 
 return {
   copilot_config,
+  cmp_config,
 }
---
--- return {
---   "zbirenbaum/copilot.lua",
---   cmd = "Copilot",
---   event = "InsertEnter",
---   config = function()
---     if vim.g.use_copilot then
---       require("copilot").setup({
---         suggestion = {
---           auto_trigger = true,
---         },
---       })
---
---       vim.keymap.set("i", "<C-l>", function()
---         local autopairs = require("nvim-autopairs")
---         local suggestion = require("copilot.suggestion")
---
---         autopairs.disable()
---         suggestion.accept()
---         autopairs.enable()
---       end, { desc = "Accept Copilot suggestion" })
---     end
---   end,
--- }
