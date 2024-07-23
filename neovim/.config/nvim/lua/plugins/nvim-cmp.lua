@@ -1,18 +1,6 @@
 -- autocomplete configuraiton
 -- https://github.com/hrsh7th/nvim-cmp
 
-local function has_words_before()
-  if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
-    return false
-  end
-  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0
-    and vim.api
-        .nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]
-        :match("^%s*$")
-      == nil
-end
-
 return {
   "hrsh7th/nvim-cmp",
   dependencies = {
@@ -22,7 +10,7 @@ return {
     "hrsh7th/cmp-nvim-lsp-signature-help",
     "onsails/lspkind.nvim",
     "windwp/nvim-autopairs",
-    "zbirenbaum/copilot-cmp",
+    "zbirenbaum/copilot.lua",
   },
   event = "InsertEnter",
 
@@ -33,6 +21,7 @@ return {
   config = function()
     local cmp = require("cmp")
     local ctx = require("cmp.config.context")
+    local copilot = require("copilot.suggestion")
 
     cmp.setup({
       enabled = function()
@@ -40,6 +29,12 @@ return {
         if vim.api.nvim_get_mode().mode == "c" then
           return true
         end
+
+        -- do not show completion when copilot is active
+        if copilot.is_visible() then
+          return false
+        end
+
         return not ctx.in_treesitter_capture("comment")
           and not ctx.in_syntax_group("Comment")
       end,
@@ -58,7 +53,7 @@ return {
 
       mapping = {
         ["<Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() and has_words_before() then
+          if cmp.visible() then
             -- https://github.com/hrsh7th/nvim-cmp/wiki/Example-mappings#intellij-like-mapping
             if not cmp.get_selected_entry() then
               cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
@@ -97,28 +92,7 @@ return {
         }),
       },
 
-      sorting = {
-        priority_weight = 2,
-        comparators = {
-          require("copilot_cmp.comparators").prioritize,
-
-          -- Below is the default comparitor list and order for nvim-cmp
-          -- https://github.com/hrsh7th/nvim-cmp/blob/d818fd0624205b34e14888358037fb6f5dc51234/lua/cmp/config/default.lua#L65-L79
-          cmp.config.compare.offset,
-          -- cmp.config.compare.scopes, --this is commented in nvim-cmp too
-          cmp.config.compare.exact,
-          cmp.config.compare.score,
-          cmp.config.compare.recently_used,
-          cmp.config.compare.locality,
-          cmp.config.compare.kind,
-          cmp.config.compare.sort_text,
-          cmp.config.compare.length,
-          cmp.config.compare.order,
-        },
-      },
-
       sources = {
-        { name = "copilot" },
         { name = "nvim_lsp" },
         { name = "nvim_lsp_signature_help" },
         {
