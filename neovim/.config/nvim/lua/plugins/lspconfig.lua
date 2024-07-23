@@ -62,5 +62,6 @@ return {
 
   config = function()
     vim.g.lspconfig = true
+    require("_.lsp"):update()
   end,
 }
