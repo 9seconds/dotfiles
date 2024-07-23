@@ -14,11 +14,11 @@ return {
       enabled = true,
       auto_trigger = true,
       keymap = {
-        accept = "<M-l>",
+        accept = "<C-a>",
         accept_word = "<M-w>",
         next = "<M-]>",
         prev = "<M-[>",
-        dismiss = "<M-x>",
+        dismiss = "<C-q>",
       },
     },
   },

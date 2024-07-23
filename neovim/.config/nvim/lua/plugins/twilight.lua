@@ -8,7 +8,7 @@ return {
   },
   keys = {
     {
-      "<leader>a",
+      "<leader>z",
       "<cmd>Twilight<cr>",
       desc = "Toggle twilight",
     },
