@@ -20,7 +20,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
 from __future__ import annotations
 
 import argparse
@@ -32,24 +31,22 @@ import json
 import logging
 import os
 import re
+import shlex
 import shutil
-import urllib.parse
 import subprocess
 import sys
 import typing as t
+import urllib.parse
 import zlib
-
-if t.TYPE_CHECKING:
-    import collections.abc
 
 
 LOG: t.Final[logging.Logger] = logging.getLogger(__name__)
 
-GIT_TIMEOUT: t.Final[int] = 10
 GIT_CONFIG_NAME: t.Final[str] = "gitbr"
 CURRENT_BRANCH: t.Final[str] = "."
 
 ENV_PREFIX: t.Final[str] = "GITBR_"
+ENV_DEBUG: t.Final[str] = f"{ENV_PREFIX}DEBUG"
 ENV_ISSUE_URL_FORMAT: t.Final[str] = f"{ENV_PREFIX}ISSUE_URL"
 ENV_ISSUE_RE: t.Final[str] = f"{ENV_PREFIX}ISSUE_RE"
 ENV_USERNAME: t.Final[str] = f"{ENV_PREFIX}USERNAME"
@@ -119,13 +116,16 @@ class Branch:
     @functools.cached_property
     def remote(self) -> str | None:
         try:
-            res = git("rev-parse", "--abbrev-ref", f"{self.name}@{{upstream}}")
+            res = git(
+                ["rev-parse", "--abbrev-ref", f"{self.name}@{{upstream}}"],
+                read=True,
+            )
         except subprocess.CalledProcessError as exc:
             if exc.returncode != 128:
                 raise
             return None
 
-        return res.stdout
+        return res.out
 
     @property
     def upstream(self) -> str:
@@ -137,9 +137,12 @@ class Branch:
             return ()
 
         output = git(
-            "log",
-            "--pretty=format:%cI",
-            f"{self.upstream}..{self.name}",
+            [
+                "log",
+                "--pretty=format:%cI",
+                f"{self.upstream}..{self.name}",
+            ],
+            read=True,
         )
 
         return tuple(
@@ -154,14 +157,18 @@ class Branch:
 
         return format_date(self.unique_commits[0])
 
-    def save(self) -> None:
+    def save(self, confirm: t.Optional[bool] = None) -> None:
         if self.metadata:
             git(
-                "config",
-                "--local",
-                "--replace-all",
-                f"branch.{self.name}.{GIT_CONFIG_NAME}",
-                self.metadata.serialize(),
+                [
+                    "config",
+                    "--local",
+                    "--replace-all",
+                    f"branch.{self.name}.{GIT_CONFIG_NAME}",
+                    self.metadata.serialize(),
+                ],
+                read=False,
+                confirm=confirm,
             )
 
     @classmethod
@@ -170,51 +177,39 @@ class Branch:
 
         try:
             value = git(
-                "config",
-                "--local",
-                "--get",
-                f"branch.{name}.{GIT_CONFIG_NAME}",
+                [
+                    "config",
+                    "--local",
+                    "--get",
+                    f"branch.{name}.{GIT_CONFIG_NAME}",
+                ],
+                read=True,
             )
         except subprocess.CalledProcessError:
             pass
         else:
-            branch.metadata = Metadata.load_from(value.stdout)
+            branch.metadata = Metadata.load_from(value.out)
 
         return branch
 
 
 @dataclasses.dataclass(kw_only=True)
 class SubprocessResult:
-    stdout: str
-    stderr: str
-    return_code: int
+    out: str
+    err: str
+    code: int
 
     @functools.cached_property
     def out_lines(self) -> list[str]:
-        return self.stdout.splitlines()
+        return self.out.splitlines()
 
     @functools.cached_property
     def err_lines(self) -> list[str]:
-        return self.stderr.splitlines()
-
-    @classmethod
-    def make(cls, proc: subprocess.CompletedProcess[str]) -> SubprocessResult:
-        return cls(
-            stdout=proc.stdout.rstrip(),
-            stderr=proc.stderr.rstrip(),
-            return_code=proc.returncode,
-        )
+        return self.err.splitlines()
 
 
 def main() -> str | int | None:
     options = get_options()
-
-    if options.debug:
-        logging.basicConfig(
-            format="%(levelname)s: %(message)s", level=logging.DEBUG
-        )
-    else:
-        logging.basicConfig(format="%(message)s", level=logging.INFO)
 
     try:
         return t.cast(str | None, options.run(options))
@@ -234,11 +229,11 @@ def get_options() -> argparse.Namespace:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
-        "-d",
-        "--debug",
+        "-c",
+        "--concerned",
         action="store_true",
         default=False,
-        help="Run in debug mode.",
+        help="Confirm every action that modifies git state.",
     )
 
     subparsers = parser.add_subparsers()
@@ -291,7 +286,7 @@ def get_options() -> argparse.Namespace:
         "--branch",
         type=type_local_branch,
         default=CURRENT_BRANCH,
-        help="Branch to edit."
+        help="Branch to edit.",
     )
     edit_parser.add_argument(
         "field",
@@ -413,7 +408,7 @@ def get_options() -> argparse.Namespace:
 
 def type_upstream_branch(value: str) -> str:
     try:
-        git("rev-parse", f"refs/remotes/{value}")
+        git(["rev-parse", f"refs/remotes/{value}"], read=True)
     except subprocess.CalledProcessError as exc:
         if exc.returncode == 128:
             first_line = next(iter(exc.stderr.splitlines()))
@@ -426,13 +421,13 @@ def type_upstream_branch(value: str) -> str:
 def type_local_branch(value: str) -> str:
     if value == CURRENT_BRANCH:
         try:
-            res = git("symbolic-ref", "--short", "--quiet", "HEAD")
+            res = git(["symbolic-ref", "--short", "--quiet", "HEAD"], read=True)
         except subprocess.CalledProcessError as exc:
             if exc.returncode == 128:
                 raise argparse.ArgumentTypeError(exc.stderr.rstrip()) from exc
             raise
 
-        value = res.stdout
+        value = res.out
 
     try:
         validate_branch_exists(value)
@@ -463,10 +458,14 @@ def cmd_new(options: argparse.Namespace) -> str | None:
     branch_chunks = [get_git_user_name(), issue_stem, options.stem]
     branch_name = "-".join(chunk for chunk in branch_chunks if chunk).lower()
 
-    git("switch", "--guess", "--create", branch_name)
+    git(
+        ["switch", "--guess", "--create", branch_name],
+        read=False,
+        confirm=options.concerned,
+    )
 
     branch = Branch(name=branch_name, metadata=Metadata())
-    branch.save()
+    branch.save(options.concerned)
     options.branch = branch_name
 
     for value in "issue", "description", "upstream", "remote":
@@ -499,12 +498,16 @@ def cmd_edit(options: argparse.Namespace) -> str | None:
             branch.metadata.issue_url = match.expand(conf_issue_url_format())
 
         case "remote":
-            git("branch", f"--set-upstream-to={options.value}", branch.name)
+            git(
+                ["branch", f"--set-upstream-to={options.value}", branch.name],
+                read=False,
+                confirm=options.concerned,
+            )
 
         case _:
             raise RuntimeError(f"Unknown action {options.field}")
 
-    branch.save()
+    branch.save(options.concerned)
 
     return None
 
@@ -523,10 +526,10 @@ def cmd_switch(options: argparse.Namespace) -> str | None:
     lines = fzf(
         "\n".join(ref.ref for ref in refs),
         auto_select=True,
-        query=options.query
+        query=options.query,
     )
     if lines:
-        git("checkout", lines[0])
+        git(["checkout", lines[0]], read=False, confirm=options.concerned)
 
     return None
 
@@ -561,19 +564,34 @@ def cmd_delete(options: argparse.Namespace) -> str | None:
             multi_select=True,
         )
 
+    remote_deletes: dict[str, list[str]] = {}
     for name in candidates:
-        if options.remote:
-            branch = Branch.load_from(name)
-            if not branch.remote:
-                continue
-            if branch.remote not in all_refs:
-                continue
-            if all_refs[branch.remote].gone:
-                continue
-            origin, _ , remote = branch.remote.partition("/")
-            git("push", "--delete", origin, remote)
+        if not options.remote:
+            continue
 
-        git("branch", "-D", name)
+        branch = Branch.load_from(name)
+        if not branch.remote:
+            continue
+        if branch.remote not in all_refs:
+            continue
+        if all_refs[branch.remote].gone:
+            continue
+
+        origin, _, remote = branch.remote.partition("/")
+        remote_deletes.setdefault(origin, []).append(remote)
+
+    for origin, branches in sorted(remote_deletes.items()):
+        git(
+            ["push", "--delete", origin, *sorted(branches)],
+            read=False,
+            confirm=options.concerned,
+        )
+
+    git(
+        ["branch", "-D", *sorted(candidates)],
+        read=False,
+        confirm=options.concerned,
+    )
 
     return None
 
@@ -621,12 +639,16 @@ def cmd_list(options: argparse.Namespace) -> str | None:
     return None
 
 
-def cmd_gc(_: argparse.Namespace) -> str | None:
-    deleted_refs = [
+def cmd_gc(options: argparse.Namespace) -> str | None:
+    deleted_refs = sorted(
         name for name, ref in get_git_refs().items() if ref.local and ref.gone
-    ]
+    )
     if deleted_refs:
-        git("branch", "-D", *deleted_refs)
+        git(
+            ["branch", "-D", *deleted_refs],
+            read=False,
+            confirm=options.concerned,
+        )
 
     return None
 
@@ -641,8 +663,13 @@ def cmd_env(_: argparse.Namespace) -> str | None:
 
 
 def cmd_retarget(options: argparse.Namespace) -> str | None:
-    base = git("merge-base", "--fork-point", options.old, "HEAD").stdout
-    git("rebase", "--onto", options.new, base)
+    base = git(["merge-base", "--fork-point", options.old, "HEAD"], read=True)
+    git(
+        ["rebase", "--onto", options.new, base.out],
+        read=False,
+        confirm=options.concerned,
+    )
+
     return None
 
 
@@ -664,17 +691,20 @@ def extract_issue(text: str) -> re.Match[str]:
 def get_git_user_name() -> str:
     if name := os.getenv(ENV_USERNAME):
         return name
-    return git("config", "--get", "user.name").stdout
+    return git(["config", "--get", "user.name"], read=True).out
 
 
 @functools.lru_cache(maxsize=1)
 def get_git_refs() -> t.Mapping[str, RefInfo]:
     lines = git(
-        "for-each-ref",
-        "--no-stdin",
-        "--omit-empty",
-        "--format",
-        "%(refname)&%(upstream:track)&%(HEAD)",
+        [
+            "for-each-ref",
+            "--no-stdin",
+            "--omit-empty",
+            "--format",
+            "%(refname)&%(upstream:track)&%(HEAD)",
+        ],
+        read=True,
     )
     data: dict[str, RefInfo] = {}
 
@@ -735,16 +765,29 @@ def conf_target() -> str:
     branch = os.getenv(ENV_TARGET)
     if branch is None:
         branch = git(
-            "symbolic-ref", "--short", f"refs/remotes/{conf_remote()}/HEAD"
-        ).stdout
+            ["symbolic-ref", "--short", f"refs/remotes/{conf_remote()}/HEAD"],
+            read=True,
+        ).out
 
     validate_branch_exists(branch)
 
     return branch
 
 
+@functools.lru_cache()
 def conf_remote() -> str:
     return os.getenv(ENV_REMOTE, "origin")
+
+
+@functools.lru_cache()
+def conf_debug() -> bool:
+    return os.getenv(ENV_DEBUG, "0").casefold() in {
+        "1",
+        "y",
+        "yes",
+        "true",
+        "t",
+    }
 
 
 def validate_branch_exists(value: str) -> None:
@@ -752,24 +795,23 @@ def validate_branch_exists(value: str) -> None:
         raise GitBrError(f"{value} does not exist")
 
 
-def git(*command: str) -> SubprocessResult:
-    return SubprocessResult.make(
-        subprocess.run(
-            ["git"] + list(command),
-            text=True,
-            capture_output=True,
-            check=True,
-            timeout=GIT_TIMEOUT,
-        )
+def git(
+    command: list[str], *, confirm: t.Optional[bool] = None, read: bool = True
+) -> SubprocessResult:
+    return execute_command(
+        ["git", "-c", "core.editor=false", "-P"] + command,
+        confirm=confirm,
+        read=read,
+        check=True,
     )
 
 
 def fzf(
-    input: str | collections.abc.Buffer,
+    stdin: str | list[str],
     *,
     multi_select: bool = False,
     auto_select: bool = False,
-    query: str = ""
+    query: str = "",
 ) -> list[str]:
     if not shutil.which("fzf"):
         raise GitBrError("fzf is not available")
@@ -779,7 +821,7 @@ def fzf(
 
     args = [
         "fzf",
-        "--height=~20%",
+        "--height=~30%",
         "--no-sort",
         "--border=none",
         "--info=hidden",
@@ -791,25 +833,70 @@ def fzf(
     if query:
         args.extend(["--query", query])
 
-    res = SubprocessResult.make(
-        subprocess.run(
-            args,
-            text=True,
-            input=input,
-            capture_output=True,
-            check=False,
-        )
-    )
-    match res.return_code:
-        case 0:
-            return res.out_lines
-        case 130:
+    match execute_command(args, check=False, read=True, stdin=stdin):
+        case SubprocessResult(code=0, out_lines=to_return):
+            return to_return
+        case SubprocessResult(code=130):
             return []
+        case SubprocessResult(code=code, err=err):
+            raise GitBrError(f"fzf has finished with {code} return code: {err}")
 
-    raise GitBrError(
-        f"fzf has finished with {res.return_code} return code: {res.stderr}"
+
+def execute_command(
+    command: list[str],
+    *,
+    confirm: t.Optional[bool] = None,
+    stdin: t.Optional[str | list[str]] = None,
+    check: bool = True,
+    read: bool = True,
+) -> SubprocessResult:
+    printable_command = shlex.join(command)
+    if confirm is None:
+        confirm = conf_debug()
+
+    while confirm and not read:
+        match input(f"Execute {printable_command}? [y/n] ").casefold():
+            case "y":
+                break
+            case "n":
+                raise GitBrError("Aborted")
+
+    if isinstance(stdin, list):
+        stdin = "\n".join(stdin)
+
+    LOG.debug("Execute %s", printable_command)
+
+    proc = subprocess.run(
+        command,
+        text=True,
+        input=stdin,
+        check=check,
+        capture_output=True,
     )
+    res = SubprocessResult(
+        out=proc.stdout.rstrip(),
+        err=proc.stderr.rstrip(),
+        code=proc.returncode,
+    )
+
+    if LOG.isEnabledFor(logging.DEBUG):
+        LOG.debug("Code: %d", res.code)
+        for line in (stdin or "").splitlines():
+            LOG.debug(">\t%s", line)
+        for line in res.out_lines:
+            LOG.debug("<\t%s", line)
+        for line in res.err_lines:
+            LOG.debug("!\t%s", line)
+
+    return res
 
 
 if __name__ == "__main__":
+    if conf_debug():
+        logging.basicConfig(
+            format="%(levelname)s: %(message)s", level=logging.DEBUG
+        )
+    else:
+        logging.basicConfig(format="%(message)s", level=logging.INFO)
+
     sys.exit(main())
