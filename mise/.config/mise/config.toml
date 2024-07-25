@@ -9,6 +9,8 @@
 "cargo:ripgrep" = "latest"
 "cargo:ubi" = "latest"
 "cargo:zellij" = "latest"
+"cargo:git-graph" = "latest"
+"cargo:git-igitt" = "latest"
 "cargo:zoxide" = "latest"
 direnv = "latest"
 "ubi:junegunn/fzf" = "latest"
