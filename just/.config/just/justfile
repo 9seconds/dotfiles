@@ -33,6 +33,8 @@ alias e := edit
 @up-mise $RUSTUP_INIT_SKIP_PATH_CHECK="1":
   mise plugins update
   MAKEFLAGS='-j {{num_cpus()}}' mise up
+  mise prune -y
+  mise reshim
 
 # update all
 @up: up-system up-nvim up-mise
