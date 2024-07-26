@@ -19,10 +19,10 @@ return {
         local mod = require("grapple")
 
         if mod.exists() then
-          vim.api.nvim_notify(" Removed from grapple ", "info")
+          vim.api.nvim_notify("Removed from grapple", vim.log.levels.INFO, {})
           mod.untag()
         else
-          vim.api.nvim_notify(" Added from grapple ", "info")
+          vim.api.nvim_notify("Added from grapple", vim.log.levels.INFO, {})
           mod.tag()
         end
       end,
