@@ -8,6 +8,7 @@ function M.setup()
   require("_.autocommands").setup()
   require("_.commands").setup()
   require("_.terminal").setup()
+  require("_.copilot"):setup()
   require("_.exrc").setup()
 
   if vim.g.neovide then

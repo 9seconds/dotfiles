@@ -34,7 +34,12 @@ return {
       },
 
       sections = {
-        lualine_a = { "mode" },
+        lualine_a = {
+          function()
+            return vim.b.copilot_active and "" or ""
+          end,
+          "mode",
+        },
         lualine_b = {
           "diagnostics",
           {

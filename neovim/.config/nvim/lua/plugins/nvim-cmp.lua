@@ -10,7 +10,6 @@ return {
     "hrsh7th/cmp-nvim-lsp-signature-help",
     "onsails/lspkind.nvim",
     "windwp/nvim-autopairs",
-    "zbirenbaum/copilot.lua",
   },
   event = "InsertEnter",
 
@@ -21,18 +20,16 @@ return {
   config = function()
     local cmp = require("cmp")
     local ctx = require("cmp.config.context")
-    local copilot = require("copilot.suggestion")
 
     cmp.setup({
       enabled = function()
+        if vim.b.copilot_active then
+          return false
+        end
+
         -- https://github.com/hrsh7th/nvim-cmp/wiki/Advanced-techniques
         if vim.api.nvim_get_mode().mode == "c" then
           return true
-        end
-
-        -- do not show completion when copilot is active
-        if copilot.is_visible() then
-          return false
         end
 
         return not ctx.in_treesitter_capture("comment")
@@ -107,5 +104,11 @@ return {
 
     local cmp_autopairs = require("nvim-autopairs.completion.cmp")
     cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+    cmp.event:on("menu_opened", function()
+      require("_.copilot"):cmp_enabled(false)
+    end)
+    cmp.event:on("menu_closed", function()
+      require("_.copilot"):cmp_enabled(true)
+    end)
   end,
 }
