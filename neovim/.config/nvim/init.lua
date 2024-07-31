@@ -26,10 +26,6 @@ require("_.exrc")
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
-if vim.g.neovide then
-  require("_.neovide").setup()
-end
-
 vim.api.nvim_create_autocmd({ "User" }, {
   once = true,
   pattern = "VeryLazy",
