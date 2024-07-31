@@ -5,23 +5,21 @@ local M = {
 }
 
 function M:user_toggle()
-  self:user_enabled(not self.enabled)
+  M.user_enabled(not M.enabled)
 end
 
-function M:user_enabled(enabled)
-  self.enabled = enabled
-  self:set()
+function M.user_enabled(enabled)
+  M.enabled = enabled
+  M.set()
 end
 
-function M:cmp_enabled(enabled)
+function M.cmp_enabled(enabled)
   vim.b.copilot_cmp_enabled = enabled
-  self:set()
+  M.set()
 end
 
-function M:set()
-  local enabled = vim.g.use_copilot
-    and self.enabled
-    and vim.b.copilot_cmp_enabled
+function M.set()
+  local enabled = vim.g.use_copilot and M.enabled and vim.b.copilot_cmp_enabled
   if enabled == vim.b.copilot_active then
     return
   end
@@ -42,7 +40,7 @@ function M:set()
   end
 end
 
-function M:activate()
+function M.activate()
   local mod = package.loaded["copilot.command"]
   if not mod then
     return
@@ -54,20 +52,16 @@ function M:activate()
     mod.disable()
   end
 
-  self:set()
+  M.set()
 end
 
-function M:setup()
-  vim.g.use_copilot = false
-
+local function setup()
   local group = vim.api.nvim_create_augroup("9_Copilot", {})
 
   vim.api.nvim_create_autocmd({ "User" }, {
     group = group,
     pattern = "_9ExrcUpdated",
-    callback = function()
-      M:activate()
-    end,
+    callback = M.activate,
   })
 
   vim.api.nvim_create_autocmd({ "BufEnter" }, {
@@ -81,9 +75,11 @@ function M:setup()
         vim.b.copilot_cmp_enabled = true
       end
 
-      M:set()
+      M.set()
     end,
   })
 end
+
+setup()
 
 return M

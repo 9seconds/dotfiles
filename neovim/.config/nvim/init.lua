@@ -20,7 +20,32 @@ if not vim.uv.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-require("_").setup()
+require("_.exrc")
+
+-- lazy.nvim required mapleader to be present before its execution
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
+if vim.g.neovide then
+  require("_.neovide").setup()
+end
+
+vim.api.nvim_create_autocmd({ "User" }, {
+  once = true,
+  pattern = "VeryLazy",
+  callback = function()
+    require("_.options")
+    require("_.keymappings")
+    require("_.autocommands")
+    require("_.commands")
+    require("_.terminal")
+
+    if vim.g.neovide then
+      require("_.neovide")
+    end
+  end,
+})
+
 require("lazy").setup("plugins", {
   root = datapath,
   lockfile = datapath .. "/lazy-lock.json",

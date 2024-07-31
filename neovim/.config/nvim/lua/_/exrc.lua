@@ -1,23 +1,21 @@
 -- custom pipeline tha sources .nvim.lua files starting from the root
 -- a better exrc because allows to open project file in a random directory
 
-local M = {
-  loaded = {},
-}
+local LOADED_PATHS = {}
 
-function M:react(path)
+local function load(path)
   local dirname = vim.fs.dirname(path)
   local read = false
 
   if dirname ~= path then
-    read = self:react(dirname) or read
+    read = load(dirname) or read
   end
 
   local exrc_path = vim.fs.joinpath(path, ".nvim.lua")
-  if self.loaded[exrc_path] then
+  if LOADED_PATHS[exrc_path] then
     return read
   end
-  self.loaded[exrc_path] = true
+  LOADED_PATHS[exrc_path] = true
 
   local stat = vim.uv.fs_stat(exrc_path)
   if not stat then
@@ -41,11 +39,11 @@ function M:react(path)
   return false
 end
 
-function M.setup()
+local function setup()
   vim.o.exrc = false
 
   local dir_changed = vim.schedule_wrap(function()
-    if M:react(vim.uv.cwd()) then
+    if load(vim.uv.cwd()) then
       vim.api.nvim_exec_autocmds("User", {
         pattern = "_9ExrcUpdated",
       })
@@ -71,4 +69,4 @@ function M.setup()
   dir_changed()
 end
 
-return M
+setup()

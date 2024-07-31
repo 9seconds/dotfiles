@@ -16,61 +16,62 @@ local function cmap(key, action, opts)
   vim.keymap.set("c", key, action, opts)
 end
 
-return {
-  setup = function()
-    -- map space to leader and unmap a space in normal mode
-    vim.g.mapleader = " "
-    vim.g.maplocalleader = " "
-    nmap("<space>", "<nop>")
-    vmap("<space>", "<nop>")
+local function setup()
+  nmap("<space>", "<nop>")
+  vmap("<space>", "<nop>")
 
-    -- sudo write
-    -- type w!! and it would be converted into sudo tee >/dev/null <CONTENT FILENAME
-    cmap("w!!", "w !sudo tee >/dev/null %")
+  -- sudo write
+  -- type w!! and it would be converted into sudo tee >/dev/null <CONTENT FILENAME
+  cmap("w!!", "w !sudo tee >/dev/null %")
 
-    -- more reasonable indents/unindents
-    vmap("<", "<gv")
-    vmap(">", ">gv")
+  -- more reasonable indents/unindents
+  vmap("<", "<gv")
+  vmap(">", ">gv")
 
-    -- wrapline-aware navigation
-    nmap("j", "gj")
-    nmap("k", "gk")
-    nmap("$", "g$")
-    nmap("0", "^")
+  -- wrapline-aware navigation
+  nmap("j", "gj")
+  nmap("k", "gk")
+  nmap("$", "g$")
+  nmap("0", "^")
 
-    -- center screen on search operations
-    nmap("n", "nzz")
-    nmap("N", "Nzz")
-    nmap("*", "*zz``")
-    nmap("#", "#zz")
-    nmap("g*", "g*zz")
-    nmap("g#", "g#zz")
-    nmap("<c-d>", "<c-d>zz")
-    nmap("<c-u>", "<c-u>zz")
-    nmap("<c-f>", "<c-f>zz")
-    nmap("<c-b>", "<c-b>zz")
+  -- center screen on search operations
+  nmap("n", "nzz")
+  nmap("N", "Nzz")
+  nmap("*", "*zz``")
+  nmap("#", "#zz")
+  nmap("g*", "g*zz")
+  nmap("g#", "g#zz")
+  nmap("<c-d>", "<c-d>zz")
+  nmap("<c-u>", "<c-u>zz")
+  nmap("<c-f>", "<c-f>zz")
+  nmap("<c-b>", "<c-b>zz")
 
-    -- split navigation
-    nmap("<c-h>", "<c-w>h")
-    nmap("<c-j>", "<c-w>j")
-    nmap("<c-k>", "<c-w>k")
-    nmap("<c-l>", "<c-w>l")
+  -- split navigation
+  nmap("<c-h>", "<c-w>h")
+  vmap("<c-h>", "<c-w>h")
+  nmap("<c-j>", "<c-w>j")
+  vmap("<c-j>", "<c-w>j")
+  nmap("<c-k>", "<c-w>k")
+  vmap("<c-k>", "<c-w>k")
+  nmap("<c-l>", "<c-w>l")
+  vmap("<c-l>", "<c-w>l")
 
-    nmap("<leader><space>", "<cmd>update<cr>", { silent = true })
+  nmap("<leader><space>", "<cmd>update<cr>", { silent = true })
 
-    -- select just pasted
-    nmap("gp", "`[v`]")
+  -- select just pasted
+  nmap("gp", "`[v`]")
 
-    -- clear highlight
-    nmap("<leader>l", "<cmd>nohlsearch<cr>", { silent = true })
+  -- clear highlight
+  nmap("<leader>l", "<cmd>nohlsearch<cr>", { silent = true })
 
-    -- exit insert mode
-    imap("jj", "<esc>")
-    imap("kk", "<esc>")
+  -- exit insert mode
+  imap("jj", "<esc>")
+  imap("kk", "<esc>")
 
-    -- spellcheck
-    nmap("<leader>?", function()
-      vim.o.spell = not vim.o.spell
-    end)
-  end,
-}
+  -- spellcheck
+  nmap("<leader>?", function()
+    vim.o.spell = not vim.o.spell
+  end)
+end
+
+setup()

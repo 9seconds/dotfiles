@@ -70,9 +70,9 @@ local function setup_autogroup()
   })
 end
 
-return {
-  setup = function()
-    setup_keymappings()
-    setup_autogroup()
-  end,
-}
+local function setup()
+  setup_keymappings()
+  setup_autogroup()
+end
+
+setup()

@@ -1,8 +1,6 @@
 -- This module contains user commands
 
-local M = {}
-
-function M.setup()
+local function setup()
   if vim.fn.executable("rg") then
     vim.o.grepprg = "rg --vimgrep --follow --trim --smart-case --color never"
   elseif vim.fn.executable("ag") then
@@ -17,4 +15,4 @@ function M.setup()
   )
 end
 
-return M
+setup()

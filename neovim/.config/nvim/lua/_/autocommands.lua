@@ -1,35 +1,21 @@
 -- This module contains different autocommands and autogroups
 
-return {
-  setup = function()
-    -- resize panes on window resize
-    vim.api.nvim_create_autocmd("VimResized", {
-      group = vim.api.nvim_create_augroup("9_ResizePanes", {}),
-      command = "normal <c-w>=",
-    })
+local function setup()
+  -- resize panes on window resize
+  vim.api.nvim_create_autocmd("VimResized", {
+    group = vim.api.nvim_create_augroup("9_ResizePanes", {}),
+    command = "normal <c-w>=",
+  })
 
-    -- delete trailing whitespaces
-    vim.api.nvim_create_autocmd("BufWritePre", {
-      group = vim.api.nvim_create_augroup("9_StripTrailingWhitespaces", {}),
-      callback = function()
-        local save = vim.fn.winsaveview()
-        vim.cmd([[%s/\s\+$//e]])
-        vim.fn.winrestview(save)
-      end,
-    })
-  end,
-
-  -- what to do on exrc read
-  vim.api.nvim_create_autocmd({ "User" }, {
-    group = vim.api.nvim_create_augroup("9_Lsp", {}),
-    pattern = "_9ExrcUpdated",
+  -- delete trailing whitespaces
+  vim.api.nvim_create_autocmd("BufWritePre", {
+    group = vim.api.nvim_create_augroup("9_StripTrailingWhitespaces", {}),
     callback = function()
-      if vim.g.lspconfig then
-        require("_.lsp"):update()
-      end
-      vim.api.nvim_exec_autocmds("User", {
-        pattern = "_9CopilotUse",
-      })
+      local save = vim.fn.winsaveview()
+      vim.cmd([[%s/\s\+$//e]])
+      vim.fn.winrestview(save)
     end,
-  }),
-}
+  })
+end
+
+setup()

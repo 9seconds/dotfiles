@@ -8,7 +8,7 @@ local copilot_config = {
     {
       "<leader>cc",
       function()
-        require("_.copilot"):user_toggle()
+        require("_.copilot").user_toggle()
       end,
       mode = { "n", "o" },
       desc = "Toggle Copilot",
@@ -16,7 +16,7 @@ local copilot_config = {
     {
       "<C-c>",
       function()
-        require("_.copilot"):user_toggle()
+        require("_.copilot").user_toggle()
       end,
       mode = "i",
       desc = "Toggle Copilot",
@@ -40,7 +40,7 @@ local copilot_config = {
         },
       },
     })
-    require("_.copilot"):activate()
+    require("_.copilot").activate()
   end,
 }
 
@@ -95,6 +95,13 @@ local copilot_chat_config = {
         require("CopilotChat").reset()
       end,
       desc = "Reset Copilot chat",
+    },
+    {
+      "<leader>ct",
+      function()
+        require("CopilotChat").toggle()
+      end,
+      desc = "Toggle Copilot chat",
     },
   },
 
