@@ -52,7 +52,10 @@ local copilot_chat_config = {
   dependencies = {
     "zbirenbaum/copilot.lua",
     "nvim-lua/plenary.nvim",
-    "gptlang/lua-tiktoken",
+    {
+      "gptlang/lua-tiktoken",
+      version = "*",
+    },
   },
   cmd = {
     "CopilotChat",
