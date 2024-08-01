@@ -4,7 +4,7 @@ local M = {
   enabled = false,
 }
 
-function M:user_toggle()
+function M.user_toggle()
   M.user_enabled(not M.enabled)
 end
 
@@ -57,12 +57,6 @@ end
 
 local function setup()
   local group = vim.api.nvim_create_augroup("9_Copilot", {})
-
-  vim.api.nvim_create_autocmd({ "User" }, {
-    group = group,
-    pattern = "_9ExrcUpdated",
-    callback = M.activate,
-  })
 
   vim.api.nvim_create_autocmd({ "BufEnter" }, {
     group = group,

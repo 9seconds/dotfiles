@@ -10,7 +10,6 @@ local copilot_config = {
       function()
         require("_.copilot").user_toggle()
       end,
-      mode = { "n", "o" },
       desc = "Toggle Copilot",
     },
     {
@@ -40,7 +39,10 @@ local copilot_config = {
         },
       },
     })
-    require("_.copilot").activate()
+
+    if not vim.g.use_copilot then
+      require("copilot.command").disable()
+    end
   end,
 }
 

@@ -20,11 +20,7 @@ if not vim.uv.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-require("_.exrc")
-
--- lazy.nvim required mapleader to be present before its execution
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+require("_")
 
 vim.api.nvim_create_autocmd({ "User" }, {
   once = true,
