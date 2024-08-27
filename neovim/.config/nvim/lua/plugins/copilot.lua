@@ -6,18 +6,11 @@ local copilot_config = {
   cmd = "Copilot",
   keys = {
     {
-      "<leader>cc",
-      function()
-        require("_.copilot").user_toggle()
-      end,
-      desc = "Toggle Copilot",
-    },
-    {
       "<C-c>",
       function()
         require("_.copilot").user_toggle()
       end,
-      mode = "i",
+      mode = { "n", "i", "v" },
       desc = "Toggle Copilot",
     },
   },
@@ -80,7 +73,7 @@ local copilot_chat_config = {
   },
   keys = {
     {
-      "<leader>ca",
+      "<leader>aa",
       function()
         vim.ui.input({ prompt = "Ask Copilot: " }, function(text)
           text = text or ""
@@ -96,14 +89,14 @@ local copilot_chat_config = {
       desc = "Open Copilot chat",
     },
     {
-      "<leader>cr",
+      "<leader>ar",
       function()
         require("CopilotChat").reset()
       end,
       desc = "Reset Copilot chat",
     },
     {
-      "<leader>ct",
+      "<leader>at",
       function()
         require("CopilotChat").toggle()
       end,
