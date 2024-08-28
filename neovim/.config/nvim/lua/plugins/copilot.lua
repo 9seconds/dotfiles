@@ -78,14 +78,11 @@ local copilot_chat_config = {
         vim.ui.input({ prompt = "Ask Copilot: " }, function(text)
           text = text or ""
           if text ~= "" then
-            require("CopilotChat").ask(
-              text,
-              { selection = require("CopilotChat.select").buffer }
-            )
+            require("CopilotChat").ask(text)
           end
         end)
       end,
-      mode = { "n", "v" },
+      mode = { "n", "v", "x" },
       desc = "Open Copilot chat",
     },
     {
