@@ -105,10 +105,10 @@ return {
     local cmp_autopairs = require("nvim-autopairs.completion.cmp")
     cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
     cmp.event:on("menu_opened", function()
-      require("_.copilot").cmp_enabled(false)
+      vim.b.copilot_suggestion_hidden = true
     end)
     cmp.event:on("menu_closed", function()
-      require("_.copilot").cmp_enabled(true)
+      vim.b.copilot_suggestion_hidden = false
     end)
   end,
 }

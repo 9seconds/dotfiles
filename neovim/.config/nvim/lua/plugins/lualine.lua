@@ -36,7 +36,10 @@ return {
       sections = {
         lualine_a = {
           function()
-            return vim.b.copilot_active and "" or ""
+            if vim.b.copilot_suggestion_auto_trigger then
+              return ""
+            end
+            return ""
           end,
           "mode",
         },
