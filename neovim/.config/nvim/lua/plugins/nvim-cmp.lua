@@ -23,7 +23,7 @@ return {
 
     cmp.setup({
       enabled = function()
-        if vim.b.copilot_active then
+        if vim.b.copilot_suggestion_auto_trigger then
           return false
         end
 
