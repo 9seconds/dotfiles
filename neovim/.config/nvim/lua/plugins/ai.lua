@@ -43,6 +43,7 @@ local code_companion_config = {
     "hrsh7th/nvim-cmp",
     "nvim-telescope/telescope.nvim",
     "zbirenbaum/copilot.lua",
+    "echasnovski/mini.diff",
   },
   cmd = {
     "CodeCompanion",
@@ -54,7 +55,7 @@ local code_companion_config = {
   keys = {
     {
       "<C-a>",
-      "<cmd>CodeCompanion<cr>",
+      ":CodeCompanion /buffer ",
       mode = { "n", "v" },
       desc = "Call code companion",
     },
