@@ -110,5 +110,16 @@ return {
     cmp.event:on("menu_closed", function()
       vim.b.copilot_suggestion_hidden = false
     end)
+
+    local augroup = vim.api.nvim_create_augroup("9_Cmp", {})
+    vim.api.nvim_create_autocmd("FileType", {
+      group = augroup,
+      pattern = "codecompanion",
+      callback = function()
+        cmp.setup.buffer({
+          enabled = "false",
+        })
+      end,
+    })
   end,
 }
