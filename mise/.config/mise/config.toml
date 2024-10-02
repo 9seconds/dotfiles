@@ -7,7 +7,7 @@
 "cargo:git-absorb" = "latest"
 "cargo:just" = "latest"
 "cargo:ripgrep" = "latest"
-"cargo:ubi" = "latest"
+"cargo:ubi-cli" = "latest"
 "cargo:zellij" = "latest"
 "cargo:git-graph" = "latest"
 "cargo:git-igitt" = "latest"
