@@ -68,17 +68,28 @@ local code_companion_config = {
   },
 
   config = function()
-    local cc_agent = vim.g.code_companion_default_tool or "ollama"
+    local companion = "ollama"
+
+    local stat =
+      vim.uv.fs_stat(vim.fn.expand("~/.config/github-copilot/hosts.json"))
+    if stat ~= nil then
+      companion = "copilot"
+    end
+
+    if vim.g.code_companion then
+      companion = vim.g.code_companion
+    end
+
     local config = vim.tbl_deep_extend("force", {
       strategies = {
         chat = {
-          adapter = cc_agent,
+          adapter = companion,
         },
         inline = {
-          adapter = cc_agent,
+          adapter = companion,
         },
         agent = {
-          adapter = cc_agent,
+          adapter = companion,
         },
       },
     }, vim.g.code_companion_config or {})
