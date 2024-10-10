@@ -6,6 +6,8 @@ local function setup_settings()
   -- lazy.nvim required mapleader to be present before its execution
   vim.g.mapleader = " "
   vim.g.maplocalleader = " "
+
+  require("_.utils").set_indent(4)
 end
 
 local function setup_project_root()

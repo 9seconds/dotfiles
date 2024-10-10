@@ -28,8 +28,6 @@ local function require_osc52()
 end
 
 local function setup()
-  local utils = require("_.utils")
-
   -- suggest to reload if file was updated outside
   -- https://neovim.io/doc/user/options.html#'autoread'
   vim.o.autoread = true
@@ -148,9 +146,6 @@ local function setup()
   -- disable internal pager
   -- https://neovim.io/doc/user/options.html#'more'
   vim.o.more = false
-
-  -- set global indentation
-  utils.set_indent(4)
 
   -- set clipboard
   if require_osc52() then
