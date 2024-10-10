@@ -21,12 +21,12 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("_")
+require("_.options")
 
 vim.api.nvim_create_autocmd({ "User" }, {
   once = true,
   pattern = "VeryLazy",
   callback = function()
-    require("_.options")
     require("_.keymappings")
     require("_.autocommands")
     require("_.commands")
