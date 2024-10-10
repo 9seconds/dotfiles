@@ -34,71 +34,84 @@ local copilot_config = {
   },
 }
 
-local code_companion_config = {
-  "olimorris/codecompanion.nvim",
+local copilot_chat = {
+  "CopilotC-Nvim/CopilotChat.nvim",
   version = "*",
   dependencies = {
-    "nvim-lua/plenary.nvim",
-    "nvim-treesitter/nvim-treesitter",
-    "hrsh7th/nvim-cmp",
-    "nvim-telescope/telescope.nvim",
     "zbirenbaum/copilot.lua",
-    "echasnovski/mini.diff",
+    "nvim-lua/plenary.nvim",
+    {
+      "gptlang/lua-tiktoken",
+      version = "*",
+    },
+    "nvim-telescope/telescope.nvim",
   },
   cmd = {
-    "CodeCompanion",
-    "CodeCompanionChat",
-    "CodeCompanionToggle",
-    "CodeCompanionActions",
-    "CodeCompanionAdd",
+    "CopilotChat",
+    "CopilotChatOpen",
+    "CopilotChatClose",
+    "CopilotChatToggle",
+    "CopilotChatStop",
+    "CopilotChatReset",
+    "CopilotChatSave",
+    "CopilotChatLoad",
+    "CopilotChatDebugInfo",
+    "CopilotChatModels",
   },
   keys = {
     {
-      "<C-a>",
-      ":CodeCompanion /buffer ",
-      mode = { "n", "v" },
-      desc = "Call code companion",
+      "<leader>aa",
+      function()
+        vim.ui.input({ prompt = "Ask Copilot: " }, function(text)
+          text = text or ""
+          if text ~= "" then
+            require("CopilotChat").ask(text)
+          end
+        end)
+      end,
+      mode = { "n", "v", "x" },
+      desc = "Open Copilot chat",
     },
     {
-      "<leader>aa",
-      "<cmd>CodeCompanionToggle<cr>",
-      desc = "Show Code Companion chat",
-      mode = { "n", "v" },
+      "<leader>ar",
+      function()
+        require("CopilotChat").reset()
+      end,
+      desc = "Reset Copilot chat",
+    },
+    {
+      "<leader>at",
+      function()
+        require("CopilotChat").toggle()
+      end,
+      desc = "Toggle Copilot chat",
+    },
+    {
+      "<leader>ta",
+      function()
+        local actions = require("CopilotChat.actions")
+
+        local all_actions = {}
+
+        for k, v in pairs(actions.help_actions() or {}) do
+          all_actions[k] = v
+        end
+
+        for k, v in pairs(actions.prompt_actions() or {}) do
+          all_actions[k] = v
+        end
+
+        require("CopilotChat.integrations.telescope").pick(all_actions)
+      end,
+      mode = { "n", "v", "x" },
+      desc = "Show telescope",
     },
   },
 
-  config = function()
-    local companion = "ollama"
-
-    local stat =
-      vim.uv.fs_stat(vim.fn.expand("~/.config/github-copilot/hosts.json"))
-    if stat ~= nil then
-      companion = "copilot"
-    end
-
-    if vim.g.code_companion then
-      companion = vim.g.code_companion
-    end
-
-    local config = vim.tbl_deep_extend("force", {
-      strategies = {
-        chat = {
-          adapter = companion,
-        },
-        inline = {
-          adapter = companion,
-        },
-        agent = {
-          adapter = companion,
-        },
-      },
-    }, vim.g.code_companion_config or {})
-
-    require("codecompanion").setup(config)
-  end,
+  opts = {},
 }
 
 return {
   copilot_config,
-  code_companion_config,
+  copilot_chat,
 }
