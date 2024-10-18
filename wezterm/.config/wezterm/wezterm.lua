@@ -13,6 +13,9 @@ events_configure(config)
 local keys_configure = require("keys")
 keys_configure(config)
 
+local integrations = require("integrations")
+integrations(config)
+
 local ok, local_configure = pcall(require, "local")
 if ok then
   local_configure(config)
