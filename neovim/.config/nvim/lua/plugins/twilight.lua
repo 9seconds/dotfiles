@@ -6,12 +6,10 @@ return {
   dependencies = {
     "nvim-treesitter/nvim-treesitter",
   },
-  keys = {
-    {
-      "<leader>z",
-      "<cmd>Twilight<cr>",
-      desc = "Toggle twilight",
-    },
+  cmd = {
+    "Twilight",
+    "TwilightEnable",
+    "TwilightDisable"
   },
 
   opts = {},
