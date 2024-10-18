@@ -3,6 +3,11 @@
 
 return {
   "stevearc/dressing.nvim",
-  opts = {},
   event = "VeryLazy",
+
+  opts = {
+    input = {
+      prefer_width = 0.5,
+    }
+  },
 }
