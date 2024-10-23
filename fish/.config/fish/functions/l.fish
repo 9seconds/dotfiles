@@ -1,10 +1,10 @@
 #!/usr/bin/env fish
 
 if command -q eza
-  set cmd eza --classify --icons --git
+  set cmd eza --classify --icons --git --hyperlink
   set wraps eza
 else
-  set cmd ls
+  set cmd ls --hyperlink=auto
   set wraps ls
 end
 

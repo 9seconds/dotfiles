@@ -18,3 +18,6 @@
 
 # also exclude package-lock.json
 --glob=!{package-lock.json}
+
+# i use kitty
+--hyperlink-format=kitty
