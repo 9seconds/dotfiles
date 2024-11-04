@@ -4,24 +4,51 @@
 return {
   "Saghen/blink.cmp",
   version = "*",
+  event = "InsertEnter",
 
   opts = {
-    keymap = { preset = "super-tab" },
+    keymap = {
+      ["<Tab>"] = {
+        "fallback",
+      },
+      ["<C-CR>"] = {
+        "select_and_accept",
+        "fallback",
+      },
+      ["<C-n>"] = {
+        "show",
+        "select_next",
+        "fallback",
+      },
+      ["<C-p>"] = {
+        "show",
+        "select_prev",
+        "fallback",
+      },
+      ["<C-d>"] = {
+        "show",
+        "show_documentation",
+        "hide_documentation",
+        "fallback",
+      },
+    },
     nerd_font_variant = "mono",
     highlight = {
       use_nvim_cmp_as_default = true,
     },
     sources = {
-      enabled_providers = {
-
-        "lsp",
-        "path",
-        "buffer",
+      completion = {
+        enabled_providers = function()
+          if vim.b.copilot_suggestion_auto_trigger then
+            return {}
+          end
+          return { "lsp", "path", "buffer" }
+        end,
       },
-    },
-    window = {
-      autocomplete = {
-        selection = "auto_insert",
+      providers = {
+        path = {
+          get_cwd = vim.uv.cwd,
+        },
       },
     },
   },
