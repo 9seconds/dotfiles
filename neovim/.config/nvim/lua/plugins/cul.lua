@@ -5,5 +5,5 @@ return {
   "jake-stewart/force-cul.nvim",
   event = "UIEnter",
 
-  opts = {}
+  opts = {},
 }

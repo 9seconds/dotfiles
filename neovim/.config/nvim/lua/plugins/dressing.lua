@@ -8,6 +8,6 @@ return {
   opts = {
     input = {
       prefer_width = 0.5,
-    }
+    },
   },
 }

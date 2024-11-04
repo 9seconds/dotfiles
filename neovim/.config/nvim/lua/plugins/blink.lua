@@ -1,13 +1,12 @@
 -- autocompletion
 -- https://github.com/Saghen/blink.cmp
 
-
 return {
   "Saghen/blink.cmp",
   version = "*",
 
   opts = {
-    keymap = {preset = "enter"},
+    keymap = { preset = "super-tab" },
     nerd_font_variant = "mono",
     highlight = {
       use_nvim_cmp_as_default = true,
@@ -16,15 +15,14 @@ return {
       enabled_providers = {
 
         "lsp",
-         "path",
-        "buffer"
-      }
+        "path",
+        "buffer",
+      },
     },
     window = {
       autocomplete = {
-        selection = "auto_insert"
-      }
-    }
-
-  }
+        selection = "auto_insert",
+      },
+    },
+  },
 }
