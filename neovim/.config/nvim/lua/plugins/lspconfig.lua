@@ -5,7 +5,6 @@ return {
   "neovim/nvim-lspconfig",
   dependencies = {
     "nvim-telescope/telescope.nvim",
-    "hrsh7th/cmp-nvim-lsp",
   },
   event = {
     "Filetype",
@@ -51,8 +50,15 @@ return {
       function()
         return vim.lsp.buf.format()
       end,
-      mode = { "n", "v" },
       desc = "Format",
+    },
+    {
+      "<leader>ls",
+      function()
+        return vim.lsp.buf.signature_help()
+      end,
+      mode = { "n", "i" },
+      desc = "Signature help",
     },
   },
 

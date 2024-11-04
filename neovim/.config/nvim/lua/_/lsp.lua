@@ -17,7 +17,7 @@ function M:update()
     return
   end
 
-  local nvim_lsp = require("cmp_nvim_lsp")
+  local get_capabilities = require("blink.cmp").get_lsp_capabilities
   local lspconfig = require("lspconfig")
 
   local active_clients = {}
@@ -25,17 +25,10 @@ function M:update()
     active_clients[v.name] = v
   end
 
-  local capabilities = vim.tbl_extend(
-    "force",
-    vim.lsp.protocol.make_client_capabilities(),
-    nvim_lsp.default_capabilities()
-  )
-
   for name, opts in pairs(self.data.opts) do
-    opts = vim.tbl_extend("force", { capabilities = capabilities }, opts or {})
-
     local conf = lspconfig[name]
     local current_client = active_clients[name]
+    conf.capabilities = get_capabilities(conf.capabilities)
 
     if current_client == nil then
       conf.setup(opts)
