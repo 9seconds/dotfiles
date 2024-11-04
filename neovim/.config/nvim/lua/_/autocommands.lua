@@ -16,6 +16,23 @@ local function setup()
       vim.fn.winrestview(save)
     end,
   })
+
+  -- disable all LSPs for help
+  vim.api.nvim_create_autocmd("FileType", {
+    group = vim.api.nvim_create_augroup("9_Help", {}),
+    pattern = "help",
+    callback = function()
+      for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
+        vim.lsp.buf_detach_client(0, client.id)
+      end
+
+      vim.keymap.set("n", "<C-]>", "<cmd>help <C-r><C-w><CR>", {
+        buffer = 0,
+        noremap = true,
+        silent = true,
+      })
+    end,
+  })
 end
 
 setup()
