@@ -25,7 +25,7 @@ keybinds clear-defaults=true {
         bind "Alt r" { SwitchToMode "RenameTab"; TabNameInput 0; }
         bind "Alt x" { CloseFocus; }
         bind "Alt w" { SwitchToMode "Session"; }
-        bind "Alt e" { EditScrollback; }
+        bind "Alt e" { Clear; }
 
         bind "Alt 1" { GoToTab 1; }
         bind "Alt 2" { GoToTab 2; }
