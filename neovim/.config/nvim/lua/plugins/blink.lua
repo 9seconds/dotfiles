@@ -2,7 +2,14 @@
 -- https://github.com/Saghen/blink.cmp
 
 local function enable_blink(cmp)
+  local copilot = package.loaded["copilot.suggestion"]
+
   vim.b.copilot_suggestion_auto_trigger = false
+
+  if copilot then
+    copilot.dismiss()
+  end
+
   cmp.show()
 end
 
@@ -44,7 +51,11 @@ return {
     sources = {
       completion = {
         enabled_providers = function()
-          if vim.b.copilot_suggestion_auto_trigger then
+          local copilot = package.loaded["copilot.suggestion"]
+
+          local is_visible = copilot and copilot.is_visible()
+
+          if vim.b.copilot_suggestion_auto_trigger or is_visible then
             return {}
           end
           return { "lsp", "path", "buffer" }

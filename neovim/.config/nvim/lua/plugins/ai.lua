@@ -4,16 +4,20 @@
 -- https://github.com/zbirenbaum/copilot.lua
 local copilot_config = {
   "zbirenbaum/copilot.lua",
-  dependencies = {
-    "Saghen/blink.cmp",
-  },
   cmd = "Copilot",
   keys = {
     {
       "<C-c>",
       function()
-        require("copilot.suggestion").toggle_auto_trigger()
-        require("blink.cmp").hide()
+        local copilot = require("copilot.suggestion")
+        local blink = package.loaded["blink.cmp"]
+
+        copilot.toggle_auto_trigger()
+        copilot.dismiss()
+
+        if blink then
+          blink.hide()
+        end
       end,
       mode = { "n", "i", "v" },
       desc = "Toggle Copilot",
