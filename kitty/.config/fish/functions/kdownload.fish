@@ -11,7 +11,7 @@ function kdownload -d 'download files using kitty'
     set config_dir $XDG_CONFIG_DIR
   end
 
-  set home (string escape --regex (realpath ~))
+  set home (string escape --style=regex (realpath ~))
   set argv[-1] (string replace -r "^$home" '~' $argv[-1])
 
   kitten transfer --confirm-paths $argv

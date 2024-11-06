@@ -1,6 +1,6 @@
 #!/usr/bin/env fish
 
-function kdownload -d 'download files using kitty'
+function kupload -d 'upload files using kitty'
   if test (count $argv) -lt 2
     echo "Usage: kupload <main computer path> <paths on this machine>"
     return 1
@@ -11,7 +11,7 @@ function kdownload -d 'download files using kitty'
     set config_dir $XDG_CONFIG_DIR
   end
 
-  set home (string escape --regex (realpath ~))
+  set home (string escape --style=regex (realpath ~))
   set argv[1] (string replace -r "^$home" '~' $argv[1])
 
   kitten transfer --direction=upload --confirm-paths $argv
