@@ -36,8 +36,11 @@ alias e := edit
   mise prune -y
   mise reshim
 
+@up-kitten:
+  command -v kitten 2>/dev/null && kitten update-self
+
 # update all
-@up: up-system up-nvim up-mise
+@up: up-system up-nvim up-mise up-kitten
 
 # wrapper for brew install that updates bundle
 [group("brew")]
