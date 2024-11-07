@@ -87,3 +87,4 @@ session_serialization false
 default_mode "normal"
 scroll_buffer_size 50000
 mouse_mode true
+default_shell "fish"
