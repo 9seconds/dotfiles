@@ -48,12 +48,9 @@ local copilot_chat = {
   dependencies = {
     "zbirenbaum/copilot.lua",
     "nvim-lua/plenary.nvim",
-    {
-      "gptlang/lua-tiktoken",
-      version = "*",
-    },
     "nvim-telescope/telescope.nvim",
   },
+  build = "make tiktoken",
   cmd = {
     "CopilotChat",
     "CopilotChatOpen",
