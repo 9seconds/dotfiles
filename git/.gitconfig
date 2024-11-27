@@ -75,7 +75,6 @@
 [pack]
     compression = 9
     threads     = 8
-	allowPackReuse = multi
 [grep]
     patternType = perl
     fullName    = true
