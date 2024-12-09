@@ -14,6 +14,6 @@ set -gx HOMEBREW_NO_INSECURE_REDIRECT 1
 set -gx HOMEBREW_NO_INSTALL_CLEANUP 1
 set -gx HOMEBREW_NO_INSTALL_UPGRADE 1
 
-if command -v bat then
+if command -q bat then
   set -gx HOMEBREW_BAT 1
 end
