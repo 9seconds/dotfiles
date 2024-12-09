@@ -49,8 +49,8 @@ local zen_mode_config = {
       twilight = {
         enabled = true,
       },
-      wezterm = {
-        enabled = true,
+      kitty = {
+        enabled = os.getenv("KITTY_LISTEN_ON") ~= nil,
         font = "+4",
       },
       tmux = {
