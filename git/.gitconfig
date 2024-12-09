@@ -69,7 +69,6 @@
     autocrlf = false
     compression = -1
     eol = lf
-    fsmonitor = true
     preloadindex = true
     untrackedCache = true
 [pack]
