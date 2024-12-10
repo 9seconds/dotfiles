@@ -66,22 +66,13 @@ local copilot_chat = {
   keys = {
     {
       "<leader>aa",
-      function()
-        vim.ui.input({ prompt = "Ask Copilot: " }, function(text)
-          text = text or ""
-          if text ~= "" then
-            require("CopilotChat").ask(text)
-          end
-        end)
-      end,
+      "<cmd>CopilotChat<cr>",
       mode = { "n", "v", "x" },
       desc = "Open Copilot chat",
     },
     {
       "<leader>ar",
-      function()
-        require("CopilotChat").reset()
-      end,
+      "<cmd>CopilotChatReset",
       desc = "Reset Copilot chat",
     },
     {

@@ -52,15 +52,17 @@ return {
   },
   cmd = "Grapple",
 
-  config = function()
+  opts = {
+    icons = true,
+    scope = "git_branch",
+    style = "basename",
+    prune = "7d",
+  },
+
+  config = function(_, opts)
     local mod = require("grapple")
 
-    mod.setup({
-      icons = true,
-      scope = "git_branch",
-      style = "basename",
-      prune = "7d",
-    })
+    mod.setup(opts)
 
     local timer = vim.uv.new_timer()
     timer:start(0, CLEANUP_EACH, vim.schedule_wrap(mod.prune))

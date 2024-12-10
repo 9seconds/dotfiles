@@ -34,7 +34,7 @@ local color_fix = {
 
   config = function()
     require("tiny-devicons-auto-colors").setup({
-      colors = flatten_pallete(require("tokyonight.colors.storm")),
+      colors = flatten_pallete(require("tokyonight.colors.moon")),
     })
   end,
 }

@@ -10,13 +10,15 @@ return {
     vim.o.termguicolors = true
   end,
 
-  config = function()
+  opts = {
+    render = "compact",
+    stages = "fade",
+  },
+
+  config = function(_, opts)
     local notify = require("notify")
 
-    notify.setup({
-      render = "compact",
-      stages = "fade",
-    })
+    notify.setup(opts)
 
     vim.notify = notify
   end,
