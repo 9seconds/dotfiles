@@ -66,13 +66,17 @@ local copilot_chat = {
   keys = {
     {
       "<leader>aa",
-      "<cmd>CopilotChat<cr>",
+      function()
+        require("CopilotChat").open()
+      end,
       mode = { "n", "v", "x" },
       desc = "Open Copilot chat",
     },
     {
       "<leader>ar",
-      "<cmd>CopilotChatReset",
+      function()
+        require("CopilotChat").reset()
+      end,
       desc = "Reset Copilot chat",
     },
     {
@@ -105,6 +109,22 @@ local copilot_chat = {
   },
 
   opts = {},
+
+  config = function(_, opts)
+    require("CopilotChat").setup(opts)
+
+    vim.api.nvim_create_autocmd("BufEnter", {
+      group = vim.api.nvim_create_augroup("9_Copilot", {}),
+      pattern = "copilot-chat",
+      callback = function()
+        vim.cmd("normal G")
+        vim.cmd("startinsert!")
+
+        vim.keymap.set("i", "<c-h>", "<c-o><c-w>h<esc>", { buffer = true })
+        vim.keymap.set("i", "<c-l>", "<c-o><c-w>l<esc>", { buffer = true })
+      end,
+    })
+  end,
 }
 
 return {
