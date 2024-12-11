@@ -5,6 +5,7 @@
 -- https://github.com/echasnovski/mini.bracketed
 local mini_bracketed = {
   "echasnovski/mini.bracketed",
+  version = "*",
   event = { "VeryLazy" },
 
   opts = {
@@ -17,6 +18,7 @@ local mini_bracketed = {
 -- https://github.com/echasnovski/mini.ai
 local mini_ai = {
   "echasnovski/mini.ai",
+  version = "*",
   event = { "InsertEnter" },
 
   opts = {},
@@ -26,6 +28,7 @@ local mini_ai = {
 -- https://github.com/echasnovski/mini.splitjoin
 local mini_splitjoin = {
   "echasnovski/mini.splitjoin",
+  version = "*",
   keys = {
     "<leader>j",
   },
@@ -37,10 +40,33 @@ local mini_splitjoin = {
   },
 }
 
+-- indentation
+-- https://github.com/echasnovski/mini.indentscope
+local mini_indentscope = {
+  "echasnovski/mini.indentscope",
+  version = "*",
+  event = { "VeryLazy" },
+
+  opts = {
+    symbol = "│",
+  },
+
+  config = function(_, opts)
+    local mod = require("mini.indentscope")
+
+    mod.setup(vim.tbl_deep_extend("force", opts, {
+      draw = {
+        animation = mod.gen_animation.none(),
+      },
+    }))
+  end,
+}
+
 -- Automatic highlighting of word under cursor
 -- https://github.com/echasnovski/mini.cursorword
 local mini_cursorword = {
   "echasnovski/mini.cursorword",
+  version = "*",
   event = { "VeryLazy" },
 
   opts = {},
@@ -51,4 +77,5 @@ return {
   mini_ai,
   mini_splitjoin,
   mini_cursorword,
+  mini_indentscope,
 }
