@@ -46,13 +46,6 @@ return {
       desc = "Toggle inlay hints",
     },
     {
-      "<leader>lf",
-      function()
-        return vim.lsp.buf.format()
-      end,
-      desc = "Format",
-    },
-    {
       "<leader>ls",
       function()
         return vim.lsp.buf.signature_help()

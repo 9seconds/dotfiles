@@ -1,5 +1,6 @@
+local conform = require("_.conform")
+local lint = require("_.lint")
 local lsp = require("_.lsp")
-local nonels = require("_.none-ls")
 
 lsp:set("basedpyright", {
   handlers = {
@@ -32,7 +33,7 @@ lsp:set("lua_ls", {
     },
   },
 })
-nonels:add_diagnostic("gitlint")
-nonels:add_diagnostic("mypy")
-nonels:add_diagnostic("selene")
-nonels:add_formatting("stylua")
+conform:set("lua", "stylua")
+lint:set("python", "mypy")
+lint:set("python", "ruff")
+lint:set("lua", "selene")

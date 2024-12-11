@@ -12,6 +12,10 @@ return {
     lualine_bold = true,
   },
 
+  init = function()
+    vim.o.background = "dark"
+  end,
+
   config = function()
     vim.cmd("colorscheme tokyonight")
   end,
