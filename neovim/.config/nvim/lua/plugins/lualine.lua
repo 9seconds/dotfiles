@@ -10,84 +10,79 @@ end
 return {
   "nvim-lualine/lualine.nvim",
   dependencies = {
+    "SmiteshP/nvim-navic",
     "lewis6991/gitsigns.nvim",
     "echasnovski/mini.icons",
   },
   event = "VeryLazy",
 
-  config = function()
-    require("lualine").setup({
-      theme = "tokyonight",
+  opts = {
+    theme = "tokyonight",
 
-      options = {
-        section_separators = "",
-        component_separators = "",
-        always_divide_middle = false,
-        globalstatus = true,
+    options = {
+      section_separators = "",
+      component_separators = "",
+      globalstatus = true,
+    },
+
+    extensions = {
+      "lazy",
+      "oil",
+      "mason",
+      "quickfix",
+      "trouble",
+    },
+
+    sections = {
+      lualine_a = {
+        function()
+          if vim.b.copilot_suggestion_auto_trigger then
+            return ""
+          end
+          return ""
+        end,
+        "mode",
       },
-
-      extensions = {
-        "lazy",
-        "oil",
-        "quickfix",
-        "trouble",
-      },
-
-      sections = {
-        lualine_a = {
-          function()
-            if vim.b.copilot_suggestion_auto_trigger then
-              return ""
-            end
-            return ""
-          end,
-          "mode",
-        },
-        lualine_b = {
+      lualine_b = {
+        {
           "diagnostics",
-          {
-            function()
-              local head = vim.b.gitsigns_head or ""
-              local status = vim.b.gitsigns_status or ""
-
-              if head == "" then
-                return ""
-              end
-
-              if status == "" then
-                return head
-              end
-
-              return head .. " | " .. status
-            end,
-            icon = "",
-          },
+          always_visible = true,
         },
-        lualine_c = {
-          {
-            "filename",
-            path = 2,
-            shorting_target = 30,
-          },
-        },
-        lualine_x = {},
-        lualine_y = {
-          {
-            function()
-              local reg = vim.fn.reg_recording()
-              if reg == "" then
-                return ""
-              end
-
-              return "recording @" .. reg
-            end,
-          },
-        },
-        lualine_z = { "location" },
+        "branch",
       },
-    })
+      lualine_c = {
+        {
+          "filename",
+          path = 1,
+          shorting_target = 20,
+        },
+      },
+      lualine_x = {
+        {
+          "navic",
+          color_correction = "dynamic",
+        },
+      },
+      lualine_y = {
+        {
+          function()
+            local reg = vim.fn.reg_recording()
+            if reg == "" then
+              return ""
+            end
 
-    local group = vim.api.nvim_create_augroup("9_Macros", {})
+            return "recording @" .. reg
+          end,
+        },
+      },
+      lualine_z = { "location" },
+    },
+  },
+
+  config = function(_, opts)
+    require("lualine").setup(opts)
+
+    local group = vim.api.nvim_create_augroup("9_Lualine", {})
 
     vim.api.nvim_create_autocmd("RecordingEnter", {
       group = group,
