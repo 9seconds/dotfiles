@@ -6,6 +6,7 @@ return {
   dependencies = {
     "nvim-telescope/telescope.nvim",
     "echasnovski/mini.icons",
+    "Saghen/blink.cmp",
   },
   event = {
     "Filetype",
@@ -61,8 +62,16 @@ return {
   end,
 
   config = function()
-    vim.g.lspconfig = true
-    require("_.lsp"):update()
+    local get_capabilities = require("blink.cmp").get_lsp_capabilities
+    local lspconfig = require("lspconfig")
+    local configs = require("_.lsp")
+
     require("mini.icons").tweak_lsp_kind()
+
+    for name, opts in pairs(configs.data) do
+      local conf  = lspconfig[name]
+      conf.capabilities = get_capabilities(conf.capabilities)
+      conf.setup(opts)
+    end
   end,
 }
