@@ -14,7 +14,7 @@ return {
   },
   keys = {
     {
-      "<leader>ga",
+      "<leader>pa",
       function()
         local mod = require("grapple")
 
@@ -29,21 +29,21 @@ return {
       desc = "Toggle Grapple",
     },
     {
-      "<leader>gt",
+      "<leader>pt",
       function()
         return require("grapple").toggle_tags()
       end,
       desc = "Toggle grapple tags",
     },
     {
-      "[g",
+      "[p",
       function()
         return require("grapple").cycle_tags("prev", {})
       end,
       desc = "Go to previous grapple tag",
     },
     {
-      "]g",
+      "]p",
       function()
         return require("grapple").cycle_tags("next", {})
       end,
