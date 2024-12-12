@@ -11,7 +11,7 @@ return {
   },
   keys = {
     {
-      "<leader>g",
+      "<leader>gg",
       function()
         require("neogit").open({
           kind = "auto"
