@@ -27,7 +27,7 @@ alias e := edit
 
 # update nvim packages
 @up-nvim:
-  nvim --headless '+Lazy! sync' +TSUpdateSync '+lua require("mason-registry").refresh()' +MasonToolsUpdateSync +qa
+  nvim --headless '+Lazy! sync' +TSUpdateSync '+lua require("mason-registry").refresh()' +qa
 
 # update mise stuff
 @up-mise $RUSTUP_INIT_SKIP_PATH_CHECK="1":
