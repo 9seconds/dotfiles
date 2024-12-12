@@ -72,10 +72,37 @@ local mini_cursorword = {
   opts = {},
 }
 
+local mini_icons = {
+  "echasnovski/mini.icons",
+  version = "*",
+  event = {
+    "UIEnter",
+  },
+
+  opts = {},
+
+  config = function(_, opts)
+    local mod = require("mini.icons")
+
+    mod.setup(opts)
+    mod.mock_nvim_web_devicons()
+
+    vim.api.nvim_create_autocmd("User", {
+      group = vim.api.nvim_create_augroup("9_Icons", {}),
+      pattern = "VeryLazy",
+      once = true,
+      callback = function()
+        mod.tweak_lsp_kind()
+      end,
+    })
+  end,
+}
+
 return {
   mini_bracketed,
   mini_ai,
   mini_splitjoin,
   mini_cursorword,
   mini_indentscope,
+  mini_icons,
 }

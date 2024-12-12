@@ -11,7 +11,7 @@ return {
   "nvim-lualine/lualine.nvim",
   dependencies = {
     "lewis6991/gitsigns.nvim",
-    "nvim-tree/nvim-web-devicons",
+    "echasnovski/mini.icons",
   },
   event = "VeryLazy",
 
