@@ -98,15 +98,15 @@ local mini_pairs = {
   version = "*",
   event = {
     "InsertEnter",
-    "CmdlineEnter"
+    "CmdlineEnter",
   },
 
   opts = {
     modes = {
       insert = true,
       command = true,
-    }
-  }
+    },
+  },
 }
 
 

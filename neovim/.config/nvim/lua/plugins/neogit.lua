@@ -7,24 +7,24 @@ return {
   dependencies = {
     "nvim-lua/plenary.nvim",
     "sindrets/diffview.nvim",
-    "nvim-telescope/telescope.nvim"
+    "nvim-telescope/telescope.nvim",
   },
   keys = {
     {
       "<leader>gg",
       function()
         require("neogit").open({
-          kind = "auto"
+          kind = "auto",
         })
       end,
-      desc = "Neogit status"
-    }
+      desc = "Neogit status",
+    },
   },
   cmd = {
-    "Neogit"
+    "Neogit",
   },
 
   opts = {
-    graph_style = os.getenv("KITTY_PUBLIC_KEY") and "kitty" or "unicode"
-  }
+    graph_style = os.getenv("KITTY_PUBLIC_KEY") and "kitty" or "unicode",
+  },
 }
