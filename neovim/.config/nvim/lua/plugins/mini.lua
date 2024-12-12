@@ -72,6 +72,8 @@ local mini_cursorword = {
   opts = {},
 }
 
+-- icons
+-- https://github.com/echasnovski/mini.icons
 local mini_icons = {
   "echasnovski/mini.icons",
   version = "*",
@@ -98,6 +100,25 @@ local mini_icons = {
   end,
 }
 
+-- auto pairs
+-- https://github.com/echasnovski/mini.pairs
+local mini_pairs = {
+  "echasnovski/mini.pairs",
+  version = "*",
+  event = {
+    "InsertEnter",
+    "CmdlineEnter"
+  },
+
+  opts = {
+    modes = {
+      insert = true,
+      command = true,
+    }
+  }
+}
+
+
 return {
   mini_bracketed,
   mini_ai,
@@ -105,4 +126,5 @@ return {
   mini_cursorword,
   mini_indentscope,
   mini_icons,
+  mini_pairs,
 }
