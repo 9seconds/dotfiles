@@ -5,6 +5,7 @@ return {
   "neovim/nvim-lspconfig",
   dependencies = {
     "nvim-telescope/telescope.nvim",
+    "echasnovski/mini.icons",
   },
   event = {
     "Filetype",
@@ -62,5 +63,6 @@ return {
   config = function()
     vim.g.lspconfig = true
     require("_.lsp"):update()
+    require("mini.icons").tweak_lsp_kind()
   end,
 }

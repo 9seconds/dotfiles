@@ -88,15 +88,6 @@ local mini_icons = {
 
     mod.setup(opts)
     mod.mock_nvim_web_devicons()
-
-    vim.api.nvim_create_autocmd("User", {
-      group = vim.api.nvim_create_augroup("9_Icons", {}),
-      pattern = "VeryLazy",
-      once = true,
-      callback = function()
-        mod.tweak_lsp_kind()
-      end,
-    })
   end,
 }
 
