@@ -43,7 +43,7 @@ local zen_mode_config = {
 
   opts = {
     window = {
-      backdrop = 1,
+      width = 0.7
     },
     plugins = {
       twilight = {
