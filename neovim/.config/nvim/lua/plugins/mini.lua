@@ -6,7 +6,7 @@
 local mini_bracketed = {
   "echasnovski/mini.bracketed",
   version = "*",
-  event = { "VeryLazy" },
+  event = "VeryLazy",
 
   opts = {
     comment = { suffix = "" },
@@ -19,7 +19,7 @@ local mini_bracketed = {
 local mini_ai = {
   "echasnovski/mini.ai",
   version = "*",
-  event = { "InsertEnter" },
+  event = "InsertEnter",
 
   opts = {},
 }
@@ -45,7 +45,7 @@ local mini_splitjoin = {
 local mini_indentscope = {
   "echasnovski/mini.indentscope",
   version = "*",
-  event = { "VeryLazy" },
+  event = "VeryLazy",
 
   opts = {
     symbol = "│",
@@ -67,7 +67,7 @@ local mini_indentscope = {
 local mini_cursorword = {
   "echasnovski/mini.cursorword",
   version = "*",
-  event = { "VeryLazy" },
+  event = "VeryLazy",
 
   opts = {},
 }
@@ -77,9 +77,7 @@ local mini_cursorword = {
 local mini_icons = {
   "echasnovski/mini.icons",
   version = "*",
-  event = {
-    "UIEnter",
-  },
+  event = "VeryLazy",
 
   opts = {},
 
@@ -108,7 +106,6 @@ local mini_pairs = {
     },
   },
 }
-
 
 return {
   mini_bracketed,

@@ -69,7 +69,7 @@ return {
     require("mini.icons").tweak_lsp_kind()
 
     for name, opts in pairs(configs.data) do
-      local conf  = lspconfig[name]
+      local conf = lspconfig[name]
       conf.capabilities = get_capabilities(conf.capabilities)
       conf.setup(opts)
     end

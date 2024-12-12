@@ -1,7 +1,7 @@
 -- different LSP helpers
 
 local M = {
-  data = {}
+  data = {},
 }
 
 function M:set(server_name, opts)
