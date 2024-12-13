@@ -4,3 +4,4 @@
 "cargo:stylua" = "latest"
 "pipx:isort" = "latest"
 "pipx:ruff" = "latest"
+"pipx:mypy" = "latest"
