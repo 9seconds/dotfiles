@@ -36,4 +36,6 @@ lsp:set("lua_ls", {
 conform:set("lua", "stylua")
 lint:set("python", "mypy")
 lint:set("python", "ruff")
+lint:set("lua", "typos")
+lint:set("python", "typos")
 lint:set("lua", "selene")

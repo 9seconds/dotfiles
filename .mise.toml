@@ -2,6 +2,7 @@
 "cargo:just" = "latest"
 "cargo:selene" = "latest"
 "cargo:stylua" = "latest"
+"cargo:typos-cli" = "latest"
 "pipx:isort" = "latest"
 "pipx:ruff" = "latest"
 "pipx:mypy" = "latest"
