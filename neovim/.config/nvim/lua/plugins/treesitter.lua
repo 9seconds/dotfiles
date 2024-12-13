@@ -15,8 +15,36 @@ local treesitter_config = {
 
   main = "nvim-treesitter.configs",
   opts = {
-    ensure_installed = "all",
+    ensure_installed = {
+      "bash",
+      "css",
+      "diff",
+      "editorconfig",
+      "git_config",
+      "git_rebase",
+      "gitattributes",
+      "gitcommit",
+      "gitignore",
+      "go",
+      "gomod",
+      "gosum",
+      "html",
+      "ini",
+      "javascript",
+      "json",
+      "just",
+      "kdl",
+      "lua",
+      "make",
+      "python",
+      "requirements",
+      "ssh_config",
+      "toml",
+      "xml",
+      "yaml",
+    },
     sync_install = true,
+    auto_install = true,
 
     -- :h nvim-treesitter-highlight-mod
     highlight = {
