@@ -3,6 +3,9 @@
 
 return {
   "sindrets/diffview.nvim",
+  dependencies = {
+    "echasnovski/mini.icons",
+  },
   cmd = {
     "DiffviewOpen",
     "DiffviewFileHistory",
