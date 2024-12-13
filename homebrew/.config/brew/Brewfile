@@ -1,31 +1,20 @@
 tap "homebrew/bundle"
-tap "homebrew/services"
-# Memory training application
-cask "anki"
 # Display management tool
 cask "betterdisplay"
-# Desktop password and login vault
-cask "bitwarden"
 # Screen capturing tool
 cask "cleanshot"
 # Web browser
 cask "firefox"
-cask "font-fira-code"
+cask "font-inter"
 cask "font-monaspace"
 # Web browser
 cask "google-chrome"
-# Tools to protect your emails and files
-cask "gpg-suite"
-# Terminal emulator as alternative to Apple's Terminal app
-cask "iterm2"
-# Menu bar manager
-cask "jordanbaird-ice"
-# End-to-end encryption software
-cask "keybase"
-# Neovim Client
-cask "neovide"
+# GPU-based terminal emulator
+cask "kitty"
 # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
+# Get up and running with large language models locally
+cask "ollama"
 # Control your tools with a few keystrokes
 cask "raycast"
 # Team communication and collaboration software
@@ -38,15 +27,14 @@ cask "spotify"
 cask "syncthing"
 # Messaging app with a focus on speed and security
 cask "telegram"
-# Development environment
-cask "vagrant"
-# Virtualiser for x86 hardware
-cask "virtualbox"
-# GPU-accelerated cross-platform terminal emulator and multiplexer
-cask "wezterm"
-# Video communication and virtual meeting platform
-cask "zoom"
+mas "Amphetamine", id: 937984704
 mas "Bitwarden", id: 1352778147
+mas "Enchanted", id: 6474268307
+mas "GarageBand", id: 682658836
 mas "iA Writer", id: 775737590
+mas "iMovie", id: 408981434
+mas "Keynote", id: 409183694
 mas "Magnet", id: 441258766
-mas "Omnivore", id: 1564031042
+mas "Numbers", id: 409203825
+mas "Pages", id: 409201541
+mas "Things", id: 904280696

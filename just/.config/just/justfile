@@ -1,6 +1,8 @@
 # vim: set ft=just sts=2 sw=2 ts=2:
 
 alias e := edit
+alias bi := brew-install
+alias bu := brew-uninstall
 
 # -----------------------------------------------------------------------------
 
@@ -37,7 +39,7 @@ alias e := edit
   mise reshim
 
 # update all
-@up: up-system up-nvim up-mise up-kitten
+@up: up-system up-nvim up-mise
 
 # wrapper for brew install that updates bundle
 [group("brew")]
@@ -67,3 +69,4 @@ alias e := edit
   brew autoremove
   brew cleanup --prune=all --scrub
   rm -rf "$(brew --cache)"
+  just -g brew-update-bundle
