@@ -14,16 +14,6 @@ local mini_bracketed = {
   },
 }
 
--- Extend and create a/i textobjects
--- https://github.com/echasnovski/mini.ai
-local mini_ai = {
-  "echasnovski/mini.ai",
-  version = "*",
-  event = "InsertEnter",
-
-  opts = {},
-}
-
 -- Split and join arguments
 -- https://github.com/echasnovski/mini.splitjoin
 local mini_splitjoin = {
@@ -49,6 +39,12 @@ local mini_indentscope = {
 
   opts = {
     symbol = "│",
+    mappings = {
+      object_scope = "",
+      object_scope_with_border = "",
+      goto_top = "",
+      goto_bottom = ""
+    }
   },
 
   config = function(_, opts)
@@ -109,7 +105,6 @@ local mini_pairs = {
 
 return {
   mini_bracketed,
-  mini_ai,
   mini_splitjoin,
   mini_cursorword,
   mini_indentscope,
