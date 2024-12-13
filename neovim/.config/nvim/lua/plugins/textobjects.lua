@@ -7,12 +7,12 @@ return {
 
   opts = {
     keymaps = {
-      useDefaults = true
+      useDefaults = true,
     },
     textobjs = {
       subword = {
-        noCamelToPascalCase = false
-      }
-    }
-  }
+        noCamelToPascalCase = false,
+      },
+    },
+  },
 }

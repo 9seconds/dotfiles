@@ -43,8 +43,8 @@ local mini_indentscope = {
       object_scope = "",
       object_scope_with_border = "",
       goto_top = "",
-      goto_bottom = ""
-    }
+      goto_bottom = "",
+    },
   },
 
   config = function(_, opts)
