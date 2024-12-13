@@ -34,7 +34,6 @@ import pathlib
 import stat
 import typing as t
 
-
 if t.TYPE_CHECKING:
     SnapshotT: t.TypeAlias = dict[pathlib.Path, pathlib.Path]
     ChangesT: t.TypeAlias = dict[pathlib.Path, pathlib.Path | None]
