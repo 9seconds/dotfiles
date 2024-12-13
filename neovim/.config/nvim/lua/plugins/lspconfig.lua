@@ -1,6 +1,63 @@
 -- lsp configuration
 -- https://github.com/neovim/nvim-lspconfig
 
+local KEYS = {
+  -- references
+  ["grr"] = {
+    mode = "n",
+    action = function()
+      return require("telescope.builtin").lsp_references()
+    end,
+    opts = {
+      desc = "LSP: Show references",
+    },
+  },
+
+  -- document symbols in current document
+  ["gO"] = {
+    mode = "n",
+    action = function()
+      return require("telescope.builtin").lsp_document_symbols()
+    end,
+    opts = {
+      desc = "LSP: Document symbols in current document",
+    },
+  },
+
+  -- document workspace
+  ["gW"] = {
+    mode = "n",
+    action = function()
+      return require("telescope.builtin").lsp_workspace_symbols()
+    end,
+    opts = {
+      desc = "LSP: Document symbols in current workspace",
+    },
+  },
+
+  -- inlay hints
+  ["grh"] = {
+    mode = "n",
+    action = function()
+      return vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({}))
+    end,
+    opts = {
+      desc = "LSP: Toggle inlay hints",
+    },
+  },
+
+  -- implementations
+  ["gri"] = {
+    mode = "n",
+    action = function()
+      return require("telescope.builtin").lsp_implementations()
+    end,
+    opts = {
+      desc = "LSP: Show implementations",
+    },
+  },
+}
+
 return {
   "neovim/nvim-lspconfig",
   dependencies = {
@@ -10,51 +67,6 @@ return {
   },
   event = {
     "Filetype",
-  },
-  keys = {
-    {
-      "<c-]>",
-      function()
-        return require("telescope.builtin").lsp_definitions()
-      end,
-      desc = "Go to definition",
-    },
-    {
-      "<leader>lr",
-      function()
-        return require("telescope.builtin").lsp_references()
-      end,
-      desc = "Show references",
-    },
-    {
-      "<leader>ld",
-      function()
-        return require("telescope.builtin").lsp_document_symbols()
-      end,
-      desc = "Show document symbols",
-    },
-    {
-      "<leader>lt",
-      function()
-        return vim.lsp.buf.type_definition()
-      end,
-      desc = "Show types",
-    },
-    {
-      "<leader>lh",
-      function()
-        return vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({}))
-      end,
-      desc = "Toggle inlay hints",
-    },
-    {
-      "<leader>ls",
-      function()
-        return vim.lsp.buf.signature_help()
-      end,
-      mode = { "n", "i" },
-      desc = "Signature help",
-    },
   },
 
   init = function()
@@ -73,5 +85,34 @@ return {
       conf.capabilities = get_capabilities(conf.capabilities)
       conf.setup(opts)
     end
+
+    local group = vim.api.nvim_create_augroup("9_LSP", {})
+
+    vim.api.nvim_create_autocmd("LspAttach", {
+      group = group,
+      callback = function(args)
+        if vim.tbl_count(vim.lsp.get_clients({ bufnr = args.buf })) > 1 then
+          return
+        end
+
+        for key, key_opts in pairs(KEYS) do
+          local opts =
+            vim.tbl_extend("force", key_opts.opts or {}, { buffer = true })
+          vim.keymap.set(key_opts.mode, key, key_opts.action, opts)
+        end
+      end,
+    })
+    vim.api.nvim_create_autocmd("LspDetach", {
+      group = group,
+      callback = function(args)
+        if not vim.tbl_isempty(vim.lsp.get_clients({ bufnr = args.buf })) then
+          return
+        end
+
+        for key, key_opts in pairs(KEYS) do
+          vim.keymap.del(key_opts.mode, key, { buffer = true })
+        end
+      end,
+    })
   end,
 }
