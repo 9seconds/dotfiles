@@ -14,6 +14,7 @@
 "cargo:git-igitt" = "latest"
 "cargo:zoxide" = "latest"
 "ubi:junegunn/fzf" = "latest"
+cargo-binstall = "latest"
 direnv = "latest"
 go = "latest"
 jq = "latest"
