@@ -32,6 +32,10 @@ return {
       end
     end
 
+    local fast_linters_wildcard = fast_linters[conf.ALL]
+    local linters_wildcard = opts.linters_by_ft[conf.ALL]
+    opts.linters_by_ft[conf.ALL] = nil
+
     local augroup = vim.api.nvim_create_augroup("9_Lint", {})
     vim.api.nvim_create_autocmd("TextChanged", {
       group = augroup,
@@ -40,12 +44,20 @@ return {
         if linters then
           lintmod.try_lint(linters)
         end
+
+        if fast_linters_wildcard then
+          lintmod.try_lint(fast_linters_wildcard)
+        end
       end,
     })
     vim.api.nvim_create_autocmd({ "BufWritePost", "FileType" }, {
       group = augroup,
       callback = function()
         lintmod.try_lint()
+
+        if linters_wildcard then
+          lintmod.try_lint(linters_wildcard)
+        end
       end,
     })
 

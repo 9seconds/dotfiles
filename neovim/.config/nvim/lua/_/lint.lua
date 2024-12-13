@@ -1,6 +1,8 @@
 --- different lint stuff
 
 local M = {
+  ALL = "*",
+
   configs = {},
   chains = {},
 }
@@ -37,6 +39,7 @@ function M:get_config()
   for lang, chain in pairs(self.chains) do
     chains[lang] = chain
   end
+
   return {
     linters_by_ft = chains,
     linters = configs,
