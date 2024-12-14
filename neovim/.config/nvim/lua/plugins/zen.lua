@@ -41,9 +41,10 @@ local zen_mode_config = {
     },
   },
 
-  opts = {
+  opts = function()
+    return {
     window = {
-      width = 0.7,
+      width = 0.6,
     },
     plugins = {
       twilight = {
@@ -76,7 +77,8 @@ local zen_mode_config = {
         vim.wo[key] = value
       end
     end,
-  },
+    }
+  end
 }
 
 return {

@@ -24,7 +24,9 @@ return {
     "Neogit",
   },
 
-  opts = {
-    graph_style = os.getenv("KITTY_PUBLIC_KEY") and "kitty" or "unicode",
-  },
+  opts = function()
+    return {
+      graph_style = os.getenv("KITTY_PUBLIC_KEY") and "kitty" or "unicode",
+    }
+  end
 }
