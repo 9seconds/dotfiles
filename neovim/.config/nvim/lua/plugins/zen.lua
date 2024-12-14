@@ -19,6 +19,7 @@ local twilight_config = {
   },
 
   opts = {
+    context = 15,
     treesitter = true,
   },
 }
