@@ -69,11 +69,9 @@ return {
     "Filetype",
   },
 
-  init = function()
-    vim.lsp.inlay_hint.enable(false)
-  end,
-
   config = function()
+    vim.lsp.inlay_hint.enable(false)
+
     local get_capabilities = require("blink.cmp").get_lsp_capabilities
     local lspconfig = require("lspconfig")
     local configs = require("_.lsp")
