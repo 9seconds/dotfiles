@@ -1,4 +1,16 @@
 tap "homebrew/bundle"
+# Get a file from an HTTP, HTTPS or FTP server
+brew "curl"
+# User-friendly command-line shell for UNIX-like operating systems
+brew "fish"
+# Distributed revision control system
+brew "git"
+# Mac App Store command-line interface
+brew "mas"
+# Ambitious Vim-fork focused on extensibility and agility
+brew "neovim"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.13"
 # Display management tool
 cask "betterdisplay"
 # Screen capturing tool

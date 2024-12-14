@@ -58,7 +58,7 @@ alias bu := brew-uninstall
 [group("brew")]
 [macos]
 @brew-update-bundle:
-  brew bundle dump --force --cask --describe --taps --mas
+  brew bundle dump --force --casks --brews --describe --taps --mas
 
 # upgrade brew packages
 [group("brew")]
