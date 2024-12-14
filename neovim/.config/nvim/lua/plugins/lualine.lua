@@ -75,7 +75,7 @@ return {
           end,
         },
       },
-      lualine_z = { "location" },
+      lualine_z = {},
     },
   },
 
