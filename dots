@@ -38,7 +38,7 @@ if t.TYPE_CHECKING:
     SnapshotT: t.TypeAlias = dict[pathlib.Path, pathlib.Path]
     ChangesT: t.TypeAlias = dict[pathlib.Path, pathlib.Path | None]
     ActionT: t.TypeAlias = t.Callable[
-        ["FS", SnapshotT, argparse.Namespace], None
+        ["FS", SnapshotT, argparse.Namespace], None,
     ]
 
 POOL: t.Final[concurrent.futures.Executor] = (
@@ -56,12 +56,12 @@ REPOSITORY_ROOT: t.Final[pathlib.Path] = (
 
 XDG_STATE_HOME: t.Final[pathlib.Path] = pathlib.Path(
     os.getenv("XDG_STATE_HOME")
-    or pathlib.Path.home().joinpath(".local", "state")
+    or pathlib.Path.home().joinpath(".local", "state"),
 )
 """State directory in XDG specification."""
 
 STATE_DBPATH: t.Final[pathlib.Path] = XDG_STATE_HOME.joinpath(
-    "9dots", "db.json"
+    "9dots", "db.json",
 )
 """Path to the file with a database."""
 
@@ -81,7 +81,7 @@ class FS:
                 return
             case value if value != source:
                 raise ValueError(
-                    f"{target} points to {value} but {source} is expected"
+                    f"{target} points to {value} but {source} is expected",
                 )
 
         self.changes[target] = None
@@ -93,7 +93,7 @@ class FS:
 
         if self.changes[target] not in {source, None}:
             raise ValueError(
-                f"{target} points to {self.changes[target]}, can't use {source}"
+                f"{target} points to {self.changes[target]}, can't use {source}",
             )
 
         self.changes[target] = source
@@ -105,7 +105,7 @@ class FS:
 
     def apply(self, root: pathlib.Path, dry_run: bool = False) -> None:
         def is_need_to_do(
-            target: pathlib.Path, source: pathlib.Path | None
+            target: pathlib.Path, source: pathlib.Path | None,
         ) -> bool:
             target_exists = target.exists(follow_symlinks=False)
 
@@ -186,7 +186,7 @@ def get_options() -> argparse.Namespace:
 
         if pth.parent != REPOSITORY_ROOT:
             raise argparse.ArgumentTypeError(
-                f"{value} should be a top level directory"
+                f"{value} should be a top level directory",
             )
 
         return dir_type(str(pth))
@@ -213,13 +213,13 @@ def get_options() -> argparse.Namespace:
         help="Directory to farm links into",
     )
     parser.add_argument(
-        "-n", "--dry-run", action="store_true", default=False, help="Dry run"
+        "-n", "--dry-run", action="store_true", default=False, help="Dry run",
     )
 
     subparsers = parser.add_subparsers(title="Subcommands")
 
     plug_parser = subparsers.add_parser(
-        "plug", help="Plug a subdirectory into target"
+        "plug", help="Plug a subdirectory into target",
     )
     plug_parser.add_argument(
         "module",
@@ -230,7 +230,7 @@ def get_options() -> argparse.Namespace:
     plug_parser.set_defaults(action=action_plug)
 
     unplug_parser = subparsers.add_parser(
-        "unplug", help="Unplug directory from target"
+        "unplug", help="Unplug directory from target",
     )
     unplug_parser.add_argument(
         "module",
@@ -249,7 +249,7 @@ def get_options() -> argparse.Namespace:
 def action_write_snapshot(func: ActionT) -> ActionT:
     @functools.wraps(func)
     def decorator(
-        fs: FS, snapshot: SnapshotT, options: argparse.Namespace
+        fs: FS, snapshot: SnapshotT, options: argparse.Namespace,
     ) -> None:
         func(fs, snapshot, options)
         if options.dry_run:
@@ -261,7 +261,7 @@ def action_write_snapshot(func: ActionT) -> ActionT:
                 {str(k): str(v) for k, v in snapshot.items()},
                 sort_keys=True,
                 indent=2,
-            )
+            ),
         )
 
     return decorator
@@ -270,7 +270,7 @@ def action_write_snapshot(func: ActionT) -> ActionT:
 def action_apply_fs(func: ActionT) -> ActionT:
     @functools.wraps(func)
     def decorator(
-        fs: FS, snapshot: SnapshotT, options: argparse.Namespace
+        fs: FS, snapshot: SnapshotT, options: argparse.Namespace,
     ) -> None:
         func(fs, snapshot, options)
         fs.apply(options.target, options.dry_run)
@@ -290,7 +290,7 @@ def action_plug(
     for module in options.module:
         for dirpath, _, filenames in module.walk():
             target_dir = options.target.joinpath(
-                str(dirpath)[len(str(module)) + 1 :]
+                str(dirpath)[len(str(module)) + 1 :],
             )
             for filename in filenames:
                 fs.add(target_dir / filename, dirpath / filename)
@@ -342,7 +342,7 @@ def traverse_dir(
                     fs.add(path, resolved)
             case stat.S_IFDIR:
                 futures.append(
-                    POOL.submit(traverse_dir, path, root, fs, futures)
+                    POOL.submit(traverse_dir, path, root, fs, futures),
                 )
 
 
