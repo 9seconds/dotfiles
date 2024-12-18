@@ -12,9 +12,9 @@ end
 
 local function setup_handlers()
   vim.diagnostic.handlers["loclist"] = {
-    show = function()
+    show = vim.schedule_wrap(function()
       vim.diagnostic.setloclist({ open = false })
-    end,
+    end),
   }
 end
 
