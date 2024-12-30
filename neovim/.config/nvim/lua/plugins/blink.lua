@@ -20,6 +20,8 @@ return {
 
   opts = {
     keymap = {
+      preset = "none",
+
       ["<Tab>"] = {
         "fallback",
       },
@@ -44,28 +46,41 @@ return {
         "fallback",
       },
     },
-    nerd_font_variant = "mono",
-    highlight = {
-      use_nvim_cmp_as_default = true,
-    },
-    sources = {
-      completion = {
-        enabled_providers = function()
-          local copilot = package.loaded["copilot.suggestion"]
 
-          local is_visible = copilot and copilot.is_visible()
-
-          if vim.b.copilot_suggestion_auto_trigger or is_visible then
-            return {}
-          end
-          return { "lsp", "path", "buffer" }
+    completion = {
+      keyword = {
+        range = "prefix",
+      },
+      trigger = {
+        show_on_keyword = true,
+      },
+      documentation = {
+        auto_show = true,
+        auto_show_delay_ms = 1000,
+      },
+      list = {
+        selection = function(ctx)
+          return ctx.mode == "cmdline" and "auto_insert" or "preselect"
         end,
       },
-      providers = {
-        path = {
-          get_cwd = vim.uv.cwd,
+      accept = {
+        auto_brackets = {
+          enabled = false,
         },
       },
+    },
+
+    signature = {
+      enabled = true,
+    },
+
+    appearance = {
+      use_nvim_cmp_as_default = true,
+      nerd_font_variant = "mono",
+    },
+
+    sources = {
+      default = { "lsp", "path", "buffer" },
     },
   },
 }

@@ -72,7 +72,6 @@ return {
   config = function()
     vim.lsp.inlay_hint.enable(false)
 
-    local get_capabilities = require("blink.cmp").get_lsp_capabilities
     local lspconfig = require("lspconfig")
     local configs = require("_.lsp")
 
@@ -80,7 +79,15 @@ return {
 
     for name, opts in pairs(configs.data) do
       local conf = lspconfig[name]
-      conf.capabilities = get_capabilities(conf.capabilities)
+      conf.capabilities = require("blink.cmp").get_lsp_capabilities({
+        textDocument = {
+          completion = {
+            completionItem = {
+              snippetSupport = false,
+            },
+          },
+        },
+      })
       conf.setup(opts)
     end
 
