@@ -1,8 +1,6 @@
 # vim: set ft=just sts=2 sw=2 ts=2:
 
 alias e := edit
-alias bi := brew-install
-alias bu := brew-uninstall
 
 # -----------------------------------------------------------------------------
 
