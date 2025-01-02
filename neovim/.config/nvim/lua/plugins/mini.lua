@@ -103,6 +103,42 @@ local mini_pairs = {
   },
 }
 
+-- snippet management
+-- https://github.com/echasnovski/mini.snippets
+local mini_snippets = {
+  "echasnovski/mini.snippets",
+  version = "*",
+  keys = {
+    {
+      "<c-j>",
+      mode = "i",
+    },
+  },
+
+  opts = function()
+    local mod = require("mini.snippets")
+
+    return {
+      snippets = {
+        mod.gen_loader.from_file(vim.fs.joinpath(
+          vim.fn.stdpath("config"),
+            "snippets",
+          "_.lua"
+        )),
+        mod.gen_loader.from_lang(),
+
+        mod.gen_loader.from_file(vim.fs.joinpath(".snippets", "_.lua")),
+        function(ctx)
+          local filename = vim.fs.joinpath(".snippets", ctx.lang .. ".lua")
+          if vim.uv.fs_stat(filename) then
+            return mod.read_file(filename)
+          end
+        end,
+      },
+    }
+  end,
+}
+
 return {
   mini_bracketed,
   mini_splitjoin,
@@ -110,4 +146,5 @@ return {
   mini_indentscope,
   mini_icons,
   mini_pairs,
+  mini_snippets,
 }
