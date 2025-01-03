@@ -1,135 +1,77 @@
 return {
-  {
-  prefix = "im",
-  body = "import $0",
-  desc = "Import statement"
-  },
-  {
-    prefix = "fr",
-    body = "from ${1:.} import ${2:*}",
-    desc = "From/import statement"
+  ["'import' statement"] = {
+    prefix = "im",
+    body = "import $0",
   },
 
-  {
+  ["'from/import' statement"] = {
+    prefix = "fr",
+    body = "from ${1:.} import ${0:*}",
+  },
+
+  ["'async' keyword"] = {
+    prefix = "a",
+    body = "async $0",
+  },
+
+  ["Type definition"] = {
+    prefix = "t",
+    body = "$1: ${2:type}"
+  },
+
+  ["'while' loop"] = {
     prefix = "wh",
     body = {
       "while ${1:True}:",
-      "\t${0:$TM_SELECTED_TEXT}"
+      "\t${0:$NS_SELECTED_TEXT}",
     },
-    desc = "While loop",
   },
 
-  {
+  ["'with' statement"] = {
     prefix = "wi",
     body = {
       "with ${1:context}${2: as ${3:_$1}}:",
-      "\t${0:$TM_SELECTED_TEXT}"
+      "\t${0:$NS_SELECTED_TEXT}",
     },
-    desc = "with statement",
-  },
-  {
-    prefix = "awi",
-    body = {
-      "async with ${1:context}${2: as ${3:_$1}}:",
-      "\t${0:$TM_SELECTED_TEXT}"
-    },
-    desc = "async with statement",
   },
 
-  {
+  ["'for' statement"] = {
     prefix = "fo",
     body = {
       "for ${1:item} in {$2:items}:",
-      "\t${0:TM_SELECTED_TEXT}"
+      "\t${0:$NS_SELECTED_TEXT}",
     },
-    desc = "for statement"
-  },
-  {
-    prefix = "afo",
-    body = {
-      "async for ${1:item} in {$2:items}:",
-      "\t${0:TM_SELECTED_TEXT}"
-    },
-    desc = "async for statement"
   },
 
-  {
+  ["'def' statement"] = {
     prefix = "de",
     body = {
-      "def ${1:func}(${2:self, ${3:args}})${4: -> ${5:None}}:",
-      "\t${0:return None}"
+      "def ${1:func}(${2:args}):",
+      "\t$0",
     },
-    desc = "Function definition"
-  },
-  {
-    prefix = "ade",
-    body = {
-      "async def ${1:func}(${2:self, ${3:args}})${4: -> ${5:None}}:",
-      "\t${0:return None}"
-    },
-    desc = "Function definition"
   },
 
-  {
-    prefix = "tex",
+  ["'def' method statement"] = {
+    prefix = "dem",
     body = {
-      "try:"      ,
-      "${1:$TM_SELECTED_TEXT}",
-      "except${2: Exception${3: as ${4:exc}}}:",
-      "\t${0:pass}"
+      "def ${1:func}(self, ${2:args}):",
+      "\t$0",
     },
-    desc = "try/except clause"
-  },
-  {
-    prefix = "tfi",
-    body = {
-      "try:"      ,
-      "${1:$TM_SELECTED_TEXT}",
-      "finally:",
-      "\t${0:pass}"
-    },
-    desc = "try/finally clause"
-  },
-  {
-    prefix = "texfi",
-    body = {
-      "try:"      ,
-      "${1:$TM_SELECTED_TEXT}",
-      "except${2: Exception${3: as ${4:exc}}}:",
-      "\t${2:pass}",
-      "finally:",
-      "\t${0:pass}"
-    },
-    desc = "try/except/finally clause"
-  },
-  {
-    prefix = "tbr",
-    body = {
-      "try",
-      "${1:$TM_SELECTED_TEXT}",
-      "except:",
-      "\timport sys",
-      "\timport traceback",
-      "",
-      "\ttyp_, val_, tb_ = sys.exc_info()",
-      "\ttbf_ = traceback.format_tb(tb_)",
-      "\tbreakpoint()",
-      "\tassert True"
-    },
-    desc = "Conditional breakpoint"
   },
 
-  {
-    prefix = "br",
-    body = "breakpoint()",
-    desc = "Set a breakpoint"
-  },
-  {
-    prefix = "brc",
+  ["'def' statement with type definition"] = {
+    prefix = "det",
     body = {
-      "if ${1:condition}:",
-      "\tbreakpoint()"
+      "def ${1:func}(${2:args}) -> ${3:object}:",
+      "\t$0",
     },
-    desc = "Conditional breakpoint"
+  },
+
+  ["'def' method statement with type definition"] = {
+    prefix = "demt",
+    body = {
+      "def ${1:func}(self, ${2:args}) -> ${3:object}:",
+      "\t$0",
+    },
   },
 }

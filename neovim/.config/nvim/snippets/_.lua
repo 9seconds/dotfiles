@@ -1,64 +1,72 @@
 local username = vim.trim(vim.fn.system("git config user.name") or "")
 
 return {
-  -- date times
-  {
+  -- _year -> 2025
+  ["Insert current year"] = {
     prefix = "_year",
     body = "$CURRENT_YEAR",
-    desc = "Insert current year",
   },
-  {
+
+  -- _date -> 2025-01-03
+  ["Insert current date"] = {
     prefix = "_date",
     body = "$CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE",
-    desc = "Insert current date",
   },
-  {
+
+  -- _time -> 08:26
+  ["Insert current time"] = {
     prefix = "_time",
     body = "$CURRENT_HOUR:$CURRENT_MINUTE",
-    desc = "Insert current time",
   },
-  {
+
+  -- _times -> 08:26:36
+  ["Insert current time with seconds"] = {
     prefix = "_times",
     body = "$CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
-    desc = "Insert current time",
   },
-  {
+
+  -- _unix -> 1735892819
+  ["Insert UNIX timestamp"] = {
     prefix = "_unix",
     body = "$CURRENT_SECONDS_UNIX",
-    desc = "Insert UNIX timestamp",
   },
-  {
+
+  -- _rnd -> 281205
+  ["Insert random number"] = {
     prefix = "_rnd",
     body = "$RANDOM",
-    desc = "Insert random number",
   },
-  {
+
+  -- _rndh -> f6ad74
+  ["Insert randon HEX number"] = {
     prefix = "_rndh",
     body = "$RANDOM_HEX",
-    desc = "Insert random HEX number",
   },
-  {
+
+  -- _uuid -> ececde38-86a4-43e7-9a82-a6b36719a906
+  ["Insert random UUID"] = {
     prefix = "_uuid",
     body = "$UUID",
     desc = "Insert random UUID",
   },
 
-  -- todo comments
-  {
+  -- #T -> -- TODO(9seconds): Comment
+  ["TODO comment"] = {
     prefix = "#T",
     body = string.format("$LINE_COMMENT TODO(%s): $0", username),
     desc = "TODO comment",
   },
-  {
+
+  -- #F -> -- FIXME(9seconds): Comment
+  ["FIXME comment"] = {
     prefix = "#F",
     body = string.format("$LINE_COMMENT FIXME(%s): $0", username),
-    desc = "FIXME comment",
   },
 
-  -- misc stuff
-  {
+  -- #! -> #!/usr/bin/env hello
+  ["Shebang comment"] = {
     prefix = "#!",
-    body = "#!${1:/usr/bin/env $2}",
+    body = "#!/${1:usr/bin/env }$0",
     desc = "Shebang",
   },
 }
