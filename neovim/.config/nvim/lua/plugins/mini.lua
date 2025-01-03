@@ -118,13 +118,61 @@ local mini_snippets = {
   opts = function()
     local mod = require("mini.snippets")
 
+    local function get_min_indent(current, next)
+      if current == nil then
+        return next
+      end
+
+      local min_length = #current
+      if min_length > #next then
+        min_length = #next
+      end
+
+      for idx = 1, min_length do
+        if current:sub(idx, idx) ~= next:sub(idx, idx) then
+          return current:sub(1, idx - 1)
+        end
+      end
+
+      return current:sub(1, min_length)
+    end
+
+    local function get_selected_text()
+      local lines = vim.split(vim.fn.trim(vim.fn.getreg('"'), "", 2), "\n")
+
+      local min_indent = nil
+      for _, line in ipairs(lines) do
+        min_indent = get_min_indent(min_indent, line:match("^%s*"))
+      end
+
+      for idx, line in ipairs(lines) do
+        lines[idx] = line:sub(#min_indent + 1)
+      end
+
+      return table.concat(lines, "\n")
+    end
+
     return {
+      mappings = {
+        stop = "<c-k>",
+      },
+
+      expand = {
+        insert = function(snippet, opts)
+          opts = vim.tbl_deep_extend("force", opts or {}, {
+            lookup = {
+              ["NS_SELECTED_TEXT"] = get_selected_text(),
+            },
+          })
+
+          return mod.default_insert(snippet, opts)
+        end,
+      },
+
       snippets = {
-        mod.gen_loader.from_file(vim.fs.joinpath(
-          vim.fn.stdpath("config"),
-            "snippets",
-          "_.lua"
-        )),
+        mod.gen_loader.from_file(
+          vim.fs.joinpath(vim.fn.stdpath("config"), "snippets", "_.lua")
+        ),
         mod.gen_loader.from_lang(),
 
         mod.gen_loader.from_file(vim.fs.joinpath(".snippets", "_.lua")),
