@@ -1,5 +1,3 @@
-local username = vim.trim(vim.fn.system("git config user.name") or "")
-
 return {
   -- _year -> 2025
   ["Insert current year"] = {
@@ -47,26 +45,23 @@ return {
   ["Insert random UUID"] = {
     prefix = "_uuid",
     body = "$UUID",
-    desc = "Insert random UUID",
   },
 
   -- #T -> -- TODO(9seconds): Comment
   ["TODO comment"] = {
     prefix = "#T",
-    body = string.format("$LINE_COMMENT TODO(%s): $0", username),
-    desc = "TODO comment",
+    body = "$LINE_COMMENT #TODO($GIT_USERNAME): $0",
   },
 
   -- #F -> -- FIXME(9seconds): Comment
   ["FIXME comment"] = {
     prefix = "#F",
-    body = string.format("$LINE_COMMENT FIXME(%s): $0", username),
+    body = "$LINE_COMMENT #FIXME($GIT_USERNAME): $0",
   },
 
   -- #! -> #!/usr/bin/env hello
   ["Shebang comment"] = {
     prefix = "#!",
     body = "#!/${1:usr/bin/env }$0",
-    desc = "Shebang",
   },
 }

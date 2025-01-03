@@ -23,7 +23,7 @@ return {
     prefix = "wh",
     body = {
       "while ${1:True}:",
-      "\t${0:$NS_SELECTED_TEXT}",
+      "\t${0:$TM_SELECTED_TEXT}",
     },
   },
 
@@ -31,7 +31,7 @@ return {
     prefix = "wi",
     body = {
       "with ${1:context}${2: as ${3:_$1}}:",
-      "\t${0:$NS_SELECTED_TEXT}",
+      "\t${0:$TM_SELECTED_TEXT}",
     },
   },
 
@@ -39,7 +39,7 @@ return {
     prefix = "fo",
     body = {
       "for ${1:item} in {$2:items}:",
-      "\t${0:$NS_SELECTED_TEXT}",
+      "\t${0:$TM_SELECTED_TEXT}",
     },
   },
 
@@ -92,7 +92,7 @@ return {
     prefix = "bd",
     body = {
       "try:",
-      "\t${0:$NS_SELECTED_TEXT}",
+      "\t${0:$TM_SELECTED_TEXT}",
       "except:",
       "\timport sys, traceback",
       "\ttyp_, val_, tb_ = sys.exc_info()",
@@ -106,7 +106,7 @@ return {
     prefix = "te",
     body = {
       "try:",
-      "\t${0:$NS_SELECTED_TEXT}",
+      "\t${0:$TM_SELECTED_TEXT}",
       "except${1: ${2:Exception}${3: as ${4:exc}}}:",
       "\t${5:pass}",
     },
@@ -116,7 +116,7 @@ return {
     prefix = "tf",
     body = {
       "try:",
-      "\t${0:$NS_SELECTED_TEXT}",
+      "\t${0:$TM_SELECTED_TEXT}",
       "finally:",
       "\t${1:pass}",
     },

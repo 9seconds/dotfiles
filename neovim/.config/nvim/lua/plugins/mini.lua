@@ -118,38 +118,9 @@ local mini_snippets = {
   opts = function()
     local mod = require("mini.snippets")
 
-    local function get_min_indent(current, next)
-      if current == nil then
-        return next
-      end
-
-      local min_length = #current
-      if min_length > #next then
-        min_length = #next
-      end
-
-      for idx = 1, min_length do
-        if current:sub(idx, idx) ~= next:sub(idx, idx) then
-          return current:sub(1, idx - 1)
-        end
-      end
-
-      return current:sub(1, min_length)
-    end
-
-    local function get_selected_text()
-      local lines = vim.split(vim.fn.trim(vim.fn.getreg('"'), "", 2), "\n")
-
-      local min_indent = nil
-      for _, line in ipairs(lines) do
-        min_indent = get_min_indent(min_indent, line:match("^%s*"))
-      end
-
-      for idx, line in ipairs(lines) do
-        lines[idx] = line:sub(#min_indent + 1)
-      end
-
-      return table.concat(lines, "\n")
+    local git_username = vim.env.GIT_USERNAME
+    if not git_username then
+      git_username = vim.trim(vim.fn.system("git config user.name") or "")
     end
 
     return {
@@ -158,14 +129,12 @@ local mini_snippets = {
       },
 
       expand = {
-        insert = function(snippet, opts)
-          opts = vim.tbl_deep_extend("force", opts or {}, {
+        insert = function(snippet)
+          return mod.default_insert(snippet, {
             lookup = {
-              ["NS_SELECTED_TEXT"] = get_selected_text(),
+              ["GIT_USERNAME"] = git_username,
             },
           })
-
-          return mod.default_insert(snippet, opts)
         end,
       },
 
