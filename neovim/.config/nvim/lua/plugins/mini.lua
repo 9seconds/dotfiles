@@ -118,26 +118,10 @@ local mini_snippets = {
   opts = function()
     local mod = require("mini.snippets")
 
-    local git_username = vim.env.GIT_USERNAME
-    if not git_username then
-      git_username = vim.trim(vim.fn.system("git config user.name") or "")
-    end
-
     return {
       mappings = {
         stop = "<c-k>",
       },
-
-      expand = {
-        insert = function(snippet)
-          return mod.default_insert(snippet, {
-            lookup = {
-              ["GIT_USERNAME"] = git_username,
-            },
-          })
-        end,
-      },
-
       snippets = {
         mod.gen_loader.from_file(
           vim.fs.joinpath(vim.fn.stdpath("config"), "snippets", "_.lua")
