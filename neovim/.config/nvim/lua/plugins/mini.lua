@@ -112,16 +112,81 @@ local mini_snippets = {
     {
       "<c-j>",
       mode = "i",
+      desc = "Expand snippet",
+    },
+    {
+      "<leader>k",
+      function()
+        local sess = require("mini.snippets").session
+
+        while sess.get() do
+          sess.stop()
+        end
+      end,
+      desc = "Stop all snippet sessions",
     },
   },
 
   opts = function()
     local mod = require("mini.snippets")
 
+    local function get_min_indent(current, next)
+      -- if current indent is a first line, just use next one
+      if current == nil then
+        return next
+      end
+
+      -- find out a minimal size. This is required for
+      -- having a short loop
+      local min_length = #current
+      if min_length > #next then
+        min_length = #next
+      end
+
+      -- go over an indent of a minimal size and compare symbol by symbol
+      for idx = 1, min_length do
+        if current:sub(idx, idx) ~= next:sub(idx, idx) then
+          -- this means that we have a different characters on this iteration.
+          -- it also means that all previous indent characters match.
+          return current:sub(1, idx - 1)
+        end
+      end
+
+      -- minimal indent is a prefix for a bigger string. Just return
+      -- it.
+      return current:sub(1, min_length)
+    end
+
+    local function get_selected_text()
+      local lines = vim.split(vim.fn.trim(vim.fn.getreg('"'), "", 2), "\n")
+
+      local min_indent = nil
+      for _, line in ipairs(lines) do
+        min_indent = get_min_indent(min_indent, line:match("^%s*"))
+      end
+
+      for idx, line in ipairs(lines) do
+        lines[idx] = line:sub(#min_indent + 1)
+      end
+
+      return table.concat(lines, "\n")
+    end
+
     return {
       mappings = {
         stop = "<c-k>",
       },
+
+      expand = {
+        insert = function(snippet)
+          return mod.default_insert(snippet, {
+            lookup = {
+              ["DEDENTED_SELECTED_TEXT"] = get_selected_text(),
+            },
+          })
+        end,
+      },
+
       snippets = {
         mod.gen_loader.from_file(
           vim.fs.joinpath(vim.fn.stdpath("config"), "snippets", "_.lua")

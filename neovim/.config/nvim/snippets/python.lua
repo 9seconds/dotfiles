@@ -23,7 +23,15 @@ return {
     prefix = "wh",
     body = {
       "while ${1:True}:",
-      "\t${0:$TM_SELECTED_TEXT}",
+      "\t$0",
+    },
+  },
+
+  ["wrap in while 'while' loop"] = {
+    prefix = "wwh",
+    body = {
+      "while ${1:True}:",
+      "\t${0:$DEDENTED_SELECTED_TEXT}",
     },
   },
 
@@ -31,7 +39,31 @@ return {
     prefix = "wi",
     body = {
       "with ${1:context}${2: as ${3:_$1}}:",
-      "\t${0:$TM_SELECTED_TEXT}",
+      "\t$0",
+    },
+  },
+
+  ["wrap in 'with' statement"] = {
+    prefix = "wwi",
+    body = {
+      "with ${1:context}${2: as ${3:_$1}}:",
+      "\t${0:$DEDENTED_SELECTED_TEXT}",
+    },
+  },
+
+  ["'if' statement"] = {
+    prefix = "if",
+    body = {
+      "if ${1:condition}:",
+      "\t$0",
+    },
+  },
+
+  ["wrap in 'if' statement"] = {
+    prefix = "wif",
+    body = {
+      "if ${1:condition}:",
+      "\t${0:$DEDENTED_SELECTED_TEXT}",
     },
   },
 
@@ -39,7 +71,7 @@ return {
     prefix = "fo",
     body = {
       "for ${1:item} in {$2:items}:",
-      "\t${0:$TM_SELECTED_TEXT}",
+      "\t$0",
     },
   },
 
@@ -77,22 +109,26 @@ return {
 
   ["Breakpoint"] = {
     prefix = "b",
-    body = "breakpoint()$0",
+    body = {
+      "# FIXME($GIT_USERNAME): Remove this breakpoint",
+      "breakpoint()",
+    },
   },
 
   ["Conditional breakpoint"] = {
     prefix = "bc",
     body = {
       "if $1:",
-      "\tbreakpoint()$0",
+      "\tbreakpoint()",
     },
   },
 
   ["Debug statement"] = {
     prefix = "bd",
     body = {
+      "# FIXME($GIT_USERNAME): Remove this breakpoint",
       "try:",
-      "\t${0:$TM_SELECTED_TEXT}",
+      "\t${0:$DEDENTED_SELECTED_TEXT}",
       "except:",
       "\timport sys, traceback",
       "\ttyp_, val_, tb_ = sys.exc_info()",
@@ -106,7 +142,7 @@ return {
     prefix = "te",
     body = {
       "try:",
-      "\t${0:$TM_SELECTED_TEXT}",
+      "\t${0:$DEDENTED_SELECTED_TEXT}",
       "except${1: ${2:Exception}${3: as ${4:exc}}}:",
       "\t${5:pass}",
     },
@@ -116,7 +152,7 @@ return {
     prefix = "tf",
     body = {
       "try:",
-      "\t${0:$TM_SELECTED_TEXT}",
+      "\t${0:$DEDENTED_SELECTED_TEXT}",
       "finally:",
       "\t${1:pass}",
     },
@@ -124,16 +160,46 @@ return {
 
   ["Magic method"] = {
     prefix = "__",
-    body = "__$1__",
+    body = "__$0__",
   },
 
   ["Multiline string with double quotes"] = {
-    prefix = "#",
+    prefix = "#d",
     body = '"""$0"""',
   },
 
   ["Multiline string with single quotes"] = {
-    prefix = "#",
+    prefix = "#s",
     body = "'''$0'''",
+  },
+
+  ["List comprehension"] = {
+    prefix = "cl",
+    body = "[${1:item} for $1 in ${2:${1}s}]",
+  },
+
+  ["List comprehension with filter"] = {
+    prefix = "clf",
+    body = "[${1:item} for $1 in ${2:${1}s} if ${3:condition}]",
+  },
+
+  ["Set comprehension"] = {
+    prefix = "cs",
+    body = "{${1:item} for $1 in ${2:${1}s}}",
+  },
+
+  ["Set comprehension with filter"] = {
+    prefix = "csf",
+    body = "{${1:item} for $1 in ${2:${1}s} if ${3:condition}}",
+  },
+
+  ["Dict comprehension"] = {
+    prefix = "cd",
+    body = "{${1:key}: ${2:value} for $1, $2 in ${3:items}}",
+  },
+
+  ["Dict comprehension with filter"] = {
+    prefix = "cdf",
+    body = "{${1:key}: ${2:value} for $1, $2 in ${3:items} if ${4:condition}}",
   },
 }

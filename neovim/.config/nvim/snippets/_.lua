@@ -50,13 +50,13 @@ return {
   -- #T -> -- TODO(9seconds): Comment
   ["TODO comment"] = {
     prefix = "#T",
-    body = "$LINE_COMMENT #TODO($GIT_USERNAME): $0",
+    body = "$LINE_COMMENT #TODO($GIT_USERNAME): ",
   },
 
   -- #F -> -- FIXME(9seconds): Comment
   ["FIXME comment"] = {
     prefix = "#F",
-    body = "$LINE_COMMENT #FIXME($GIT_USERNAME): $0",
+    body = "$LINE_COMMENT #FIXME($GIT_USERNAME): ",
   },
 
   -- #! -> #!/usr/bin/env hello
