@@ -3,7 +3,17 @@
 
 return {
   "sQVe/sort.nvim",
-  cmd = "Sort",
+  keys = {
+    {
+      "<leader>s",
+      ":Sort ",
+      mode = { "v", "n", "s" },
+      desc = "Sort lines",
+    },
+  },
+  cmd = {
+    "Sort",
+  },
 
   opts = {},
 }
