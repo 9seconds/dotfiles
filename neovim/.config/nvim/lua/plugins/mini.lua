@@ -115,7 +115,7 @@ local mini_snippets = {
       desc = "Expand snippet",
     },
     {
-      "<leader>k",
+      "<leader>c",
       function()
         local sess = require("mini.snippets").session
 
