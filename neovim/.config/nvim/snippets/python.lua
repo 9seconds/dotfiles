@@ -38,7 +38,7 @@ return {
   ["'with' statement"] = {
     prefix = "wi",
     body = {
-      "with ${1:context}${2: as ${3:_$1}}:",
+      "with ${1:context}:",
       "\t$0",
     },
   },
@@ -46,7 +46,7 @@ return {
   ["wrap in 'with' statement"] = {
     prefix = "wwi",
     body = {
-      "with ${1:context}${2: as ${3:_$1}}:",
+      "with ${1:context}:",
       "\t${0:$DEDENTED_SELECTED_TEXT}",
     },
   },
@@ -78,7 +78,7 @@ return {
   ["'def' statement"] = {
     prefix = "de",
     body = {
-      "def ${1:func}(${2:args}):",
+      "def ${1:func}(${2:args})$3:",
       "\t$0",
     },
   },
@@ -86,23 +86,7 @@ return {
   ["'def' method statement"] = {
     prefix = "dem",
     body = {
-      "def ${1:func}(self, ${2:args}):",
-      "\t$0",
-    },
-  },
-
-  ["'def' statement with type definition"] = {
-    prefix = "det",
-    body = {
-      "def ${1:func}(${2:args}) -> ${3:object}:",
-      "\t$0",
-    },
-  },
-
-  ["'def' method statement with type definition"] = {
-    prefix = "demt",
-    body = {
-      "def ${1:func}(self, ${2:args}) -> ${3:object}:",
+      "def ${1:func}(self, ${2:args})$3:",
       "\t$0",
     },
   },
@@ -143,8 +127,8 @@ return {
     body = {
       "try:",
       "\t${0:$DEDENTED_SELECTED_TEXT}",
-      "except${1: ${2:Exception}${3: as ${4:exc}}}:",
-      "\t${5:pass}",
+      "except Exception as exc:",
+      "\tpass",
     },
   },
 
@@ -154,7 +138,7 @@ return {
       "try:",
       "\t${0:$DEDENTED_SELECTED_TEXT}",
       "finally:",
-      "\t${1:pass}",
+      "\tpass",
     },
   },
 
