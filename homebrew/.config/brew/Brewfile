@@ -27,6 +27,8 @@ cask "kitty"
 cask "obsidian"
 # Get up and running with large language models locally
 cask "ollama"
+# All-in-one bookmark manager
+cask "raindropio"
 # Control your tools with a few keystrokes
 cask "raycast"
 # Team communication and collaboration software
