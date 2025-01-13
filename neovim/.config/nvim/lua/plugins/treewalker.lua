@@ -5,28 +5,28 @@ return {
   "aaronik/treewalker.nvim",
   keys = {
     {
-      "H",
+      "<Left>",
       "<cmd>Treewalker Left<cr>",
-      desc = "Go to ancestor"
+      desc = "Go to ancestor",
     },
     {
-      "J",
+      "<Down>",
       "<cmd>Treewalker Down<cr>",
-      desc = "Go to next neighbor node"
+      desc = "Go to next neighbor node",
     },
     {
-      "K",
+      "<Up>",
       "<cmd>Treewalker Up<cr>",
-      desc = "Go to previous neighbor node"
+      desc = "Go to previous neighbor node",
     },
     {
-      "L",
+      "<Right>",
       "<cmd>Treewalker Right<cr>",
-      desc = "Dive into treesitter"
+      desc = "Dive into treesitter",
     },
   },
   cmd = {
-    "Treewalker"
+    "Treewalker",
   },
 
   opts = {},

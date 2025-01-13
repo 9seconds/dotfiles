@@ -9,5 +9,5 @@ return {
 
   config = function()
     require("leap").create_default_mappings()
-  end
+  end,
 }
