@@ -1,46 +1,31 @@
 -- autocompletion
 -- https://github.com/Saghen/blink.cmp
 
-local function enable_blink(cmp)
-  local copilot = package.loaded["copilot.suggestion"]
-
-  vim.b.copilot_suggestion_auto_trigger = false
-
-  if copilot then
-    copilot.dismiss()
-  end
-
-  cmp.show()
-end
-
 return {
   "Saghen/blink.cmp",
   version = "*",
   event = "InsertEnter",
 
   opts = {
+    enabled = function()
+      return not vim.b.copilot_suggestion_auto_trigger
+    end,
+
     keymap = {
       preset = "none",
 
       ["<Tab>"] = {
-        "fallback",
-      },
-      ["<C-CR>"] = {
         "select_and_accept",
-        "fallback",
       },
       ["<C-n>"] = {
-        enable_blink,
         "select_next",
         "fallback",
       },
       ["<C-p>"] = {
-        enable_blink,
         "select_prev",
         "fallback",
       },
       ["<C-d>"] = {
-        enable_blink,
         "show_documentation",
         "hide_documentation",
         "fallback",
@@ -60,13 +45,21 @@ return {
       },
       list = {
         selection = {
-          preselect = true
+          preselect = true,
         },
       },
       accept = {
         auto_brackets = {
           enabled = false,
         },
+      },
+      menu = {
+        auto_show = function(ctx)
+          if ctx.mode == "cmdline" then
+            return false
+          end
+          return not vim.tbl_contains({ "/", "?" }, vim.fn.getcmdtype())
+        end,
       },
     },
 
@@ -77,6 +70,10 @@ return {
     appearance = {
       use_nvim_cmp_as_default = true,
       nerd_font_variant = "mono",
+    },
+
+    sources = {
+      default = { "lsp", "path", "buffer" },
     },
   },
 }
