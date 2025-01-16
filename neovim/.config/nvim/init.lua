@@ -31,7 +31,6 @@ vim.api.nvim_create_autocmd({ "User" }, {
     require("_.autocommands")
     require("_.commands")
     require("_.terminal")
-    require("_.quickfix")
 
     if vim.g.neovide then
       require("_.neovide")
