@@ -122,6 +122,7 @@ local copilot_chat = {
 
         vim.keymap.set("i", "<c-h>", "<c-o><c-w>h<esc>", { buffer = true })
         vim.keymap.set("i", "<c-l>", "<c-o><c-w>l<esc>", { buffer = true })
+        vim.keymap.set("i", "<c-q>", "<c-o><c-w>c<esc>", { buffer = true })
       end,
     })
   end,
