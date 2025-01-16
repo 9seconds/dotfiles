@@ -55,7 +55,7 @@ return {
       },
       menu = {
         auto_show = function(ctx)
-          if ctx.mode == "cmdline" then
+          if ctx.mode == "cmdline" or vim.bo.buftype == "prompt" then
             return false
           end
           return not vim.tbl_contains({ "/", "?" }, vim.fn.getcmdtype())
