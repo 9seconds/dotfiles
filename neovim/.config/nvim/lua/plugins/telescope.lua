@@ -150,6 +150,15 @@ local telescope_config = {
       },
     })
 
+    vim.api.nvim_create_autocmd("BufEnter", {
+      group = vim.api.nvim_create_augroup("9_Telescope", {}),
+      callback = function()
+        if vim.bo.buftype == "prompt" then
+          vim.b.minipairs_disable = true
+        end
+      end,
+    })
+
     telescope.load_extension("fzf")
   end,
 }
