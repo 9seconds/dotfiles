@@ -29,6 +29,12 @@ alias e := edit
 @up-nvim:
   nvim --headless '+Lazy! sync' +TSUpdateSync '+lua require("mason-registry").refresh()' +qa
 
+# update zellij plugins
+@up-zellij: up-zellij-zjstatus
+
+@up-zellij-zjstatus:
+  curl -sSL -o ~/.local/share/zellij/zjstatus.wasm https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm
+
 # update mise stuff
 @up-mise $RUSTUP_INIT_SKIP_PATH_CHECK="1":
   mise plugins update
@@ -37,7 +43,7 @@ alias e := edit
   mise reshim
 
 # update all
-@up: up-system up-nvim up-mise
+@up: up-system up-nvim up-mise up-zellij
 
 # wrapper for brew install that updates bundle
 [group("brew")]
