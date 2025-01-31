@@ -14,7 +14,7 @@ return {
     keymap = {
       preset = "none",
 
-      ["<Tab>"] = {
+      ["<C-a>"] = {
         "select_and_accept",
       },
       ["<C-n>"] = {
