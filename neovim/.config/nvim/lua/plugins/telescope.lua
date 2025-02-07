@@ -70,17 +70,23 @@ local telescope_config = {
       "<leader>tt",
       function()
         local mod = require("telescope.builtin")
+        local opts = {
+          previewer = false,
+          layout_strategy = "vertical",
+          layout_config = {
+            vertical = {
+              height = 0.6,
+            },
+          },
+        }
 
         if is_git() then
-          return mod.git_files({
-            previewer = false,
-          })
+          return mod.git_files(opts)
         end
 
-        mod.find_files({
-          previewer = false,
-          find_command = find_files_command,
-        })
+        return mod.find_files(
+          vim.tbl_extend("force", opts, { find_command = find_files_command })
+        )
       end,
       desc = "Find files",
     },
@@ -148,15 +154,6 @@ local telescope_config = {
           }, vim.g.telescope_egrepify_prefixes or {}),
         },
       },
-    })
-
-    vim.api.nvim_create_autocmd("BufEnter", {
-      group = vim.api.nvim_create_augroup("9_Telescope", {}),
-      callback = function()
-        if vim.bo.buftype == "prompt" then
-          vim.b.minipairs_disable = true
-        end
-      end,
     })
 
     telescope.load_extension("fzf")
