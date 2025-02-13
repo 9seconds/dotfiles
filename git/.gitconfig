@@ -8,6 +8,7 @@
     ap = a --patch
     apa = ap --all
     bl = blame --show-stats --date iso
+    br = !git branch --sort=committerdate -a --color=always | grep -vP 'HEAD|\\*' | fzf --ansi --prompt='branch> ' --height='~30%' --no-separator --info=hidden --no-sort | cut -c 3- | sed 's?^remotes/??' | xargs -r git switch
     arev = "!f() { git absorb --base $(git merge-base HEAD "${1:-origin/master}"); } ; f"
     cl = clean -fdq
     clx = cl -x
