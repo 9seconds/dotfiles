@@ -6,6 +6,7 @@
     a = add
     amend = commit --amend --all -C HEAD
     ap = a --patch
+    ab = !git absorb -r -b $(git pc)
     apa = ap --all
     bl = blame --show-stats --date iso
     br = !git pb | xargs -r git sw
