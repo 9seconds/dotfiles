@@ -50,7 +50,6 @@ local treesitter_config = {
     -- :h nvim-treesitter-highlight-mod
     highlight = {
       enable = true,
-      disable = disable_on_max_filesize,
     },
 
     -- see matchup.lua
