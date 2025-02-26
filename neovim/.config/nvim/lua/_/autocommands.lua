@@ -16,6 +16,16 @@ local function setup()
       vim.fn.winrestview(save)
     end,
   })
+
+  -- disable mini.pairs for prompts
+  vim.api.nvim_create_autocmd("BufEnter", {
+    group = vim.api.nvim_create_augroup('_MiniPairs', {}),
+    callback = function()
+      if vim.bo.buftype == "prompt" then
+        vim.b.minipairs_disable = true
+      end
+    end,
+  })
 end
 
 setup()
