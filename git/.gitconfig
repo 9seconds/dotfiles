@@ -10,12 +10,14 @@
     apa = ap --all
     bl = blame --show-stats --date iso
     br = !git pb | xargs -r git sw
+    brd = !git branch | fzf --ansi --prompt='branch> ' --height='~30%' --multi --bind 'ctrl-n:preview-down,ctrl-p:preview-up,ctrl-d:preview-page-down,ctrl-u:preview-page-up,shift-up:half-page-up,shift-down:half-page-down' --preview='echo {+2}"\t"{+1} | rev | cut -f1  | rev | xargs -r -n 1 git l --color=always -n 30' | cut -c 3- | xargs -r git branch -D
     cl = clean -fdq
     clx = cl -x
     cm = commit -m
     cma = commit -a -m
     co = checkout
     cob = co -b
+    conflicts = !git status --porcelain=2 | awk '$1 ~ /u/ {print $NF}'
     df = diff --minimal
     dfc = df --cached
     dff = difftool
@@ -23,21 +25,23 @@
     fixup = commit --fixup
     ftch = fetch --tags --atomic
     gcc = !git reflog expire --expire=all --stale-fix --all && git worktree prune --expire 0 && git gc --prune=all && git repack -a -d -b --depth 200 --window 100
-    gcca = !git gcc && git sf git gcc
+    gcca = !git gcc && git git smf git gcc
     l = log --date=short '--pretty=format:%C(auto)%h (%ad) %Cgreen%aN%Cblue%d%Creset: %s' --no-merges --abbrev-commit
     lg = lgg --simplify-by-decoration
     lgg = l --graph
-    pb = !git branch -a --color=always | grep -vF HEAD | fzf --ansi --prompt='branch> ' --height='~30%' --no-separator --info=hidden --no-sort | cut -c 3- | sed 's?^remotes/??'
-    pc = !git l -n 1000 --color=always | fzf --ansi --scheme=history --prompt='commit> ' --height='~30%' --no-separator --info=hidden --no-sort | awk '{print $1}'
+    pb = !git branch -a --color=always | grep -vF HEAD | fzf -0 --ansi --prompt='branch> ' --height='~30%' --no-separator --info=hidden --no-sort --bind 'ctrl-n:preview-down,ctrl-p:preview-up,ctrl-d:preview-page-down,ctrl-u:preview-page-up,shift-up:half-page-up,shift-down:half-page-down' --preview='echo {+2}"\t"{+1} | rev | cut -f1  | rev | xargs -r -n 1 git l --color=always -n 30' | cut -c 3- | sed 's?^remotes/??'
+    pc = !git l -n 1000 --color=always | fzf -0 --ansi --scheme=history --prompt='commit> ' --height='~30%' --no-separator --info=hidden --no-sort --bind 'ctrl-n:preview-down,ctrl-p:preview-up,ctrl-d:preview-page-down,ctrl-u:preview-page-up,shift-up:half-page-up,shift-down:half-page-down' --preview='DFT_DISPLAY=inline DFT_COLOR=always git difftool {+1}~1 {+1}' --accept-nth 1
+    pf = !git status --porcelain=2 | awk '{print $NF}' | fzf -0 --scheme=path --prompt='file> ' --height='~30%' --no-separator --info=hidden --no-sort --multi --bind 'ctrl-n:preview-down,ctrl-p:preview-up,ctrl-d:preview-page-down,ctrl-u:preview-page-up,shift-up:half-page-up,shift-down:half-page-down' --preview='bat --plain --color=always {}'
     psh = push --atomic
     pshf = psh --force-with-lease
+    root = rev-parse --show-toplevel
     rb = rebase --interactive --autosquash --autostash
     rh = reset --hard
     rs = restore -SW
     rss = restore -S
     rsw = restore -W
     s = status -sb --find-renames
-    sf = submodule foreach --recursive
+    smf = submodule foreach --recursive
     sw = switch
 [merge]
     tool = nvimdiff
@@ -48,6 +52,7 @@
 [mergetool]
     prompt = false
 [diff]
+    algorithm = histogram
     tool = difftastic
     colorMoved = zebra
 [difftool]
