@@ -10,7 +10,7 @@
     apa = ap --all
     bl = blame --show-stats --date iso
     br = !git pb | xargs -r git sw
-    brd = !git branch | fzf --ansi --prompt='branch> ' --height='~30%' --multi --bind 'ctrl-n:preview-down,ctrl-p:preview-up,ctrl-d:preview-page-down,ctrl-u:preview-page-up,shift-up:half-page-up,shift-down:half-page-down' --preview='echo {+2}"\t"{+1} | rev | cut -f1  | rev | xargs -r -n 1 git l --color=always -n 30' | cut -c 3- | xargs -r git branch -D
+    brd = !git branch | 9fzf --prompt='branch> ' --multi --preview='echo {+2}"\t"{+1} | rev | cut -f1  | rev | xargs -r -n 1 git l --color=always -n 30' | cut -c 3- | xargs -r git branch -D
     cl = clean -fdq
     clx = cl -x
     cm = commit -m
@@ -29,9 +29,9 @@
     l = log --date=short '--pretty=format:%C(auto)%h (%ad) %Cgreen%aN%Cblue%d%Creset: %s' --no-merges --abbrev-commit
     lg = lgg --simplify-by-decoration
     lgg = l --graph
-    pb = !git branch -a --color=always | grep -vF HEAD | fzf -0 --ansi --prompt='branch> ' --height='~30%' --no-separator --info=hidden --no-sort --bind 'ctrl-n:preview-down,ctrl-p:preview-up,ctrl-d:preview-page-down,ctrl-u:preview-page-up,shift-up:half-page-up,shift-down:half-page-down' --preview='echo {+2}"\t"{+1} | rev | cut -f1  | rev | xargs -r -n 1 git l --color=always -n 30' | cut -c 3- | sed 's?^remotes/??'
-    pc = !git l -n 1000 --color=always | fzf -0 --ansi --scheme=history --prompt='commit> ' --height='~30%' --no-separator --info=hidden --no-sort --bind 'ctrl-n:preview-down,ctrl-p:preview-up,ctrl-d:preview-page-down,ctrl-u:preview-page-up,shift-up:half-page-up,shift-down:half-page-down' --preview='DFT_DISPLAY=inline DFT_COLOR=always git difftool {+1}~1 {+1}' --accept-nth 1
-    pf = !git status --porcelain=2 | awk '{print $NF}' | fzf -0 --scheme=path --prompt='file> ' --height='~30%' --no-separator --info=hidden --no-sort --multi --bind 'ctrl-n:preview-down,ctrl-p:preview-up,ctrl-d:preview-page-down,ctrl-u:preview-page-up,shift-up:half-page-up,shift-down:half-page-down' --preview='bat --plain --color=always {}'
+    pb = !git branch -a --color=always | grep -vF HEAD | 9fzf --prompt='branch> ' --preview='echo {+2}"\t"{+1} | rev | cut -f1  | rev | xargs -r -n 1 git l --color=always -n 30' | cut -c 3- | sed 's?^remotes/??'
+    pc = !git l -n 1000 --color=always | 9fzf --scheme=history --prompt='commit> ' --preview='DFT_DISPLAY=inline DFT_COLOR=always git difftool -t difftastic {+1}~1 {+1}' --accept-nth 1
+    pf = !git status --porcelain=2 | awk '{print $NF}' | 9fzf --scheme=path --prompt='file> ' --preview='bat --plain --color=always {}'
     psh = push --atomic
     pshf = psh --force-with-lease
     root = rev-parse --show-toplevel

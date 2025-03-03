@@ -1,0 +1,25 @@
+#!/bin/bash
+set -eu -o pipefail
+
+export COLORTERM=truecolor
+
+BIND="ctrl-n:preview-down"
+BIND="$BIND,ctrl-p:preview-up"
+BIND="$BIND,ctrl-d:preview-page-down"
+BIND="$BIND,ctrl-u:preview-page-up"
+BIND="$BIND,shift-up:half-page-up"
+BIND="$BIND,shift-down:half-page-down"
+BIND="$BIND,ctrl-t:change-preview-window(right,50%|hidden)"
+BIND="$BIND,ctrl-a:select-all"
+
+exec fzf \
+    -0 \
+    --ansi \
+    --height 20 \
+    --no-separator \
+    --info hidden \
+    --no-sort \
+    --with-shell "bash -c" \
+    --bind "$BIND" \
+    --preview-window hidden \
+  "$@"

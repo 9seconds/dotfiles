@@ -22,21 +22,15 @@ end
 
 function vg -d "open files in vim"
   $search $argv \
-     | fzf \
-        -0 \
+     | 9fzf \
         --sort \
-        --ansi \
         --scheme=path \
         --delimiter=: \
         --with-nth '{1}:{2}  {4..}' \
         --nth=1,4.. \
-        --info=hidden \
         --prompt='filter> ' \
-        --no-multi \
         --filepath-word \
-        --with-shell='bash -c' \
         --preview='lineno={2} && start_range=$((lineno > 20 ? lineno-20 : 1)) && bat -p -r ${start_range}:$((lineno+20)) -H $lineno --color=always {1}' \
-        --bind 'ctrl-n:preview-down,ctrl-p:preview-up,ctrl-d:preview-page-down,ctrl-u:preview-page-up,shift-up:half-page-up,shift-down:half-page-down' \
      | awk -F: '{print "+"$2, $1}' \
      | xargs -r -o nvim
 end
