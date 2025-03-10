@@ -33,7 +33,8 @@ alias e := edit
 @up-zellij: up-zellij-zjstatus
 
 @up-zellij-zjstatus:
-  curl -sSL -o ~/.local/share/zellij/zjstatus.wasm https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm
+  mkdir -p ~/.local/share/zellij || true
+  curl -sSL --retry 5 --fail-with-body -o ~/.local/share/zellij/zjstatus.wasm https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm
 
 @up-fish:
   fish -ic "fisher update"
