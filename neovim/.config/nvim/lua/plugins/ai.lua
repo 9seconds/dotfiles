@@ -86,29 +86,11 @@ local copilot_chat = {
       end,
       desc = "Toggle Copilot chat",
     },
-    {
-      "<leader>ta",
-      function()
-        local actions = require("CopilotChat.actions")
-
-        local all_actions = {}
-
-        for k, v in pairs(actions.help_actions() or {}) do
-          all_actions[k] = v
-        end
-
-        for k, v in pairs(actions.prompt_actions() or {}) do
-          all_actions[k] = v
-        end
-
-        require("CopilotChat.integrations.telescope").pick(all_actions)
-      end,
-      mode = { "n", "v", "x" },
-      desc = "Show telescope",
-    },
   },
 
-  opts = {},
+  opts = {
+    model = "claude-3.7-sonnet",
+  },
 
   config = function(_, opts)
     require("CopilotChat").setup(opts)
@@ -123,6 +105,15 @@ local copilot_chat = {
         vim.keymap.set("i", "<c-h>", "<c-o><c-w>h<esc>", { buffer = true })
         vim.keymap.set("i", "<c-l>", "<c-o><c-w>l<esc>", { buffer = true })
         vim.keymap.set("i", "<c-q>", "<c-o><c-w>c<esc>", { buffer = true })
+        vim.keymap.set(
+          "i",
+          "<c-r>",
+          "<c-o>:CopilotChatReset<esc>i",
+          { buffer = true }
+        )
+        vim.keymap.set("n", "<c-r>", function()
+          require("CopilotChat").reset()
+        end, { buffer = true })
       end,
     })
   end,
