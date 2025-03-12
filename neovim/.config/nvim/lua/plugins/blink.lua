@@ -74,6 +74,9 @@ return {
 
     sources = {
       default = { "lsp", "path", "buffer" },
+      per_filetype = {
+        codecompanion = { "codecompanion" },
+      },
     },
   },
 }

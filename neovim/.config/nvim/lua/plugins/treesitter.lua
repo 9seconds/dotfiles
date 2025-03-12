@@ -37,6 +37,7 @@ local treesitter_config = {
       "kdl",
       "lua",
       "make",
+      "markdown", -- required for code-companion
       "python",
       "requirements",
       "ssh_config",
