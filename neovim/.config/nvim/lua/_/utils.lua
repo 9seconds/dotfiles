@@ -36,4 +36,14 @@ function M.get_buf_file_size(bufnr)
   return stat.size
 end
 
+function M.refresh_statusline()
+  local lualine = package.loaded["lualine"]
+
+  if lualine then
+    lualine.refresh({
+      place = { "statusline" },
+    })
+  end
+end
+
 return M

@@ -45,7 +45,6 @@ return {
     "CodeCompanionActions",
     "CodeCompanionCmd",
   },
-  config = true,
 
   opts = function()
     local global_adapter = os.getenv("CODE_COMPANION_ADAPTER")
@@ -110,5 +109,33 @@ return {
         },
       },
     }
+  end,
+
+  config = function(_, opts)
+    require("codecompanion").setup(opts)
+
+    local group = vim.api.nvim_create_augroup("9_CodeCompanion", {})
+
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "CodeCompanionRequestStarted",
+      group = group,
+      callback = function()
+        local utils = require("_.utils")
+
+        vim.g.code_companion_in_progress = true
+        utils.refresh_statusline()
+      end,
+    })
+
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "CodeCompanionRequestFinished",
+      group = group,
+      callback = function()
+        local utils = require("_.utils")
+
+        vim.g.code_companion_in_progress = false
+        utils.refresh_statusline()
+      end,
+    })
   end,
 }
