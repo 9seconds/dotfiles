@@ -32,6 +32,7 @@ return {
     {
       "<leader>aa",
       "<cmd>CodeCompanionChat Toggle<cr>",
+      mode = { "n", "v", "o" },
     },
     {
       "<leader>ac",
