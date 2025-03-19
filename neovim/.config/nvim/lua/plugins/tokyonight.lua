@@ -10,13 +10,16 @@ return {
   opts = {
     dim_inactive = true,
     lualine_bold = true,
+    on_colors = function(colors)
+      colors.border = colors.fg_gutter
+    end,
   },
 
-  init = function()
+  config = function(_, opts)
     vim.o.background = "dark"
-  end,
 
-  config = function()
+    require("tokyonight").setup(opts)
+
     vim.cmd("colorscheme tokyonight")
   end,
 }
