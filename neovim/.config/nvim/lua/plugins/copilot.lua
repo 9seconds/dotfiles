@@ -10,6 +10,7 @@ return {
       function()
         local copilot = require("copilot.suggestion")
         local blink = package.loaded["blink.cmp"]
+        local utils = require("_.utils")
 
         copilot.toggle_auto_trigger()
         copilot.dismiss()
@@ -17,6 +18,8 @@ return {
         if blink then
           blink.hide()
         end
+
+        utils.refresh_statusline()
       end,
       mode = { "n", "i", "v" },
       desc = "Toggle Copilot",

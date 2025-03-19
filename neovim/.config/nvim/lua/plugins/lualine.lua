@@ -1,12 +1,6 @@
 -- statusline
 -- https://github.com/nvim-lualine/lualine.nvim
 
-local function refresh()
-  require("lualine").refresh({
-    place = { "statusline" },
-  })
-end
-
 return {
   "nvim-lualine/lualine.nvim",
   dependencies = {
@@ -38,6 +32,12 @@ return {
         function()
           if vim.b.copilot_suggestion_auto_trigger then
             return ""
+          end
+          return ""
+        end,
+        function()
+          if vim.g.code_companion_in_progress then
+            return "󱜸"
           end
           return ""
         end,
@@ -93,13 +93,15 @@ return {
       group = group,
       callback = function()
         local timer = vim.uv.new_timer()
+        local utils = require("_.utils")
+
         timer:start(
           20,
           0,
           vim.schedule_wrap(function()
             timer:stop()
             timer:close()
-            refresh()
+            utils.refresh_statusline()
           end)
         )
       end,
