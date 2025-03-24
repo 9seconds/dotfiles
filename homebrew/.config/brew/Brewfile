@@ -17,16 +17,20 @@ cask "betterdisplay"
 cask "cleanshot"
 # Web browser
 cask "firefox"
+cask "font-geist"
+cask "font-geist-mono"
 cask "font-inter"
+cask "font-jetbrains-mono"
 cask "font-monaspace"
+cask "font-recursive-code"
 # Web browser
 cask "google-chrome"
 # GPU-based terminal emulator
 cask "kitty"
+# Run LLMs locally
+cask "msty"
 # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
-# Get up and running with large language models locally
-cask "ollama"
 # All-in-one bookmark manager
 cask "raindropio"
 # Control your tools with a few keystrokes
@@ -41,9 +45,12 @@ cask "spotify"
 cask "syncthing"
 # Messaging app with a focus on speed and security
 cask "telegram"
+# Desktop client for Telegram messenger
+cask "telegram-desktop"
+# Multi-platform VNC client and server
+cask "tigervnc-viewer"
 mas "Amphetamine", id: 937984704
 mas "Bitwarden", id: 1352778147
-mas "Enchanted", id: 6474268307
 mas "GarageBand", id: 682658836
 mas "iA Writer", id: 775737590
 mas "iMovie", id: 408981434
