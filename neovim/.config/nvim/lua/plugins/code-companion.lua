@@ -71,7 +71,7 @@ return {
   },
   keys = {
     {
-      "<leader>aa",
+      "<leader>at",
       "<cmd>CodeCompanionChat Toggle<cr>",
       mode = { "n", "v", "o" },
     },
@@ -79,6 +79,11 @@ return {
       "<leader>ac",
       "<cmd>CodeCompanionActions<cr>",
     },
+    {
+      "<leader>aa",
+      "<cmd>CodeCompanionChat Add<cr>",
+      mode = { "v" }
+    }
   },
   cmd = {
     "CodeCompanion",
