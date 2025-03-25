@@ -1,22 +1,63 @@
 -- AI companion
 -- https://github.com/olimorris/codecompanion.nvim
 
-local DEFAULT_ADAPTER = "copilot"
-local DEFAULT_OPENROUTER_ADAPTER = "anthropic/claude-3.7-sonnet"
+-- local function get_openrouter_config(model)
+--   return require("codecompanion.adapters").extend("openai_compatible", {
+--     env = {
+--       url = "https://openrouter.ai/api",
+--       api_key = "OPENROUTER_API_KEY",
+--       chat_url = "/v1/chat/completions",
+--     },
+--     schema = {
+--       model = {
+--         default = model,
+--       },
+--     },
+--   })
+-- end
 
-local function get_openrouter_config(model)
-  return require("codecompanion.adapters").extend("openai_compatible", {
-    env = {
-      url = "https://openrouter.ai/api",
-      api_key = "OPENROUTER_API_KEY",
-      chat_url = "/v1/chat/completions",
-    },
-    schema = {
-      model = {
-        default = model,
-      },
-    },
-  })
+local function get_config(config)
+  if config == nil then
+    return get_config("copilot")
+  end
+
+  if type(config) == "string" then
+    return get_config({ chat = config, inline = config })
+  end
+
+  if config.chat == nil then
+    return get_config(vim.tbl_extend("force", config, { chat = config }))
+  end
+
+  if config.inline == nil then
+    return get_config(vim.tbl_extend("force", config, { inline = config.chat }))
+  end
+
+  if type(config.chat) == "table" then
+    -- {chat = {"copilot", {schema = {model = {"gpt-4o"}}}}}
+    return get_config(vim.tbl_extend("force", config, {
+      chat = function()
+        return require("codecompanion.adapters").extend(
+          config.chat[1],
+          config.chat[2]
+        )
+      end,
+    }))
+  end
+
+  if type(config.inline) == "table" then
+    -- {inline = {"copilot", {schema = {model = {"gpt-4o"}}}}}
+    return get_config(vim.tbl_extend("force", config, {
+      inline = function()
+        return require("codecompanion.adapters").extend(
+          config.inline[1],
+          config.inline[2]
+        )
+      end,
+    }))
+  end
+
+  return config
 end
 
 return {
@@ -47,36 +88,18 @@ return {
   },
 
   opts = function()
-    local global_adapter = os.getenv("CODE_COMPANION_ADAPTER")
-      or DEFAULT_ADAPTER
-    local chat_adapter = os.getenv("CODE_COMPANION_ADAPTER_CHAT")
-      or global_adapter
-    local inline_adapter = os.getenv("CODE_COMPANION_ADAPTER_INLINE")
-      or global_adapter
-
-    local openrouter_adapter = os.getenv("CODE_COMPANION_OPENROUTER_ADAPTER")
-      or DEFAULT_OPENROUTER_ADAPTER
-    local or_chat_adapter = os.getenv("CODE_COMPANION_OPENROUTER_CHAT_ADAPTER")
-      or openrouter_adapter
-    local or_inline_adapter = os.getenv(
-      "CODE_COMPANION_OPENROUTER_INLINE_ADAPTER"
-    ) or openrouter_adapter
-
     return {
+      adapters = get_config(vim.g.code_companion_config),
+
       display = {
         action_palette = {
           provider = "telescope",
         },
       },
 
-      adapters = {
-        openrouter_chat = get_openrouter_config(or_chat_adapter),
-        openrouter_inline = get_openrouter_config(or_inline_adapter),
-      },
-
       strategies = {
         chat = {
-          adapter = chat_adapter,
+          adapter = "chat",
 
           slash_commands = {
             ["file"] = {
@@ -105,7 +128,7 @@ return {
           },
         },
         inline = {
-          adapter = inline_adapter,
+          adapter = "inline",
         },
       },
     }

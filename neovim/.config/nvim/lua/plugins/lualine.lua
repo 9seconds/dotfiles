@@ -88,7 +88,7 @@ return {
       group = group,
       callback = function()
         require("_.utils").refresh_statusline()
-      end
+      end,
     })
 
     vim.api.nvim_create_autocmd("RecordingLeave", {
