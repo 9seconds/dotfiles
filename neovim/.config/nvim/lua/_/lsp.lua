@@ -15,20 +15,11 @@ function M.define(server_name, opts)
 end
 
 local function setup()
-  vim.g.lsp_configs = {}
-
   vim.lsp.inlay_hint.enable(false)
-  vim.lsp.enable({
-    "basedpyright",
-    "bash-language-server",
-    "lua-language-server",
-  })
 
   vim.api.nvim_create_autocmd("FileType", {
     once = true,
-    callback = function()
-      require("mini.icons").tweak_lsp_kind()
-
+    callback = function ()
       vim.lsp.config("*", {
         root_markers = { ".git" },
         capabilities = require("blink.cmp").get_lsp_capabilities({
@@ -38,13 +29,16 @@ local function setup()
                 snippetSupport = false,
               },
             },
-            semanticTokens = {
-              multilineTokenSupport = true,
-            },
           },
         }),
       })
-    end,
+    end
+  })
+
+  vim.lsp.enable({
+    "basedpyright",
+    "bash-language-server",
+    "lua-language-server",
   })
 end
 

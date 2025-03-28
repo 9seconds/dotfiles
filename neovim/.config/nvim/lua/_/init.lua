@@ -7,6 +7,8 @@ local function setup_settings()
   vim.g.mapleader = " "
   vim.g.maplocalleader = " "
 
+  vim.g.lsp_configs = {}
+
   require("_.utils").set_indent(4)
 end
 

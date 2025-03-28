@@ -6,7 +6,3 @@ conform:set("lua", "stylua")
 lint:set("python", "mypy")
 lint:set("python", "ruff")
 lint:set("lua", "selene")
-
-vim.lsp.enable({
-  "harper-ls",
-})
