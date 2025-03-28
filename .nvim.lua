@@ -22,10 +22,10 @@ conform:set("lua", "stylua")
 
 lint:set("python", "mypy")
 lint:set("python", "ruff")
-lint:set("*", "typos")
 lint:set("lua", "selene")
 
 vim.lsp.enable({
   "lua-language-server",
   "basedpyright",
+  "harper-ls",
 })
