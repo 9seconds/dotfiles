@@ -84,7 +84,6 @@ local telescope_config = {
       end,
       desc = "Find a line within a buffer",
     },
-
     {
       "<leader>ts",
       function()
@@ -92,55 +91,40 @@ local telescope_config = {
       end,
       desc = "Git status",
     },
-
-    ["grr"] = {
-      mode = "n",
-      action = function()
+    {
+      "grr",
+      function()
         return require("telescope.builtin").lsp_references()
       end,
-      opts = {
-        desc = "LSP: Show references",
-      },
+      desc = "LSP: Show references",
     },
-
-    ["gO"] = {
-      mode = "n",
-      action = function()
+    {
+      "gO",
+      function()
         return require("telescope.builtin").lsp_document_symbols()
       end,
-      opts = {
-        desc = "LSP: Document symbols in current document",
-      },
+      desc = "LSP: Document symbols in current document",
     },
-
-    ["gW"] = {
-      mode = "n",
-      action = function()
+    {
+      "gW",
+      function()
         return require("telescope.builtin").lsp_workspace_symbols()
       end,
-      opts = {
-        desc = "LSP: Document symbols in current workspace",
-      },
+      desc = "LSP: Document symbols in current workspace",
     },
-
-    ["grh"] = {
-      mode = "n",
-      action = function()
+    {
+      "grh",
+      function()
         return vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({}))
       end,
-      opts = {
-        desc = "LSP: Toggle inlay hints",
-      },
+      desc = "LSP: Toggle inlay hints",
     },
-
-    ["gri"] = {
-      mode = "n",
-      action = function()
+    {
+      "grh",
+      function()
         return require("telescope.builtin").lsp_implementations()
       end,
-      opts = {
-        desc = "LSP: Show implementations",
-      },
+      desc = "LSP: Show implementations",
     },
   },
   cmd = { "Telescope" },
