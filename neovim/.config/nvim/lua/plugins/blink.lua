@@ -46,6 +46,7 @@ return {
       list = {
         selection = {
           preselect = true,
+          auto_insert = true,
         },
       },
       accept = {
@@ -60,7 +61,14 @@ return {
           end
           return not vim.tbl_contains({ "/", "?" }, vim.fn.getcmdtype())
         end,
+        draw = {
+          treesitter = { "lsp" }
+        }
       },
+    },
+
+    fuzzy = {
+      implementation = "rust"
     },
 
     signature = {
