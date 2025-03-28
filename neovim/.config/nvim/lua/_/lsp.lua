@@ -19,8 +19,8 @@ local function setup()
 
   vim.lsp.inlay_hint.enable(false)
   vim.lsp.enable({
-    "bash-language-server",
     "basedpyright",
+    "bash-language-server",
     "lua-language-server",
   })
 
