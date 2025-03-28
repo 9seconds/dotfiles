@@ -3,6 +3,10 @@
 local M = {}
 
 function M.define(server_name, opts)
+  if vim.g.lsp_configs[server_name] == false then
+    return {}
+  end
+
   return vim.tbl_deep_extend(
     "force",
     opts,
@@ -10,7 +14,7 @@ function M.define(server_name, opts)
   )
 end
 
-function M.setup()
+local function setup()
   vim.g.lsp_configs = {}
 
   vim.lsp.inlay_hint.enable(false)
@@ -38,5 +42,7 @@ function M.setup()
     end,
   })
 end
+
+setup()
 
 return M

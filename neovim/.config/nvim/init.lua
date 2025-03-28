@@ -22,6 +22,7 @@ vim.opt.rtp:prepend(lazypath)
 
 require("_")
 require("_.options")
+require("_.lsp")
 
 vim.api.nvim_create_autocmd({ "User" }, {
   once = true,
