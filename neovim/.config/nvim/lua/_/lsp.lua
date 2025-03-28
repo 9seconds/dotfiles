@@ -18,6 +18,11 @@ local function setup()
   vim.g.lsp_configs = {}
 
   vim.lsp.inlay_hint.enable(false)
+  vim.lsp.enable({
+    "bash-language-server",
+    "basedpyright",
+    "lua-language-server",
+  })
 
   vim.api.nvim_create_autocmd("FileType", {
     once = true,
