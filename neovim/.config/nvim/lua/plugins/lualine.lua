@@ -22,7 +22,6 @@ return {
     extensions = {
       "lazy",
       "oil",
-      "mason",
       "quickfix",
       "trouble",
     },

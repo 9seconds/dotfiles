@@ -6,3 +6,5 @@
 "pipx:isort" = "latest"
 "pipx:ruff" = "latest"
 "pipx:mypy" = "latest"
+"pipx:basedpyright" = "latest"
+"lua-language-server" = "latest"

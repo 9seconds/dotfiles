@@ -82,8 +82,8 @@ return {
     {
       "<leader>aa",
       "<cmd>CodeCompanionChat Add<cr>",
-      mode = { "v" }
-    }
+      mode = { "v" },
+    },
   },
   cmd = {
     "CodeCompanion",

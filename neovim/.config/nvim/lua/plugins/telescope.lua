@@ -1,7 +1,5 @@
 -- telescope stuff
 
-local GIT_ROOTS = {}
-
 local find_files_command = {
   "find",
   "-L",
@@ -26,27 +24,10 @@ if vim.fn.executable("fd") then
     "file",
     "--type",
     "symlink",
+    "--hidden",
+    "--exclude",
+    ".git",
   }
-end
-
-local function is_git()
-  local path = vim.uv.cwd()
-  local result = GIT_ROOTS[path]
-
-  if result == nil then
-    local _, code = require("plenary.job")
-      :new({
-        command = "git",
-        args = { "rev-parse", "--is-inside-work-tree" },
-        cwd = path,
-      })
-      :sync()
-
-    GIT_ROOTS[path] = code == 0
-    result = GIT_ROOTS[path]
-  end
-
-  return result
 end
 
 -- https://github.com/nvim-telescope/telescope-fzf-native.nvim
@@ -69,8 +50,8 @@ local telescope_config = {
     {
       "<leader>tt",
       function()
-        local mod = require("telescope.builtin")
-        local opts = {
+        return require("telescope.builtin").find_files({
+          find_command = find_files_command,
           previewer = false,
           layout_strategy = "vertical",
           layout_config = {
@@ -78,15 +59,7 @@ local telescope_config = {
               height = 0.6,
             },
           },
-        }
-
-        if is_git() then
-          return mod.git_files(opts)
-        end
-
-        return mod.find_files(
-          vim.tbl_extend("force", opts, { find_command = find_files_command })
-        )
+        })
       end,
       desc = "Find files",
     },
@@ -111,12 +84,63 @@ local telescope_config = {
       end,
       desc = "Find a line within a buffer",
     },
+
     {
       "<leader>ts",
       function()
         require("telescope.builtin").git_status({})
       end,
       desc = "Git status",
+    },
+
+    ["grr"] = {
+      mode = "n",
+      action = function()
+        return require("telescope.builtin").lsp_references()
+      end,
+      opts = {
+        desc = "LSP: Show references",
+      },
+    },
+
+    ["gO"] = {
+      mode = "n",
+      action = function()
+        return require("telescope.builtin").lsp_document_symbols()
+      end,
+      opts = {
+        desc = "LSP: Document symbols in current document",
+      },
+    },
+
+    ["gW"] = {
+      mode = "n",
+      action = function()
+        return require("telescope.builtin").lsp_workspace_symbols()
+      end,
+      opts = {
+        desc = "LSP: Document symbols in current workspace",
+      },
+    },
+
+    ["grh"] = {
+      mode = "n",
+      action = function()
+        return vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({}))
+      end,
+      opts = {
+        desc = "LSP: Toggle inlay hints",
+      },
+    },
+
+    ["gri"] = {
+      mode = "n",
+      action = function()
+        return require("telescope.builtin").lsp_implementations()
+      end,
+      opts = {
+        desc = "LSP: Show implementations",
+      },
     },
   },
   cmd = { "Telescope" },

@@ -62,13 +62,13 @@ return {
           return not vim.tbl_contains({ "/", "?" }, vim.fn.getcmdtype())
         end,
         draw = {
-          treesitter = { "lsp" }
-        }
+          treesitter = { "lsp" },
+        },
       },
     },
 
     fuzzy = {
-      implementation = "rust"
+      implementation = "rust",
     },
 
     signature = {
