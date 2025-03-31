@@ -1,0 +1,56 @@
+[env]
+GIT_USERNAME = "9econds"
+
+# -----------------------------------------------------------------------------
+
+[tools]
+"cargo:selene" = "latest"
+"pipx:isort" = "latest"
+"pipx:mypy" = "latest"
+ruff = "latest"
+stylua = "latest"
+
+# -----------------------------------------------------------------------------
+
+[tasks.plug]
+description = "Mount plug"
+run = "./dots plug {{ arg(name='plug') }}"
+
+[tasks.unplug]
+description = "Unmount plug"
+run = "./dots unplug {{ arg(name='plug') }}"
+
+# ============
+
+[tasks."lint:lua:stylua"]
+description = "Run Lua formatter"
+run = "stylua -a {{ arg(name='file', var=true, default='.') }}"
+
+[tasks."lint:lua:selene"]
+description = "Run Lua linter"
+run = "selene {{ arg(name='file', var=true, default='.') }}"
+
+[tasks."lint:lua"]
+description = "Run Lua routines"
+run = "fd -H -e lua -t f -X mise tasks run 'lint:lua:*'"
+
+# ============
+
+[tasks."lint:python:ruff"]
+description = "Run Ruff linter"
+run = "ruff check {{ arg(name='file', var=true) }}"
+
+[tasks."lint:python:isort"]
+description = "Run isort linter"
+run = "isort --atomic --jobs {{ num_cpus() }} {{ arg(name='file', var=true) }}"
+
+[tasks."lint:python:mypy"]
+description = "Run MyPy linter"
+run = "isort --atomic --jobs {{ num_cpus() }} {{ arg(name='file', var=true) }}"
+
+[tasks."lint:python"]
+description = "Run Python routines"
+run = [
+  "mise run 'lint:python:*' dots",
+  "fd -H -e py -t f -X mise tasks run 'lint:python:*'",
+]

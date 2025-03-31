@@ -8,7 +8,7 @@ return require("_.lsp").define("typos-lsp", {
   cmd = {
     "typos-lsp",
   },
-  settings = {
+  init_options = {
     config = os.getenv("TYPOS_CONFIG_PATH"),
     diagnosticSeverity = "Hint",
   },
