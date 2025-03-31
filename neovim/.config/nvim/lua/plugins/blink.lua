@@ -4,7 +4,7 @@
 return {
   "Saghen/blink.cmp",
   version = "*",
-  event = "InsertEnter",
+  event = "FileType",
 
   opts = {
     enabled = function()

@@ -17,28 +17,24 @@ end
 local function setup()
   vim.lsp.inlay_hint.enable(false)
 
-  vim.api.nvim_create_autocmd("FileType", {
-    once = true,
-    callback = function ()
-      vim.lsp.config("*", {
-        root_markers = { ".git" },
-        capabilities = require("blink.cmp").get_lsp_capabilities({
-          textDocument = {
-            completion = {
-              completionItem = {
-                snippetSupport = false,
-              },
-            },
+  vim.lsp.config("*", {
+    root_markers = { ".git" },
+    capabilities = {
+      textDocument = {
+        completion = {
+          completionItem = {
+            snippetSupport = false,
           },
-        }),
-      })
-    end
+        },
+      },
+    },
   })
 
   vim.lsp.enable({
     "basedpyright",
     "bash-language-server",
     "lua-language-server",
+    "typos-lsp",
   })
 end
 
