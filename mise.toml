@@ -1,4 +1,4 @@
-[env]
+[[env]]
 GIT_USERNAME = "9econds"
 
 # -----------------------------------------------------------------------------
@@ -14,10 +14,18 @@ stylua = "latest"
 
 [tasks.plug]
 description = "Mount plug"
+usage = '''
+  arg "<plug>" help="Name of the plug to connect to"
+  complete "plug" run="ls -l ~/.dotfiles | awk '$1 ~ /^d.*/ {print $NF}'"
+'''
 run = "./dots plug {{ arg(name='plug') }}"
 
 [tasks.unplug]
 description = "Unmount plug"
+usage = '''
+  arg "<plug>" help="Name of the plug to disconnect"
+  complete "plug" run="ls -l ~/.dotfiles | awk '$1 ~ /^d.*/ {print $NF}'"
+'''
 run = "./dots unplug {{ arg(name='plug') }}"
 
 # ============
