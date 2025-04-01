@@ -5,6 +5,7 @@ GIT_USERNAME = "9econds"
 
 [tools]
 "cargo:selene" = "latest"
+"pipx:mypy" = "latest"
 ruff = "latest"
 stylua = "latest"
 
@@ -30,53 +31,99 @@ run = "./dots unplug {{ arg(name='plug') }}"
 
 [tasks."lua"]
 description = "Run Lua routines"
-depends = ['lua:*:*']
-
-[tasks."lua:format:stylua"]
-description = "Run Lua formatter"
-usage = '''
-  arg "<source>" help="Name of the file to process" default="." var=#true
-  complete "source" run="fd -e lua -H"
-'''
+depends = ['lua:*']
 sources = [
   ".stylua.toml",
+  "selene.toml",
   "**/*.lua"
 ]
-run = "stylua -a {{ arg(name='source') }}"
 
-[tasks."lua:lint:selene"]
-description = "Run Lua linter"
-usage = '''
-  arg "<source>" help="Name of the file to lint" default="." var=#true
-  complete "source" run="fd -e lua -H"
-'''
+[tasks."lua:format"]
+description = "Run all Lua formatters"
+depends = ['lua:format:*']
 sources = [
   "selene.toml",
   "**/*.lua"
 ]
+
+[tasks."lua:lint"]
+description = "Run all Lua linters"
+depends = ['lua:lint:*']
+sources = [
+  ".stylua.toml",
+  "**/*.lua"
+]
+
+[tasks."lua:format:stylua"]
+description = "Run Stylua Lua formatter"
+usage = '''
+  arg "<source>" help="Name of the file to process" default="." var=#true
+  complete "source" run="fd -e lua -H"
+'''
+run = "stylua -a {{ arg(name='source') }}"
+
+[tasks."lua:lint:selene"]
+description = "Run Selene Lua linter"
+usage = '''
+  arg "<source>" help="Name of the file to lint" default="." var=#true
+  complete "source" run="fd -e lua -H"
+'''
 run = "selene {{ arg(name='source') }}"
 
 # ============
 
 [tasks."python"]
 description = "Run Python routines"
-run = [
-  "mise tasks run 'python:*:*' dots",
-  "fd -e py -H -X mise tasks run 'python:*:*'"
-]
-
-[tasks."python:lint:ruff"]
-description = "Run Python linter"
-usage = '''
-  arg "<source>" help="Name of the file to lint" var=#true
-  complete "source" run="echo dots; fd -e py -H"
-'''
+depends = ["python:*"]
 sources = [
   "ruff.toml",
   "dots",
   "**/*.py"
 ]
+run = [
+  "mise tasks run 'python:*' dots",
+  "fd -e py -H -X mise tasks run 'python:*'"
+]
+
+[tasks."python:format"]
+description = "Run all Python formatters"
+sources = [
+  "ruff.toml",
+  "dots",
+  "**/*.py"
+]
+run = [
+  "mise tasks run 'python:format:*' dots",
+  "fd -e py -H -X mise tasks run 'python:format:*'"
+]
+
+[tasks."python:lint"]
+description = "Run all Python linters"
+sources = [
+  "ruff.toml",
+  "dots",
+  "**/*.py"
+]
+run = [
+  "mise tasks run 'python:lint:*' dots",
+  "fd -e py -H -X mise tasks run 'python:lint:*'"
+]
+
+[tasks."python:lint:ruff"]
+description = "Run Ruff Python linter"
+usage = '''
+  arg "<source>" help="Name of the file to lint" var=#true
+  complete "source" run="echo dots; fd -e py -H"
+'''
 run = "ruff check {{ arg(name='source') }}"
+
+[tasks."python:lint:mypy"]
+description = "Run MyPy Python linter"
+usage = '''
+  arg "<source>" help="Name of the file to lint" var=#true
+  complete "source" run="echo dots; fd -e py -H"
+'''
+run = "mypy {{ arg(name='source') }}"
 
 [tasks."python:format:ruff"]
 description = "Format Python with ruff"
@@ -84,9 +131,4 @@ usage = '''
   arg "<source>" help="Name of the file to lint" var=#true
   complete "source" run="echo dots; fd -e py -H"
 '''
-sources = [
-  "ruff.toml",
-  "dots",
-  "**/*.py"
-]
 run = "ruff format {{ arg(name='source') }}"
