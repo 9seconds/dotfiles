@@ -6,6 +6,7 @@ GIT_USERNAME = "9econds"
 [tools]
 "cargo:selene" = "latest"
 "pipx:mypy" = "latest"
+"pipx:isort" = "latest"
 ruff = "latest"
 stylua = "latest"
 
@@ -132,3 +133,11 @@ usage = '''
   complete "source" run="echo dots; fd -e py -H"
 '''
 run = "ruff format {{ arg(name='source') }}"
+
+[tasks."python:format:isort"]
+description = "Format Python with ruff"
+usage = '''
+  arg "<source>" help="Name of the file to lint" var=#true
+  complete "source" run="echo dots; fd -e py -H"
+'''
+run = "isort --atomic --jobs {{ num_cpus() }} {{ arg(name='source') }}"

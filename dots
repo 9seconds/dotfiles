@@ -20,6 +20,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 from __future__ import annotations
 
 import argparse
@@ -34,6 +35,7 @@ import os.path
 import pathlib
 import stat
 import typing as t
+
 
 if t.TYPE_CHECKING:
     SnapshotT: t.TypeAlias = dict[pathlib.Path, pathlib.Path]
