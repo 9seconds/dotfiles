@@ -38,7 +38,8 @@ if t.TYPE_CHECKING:
     SnapshotT: t.TypeAlias = dict[pathlib.Path, pathlib.Path]
     ChangesT: t.TypeAlias = dict[pathlib.Path, pathlib.Path | None]
     ActionT: t.TypeAlias = t.Callable[
-        ["FS", SnapshotT, argparse.Namespace], None,
+        ["FS", SnapshotT, argparse.Namespace],
+        None,
     ]
 
 POOL: t.Final[concurrent.futures.Executor] = (
@@ -61,7 +62,8 @@ XDG_STATE_HOME: t.Final[pathlib.Path] = pathlib.Path(
 """State directory in XDG specification."""
 
 STATE_DBPATH: t.Final[pathlib.Path] = XDG_STATE_HOME.joinpath(
-    "9dots", "db.json",
+    "9dots",
+    "db.json",
 )
 """Path to the file with a database."""
 
@@ -106,7 +108,8 @@ class FS:
 
     def apply(self, root: pathlib.Path, dry_run: bool = False) -> None:
         def is_need_to_do(
-            target: pathlib.Path, source: pathlib.Path | None,
+            target: pathlib.Path,
+            source: pathlib.Path | None,
         ) -> bool:
             target_exists = target.exists(follow_symlinks=False)
 
@@ -214,13 +217,18 @@ def get_options() -> argparse.Namespace:
         help="Directory to farm links into",
     )
     parser.add_argument(
-        "-n", "--dry-run", action="store_true", default=False, help="Dry run",
+        "-n",
+        "--dry-run",
+        action="store_true",
+        default=False,
+        help="Dry run",
     )
 
     subparsers = parser.add_subparsers(title="Subcommands")
 
     plug_parser = subparsers.add_parser(
-        "plug", help="Plug a subdirectory into target",
+        "plug",
+        help="Plug a subdirectory into target",
     )
     plug_parser.add_argument(
         "module",
@@ -231,7 +239,8 @@ def get_options() -> argparse.Namespace:
     plug_parser.set_defaults(action=action_plug)
 
     unplug_parser = subparsers.add_parser(
-        "unplug", help="Unplug directory from target",
+        "unplug",
+        help="Unplug directory from target",
     )
     unplug_parser.add_argument(
         "module",
@@ -250,7 +259,9 @@ def get_options() -> argparse.Namespace:
 def action_write_snapshot(func: ActionT) -> ActionT:
     @functools.wraps(func)
     def decorator(
-        fs: FS, snapshot: SnapshotT, options: argparse.Namespace,
+        fs: FS,
+        snapshot: SnapshotT,
+        options: argparse.Namespace,
     ) -> None:
         func(fs, snapshot, options)
         if options.dry_run:
@@ -271,7 +282,9 @@ def action_write_snapshot(func: ActionT) -> ActionT:
 def action_apply_fs(func: ActionT) -> ActionT:
     @functools.wraps(func)
     def decorator(
-        fs: FS, snapshot: SnapshotT, options: argparse.Namespace,
+        fs: FS,
+        snapshot: SnapshotT,
+        options: argparse.Namespace,
     ) -> None:
         func(fs, snapshot, options)
         fs.apply(options.target, options.dry_run)
