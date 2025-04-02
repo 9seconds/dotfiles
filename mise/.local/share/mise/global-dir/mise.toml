@@ -1,0 +1,86 @@
+# vim: ts=2 sts=2 sw=2:
+
+[[env]]
+RUSTUP_INIT_SKIP_PATH_CHECK = "1"
+MISE_YES = "true"
+MAKEFLAGS = "-j {{ num_cpus() }} -l {{ num_cpus() }}"
+DEBIAN_FRONTEND = "noninteractive"
+
+[task_config]
+dir = "~"
+
+[tasks."edit:dotfiles"]
+description = "Open Neovim in dotfiles"
+run = "cd ~/.dotfiles && nvim"
+raw = true
+alias = "dots"
+
+[tasks.update]
+description = "Update system"
+depends = [
+  "update:system",
+  "update:nvim",
+  "update:zellij",
+  "update:fish",
+  "update:mise",
+  "update:kitten",
+]
+
+[tasks."update:system"]
+description = "Run system updates"
+depends = [
+  "update:system:{{ os() }}"
+]
+
+[tasks."update:system:linux"]
+description = "Run system updates for Linux (assume Ubuntu)"
+run = [
+  "sudo apt update -q",
+  "sudo apt full-upgrade --yes",
+  "sudo apt autoremove --yes --purge",
+]
+
+[tasks."update:system:macos"]
+description = "Run system updates for MacOS"
+run = [
+  "brew update",
+  "brew upgrade --greedy-latest",
+  "brew autoremove",
+  "brew cleanup --prune=all --scrub",
+  "rm -rf $(brew --cache)",
+]
+
+[tasks."update:nvim"]
+description = "Update Neovim"
+run = "nvim --headless '+Lazy! sync' +TSUpdateSync +qa"
+
+[tasks."update:zellij"]
+description = "Update zellij plugins"
+depends = [
+  "update:zellij:*"
+]
+
+[tasks."update:zellij:zjstatus"]
+description = "Update zellij plugin zjstatus"
+run = [
+  "mkdir -p ~/.local/share/zellij || true",
+  "curl -sSL --retry 5 --fail-with-body -o ~/.local/share/zellij/zjstatus.wasm https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm"
+]
+
+[tasks."update:fish"]
+description = "Update fish"
+run = "fish -ic 'fisher update'"
+
+[tasks."update:mise"]
+description = "Update mise"
+run = [
+  "mise self-update 2>/dev/null || true",
+  "mise plugins update",
+  "mise upgrade",
+  "mise prune",
+  "mise reshim"
+]
+
+[tasks."update:kitten"]
+description = "Update kitten"
+run = "command -v kitten 2>/dev/null && kitten update-self"

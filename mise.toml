@@ -56,18 +56,18 @@ sources = [
 ]
 
 [tasks."lua:format:stylua"]
-description = "Run Stylua Lua formatter"
+description = "Run Stylua"
 usage = '''
   arg "<source>" help="Name of the file to process" default="." var=#true
-  complete "source" run="fd -e lua -H"
+  complete "source" run="fd -e lua -t file -t symlink -H"
 '''
 run = "stylua -a {{ arg(name='source') }}"
 
 [tasks."lua:lint:selene"]
-description = "Run Selene Lua linter"
+description = "Run Selene"
 usage = '''
   arg "<source>" help="Name of the file to lint" default="." var=#true
-  complete "source" run="fd -e lua -H"
+  complete "source" run="fd -e lua -t file -t symlink -H"
 '''
 run = "selene {{ arg(name='source') }}"
 
@@ -111,23 +111,23 @@ run = [
 ]
 
 [tasks."python:lint:ruff"]
-description = "Run Ruff Python linter"
+description = "Run Ruff (linter)"
 usage = '''
   arg "<source>" help="Name of the file to lint" var=#true
-  complete "source" run="echo dots; fd -e py -H"
+  complete "source" run="echo dots; fd -e py -t file -t symlink -H"
 '''
 run = "ruff check {{ arg(name='source') }}"
 
 [tasks."python:lint:mypy"]
-description = "Run MyPy Python linter"
+description = "Run MyPy"
 usage = '''
   arg "<source>" help="Name of the file to lint" var=#true
-  complete "source" run="echo dots; fd -e py -H"
+  complete "source" run="echo dots; fd -e py -t file -t symlink -H"
 '''
 run = "mypy {{ arg(name='source') }}"
 
 [tasks."python:format:ruff"]
-description = "Format Python with ruff"
+description = "Run Ruff (format)"
 usage = '''
   arg "<source>" help="Name of the file to lint" var=#true
   complete "source" run="echo dots; fd -e py -H"
@@ -135,9 +135,9 @@ usage = '''
 run = "ruff format {{ arg(name='source') }}"
 
 [tasks."python:format:isort"]
-description = "Format Python with ruff"
+description = "Run isort"
 usage = '''
   arg "<source>" help="Name of the file to lint" var=#true
-  complete "source" run="echo dots; fd -e py -H"
+  complete "source" run="echo dots; fd -e py -t file -t symlink -H"
 '''
 run = "isort --atomic --jobs {{ num_cpus() }} {{ arg(name='source') }}"
