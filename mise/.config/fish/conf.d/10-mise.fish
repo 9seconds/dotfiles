@@ -1,6 +1,11 @@
 #!/usr/bin/env fish
 
 if command -q mise then
-  set -x MISE_JOBS (nproc)
+  if test (uname) = "Darwin"
+    set -x MISE_JOBS (sysctl -n hw.physicalcpu)
+  else
+    set -x MISE_JOBS (nproc)
+  end
+
   mise activate fish | source
 end
