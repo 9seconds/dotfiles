@@ -97,6 +97,10 @@ return {
       adapters = get_config(vim.g.code_companion_config),
 
       display = {
+        chat = {
+          intro_message = "",
+          start_in_insert_mode = true,
+        },
         action_palette = {
           provider = "telescope",
         },
