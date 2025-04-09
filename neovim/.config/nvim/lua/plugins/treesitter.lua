@@ -37,7 +37,8 @@ local treesitter_config = {
       "kdl",
       "lua",
       "make",
-      "markdown", -- required for code-companion
+      "markdown", -- required for code-companion and markview
+      "markdown_inline", -- required for markview
       "python",
       "requirements",
       "ssh_config",
