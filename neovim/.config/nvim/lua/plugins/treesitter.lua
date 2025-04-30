@@ -65,10 +65,10 @@ local treesitter_config = {
       swap = {
         enable = true,
         swap_next = {
-          ["<leader><Right>"] = "@parameter.inner"
+          ["<leader><Right>"] = "@parameter.inner",
         },
         swap_previous = {
-          ["<leader><Left>"] = "@parameter.inner"
+          ["<leader><Left>"] = "@parameter.inner",
         },
       },
 

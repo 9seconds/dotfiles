@@ -4,18 +4,22 @@
 return {
   "lewis6991/gitsigns.nvim",
   version = "*",
+  dependencies = {
+    "ghostbuster91/nvim-next",
+  },
   event = "VeryLazy",
 
   opts = {
     on_attach = function(bufnr)
       local gitsigns = require("gitsigns")
+      local nngs = require("nvim-next.integrations").gitsigns(gitsigns)
 
       vim.keymap.set("n", "]c", function()
         if vim.wo.diff then
           return "]c"
         end
 
-        vim.schedule(gitsigns.next_hunk)
+        vim.schedule(nngs.next_hunk)
 
         return "<Ignore>"
       end, {
@@ -28,7 +32,7 @@ return {
           return "[c"
         end
 
-        vim.schedule(gitsigns.prev_hunk)
+        vim.schedule(nngs.prev_hunk)
 
         return "<Ignore>"
       end, {
