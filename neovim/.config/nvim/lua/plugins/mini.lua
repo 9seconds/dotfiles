@@ -1,19 +1,6 @@
 -- different mini.nvim plugins
 -- https://github.com/echasnovski/mini.nvim
 
--- Go forward/backward with square brackets
--- https://github.com/echasnovski/mini.bracketed
-local mini_bracketed = {
-  "echasnovski/mini.bracketed",
-  version = "*",
-  event = "VeryLazy",
-
-  opts = {
-    comment = { suffix = "" },
-    diagnostic = { suffix = "" },
-  },
-}
-
 -- Split and join arguments
 -- https://github.com/echasnovski/mini.splitjoin
 local mini_splitjoin = {
@@ -206,7 +193,6 @@ local mini_snippets = {
 }
 
 return {
-  mini_bracketed,
   mini_splitjoin,
   mini_cursorword,
   mini_indentscope,
