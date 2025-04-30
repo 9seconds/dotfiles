@@ -1,12 +1,6 @@
 -- treesitter configuration
 -- https://github.com/nvim-treesitter/nvim-treesitter
 
-local max_file_size_kb = 200 * 1024
-
-local function disable_on_max_filesize(_, bufnr)
-  return require("_.utils").get_buf_file_size(bufnr) >= 1024 * max_file_size_kb
-end
-
 local treesitter_config = {
   "nvim-treesitter/nvim-treesitter",
   build = function()
@@ -58,21 +52,28 @@ local treesitter_config = {
     -- https://github.com/andymass/vim-matchup
     matchup = {
       enable = true,
-      disable = disable_on_max_filesize,
     },
 
     -- :h nvim-treesitter-indentation-mod
     indent = {
       enable = true,
-      disable = disable_on_max_filesize,
     },
 
     -- nvim-treesitter-textobjects
     -- https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     textobjects = {
+      swap = {
+        enable = true,
+        swap_next = {
+          ["<leader><Right>"] = "@parameter.inner"
+        },
+        swap_previous = {
+          ["<leader><Left>"] = "@parameter.inner"
+        },
+      },
+
       select = {
         enable = true,
-        disable = disable_on_max_filesize,
 
         lookahead = true,
         keymaps = {
@@ -100,7 +101,18 @@ local commentstring_config = {
   opts = {},
 }
 
+local textobjects_config = {
+  "nvim-treesitter/nvim-treesitter-textobjects",
+  dependencies = {
+    "nvim-treesitter/nvim-treesitter",
+  },
+  event = { "VeryLazy" },
+
+  config = false,
+}
+
 return {
   treesitter_config,
   commentstring_config,
+  textobjects_config,
 }
