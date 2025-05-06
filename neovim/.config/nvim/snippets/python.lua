@@ -31,7 +31,7 @@ return {
     prefix = "wwh",
     body = {
       "while ${1:True}:",
-      "\t${0:$DEDENTED_SELECTED_TEXT}",
+      "\t${0:$TM_SELECTED_TEXT}",
     },
   },
 
@@ -47,7 +47,7 @@ return {
     prefix = "wwi",
     body = {
       "with ${1:context}:",
-      "\t${0:$DEDENTED_SELECTED_TEXT}",
+      "\t${0:$TM_SELECTED_TEXT}",
     },
   },
 
@@ -63,7 +63,7 @@ return {
     prefix = "wif",
     body = {
       "if ${1:condition}:",
-      "\t${0:$DEDENTED_SELECTED_TEXT}",
+      "\t${0:$TM_SELECTED_TEXT}",
     },
   },
 
@@ -112,7 +112,7 @@ return {
     body = {
       "# FIXME($GIT_USERNAME): Remove this breakpoint",
       "try:",
-      "\t${0:$DEDENTED_SELECTED_TEXT}",
+      "\t${0:$TM_SELECTED_TEXT}",
       "except:",
       "\timport sys, traceback",
       "\ttyp_, val_, tb_ = sys.exc_info()",
@@ -126,7 +126,7 @@ return {
     prefix = "te",
     body = {
       "try:",
-      "\t${0:$DEDENTED_SELECTED_TEXT}",
+      "\t${0:$TM_SELECTED_TEXT}",
       "except Exception as exc:",
       "\tpass",
     },
@@ -136,7 +136,7 @@ return {
     prefix = "tf",
     body = {
       "try:",
-      "\t${0:$DEDENTED_SELECTED_TEXT}",
+      "\t${0:$TM_SELECTED_TEXT}",
       "finally:",
       "\tpass",
     },
