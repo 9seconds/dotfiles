@@ -101,32 +101,11 @@ return {
           intro_message = "",
           start_in_insert_mode = true,
         },
-        action_palette = {
-          provider = "telescope",
-        },
       },
 
       strategies = {
         chat = {
           adapter = "chat",
-
-          slash_commands = {
-            ["file"] = {
-              opts = {
-                provider = "telescope",
-              },
-            },
-            ["buffer"] = {
-              opts = {
-                provider = "telescope",
-              },
-            },
-            ["symbols"] = {
-              opts = {
-                provider = "telescope",
-              },
-            },
-          },
 
           keymaps = {
             completion = {
