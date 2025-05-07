@@ -11,6 +11,7 @@ sops = "latest"
 ubi = "latest"
 uv = "latest"
 watchexec = "latest"
+usage = "latest"
 
 "cargo:mergiraf" = "latest"
 "cargo:typos-cli" = "latest"
@@ -29,9 +30,14 @@ tmux = "latest"
 zellij = "latest"
 zoxide = "latest"
 
+# LSP
 "npm:bash-language-server" = "latest"
 "ubi:tekumara/typos-lsp" = "latest"
 "pipx:basedpyright" = "latest"
 lua-language-server = "latest"
 
-usage = "latest"
+# MCP
+"npm:mcp-hub" = "latest"
+"pipx:mcp-server-time" = "latest"
+"pipx:mcp-server-fetch" = "latest"
+"npm:@modelcontextprotocol/server-filesystem" = "latest"
