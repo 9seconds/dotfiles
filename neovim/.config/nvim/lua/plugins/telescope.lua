@@ -194,23 +194,8 @@ if vim.fn.executable("rg") then
   }
 end
 
--- ui select
--- https://github.com/nvim-telescope/telescope-ui-select.nvim
-local ui_select_config = {
-  "nvim-telescope/telescope-ui-select.nvim",
-  dependencies = {
-    "nvim-telescope/telescope.nvim",
-  },
-  event = "VeryLazy",
-
-  config = function()
-    require("telescope").load_extension("ui-select")
-  end,
-}
-
 return {
   fzf_native_config,
   telescope_config,
   egrepify_config,
-  ui_select_config,
 }

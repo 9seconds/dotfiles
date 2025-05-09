@@ -128,6 +128,11 @@ return {
     rename = {
       enabled = true,
     },
+
+    -- https://github.com/folke/snacks.nvim/blob/main/docs/picker.md
+    picker = {
+      enabled = true,
+    },
   },
 
   init = function()
