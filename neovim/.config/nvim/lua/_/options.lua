@@ -129,16 +129,6 @@ local function setup()
   -- https://neovim.io/doc/user/options.html#'updatetime'
   vim.o.updatetime = 100
 
-  if
-    os.getenv("WEZTERM_PANE") ~= nil
-    and os.getenv("TMUX") == nil
-    and os.getenv("ZELLIJ") == nil
-  then
-    -- https://neovim.io/doc/user/options.html#'termsync'
-    -- this just simply does not work well with wezterm multiplexing
-    vim.o.termsync = false
-  end
-
   -- always round indentation by a given length
   -- https://neovim.io/doc/user/options.html#'shiftround'
   vim.o.shiftround = true
