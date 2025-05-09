@@ -14,6 +14,13 @@ return {
       desc = "Run LazyGit",
     },
     {
+      "<leader>sG",
+      function()
+        require("snacks").lazygit.log_file()
+      end,
+      desc = "Open log for a current file",
+    },
+    {
       "<leader>sn",
       function()
         require("snacks").notifier.show_history()
@@ -50,6 +57,11 @@ return {
       animate = {
         enabled = false,
       },
+    },
+
+    -- https://github.com/folke/snacks.nvim/blob/main/docs/statuscolumn.md
+    statuscolumn = {
+      enabled = true,
     },
 
     -- https://github.com/folke/snacks.nvim/blob/main/docs/bigfile.md
