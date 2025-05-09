@@ -17,34 +17,6 @@ local mini_splitjoin = {
   },
 }
 
--- indentation
--- https://github.com/echasnovski/mini.indentscope
-local mini_indentscope = {
-  "echasnovski/mini.indentscope",
-  version = "*",
-  event = "VeryLazy",
-
-  opts = {
-    symbol = "│",
-    mappings = {
-      object_scope = "",
-      object_scope_with_border = "",
-      goto_top = "",
-      goto_bottom = "",
-    },
-  },
-
-  config = function(_, opts)
-    local mod = require("mini.indentscope")
-
-    mod.setup(vim.tbl_deep_extend("force", opts, {
-      draw = {
-        animation = mod.gen_animation.none(),
-      },
-    }))
-  end,
-}
-
 -- Automatic highlighting of word under cursor
 -- https://github.com/echasnovski/mini.cursorword
 local mini_cursorword = {
@@ -143,7 +115,6 @@ local mini_snippets = {
 return {
   mini_splitjoin,
   mini_cursorword,
-  mini_indentscope,
   mini_icons,
   mini_pairs,
   mini_snippets,

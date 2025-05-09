@@ -9,7 +9,7 @@ return {
     "olimorris/codecompanion.nvim",
   },
   cmd = {
-    "MCPHub"
+    "MCPHub",
   },
 
   opts = function()
@@ -23,7 +23,7 @@ return {
 
     return {
       port = vim.g.mcphub_port or 37373,
-      config = config_path
+      config = config_path,
     }
   end,
 }

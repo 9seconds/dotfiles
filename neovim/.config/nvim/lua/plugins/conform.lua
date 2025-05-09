@@ -30,7 +30,6 @@ return {
     local conf = require("_.conform")
 
     opts = vim.tbl_extend("force", opts, conf:get_config())
-    print(vim.inspect(opts))
 
     require("conform").setup(opts)
   end,
