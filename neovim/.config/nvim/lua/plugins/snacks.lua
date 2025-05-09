@@ -41,6 +41,13 @@ return {
       end,
       desc = "Run zen mode",
     },
+    {
+      "<leader>sZ",
+      function()
+        require("snacks").zen.zoom()
+      end,
+      desc = "Run zoom zen mode",
+    },
   },
 
   opts = {
