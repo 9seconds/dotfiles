@@ -15,7 +15,7 @@ local function setup_keymappings()
 
   -- exit normal mode
   vim.keymap.set("t", "<A-i>", "<c-\\><c-n>")
-  vim.keymap.set("t", "JJ", "<c-\\><c-n>")
+  vim.keymap.set("t", "HH", "<c-\\><c-n>")
 
   -- run terminal mappings
   vim.keymap.set("n", "<leader>]o", function()
