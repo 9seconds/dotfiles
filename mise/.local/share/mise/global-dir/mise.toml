@@ -83,4 +83,4 @@ run = [
 
 [tasks."update:kitten"]
 description = "Update kitten"
-run = "command -v kitten 2>/dev/null && kitten update-self"
+run = "command -v kitten 2>/dev/null && kitten update-self || true"
