@@ -3,9 +3,9 @@
 
 return {
   "sQVe/sort.nvim",
-  version ="*",
+  version = "*",
   event = "VeryLazy",
   cmd = "Sort",
 
-  opts = {}
+  opts = {},
 }

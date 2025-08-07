@@ -98,8 +98,7 @@ return {
         opts = {
           show_model_choices = false,
         },
-      }, get_config(vim.g.code_companion_config)
-),
+      }, get_config(vim.g.code_companion_config)),
 
       display = {
         chat = {
