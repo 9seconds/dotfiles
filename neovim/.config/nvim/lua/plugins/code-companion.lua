@@ -94,16 +94,12 @@ return {
 
   opts = function()
     return {
-      adapters = vim.tbl_extend(
-        "force",
-        {
-          opts = {
-            show_model_choices = false,
-          }
+      adapters = vim.tbl_extend("force", {
+        opts = {
+          show_model_choices = false,
         },
-        get_config(vim.g.code_companion_config)
-
-      ),
+      }, get_config(vim.g.code_companion_config)
+),
 
       display = {
         chat = {
