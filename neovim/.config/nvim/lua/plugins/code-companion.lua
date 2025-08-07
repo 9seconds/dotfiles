@@ -68,7 +68,6 @@ return {
     "nvim-telescope/telescope.nvim",
     "nvim-lua/plenary.nvim",
     "nvim-treesitter/nvim-treesitter",
-    "ravitemer/mcphub.nvim",
   },
   keys = {
     {
@@ -95,7 +94,16 @@ return {
 
   opts = function()
     return {
-      adapters = get_config(vim.g.code_companion_config),
+      adapters = vim.tbl_extend(
+        "force",
+        {
+          opts = {
+            show_model_choices = false,
+          }
+        },
+        get_config(vim.g.code_companion_config)
+
+      ),
 
       display = {
         chat = {
@@ -118,17 +126,6 @@ return {
         },
         inline = {
           adapter = "inline",
-        },
-      },
-
-      extensions = {
-        mcphub = {
-          callback = "mcphub.extensions.codecompanion",
-          opts = {
-            make_vars = true,
-            make_slash_commands = true,
-            show_result_in_chat = true,
-          },
         },
       },
     }
