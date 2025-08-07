@@ -65,7 +65,7 @@ local function setup_autogroup()
   vim.api.nvim_create_autocmd("TermClose", {
     group = group,
     callback = function()
-      vim.fn.feedkeys("<esc>")
+      vim.fn.feedkeys("<c-]>")
     end,
   })
 end
