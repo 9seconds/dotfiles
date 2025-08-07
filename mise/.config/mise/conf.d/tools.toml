@@ -35,9 +35,3 @@ zoxide = "latest"
 "ubi:tekumara/typos-lsp" = "latest"
 "pipx:basedpyright" = "latest"
 lua-language-server = "latest"
-
-# MCP
-"npm:mcp-hub" = "latest"
-"pipx:mcp-server-time" = "latest"
-"pipx:mcp-server-fetch" = "latest"
-"npm:@modelcontextprotocol/server-filesystem" = "latest"
