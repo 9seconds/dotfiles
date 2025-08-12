@@ -26,7 +26,7 @@ return {
       function()
         require("flash").toggle()
       end,
-      mode = "s",
+      mode = "c",
       desc = "Switch flash search mode",
     },
   },
