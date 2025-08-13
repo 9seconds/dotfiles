@@ -6,13 +6,17 @@ return {
   version = "*",
   ft = {
     "markdown",
-    "codecompanion",
+    "copilot-chat",
   },
   dependencies = {
     "nvim-treesitter/nvim-treesitter",
   },
 
   opts = {
+    file_types = {
+      "markdown",
+      "copilot-chat"
+    },
     render_modes = true,
     sign = {
       enabled = false,
