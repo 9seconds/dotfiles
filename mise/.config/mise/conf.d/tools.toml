@@ -1,7 +1,6 @@
 [tools]
 age = "latest"
 bun = "latest"
-cargo-binstall = "latest"
 go = "latest"
 node = "latest"
 pipx = "latest"
