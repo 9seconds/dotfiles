@@ -24,7 +24,7 @@ return {
           "log",
           "rebase",
           "merge",
-          "commit --amend"
+          "commit --amend",
         },
       },
     }

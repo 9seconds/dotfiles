@@ -38,6 +38,7 @@ local telescope_config = {
     "nvim-treesitter/nvim-treesitter",
     "echasnovski/mini.icons",
     "nvim-telescope/telescope-fzy-native.nvim",
+    "natecraddock/telescope-zf-native.nvim",
   },
   version = "*",
   keys = {
@@ -140,8 +141,16 @@ local telescope_config = {
 
       extensions = {
         fzy_native = {
-          override_generic_sorter = false,
-          override_file_sorter = true,
+          override_generic_sorter = true,
+          override_file_sorter = false,
+        },
+        ["zf-native"] = {
+          file = {
+            enable = true,
+            highlight_results = true,
+            match_filename = true,
+            smart_case = true,
+          },
         },
         egrepify = {
           prefixes = vim.tbl_extend("force", {
@@ -157,6 +166,7 @@ local telescope_config = {
     })
 
     telescope.load_extension("fzy_native")
+    telescope.load_extension("zf-native")
   end,
 }
 
