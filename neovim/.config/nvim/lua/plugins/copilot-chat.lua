@@ -45,7 +45,6 @@ return {
     mod.setup({
       model = vim.g.copilot_chat_model,
       auto_insert_mode = true,
-      insert_at_end = true,
       clear_chat_on_new_prompt = true,
       selection = function(source)
         local sel = require("CopilotChat.select")
