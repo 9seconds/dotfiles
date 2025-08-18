@@ -45,15 +45,16 @@ return {
     mod.setup({
       model = vim.g.copilot_chat_model,
       auto_insert_mode = true,
-      clear_chat_on_new_prompt = true,
       selection = function(source)
         local sel = require("CopilotChat.select")
         return sel.visual(source) or sel.line(source)
       end,
     })
 
+    local augroup = vim.api.nvim_create_augroup("9_CopilotChat", {})
+
     vim.api.nvim_create_autocmd("BufEnter", {
-      group = vim.api.nvim_create_augroup("9_CopilotChat", {}),
+      group = augroup,
       pattern = "copilot-*",
       callback = function()
         vim.wo.relativenumber = false
