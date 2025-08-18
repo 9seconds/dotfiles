@@ -115,7 +115,7 @@ local telescope_config = {
       desc = "LSP: Toggle inlay hints",
     },
     {
-      "grh",
+      "gri",
       function()
         return require("telescope.builtin").lsp_implementations()
       end,
