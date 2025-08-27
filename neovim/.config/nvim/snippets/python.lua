@@ -1,22 +1,7 @@
 return {
-  ["'import' statement"] = {
-    prefix = "im",
-    body = "import $0",
-  },
-
-  ["'from/import' statement"] = {
-    prefix = "fr",
-    body = "from ${1:.} import ${0:*}",
-  },
-
   ["'async' keyword"] = {
     prefix = "a",
     body = "async $0",
-  },
-
-  ["Type definition"] = {
-    prefix = "t",
-    body = "$1: ${2:type}",
   },
 
   ["'while' loop"] = {
@@ -28,15 +13,15 @@ return {
   },
 
   ["wrap in while 'while' loop"] = {
-    prefix = "wwh",
+    prefix = "wh_",
     body = {
       "while ${1:True}:",
-      "\t${0:$TM_SELECTED_TEXT}",
+      "\t$TM_SELECTED_TEXT",
     },
   },
 
   ["'with' statement"] = {
-    prefix = "wi",
+    prefix = "with",
     body = {
       "with ${1:context}:",
       "\t$0",
@@ -44,10 +29,10 @@ return {
   },
 
   ["wrap in 'with' statement"] = {
-    prefix = "wwi",
+    prefix = "with_",
     body = {
       "with ${1:context}:",
-      "\t${0:$TM_SELECTED_TEXT}",
+      "\t$TM_SELECTED_TEXT",
     },
   },
 
@@ -60,33 +45,41 @@ return {
   },
 
   ["wrap in 'if' statement"] = {
-    prefix = "wif",
+    prefix = "if_",
     body = {
       "if ${1:condition}:",
-      "\t${0:$TM_SELECTED_TEXT}",
+      "\t$TM_SELECTED_TEXT",
     },
   },
 
   ["'for' statement"] = {
-    prefix = "fo",
+    prefix = "for",
     body = {
       "for ${1:item} in {$2:items}:",
       "\t$0",
     },
   },
 
-  ["'def' statement"] = {
-    prefix = "de",
+  ["wrap in 'for' statement"] = {
+    prefix = "for_",
     body = {
-      "def ${1:func}(${2:args})$3:",
+      "for ${1:item} in {$2:items}:",
+      "\t$TM_SELECTED_TEXT",
+    },
+  },
+
+  ["'def' statement"] = {
+    prefix = "def",
+    body = {
+      "def ${1:func}(${2:args}):",
       "\t$0",
     },
   },
 
   ["'def' method statement"] = {
-    prefix = "dem",
+    prefix = "defs",
     body = {
-      "def ${1:func}(self, ${2:args})$3:",
+      "def ${1:func}(${2:self}, ${3:args}):",
       "\t$0",
     },
   },
@@ -126,8 +119,18 @@ return {
     prefix = "te",
     body = {
       "try:",
-      "\t${0:$TM_SELECTED_TEXT}",
-      "except Exception as exc:",
+      "\t$0",
+      "except ${1:Exception} as exc:",
+      "\tpass",
+    },
+  },
+
+  ["wrap in 'try/except' clause"] = {
+    prefix = "te_",
+    body = {
+      "try:",
+      "\t$TM_SELECTED_TEXT",
+      "except ${1:Exception} as exc:",
       "\tpass",
     },
   },
@@ -136,9 +139,19 @@ return {
     prefix = "tf",
     body = {
       "try:",
-      "\t${0:$TM_SELECTED_TEXT}",
+      "\t$0",
       "finally:",
       "\tpass",
+    },
+  },
+
+  ["wrap in 'try/finally' clause"] = {
+    prefix = "tf",
+    body = {
+      "try:",
+      "\t$TM_SELECTED_TEXT",
+      "finally:",
+      "\t$0",
     },
   },
 
@@ -148,12 +161,12 @@ return {
   },
 
   ["Multiline string with double quotes"] = {
-    prefix = "#d",
+    prefix = "3\"",
     body = '"""$0"""',
   },
 
   ["Multiline string with single quotes"] = {
-    prefix = "#s",
+    prefix = "3'",
     body = "'''$0'''",
   },
 
