@@ -161,7 +161,7 @@ return {
   },
 
   ["Multiline string with double quotes"] = {
-    prefix = "3\"",
+    prefix = '3"',
     body = '"""$0"""',
   },
 

@@ -15,7 +15,7 @@ return {
   opts = {
     file_types = {
       "markdown",
-      "copilot-chat"
+      "copilot-chat",
     },
     render_modes = true,
     sign = {

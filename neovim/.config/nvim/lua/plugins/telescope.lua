@@ -73,49 +73,70 @@ local telescope_config = {
       desc = "Find buffers",
     },
     {
-      "<leader>tl",
+      "<leader>tz",
       function()
         require("telescope.builtin").current_buffer_fuzzy_find()
       end,
       desc = "Find a line within a buffer",
     },
     {
-      "<leader>ts",
+      "<leader>tc",
       function()
         require("telescope.builtin").git_status({})
       end,
       desc = "Git status",
     },
     {
-      "grr",
+      "<leader>tr",
       function()
         return require("telescope.builtin").lsp_references()
       end,
       desc = "LSP: Show references",
     },
     {
-      "gO",
+      "<leader>tl",
+      function()
+        return require("telescope.builtin").lsp_incoming_calls()
+      end,
+      desc = "LSP: Show incoming calls",
+    },
+    {
+      "<leader>tL",
+      function()
+        return require("telescope.builtin").lsp_outgoing_calls()
+      end,
+      desc = "LSP: Show outgoing calls",
+    },
+    {
+      "<leader>ts",
       function()
         return require("telescope.builtin").lsp_document_symbols()
       end,
       desc = "LSP: Document symbols in current document",
     },
     {
-      "gW",
+      "<leader>tS",
+      function()
+        return require("telescope.builtin").treesitter()
+      end,
+      desc = "LSP: List treesitter symbols",
+    },
+    {
+      "<leader>tw",
       function()
         return require("telescope.builtin").lsp_workspace_symbols()
       end,
       desc = "LSP: Document symbols in current workspace",
     },
     {
-      "grh",
+      "<leader>th",
       function()
         return vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({}))
       end,
       desc = "LSP: Toggle inlay hints",
     },
     {
-      "gri",
+      "<leader>ti",
       function()
         return require("telescope.builtin").lsp_implementations()
       end,
