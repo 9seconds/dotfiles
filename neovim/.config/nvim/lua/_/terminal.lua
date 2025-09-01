@@ -60,13 +60,6 @@ local function setup_autogroup()
       vim.wo.number = false
     end,
   })
-
-  vim.api.nvim_create_autocmd("TermClose", {
-    group = group,
-    callback = function()
-      vim.fn.feedkeys("<c-]>")
-    end,
-  })
 end
 
 local function setup()
