@@ -14,21 +14,24 @@ return {
     keymap = {
       preset = "none",
 
-      ["<C-a>"] = {
+      ["<c-a>"] = {
         "select_and_accept",
       },
-      ["<C-n>"] = {
+      ["<c-n>"] = {
         "select_next",
         "fallback",
       },
-      ["<C-p>"] = {
+      ["<c-p>"] = {
         "select_prev",
         "fallback",
       },
-      ["<C-d>"] = {
+      ["<c-d>"] = {
         "show_documentation",
         "hide_documentation",
-        "fallback",
+      },
+      ["<c-s>"] = {
+        "show_signature",
+        "hide_signature",
       },
     },
 
@@ -82,9 +85,6 @@ return {
 
     sources = {
       default = { "lsp", "path", "buffer" },
-      per_filetype = {
-        codecompanion = { "codecompanion" },
-      },
     },
   },
 }
