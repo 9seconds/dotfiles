@@ -112,10 +112,28 @@ local mini_snippets = {
   end,
 }
 
+local mini_surround = {
+  "nvim-mini/mini.surround",
+  version = "*",
+
+  opts = {
+    mappings = {
+      add = "gsa",
+      delete = "gsd",
+      find = "gsf",
+      find_left = "gsF",
+      highlight = "gsh",
+      replace = "gsr",
+      update_n_lines = "gsn",
+    },
+  },
+}
+
 return {
   mini_splitjoin,
   mini_cursorword,
   mini_icons,
   mini_pairs,
   mini_snippets,
+  mini_surround,
 }
