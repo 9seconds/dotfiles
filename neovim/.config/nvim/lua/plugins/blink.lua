@@ -28,10 +28,12 @@ return {
       ["<c-d>"] = {
         "show_documentation",
         "hide_documentation",
+        "fallback",
       },
       ["<c-s>"] = {
         "show_signature",
         "hide_signature",
+        "fallback",
       },
     },
 
