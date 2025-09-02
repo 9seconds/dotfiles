@@ -140,6 +140,13 @@ return {
       end,
       desc = "FZF: LSP outgoing calls",
     },
+    {
+      "<leader>ty",
+      function()
+        return require("fzf-lua").resume({})
+      end,
+      desc = "FZF: Resume previous fzf session",
+    },
   },
   cmd = {
     "FzfLua",
