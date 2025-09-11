@@ -31,7 +31,6 @@ vim.api.nvim_create_autocmd({ "User" }, {
     require("_.keymappings")
     require("_.autocommands")
     require("_.commands")
-    require("_.terminal")
 
     if vim.g.neovide then
       require("_.neovide")

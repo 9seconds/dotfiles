@@ -20,9 +20,11 @@ return {
     },
 
     extensions = {
+      "fzf",
       "lazy",
       "oil",
       "quickfix",
+      "toggleterm",
       "trouble",
     },
 
