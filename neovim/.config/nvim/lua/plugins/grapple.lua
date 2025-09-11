@@ -29,7 +29,7 @@ return {
       desc = "Toggle Grapple",
     },
     {
-      "<leader>gt",
+      "<leader>tp",
       function()
         return require("grapple").toggle_tags()
       end,
