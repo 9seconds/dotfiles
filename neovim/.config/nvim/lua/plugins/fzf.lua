@@ -79,41 +79,49 @@ return {
       desc = "FZF: Buffers",
     },
     {
-      "<leader>td",
+      "<leader>ts",
       function()
         local fzf = require("fzf-lua")
+        local clients = vim.lsp.get_clients({
+          bufnr = vim.api.nvim_get_current_buf(),
+        })
 
-        local success, symbols = pcall(vim.lsp.buf.document_symbol, {})
-        if success and symbols then
-          return fzf.lsp_document_symbols({})
+        for _, client in ipairs(clients) do
+          if
+            client.server_capabilities
+            and client.server_capabilities.documentSymbolProvider
+          then
+            return fzf.lsp_document_symbols({})
+          end
         end
+
         return fzf.treesitter({})
       end,
       desc = "FZF: Symbols",
     },
     {
-      "<leader>tD",
+      "<leader>tS",
       function()
         return require("fzf-lua").lsp_workspace_symbols({})
       end,
       desc = "FZF: Buffers",
     },
     {
-      "<leader>tG",
+      "<leader>tF",
       function()
         return require("fzf-lua").grep_curbuf({})
       end,
       desc = "FZF: Grep current buffer",
     },
     {
-      "<leader>tg",
+      "<leader>tf",
       function()
         return require("fzf-lua").live_grep({})
       end,
       desc = "FZF: Grep",
     },
     {
-      "<leader>ts",
+      "<leader>tl",
       function()
         return require("fzf-lua").git_status({})
       end,
@@ -146,6 +154,20 @@ return {
         return require("fzf-lua").resume({})
       end,
       desc = "FZF: Resume previous fzf session",
+    },
+    {
+      "<leader>td",
+      function()
+        return require("fzf-lua").diagnostics_document({})
+      end,
+      desc = "FZF: List diagnistics for current buffer",
+    },
+    {
+      "<leader>tD",
+      function()
+        return require("fzf-lua").diagnostics_workspace({})
+      end,
+      desc = "FZF: List diagnistics for workspace",
     },
   },
   cmd = {
