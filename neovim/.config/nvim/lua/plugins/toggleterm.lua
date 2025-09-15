@@ -183,7 +183,7 @@ return {
       end,
 
       on_create = function(term)
-        vim.api.nvim_notify("New terminal " .. term.id, vim.log.levels.INFO, {})
+        vim.notify("New terminal " .. term.id, vim.log.levels.INFO, {})
       end,
       on_open = function()
         STATE.visible = true
