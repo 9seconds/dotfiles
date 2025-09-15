@@ -9,6 +9,7 @@ return {
   opts = {
     enabled = function()
       return not vim.b.copilot_suggestion_auto_trigger
+        and vim.bo.filetype ~= "copilot-chat"
     end,
 
     keymap = {
