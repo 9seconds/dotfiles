@@ -35,7 +35,7 @@ return {
       desc = "Dismiss all notifications",
     },
     {
-      "<leader>sz",
+      "<leader>Z",
       function()
         require("snacks").zen()
       end,
