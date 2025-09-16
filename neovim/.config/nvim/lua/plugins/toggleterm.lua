@@ -198,6 +198,7 @@ return {
 
       persist_mode = false,
       insert_mappings = false,
+      terminal_mappings = false,
     })
 
     local group = vim.api.nvim_create_augroup("9_ToggleTerm", {})
