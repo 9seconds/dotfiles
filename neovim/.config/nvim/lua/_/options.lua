@@ -1,30 +1,11 @@
 -- This module contains these options you usually expect to be set with
 -- :set or vim.o
 
-local function is_gui_attached()
-  if vim.g.neovide then
-    return true
-  end
-
-  local uis = vim.api.nvim_list_uis()
-  if vim.tbl_count(uis) == 1 then
-    -- Neovide and other editors have std{in,out}_tty properties set to false
-    return not (uis[1].stdin_tty or uis[1].stdout_tty)
-  end
-
-  return true
-end
-
 local function require_osc52()
-  if is_gui_attached() then
-    return true
-  elseif os.getenv("SSH_TTY") then
-    return true
-  elseif os.getenv("WEZTERM_UNIX_SOCKET") then
-    return true
-  end
-
-  return false
+  return (
+    os.getenv("SSH_TTY") or
+    os.getenv("SYSTEMD_EXEC_PID")
+  )
 end
 
 local function setup()
