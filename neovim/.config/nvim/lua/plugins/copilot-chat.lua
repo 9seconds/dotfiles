@@ -37,6 +37,36 @@ return {
       end,
       desc = "Copilot Chat: Select prompt",
     },
+    {
+      "<leader>ca",
+      function()
+        vim.ui.input({
+          prompt = "Copilot listens",
+        }, function(input)
+          input = vim.trim(input or "")
+          if input == "" then
+            return
+          end
+
+          require("CopilotChat").ask(input, {
+            window = {
+              layout = "float",
+              title = " Copilot Anonymous Chat ",
+              width = 0.7,
+              zindex = 100,
+            },
+            clear_chat_on_new_prompt = true,
+            sticky = {
+              "#buffer",
+              "#buffers:visible",
+              "#selection",
+            },
+          })
+        end)
+      end,
+      mode = { "n", "x", "o" },
+      desc = "Copilot Chat: Ask quick question",
+    },
   },
 
   config = function()
