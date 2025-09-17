@@ -2,10 +2,7 @@
 -- :set or vim.o
 
 local function require_osc52()
-  return (
-    os.getenv("SSH_TTY") or
-    os.getenv("SYSTEMD_EXEC_PID")
-  )
+  return (os.getenv("SSH_TTY") or os.getenv("SYSTEMD_EXEC_PID"))
 end
 
 local function setup()
@@ -120,19 +117,7 @@ local function setup()
 
   -- set clipboard
   if require_osc52() then
-    local copy = require("vim.ui.clipboard.osc52").copy
-
-    vim.g.clipboard = {
-      name = "OSC 52",
-      copy = {
-        ["+"] = copy("+"),
-        ["*"] = copy("*"),
-      },
-      paste = {
-        ["+"] = function() end,
-        ["*"] = function() end,
-      },
-    }
+    vim.g.clipboard = "osc52"
   end
 end
 

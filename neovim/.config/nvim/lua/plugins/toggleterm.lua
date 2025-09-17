@@ -1,34 +1,59 @@
 -- terminal management
 -- https://github.com/akinsho/toggleterm.nvim
 
-local LINES_IN_PREVIEW = 100
+local WORDS_TIMEOUT = 2 * 1000 -- in milliseconds
+local VISIBILITIES = {}
 
-local STATE = {
-  visible = false,
-  counter = 1,
-}
+local function run_new(direction)
+  local words = vim
+    .system({ "shuf", "-n", "1", "/usr/share/dict/words" }, { text = true })
+    :wait(WORDS_TIMEOUT)
 
-function STATE:new(direction)
-  self:run(self.counter, direction)
-  self.counter = self.counter + 1
-end
-
-function STATE:run(number, direction)
-  if self.visible then
-    vim.cmd("ToggleTermToggleAll")
+  if words.code ~= 0 then
+    return vim.notify(
+      ("Failed to get random word: %s"):format(words.stderr),
+      vim.log.levels.ERROR,
+      { title = "toggleterm" }
+    )
   end
 
+  local title = vim.trim(words.stdout)
+  title = title:lower()
+  title = vim.fn.shellescape(title)
+
   vim.cmd(
-    ("%dToggleTerm direction=%s name=%d"):format(number, direction, number)
+    ("%dToggleTerm direction=%s name=%s"):format(
+      #VISIBILITIES + 1,
+      direction,
+      title
+    )
   )
 end
 
-function STATE:choose()
+local function run_existing(number, direction)
+  local cmd = ("%dToggleTerm direction=%s"):format(number, direction)
+
+  if VISIBILITIES[number] then
+    vim.cmd(cmd)
+  end
+
+  vim.cmd(cmd)
+end
+
+local function choose()
   local terminals = require("toggleterm.terminal").get_all()
   local snacks = require("snacks")
+  local preview = require("snacks.picker.preview").file
 
   if #terminals == 0 then
-    return self:new("vertical")
+    return
+  end
+
+  local function make_action(direction)
+    return function(picker, item)
+      picker:close()
+      return run_existing(item.id, direction)
+    end
   end
 
   snacks.picker({
@@ -36,52 +61,24 @@ function STATE:choose()
     items = terminals,
 
     preview = function(ctx)
-      local bufnr = tonumber(ctx.item.bufnr)
-
-      if not bufnr then
-        return
-      end
-
-      local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
-      local total = #lines
-      local start = math.max(1, total - LINES_IN_PREVIEW + 1)
-      local tail = {}
-
-      for i = start, total do
-        table.insert(tail, lines[i])
-      end
-
-      ctx.preview:set_lines(tail)
-      ctx.preview:highlight({
-        ft = vim.bo[bufnr].filetype,
-      })
+      ctx.item.buf = ctx.item.bufnr
+      preview(ctx)
 
       return true
     end,
 
     format = function(item)
       return {
-        { tostring(item.id), "SnacksPickerLabel" },
+        { ("%d:"):format(item.id), "SnacksPickerLabel" },
+        { (" %s "):format(item:_display_name()), "SnacksPickerBold" },
       }
     end,
 
     actions = {
-      open_horizontal = function(picker, item)
-        picker:close()
-        self:run(item.id, "horizontal")
-      end,
-      open_vertical = function(picker, item)
-        picker:close()
-        self:run(item.id, "vertical")
-      end,
-      open_tab = function(picker, item)
-        picker:close()
-        self:run(item.id, "tab")
-      end,
-      open_float = function(picker, item)
-        picker:close()
-        self:run(item.id, "float")
-      end,
+      open_horizontal = make_action("horizontal"),
+      open_vertical = make_action("vertical"),
+      open_tab = make_action("tab"),
+      open_float = make_action("float"),
     },
 
     win = {
@@ -111,10 +108,7 @@ function STATE:choose()
       },
     },
 
-    confirm = function(picker, item)
-      picker:close()
-      self:run(item.id, "vertical")
-    end,
+    confirm = make_action("vertical"),
   })
 end
 
@@ -137,93 +131,89 @@ return {
   },
   keys = {
     {
-      "<leader>]v",
+      "<leader>]]",
       function()
-        STATE:new("vertical")
+        run_new("vertical")
       end,
       desc = "Open new vertical terminal",
     },
     {
       "<leader>]s",
       function()
-        STATE:new("horizontal")
+        run_new("horizontal")
       end,
       desc = "Open new horizontal terminal",
     },
     {
       "<leader>]t",
       function()
-        STATE:new("tab")
+        run_new("tab")
       end,
       desc = "Open new tab terminal",
     },
     {
       "<leader>]f",
       function()
-        STATE:new("edit")
+        run_new("float")
       end,
       desc = "Open new float terminal",
     },
     {
-      "<leader>]]",
+      "<leader>][",
       function()
-        STATE:choose()
+        return choose()
       end,
+      desc = "Choose terminal (or open a new one)",
+    },
+    {
+      "<leader>]c",
+      "<cmd>ToggleTermToggleAll<cr>",
+      desc = "Close all open terminals",
     },
   },
 
-  config = function()
-    require("toggleterm").setup({
-      size = function(term)
-        if term.direction == "horizontal" then
-          return 20
-        end
+  opts = {
+    size = function(term)
+      if term.direction == "horizontal" then
+        return 20
+      end
 
-        return vim.o.columns * 0.5
-      end,
+      return vim.o.columns * 0.5
+    end,
 
-      on_create = function(term)
-        vim.notify("New terminal " .. term.id, vim.log.levels.INFO, {})
-      end,
-      on_open = function()
-        STATE.visible = true
-      end,
-      on_close = function()
-        STATE.visible = false
-      end,
+    shell = function()
+      return vim.env.SHELL or vim.o.shell or "/bin/bash"
+    end,
 
-      shell = function()
-        return vim.env.SHELL or vim.o.shell or "/bin/bash"
-      end,
+    on_create = function(term)
+      local function set(lhs, rhs)
+        vim.keymap.set("t", lhs, rhs, {
+          buffer = term.bufnr,
+          noremap = true,
+          silent = true,
+        })
+      end
 
-      persist_mode = false,
-      insert_mappings = false,
-      terminal_mappings = false,
-    })
+      set("<A-q>", "<c-\\><c-n>")
+      set("<A-z>", "<cmd>ToggleTerm<cr>")
+      set("<C-h>", "<cmd>wincmd h<cr>")
+      set("<C-j>", "<cmd>wincmd j<cr>")
+      set("<C-k>", "<cmd>wincmd k<cr>")
+      set("<C-l>", "<cmd>wincmd l<cr>")
+    end,
 
-    local group = vim.api.nvim_create_augroup("9_ToggleTerm", {})
-    vim.api.nvim_create_autocmd("FileType", {
-      group = group,
-      pattern = "toggleterm",
-      callback = function(args)
-        local opts = {
-          buffer = args.buf,
-        }
+    on_open = function(term)
+      VISIBILITIES[term.id] = true
+    end,
+    on_close = function(term)
+      VISIBILITIES[term.id] = false
+    end,
 
-        vim.keymap.set("t", "<C-h>", "<c-\\><c-n><c-w>h", opts)
-        vim.keymap.set("t", "<C-j>", "<c-\\><c-n><c-w>j", opts)
-        vim.keymap.set("t", "<C-k>", "<c-\\><c-n><c-w>k", opts)
-        vim.keymap.set("t", "<C-l>", "<c-\\><c-n><c-w>l", opts)
-        vim.keymap.set("t", "<A-q>", "<c-\\><c-n>", opts)
-        vim.keymap.set("t", "<A-z>", "<cmd>ToggleTerm<cr>", opts)
-      end,
-    })
-    vim.api.nvim_create_autocmd("WinEnter", {
-      group = group,
-      pattern = "term://*toggleterm*",
-      callback = vim.schedule_wrap(function()
-        vim.cmd("startinsert")
-      end),
-    })
-  end,
+    winbar = {
+      enabled = true,
+    },
+    shading_factor = -20,
+    insert_mappings = false,
+    terminal_mappings = false,
+  },
 }
