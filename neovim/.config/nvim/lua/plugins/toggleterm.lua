@@ -2,7 +2,7 @@
 -- https://github.com/akinsho/toggleterm.nvim
 
 local WORDS_TIMEOUT = 2 * 1000 -- in milliseconds
-local VISIBILITIES = {}
+local COUNTER = 1
 
 local function run_new(direction)
   local words = vim
@@ -22,22 +22,40 @@ local function run_new(direction)
   title = vim.fn.shellescape(title)
 
   vim.cmd(
-    ("%dToggleTerm direction=%s name=%s"):format(
-      #VISIBILITIES + 1,
-      direction,
-      title
-    )
+    ("%dToggleTerm direction=%s name=%s"):format(COUNTER, direction, title)
   )
+
+  COUNTER = COUNTER + 1
 end
 
-local function run_existing(number, direction)
-  local cmd = ("%dToggleTerm direction=%s"):format(number, direction)
+local function belongs_to_this_tab(term)
+  local tab_id = vim.api.nvim_get_current_tabpage()
 
-  if VISIBILITIES[number] then
-    vim.cmd(cmd)
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(tab_id)) do
+    if win == term.window then
+      return true
+    end
   end
 
-  vim.cmd(cmd)
+  return false
+end
+
+local function run_existing(term, direction)
+  if
+    term:is_open()
+    and belongs_to_this_tab(term)
+    and term.direction == direction
+  then
+    return
+  end
+
+  if term:is_open() then
+    term:close()
+  end
+
+  vim.schedule(function()
+    term:open(nil, direction)
+  end)
 end
 
 local function choose()
@@ -49,10 +67,10 @@ local function choose()
     return
   end
 
-  local function make_action(direction)
+  local function make_run_action(direction)
     return function(picker, item)
       picker:close()
-      return run_existing(item.id, direction)
+      return run_existing(item, direction)
     end
   end
 
@@ -75,10 +93,18 @@ local function choose()
     end,
 
     actions = {
-      open_horizontal = make_action("horizontal"),
-      open_vertical = make_action("vertical"),
-      open_tab = make_action("tab"),
-      open_float = make_action("float"),
+      open_horizontal = make_run_action("horizontal"),
+      open_vertical = make_run_action("vertical"),
+      open_tab = make_run_action("tab"),
+      open_float = make_run_action("float"),
+      close = function(picker, item)
+        picker:close()
+        item:close()
+      end,
+      shutdown = function(picker, item)
+        picker:close()
+        item:shutdown()
+      end,
     },
 
     win = {
@@ -104,11 +130,21 @@ local function choose()
             mode = { "n", "i" },
             desc = "Open in float window",
           },
+          ["<c-q>"] = {
+            "close",
+            mode = { "n", "i" },
+            desc = "Close terminal",
+          },
+          ["<c-d>"] = {
+            "shutdown",
+            mode = { "n", "i" },
+            desc = "Shutdown terminal",
+          },
         },
       },
     },
 
-    confirm = make_action("vertical"),
+    confirm = make_run_action("vertical"),
   })
 end
 
@@ -200,13 +236,6 @@ return {
       set("<C-j>", "<cmd>wincmd j<cr>")
       set("<C-k>", "<cmd>wincmd k<cr>")
       set("<C-l>", "<cmd>wincmd l<cr>")
-    end,
-
-    on_open = function(term)
-      VISIBILITIES[term.id] = true
-    end,
-    on_close = function(term)
-      VISIBILITIES[term.id] = false
     end,
 
     winbar = {
