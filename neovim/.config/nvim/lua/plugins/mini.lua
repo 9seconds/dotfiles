@@ -112,6 +112,8 @@ local mini_snippets = {
   end,
 }
 
+-- surround
+-- https://github.com/nvim-mini/mini.surround
 local mini_surround = {
   "nvim-mini/mini.surround",
   version = "*",
@@ -129,6 +131,32 @@ local mini_surround = {
   },
 }
 
+-- integrate git
+-- https://github.com/nvim-mini/mini-git
+local mini_git = {
+  "nvim-mini/mini-git",
+  version = "*",
+  main = "mini.git",
+  cmd = {
+    "Git",
+  },
+  event = {
+    "BufReadPost",
+  },
+  keys = {
+    {
+      "<c-g>",
+      function()
+        require("mini.git").show_at_cursor()
+      end,
+      mode = { "v", "x", "o", "n" },
+      desc = "Show git data",
+    },
+  },
+
+  opts = {},
+}
+
 return {
   mini_splitjoin,
   mini_cursorword,
@@ -136,4 +164,5 @@ return {
   mini_pairs,
   mini_snippets,
   mini_surround,
+  mini_git,
 }
