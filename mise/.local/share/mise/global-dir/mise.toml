@@ -9,16 +9,11 @@ DEBIAN_FRONTEND = "noninteractive"
 [task_config]
 dir = "~"
 
-[tasks."edit:dotfiles"]
-description = "Open Neovim in dotfiles"
-run = "cd ~/.dotfiles && nvim"
-raw = true
-alias = "dots"
-
 [tasks.update]
 description = "Update system"
 depends = [
   "update:system",
+  "update:dotfiles",
   "update:nvim",
   "update:zellij",
   "update:fish",
@@ -30,6 +25,12 @@ depends = [
 description = "Run system updates"
 depends = [
   "update:system:{{ os() }}"
+]
+
+[tasks."update:dotfiles"]
+description = "Update dotfiles"
+run = [
+  "git -C {{ get_env(name='9SECONDS_DOTFILES_DIR', default='~/.dotfiles') }} pull --recurse-submodules --autostash --rebase"
 ]
 
 [tasks."update:system:linux"]
@@ -52,6 +53,9 @@ run = [
 
 [tasks."update:nvim"]
 description = "Update Neovim"
+depends = [
+  "update:dotfiles"
+]
 run = "nvim --headless '+Lazy! sync' +qa"
 
 [tasks."update:zellij"]
@@ -73,6 +77,9 @@ run = "fish -ic 'fisher update'"
 
 [tasks."update:mise"]
 description = "Update mise"
+depends = [
+  "update:dotfiles"
+]
 run = [
   "mise self-update 2>/dev/null || true",
   "mise plugins update",
