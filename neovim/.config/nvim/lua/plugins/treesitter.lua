@@ -57,6 +57,8 @@ local treesitter_config = {
           mod.install({ parser_name }):wait(30000)
         end
 
+        vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+
         pcall(vim.treesitter.start)
       end,
     })
