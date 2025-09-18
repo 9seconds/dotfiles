@@ -195,7 +195,7 @@ return {
       desc = "Open new float terminal",
     },
     {
-      "<leader>][",
+      "<leader>t]",
       function()
         return choose()
       end,
