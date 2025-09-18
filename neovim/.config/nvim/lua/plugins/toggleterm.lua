@@ -231,6 +231,10 @@ return {
       end
 
       set("<A-q>", "<c-\\><c-n>")
+      set(
+        "<A-a>",
+        "<c-\\><c-n><cmd>lua require('snacks.zen').zoom()<cr><cmd>startinsert<cr>"
+      )
       set("<A-z>", "<cmd>ToggleTerm<cr>")
       set("<C-h>", "<cmd>wincmd h<cr>")
       set("<C-j>", "<cmd>wincmd j<cr>")
