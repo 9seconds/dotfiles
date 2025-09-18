@@ -52,37 +52,32 @@ return {
         {
           function()
             local git_summary = vim.b.minigit_summary
-            local output = " " .. git_summary.head_name
-
-            if git_summary.status then
-              output = output .. " (" .. vim.trim(git_summary.status) .. ")"
-            end
+            local output = { " " .. git_summary.head_name }
 
             if git_summary.in_progress ~= "" then
-              output = output .. " " .. git_summary.in_progress
+              table.insert(output, "(" .. git_summary.in_progress .. ")")
             end
 
             local diff_summary = vim.b.minidiff_summary
-            if diff_summary == nil then
-              return output
+              or {
+                n_ranges = 0,
+              }
+
+            if diff_summary.n_ranges > 0 then
+              table.insert(output, " " .. tostring(diff_summary.n_ranges))
+
+              if diff_summary.add > 0 then
+                table.insert(output, " " .. tostring(diff_summary.add))
+              end
+              if diff_summary.change > 0 then
+                table.insert(output, " " .. tostring(diff_summary.change))
+              end
+              if diff_summary.delete > 0 then
+                table.insert(output, " " .. tostring(diff_summary.delete))
+              end
             end
 
-            local summary_chunks = {}
-            if diff_summary.add > 0 then
-              table.insert(summary_chunks, "+" .. tostring(diff_summary.add))
-            end
-            if diff_summary.change > 0 then
-              table.insert(summary_chunks, "~" .. tostring(diff_summary.change))
-            end
-            if diff_summary.delete > 0 then
-              table.insert(summary_chunks, "-" .. tostring(diff_summary.delete))
-            end
-
-            if #summary_chunks > 0 then
-              output = output .. " " .. vim.iter(summary_chunks):join("/")
-            end
-
-            return output
+            return vim.iter(output):join(" ")
           end,
           cond = function()
             return vim.b.minigit_summary ~= nil
