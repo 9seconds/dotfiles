@@ -1,6 +1,8 @@
 -- folke mini plugins
 -- https://github.com/folke/snacks.nvim
 
+local DIM_ENABLED = false
+
 return {
   "folke/snacks.nvim",
   version = "*",
@@ -35,18 +37,33 @@ return {
       desc = "Dismiss all notifications",
     },
     {
-      "<leader>Z",
+      "<leader>sZ",
       function()
         require("snacks").zen()
       end,
       desc = "Run zen mode",
     },
     {
-      "<leader>sZ",
+      "<leader>sz",
       function()
         require("snacks").zen.zoom()
       end,
       desc = "Run zoom zen mode",
+    },
+    {
+      "<leader>sd",
+      function()
+        local mod = require("snacks.dim")
+
+        if DIM_ENABLED then
+          mod.disable()
+        else
+          mod.enable()
+        end
+
+        DIM_ENABLED = not DIM_ENABLED
+      end,
+      desc = "Toggle Snacks dimming",
     },
   },
 
