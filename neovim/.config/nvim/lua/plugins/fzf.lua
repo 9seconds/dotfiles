@@ -72,6 +72,15 @@ return {
       desc = "FZF: Files",
     },
     {
+      "<leader>tT",
+      function()
+        return require("fzf-lua").files({
+          cwd = vim.env["9SECONDS_DIR_DOTFILES"] or "~/.dotfiles",
+        })
+      end,
+      desc = "FZF: Dotfiles",
+    },
+    {
       "<leader>tb",
       function()
         return require("fzf-lua").buffers({})

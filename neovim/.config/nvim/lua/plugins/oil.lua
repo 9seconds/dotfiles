@@ -19,7 +19,9 @@ return {
     {
       "<leader>-",
       function()
-        require("oil").open_float()
+        require("oil").open_float(
+          vim.env["9SECONDS_DIR_DOTFILES"] or "~/.dotfiles"
+        )
       end,
       mode = { "n" },
       desc = "Open directory with Oil within a floating window",
