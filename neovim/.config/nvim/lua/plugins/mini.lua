@@ -145,12 +145,36 @@ local mini_git = {
   },
   keys = {
     {
-      "<c-g>",
+      "<leader>gg",
       function()
         require("mini.git").show_at_cursor()
       end,
       mode = { "v", "x", "o", "n" },
       desc = "Show git data",
+    },
+  },
+
+  opts = {},
+}
+
+-- diff management
+-- https://github.com/nvim-mini/mini.diff
+local mini_diff = {
+  "nvim-mini/mini.diff",
+  dependencies = {
+    "nvim-mini/mini-git",
+  },
+  version = "*",
+  event = {
+    "BufReadPost",
+  },
+  keys = {
+    {
+      "<leader>gd",
+      function()
+        return require("mini.diff").toggle_overlay()
+      end,
+      desc = "Toggle diff overlay",
     },
   },
 
@@ -165,4 +189,5 @@ return {
   mini_snippets,
   mini_surround,
   mini_git,
+  mini_diff,
 }

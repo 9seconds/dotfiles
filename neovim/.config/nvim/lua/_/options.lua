@@ -114,11 +114,6 @@ local function setup()
   -- disable internal pager
   -- https://neovim.io/doc/user/options.html#'more'
   vim.o.more = false
-
-  -- set clipboard
-  if require_osc52() then
-    vim.g.clipboard = "osc52"
-  end
 end
 
 setup()
