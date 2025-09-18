@@ -10,7 +10,7 @@ local CLEANUP_EACH = (
 return {
   "cbochs/grapple.nvim",
   dependencies = {
-    "echasnovski/mini.icons",
+    "nvim-mini/mini.icons",
   },
   keys = {
     {

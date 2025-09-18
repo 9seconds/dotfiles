@@ -1,10 +1,6 @@
 -- This module contains these options you usually expect to be set with
 -- :set or vim.o
 
-local function require_osc52()
-  return (os.getenv("SSH_TTY") or os.getenv("SYSTEMD_EXEC_PID"))
-end
-
 local function setup()
   -- suggest to reload if file was updated outside
   -- https://neovim.io/doc/user/options.html#'autoread'

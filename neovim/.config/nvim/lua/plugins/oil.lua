@@ -5,7 +5,7 @@ return {
   "stevearc/oil.nvim",
   version = "*",
   dependencies = {
-    "echasnovski/mini.icons",
+    "nvim-mini/mini.icons",
   },
   keys = {
     {

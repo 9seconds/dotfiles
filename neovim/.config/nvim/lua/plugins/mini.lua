@@ -1,10 +1,10 @@
 -- different mini.nvim plugins
--- https://github.com/echasnovski/mini.nvim
+-- https://github.com/nvim-mini/mini.nvim
 
 -- Split and join arguments
--- https://github.com/echasnovski/mini.splitjoin
+-- https://github.com/nvim-mini/mini.splitjoin
 local mini_splitjoin = {
-  "echasnovski/mini.splitjoin",
+  "nvim-mini/mini.splitjoin",
   version = "*",
   keys = {
     "<leader>j",
@@ -18,9 +18,9 @@ local mini_splitjoin = {
 }
 
 -- Automatic highlighting of word under cursor
--- https://github.com/echasnovski/mini.cursorword
+-- https://github.com/nvim-mini/mini.cursorword
 local mini_cursorword = {
-  "echasnovski/mini.cursorword",
+  "nvim-mini/mini.cursorword",
   version = "*",
   event = "VeryLazy",
 
@@ -28,9 +28,9 @@ local mini_cursorword = {
 }
 
 -- icons
--- https://github.com/echasnovski/mini.icons
+-- https://github.com/nvim-mini/mini.icons
 local mini_icons = {
-  "echasnovski/mini.icons",
+  "nvim-mini/mini.icons",
   version = "*",
   event = "VeryLazy",
 
@@ -45,9 +45,9 @@ local mini_icons = {
 }
 
 -- auto pairs
--- https://github.com/echasnovski/mini.pairs
+-- https://github.com/nvim-mini/mini.pairs
 local mini_pairs = {
-  "echasnovski/mini.pairs",
+  "nvim-mini/mini.pairs",
   version = "*",
   event = {
     "InsertEnter",
@@ -63,9 +63,9 @@ local mini_pairs = {
 }
 
 -- snippet management
--- https://github.com/echasnovski/mini.snippets
+-- https://github.com/nvim-mini/mini.snippets
 local mini_snippets = {
-  "echasnovski/mini.snippets",
+  "nvim-mini/mini.snippets",
   version = "*",
   keys = {
     {

@@ -4,7 +4,7 @@
 return {
   "sindrets/diffview.nvim",
   dependencies = {
-    "echasnovski/mini.icons",
+    "nvim-mini/mini.icons",
   },
   cmd = {
     "DiffviewOpen",
