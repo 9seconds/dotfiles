@@ -117,6 +117,7 @@ local mini_snippets = {
 local mini_surround = {
   "nvim-mini/mini.surround",
   version = "*",
+  event = "InsertCharPre",
 
   opts = {
     mappings = {

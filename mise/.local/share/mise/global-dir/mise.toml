@@ -52,7 +52,7 @@ run = [
 
 [tasks."update:nvim"]
 description = "Update Neovim"
-run = "nvim --headless '+Lazy! sync' +TSUpdateSync +qa"
+run = "nvim --headless '+Lazy! sync' +qa"
 
 [tasks."update:zellij"]
 description = "Update zellij plugins"

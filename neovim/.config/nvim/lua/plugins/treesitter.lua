@@ -3,13 +3,14 @@
 
 local treesitter_config = {
   "nvim-treesitter/nvim-treesitter",
-  build = function()
-    require("nvim-treesitter.install").update({ with_sync = true })()
-  end,
+  branch = "main",
+  build = ":TSUpdate",
 
-  main = "nvim-treesitter.configs",
-  opts = {
-    ensure_installed = {
+  config = function()
+    local mod = require("nvim-treesitter")
+
+    mod.setup({})
+    mod.install({
       "bash",
       "css",
       "diff",
@@ -39,56 +40,27 @@ local treesitter_config = {
       "toml",
       "xml",
       "yaml",
-    },
-    sync_install = true,
-    auto_install = true,
+    })
 
-    -- :h nvim-treesitter-highlight-mod
-    highlight = {
-      enable = true,
-    },
+    local augroup = vim.api.nvim_create_augroup("9_TreeSitter", {})
+    vim.api.nvim_create_autocmd({ "FileType" }, {
+      group = augroup,
+      callback = function(args)
+        local parser_name = vim.treesitter.language.get_lang(args.match)
+        if not parser_name then
+          return
+        end
 
-    -- see matchup.lua
-    -- https://github.com/andymass/vim-matchup
-    matchup = {
-      enable = true,
-    },
+        local parser_installed =
+          pcall(vim.treesitter.get_parser, args.buf, parser_name)
+        if not parser_installed then
+          mod.install({ parser_name }):wait(30000)
+        end
 
-    -- :h nvim-treesitter-indentation-mod
-    indent = {
-      enable = true,
-    },
-
-    -- nvim-treesitter-textobjects
-    -- https://github.com/nvim-treesitter/nvim-treesitter-textobjects
-    textobjects = {
-      swap = {
-        enable = true,
-        swap_next = {
-          ["<leader><Right>"] = "@parameter.inner",
-        },
-        swap_previous = {
-          ["<leader><Left>"] = "@parameter.inner",
-        },
-      },
-
-      select = {
-        enable = true,
-
-        lookahead = true,
-        keymaps = {
-          ["af"] = "@function.outer",
-          ["if"] = "@function.inner",
-          ["ac"] = "@class.outer",
-          ["ic"] = "@class.inner",
-          ["ia"] = "@parameter.inner",
-          ["aa"] = "@parameter.outer",
-          ["ab"] = "@block.outer",
-          ["ib"] = "@block.inner",
-        },
-      },
-    },
-  },
+        pcall(vim.treesitter.start)
+      end,
+    })
+  end,
 }
 
 local commentstring_config = {
@@ -101,18 +73,7 @@ local commentstring_config = {
   opts = {},
 }
 
-local textobjects_config = {
-  "nvim-treesitter/nvim-treesitter-textobjects",
-  dependencies = {
-    "nvim-treesitter/nvim-treesitter",
-  },
-  event = { "VeryLazy" },
-
-  config = false,
-}
-
 return {
   treesitter_config,
   commentstring_config,
-  textobjects_config,
 }
