@@ -1,7 +1,5 @@
 #!/usr/bin/env fish
 
-set -gx EDITOR vim
-
-if command -q nvim
-  set -gx EDITOR nvim
+if type -q vim
+  set -x EDITOR vim
 end
