@@ -1,0 +1,3 @@
+prompt_prefix = ""
+motd = "never"
+session_restore_mode = { lines = 100 }
