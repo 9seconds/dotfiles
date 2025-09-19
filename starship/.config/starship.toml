@@ -1,0 +1,41 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+add_newline = true
+format = """$time${env_var.shpool}$directory$cmd_duration$git_branch$git_commit$git_state
+$character
+"""
+
+[directory]
+style = "green"
+truncation_length = 5
+use_logical_path = false
+truncate_to_repo = true
+
+[cmd_duration]
+format = "[󰔟 $duration]($style) "
+style = "bold yellow"
+min_time = 20_000
+
+[character]
+success_symbol = '[\$](white)'
+error_symbol = '[\$](red)'
+
+[git_branch]
+format = '[$symbol$branch(:$remote_branch)]($style) '
+style = "purple"
+only_attached = true
+
+[git_commit]
+format = '[ $hash$tag]($style) '
+style = "blue"
+
+[time]
+format = "[ $time]($style) "
+style = "yellow"
+disabled = false
+utc_time_offset = "+1"
+
+[env_var.shpool]
+format = "[ $env_value]($style) "
+variable = "SHPOOL_SESSION_NAME"
+style = "dimmed"
