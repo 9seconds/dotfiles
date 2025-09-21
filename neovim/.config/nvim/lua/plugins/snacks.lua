@@ -149,6 +149,7 @@ return {
     -- https://github.com/folke/snacks.nvim/blob/main/docs/picker.md
     picker = {
       enabled = true,
+      ui_select = true,
     },
   },
 
