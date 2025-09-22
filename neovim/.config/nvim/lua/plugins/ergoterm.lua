@@ -1,20 +1,20 @@
 -- terminals
 -- https://github.com/waiting-for-dev/ergoterm.nvim
 
-local SHUF_CMD = {
-  vim.o.shell,
-  vim.o.shellcmdflag,
-  "sort -R /usr/share/dict/words | head -n 1",
-}
-
-if vim.fn.executable("shuf") == 1 then
-  SHUF_CMD = { "shuf", "-n", "1", "/usr/share/dict/words" }
-elseif vim.fn.executable("gshuf") == 1 then
-  SHUF_CMD = { "gshuf", "-n", "1", "/usr/share/dict/words" }
-end
-
 local function generate_name()
-  local words = vim.system(SHUF_CMD, { text = true }):wait(2000)
+  local shuf_cmd = {
+    vim.o.shell,
+    vim.o.shellcmdflag,
+    "sort -R /usr/share/dict/words | head -n 1",
+  }
+
+  if vim.fn.executable("shuf") == 1 then
+    shuf_cmd = { "shuf", "-n", "1", "/usr/share/dict/words" }
+  elseif vim.fn.executable("gshuf") == 1 then
+    shuf_cmd = { "gshuf", "-n", "1", "/usr/share/dict/words" }
+  end
+
+  local words = vim.system(shuf_cmd, { text = true }):wait(2000)
 
   if words.code ~= 0 then
     vim.notify(
@@ -109,9 +109,36 @@ return {
           end,
 
           format = function(item)
+            local ago =
+              vim.fn.reltimefloat(vim.fn.reltime(item._state._created_at))
+            local seconds = math.fmod(ago, 60)
+
+            ago = (ago - seconds) / 60
+            local minutes = math.fmod(ago, 60)
+            ago = (ago - minutes) / 60
+
+            seconds = math.floor(seconds)
+            minutes = math.floor(minutes)
+            local hours = math.floor(math.fmod(ago, 60))
+            local days = math.fmod(hours, 24)
+
+            local reltime = ""
+            if days > 0 then
+              reltime = (" %d days ago "):format(days)
+            elseif hours > 6 then
+              reltime = (" %d hours ago "):format(hours)
+            elseif hours > 0 then
+              reltime = (" %d hours, %d minutes ago "):format(hours, minutes)
+            elseif minutes > 0 then
+              reltime = (" %d minutes ago "):format(minutes)
+            else
+              reltime = (" %d seconds ago"):format(seconds)
+            end
+
             return {
               { ("%d:"):format(item.id), "SnacksPickerLabel" },
               { (" %s "):format(item.name), "SnacksPickerBold" },
+              { reltime, "SnacksPickerComment" },
             }
           end,
 
@@ -183,6 +210,8 @@ return {
         persist_mode = true,
 
         on_create = function(term)
+          term._state._created_at = vim.fn.reltime()
+
           local function set(lhs, rhs)
             vim.keymap.set("t", lhs, rhs, {
               buffer = term._state.bufnr,
