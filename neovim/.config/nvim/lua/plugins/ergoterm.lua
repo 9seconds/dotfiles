@@ -43,6 +43,127 @@ local function make_start(direction)
   end
 end
 
+local function choose()
+  local terminals = require("ergoterm.terminal").get_all()
+  local snacks = require("snacks")
+  local preview = require("snacks.picker.preview").file
+
+  if #terminals == 0 then
+    return
+  end
+
+  local function make_run_action(direction)
+    return function(picker, item)
+      picker:close()
+      if item:is_active() then
+        item:close()
+      end
+      item:focus(direction)
+    end
+  end
+
+  snacks.picker({
+    title = "Choose terminal",
+    items = terminals,
+
+    preview = function(ctx)
+      ctx.item.buf = ctx.item._state.bufnr
+      preview(ctx)
+      return true
+    end,
+
+    format = function(item)
+      local ago = vim.fn.reltimefloat(vim.fn.reltime(item._state._created_at))
+      local seconds = math.fmod(ago, 60)
+
+      ago = (ago - seconds) / 60
+      local minutes = math.fmod(ago, 60)
+      ago = (ago - minutes) / 60
+
+      seconds = math.floor(seconds)
+      minutes = math.floor(minutes)
+      local hours = math.floor(math.fmod(ago, 60))
+      local days = math.fmod(hours, 24)
+
+      local reltime = ""
+      if days > 0 then
+        reltime = (" %d days ago "):format(days)
+      elseif hours > 6 then
+        reltime = (" %d hours ago "):format(hours)
+      elseif hours > 0 then
+        reltime = (" %d hours, %d minutes ago "):format(hours, minutes)
+      elseif minutes > 0 then
+        reltime = (" %d minutes ago "):format(minutes)
+      else
+        reltime = (" %d seconds ago"):format(seconds)
+      end
+
+      return {
+        { ("%d:"):format(item.id), "SnacksPickerLabel" },
+        { (" %s "):format(item.name), "SnacksPickerBold" },
+        { reltime, "SnacksPickerComment" },
+      }
+    end,
+
+    actions = {
+      open_horizontal = make_run_action("below"),
+      open_vertical = make_run_action("right"),
+      open_tab = make_run_action("tab"),
+      open_float = make_run_action("float"),
+      close = function(picker, item)
+        picker:close()
+        item:close()
+        vim.schedule(choose)
+      end,
+      shutdown = function(picker, item)
+        picker:close()
+        item:stop()
+        item:cleanup()
+        vim.schedule(choose)
+      end,
+    },
+
+    confirm = make_run_action("right"),
+
+    win = {
+      input = {
+        keys = {
+          ["<c-s>"] = {
+            "open_horizontal",
+            mode = { "n", "i" },
+            desc = "Open in horizontal split",
+          },
+          ["<c-v>"] = {
+            "open_vertical",
+            mode = { "n", "i" },
+            desc = "Open in vertical split",
+          },
+          ["<c-t>"] = {
+            "open_tab",
+            mode = { "n", "i" },
+            desc = "Open in tab",
+          },
+          ["<c-f>"] = {
+            "open_float",
+            mode = { "n", "i" },
+            desc = "Open in float window",
+          },
+          ["<c-q>"] = {
+            "close",
+            mode = { "n", "i" },
+            desc = "Close terminal",
+          },
+          ["<c-d>"] = {
+            "shutdown",
+            mode = { "n", "i" },
+            desc = "Shutdown terminal",
+          },
+        },
+      },
+    },
+  })
+end
+
 return {
   "waiting-for-dev/ergoterm.nvim",
   dependencies = {
@@ -79,126 +200,31 @@ return {
     },
     {
       "<leader>t]",
-      function()
-        local terminals = require("ergoterm.terminal").get_all()
-        local snacks = require("snacks")
-        local preview = require("snacks.picker.preview").file
-
-        if #terminals == 0 then
-          return
-        end
-
-        local function make_run_action(direction)
-          return function(picker, item)
-            picker:close()
-            if item:is_active() then
-              item:close()
-            end
-            item:focus(direction)
-          end
-        end
-
-        snacks.picker({
-          title = "Choose terminal",
-          items = terminals,
-
-          preview = function(ctx)
-            ctx.item.buf = ctx.item._state.bufnr
-            preview(ctx)
-            return true
-          end,
-
-          format = function(item)
-            local ago =
-              vim.fn.reltimefloat(vim.fn.reltime(item._state._created_at))
-            local seconds = math.fmod(ago, 60)
-
-            ago = (ago - seconds) / 60
-            local minutes = math.fmod(ago, 60)
-            ago = (ago - minutes) / 60
-
-            seconds = math.floor(seconds)
-            minutes = math.floor(minutes)
-            local hours = math.floor(math.fmod(ago, 60))
-            local days = math.fmod(hours, 24)
-
-            local reltime = ""
-            if days > 0 then
-              reltime = (" %d days ago "):format(days)
-            elseif hours > 6 then
-              reltime = (" %d hours ago "):format(hours)
-            elseif hours > 0 then
-              reltime = (" %d hours, %d minutes ago "):format(hours, minutes)
-            elseif minutes > 0 then
-              reltime = (" %d minutes ago "):format(minutes)
-            else
-              reltime = (" %d seconds ago"):format(seconds)
-            end
-
-            return {
-              { ("%d:"):format(item.id), "SnacksPickerLabel" },
-              { (" %s "):format(item.name), "SnacksPickerBold" },
-              { reltime, "SnacksPickerComment" },
-            }
-          end,
-
-          actions = {
-            open_horizontal = make_run_action("below"),
-            open_vertical = make_run_action("right"),
-            open_tab = make_run_action("tab"),
-            open_float = make_run_action("float"),
-            close = function(picker, item)
-              picker:close()
-              item:close()
-            end,
-            shutdown = function(picker, item)
-              picker:close()
-              item:stop()
-              item:cleanup()
-            end,
-          },
-
-          confirm = make_run_action("right"),
-
-          win = {
-            input = {
-              keys = {
-                ["<c-s>"] = {
-                  "open_horizontal",
-                  mode = { "n", "i" },
-                  desc = "Open in horizontal split",
-                },
-                ["<c-v>"] = {
-                  "open_vertical",
-                  mode = { "n", "i" },
-                  desc = "Open in vertical split",
-                },
-                ["<c-t>"] = {
-                  "open_tab",
-                  mode = { "n", "i" },
-                  desc = "Open in tab",
-                },
-                ["<c-f>"] = {
-                  "open_float",
-                  mode = { "n", "i" },
-                  desc = "Open in float window",
-                },
-                ["<c-q>"] = {
-                  "close",
-                  mode = { "n", "i" },
-                  desc = "Close terminal",
-                },
-                ["<c-d>"] = {
-                  "shutdown",
-                  mode = { "n", "i" },
-                  desc = "Shutdown terminal",
-                },
-              },
-            },
-          },
-        })
-      end,
+      choose,
       desc = "Choose terminal",
+    },
+    {
+      "<A-z>",
+      function()
+        local term = require("ergoterm.terminal").identify()
+        if term then
+          term:close()
+        end
+      end,
+      ft = "Ergoterm",
+      desc = "Close terminal",
+    },
+    {
+      "<A-q>",
+      function()
+        local term = require("ergoterm.terminal").identify()
+        if term then
+          term:stop()
+          term:cleanup()
+        end
+      end,
+      ft = "Ergoterm",
+      desc = "Shutdown terminal",
     },
   },
 
