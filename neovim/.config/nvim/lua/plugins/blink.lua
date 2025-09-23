@@ -4,7 +4,11 @@
 return {
   "Saghen/blink.cmp",
   dependencies = {
-    "fang2hou/blink-copilot"
+    "fang2hou/blink-copilot",
+    {
+      "xzbdmw/colorful-menu.nvim",
+      config = true,
+    },
   },
   version = "*",
   event = "FileType",
@@ -70,6 +74,19 @@ return {
           return not vim.tbl_contains({ "/", "?" }, vim.fn.getcmdtype())
         end,
         draw = {
+          -- see https://github.com/xzbdmw/colorful-menu.nvim
+          columns = { { "kind_icon" }, { "label", gap = 1 } },
+          components = {
+            label = {
+              text = function(ctx)
+                return require("colorful-menu").blink_components_text(ctx)
+              end,
+              highlight = function(ctx)
+                return require("colorful-menu").blink_components_highlight(ctx)
+              end,
+            },
+          },
+
           treesitter = { "lsp" },
         },
       },
@@ -96,8 +113,8 @@ return {
           module = "blink-copilot",
           score_offset = 100,
           async = true,
-        }
-      }
+        },
+      },
     },
   },
 }

@@ -4,10 +4,10 @@
 return {
   "zbirenbaum/copilot.lua",
   cmd = {
-    "Copilot"
+    "Copilot",
   },
   event = {
-    "InsertEnter"
+    "InsertEnter",
   },
 
   opts = {
