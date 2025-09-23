@@ -207,7 +207,9 @@ return {
       terminal_defaults = {
         shell = vim.env.SHELL or vim.o.shell or "/bin/bash",
         layout = "right",
-        persist_mode = true,
+        dir = "git_dir",
+        persist_mode = false,
+        start_in_insert = true,
 
         on_create = function(term)
           term._state._created_at = vim.fn.reltime()
