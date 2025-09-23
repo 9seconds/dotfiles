@@ -237,8 +237,11 @@ return {
           set("<C-k>", "<cmd>wincmd k<cr>")
           set("<C-l>", "<cmd>wincmd l<cr>")
         end,
+
         on_open = function(term)
-          vim.wo[term._state.window].winbar = term.name
+          local opts = vim.wo[term._state.window]
+          opts.winbar = term.name
+          opts.list = false
         end,
       },
     }
