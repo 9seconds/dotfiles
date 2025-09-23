@@ -3,13 +3,15 @@
 
 return {
   "Saghen/blink.cmp",
+  dependencies = {
+    "fang2hou/blink-copilot"
+  },
   version = "*",
   event = "FileType",
 
   opts = {
     enabled = function()
-      return not vim.b.copilot_suggestion_auto_trigger
-        and vim.bo.filetype ~= "copilot-chat"
+      return vim.bo.filetype ~= "copilot-chat"
     end,
 
     keymap = {
@@ -31,7 +33,7 @@ return {
         "hide_documentation",
         "fallback",
       },
-      ["<c-s>"] = {
+      ["<c-k>"] = {
         "show_signature",
         "hide_signature",
         "fallback",
@@ -40,7 +42,7 @@ return {
 
     completion = {
       keyword = {
-        range = "prefix",
+        range = "full",
       },
       trigger = {
         show_on_keyword = true,
@@ -87,7 +89,15 @@ return {
     },
 
     sources = {
-      default = { "lsp", "path", "buffer" },
+      default = { "lsp", "path", "buffer", "copilot" },
+      providers = {
+        copilot = {
+          name = "copilot",
+          module = "blink-copilot",
+          score_offset = 100,
+          async = true,
+        }
+      }
     },
   },
 }

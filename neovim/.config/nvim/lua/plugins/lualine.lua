@@ -30,18 +30,6 @@ return {
 
     sections = {
       lualine_a = {
-        function()
-          if vim.b.copilot_suggestion_auto_trigger then
-            return ""
-          end
-          return ""
-        end,
-        function()
-          if vim.g.code_companion_in_progress then
-            return "󱜸"
-          end
-          return ""
-        end,
         "mode",
       },
       lualine_b = {
