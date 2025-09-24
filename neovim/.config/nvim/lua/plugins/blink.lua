@@ -107,6 +107,9 @@ return {
 
     sources = {
       default = { "lsp", "path", "buffer", "copilot" },
+      per_filetype = {
+        codecompanion = { "codecompanion" },
+      },
       providers = {
         copilot = {
           name = "copilot",
