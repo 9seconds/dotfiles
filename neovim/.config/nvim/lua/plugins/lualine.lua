@@ -1,6 +1,10 @@
 -- statusline
 -- https://github.com/nvim-lualine/lualine.nvim
 
+local STATE = {
+  codecompanion_requests = 0,
+}
+
 return {
   "nvim-lualine/lualine.nvim",
   dependencies = {
@@ -30,6 +34,25 @@ return {
 
     sections = {
       lualine_a = {
+        {
+          function()
+            if require("copilot.status").data.status == "InProgress" then
+              return ""
+            end
+            return ""
+          end,
+          cond = function()
+            return package.loaded["copilot"] ~= nil
+          end,
+        },
+        {
+          function()
+            if STATE.codecompanion_requests > 0 then
+              return "󰭻"
+            end
+            return ""
+          end,
+        },
         "mode",
       },
       lualine_b = {
@@ -105,29 +128,25 @@ return {
     require("lualine").setup(opts)
 
     local group = vim.api.nvim_create_augroup("9_Lualine", {})
-
-    vim.api.nvim_create_autocmd("RecordingEnter", {
+    vim.api.nvim_create_autocmd("User", {
       group = group,
+      pattern = "CodeCompanionRequestStarted",
       callback = function()
-        require("_.utils").refresh_statusline()
+        STATE.codecompanion_requests = STATE.codecompanion_requests + 1
       end,
     })
-
-    vim.api.nvim_create_autocmd("RecordingLeave", {
+    vim.api.nvim_create_autocmd("User", {
       group = group,
+      pattern = "CodeCompanionRequestFinished",
       callback = function()
-        local timer = vim.uv.new_timer()
-        local utils = require("_.utils")
-
-        timer:start(
-          20,
-          0,
-          vim.schedule_wrap(function()
-            timer:stop()
-            timer:close()
-            utils.refresh_statusline()
-          end)
-        )
+        STATE.codecompanion_requests = STATE.codecompanion_requests - 1
+      end,
+    })
+    vim.api.nvim_create_autocmd("User", {
+      group = group,
+      pattern = "CodeCompanionChatCleared",
+      callback = function()
+        STATE.codecompanion_requests = 0
       end,
     })
   end,

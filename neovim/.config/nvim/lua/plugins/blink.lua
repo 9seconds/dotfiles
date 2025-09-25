@@ -27,7 +27,7 @@ return {
             require("copilot.suggestion").next()
           end
         end,
-        "fallback"
+        "fallback",
       },
       ["<c-n>"] = {
         "select_next",
@@ -49,8 +49,8 @@ return {
       },
       ["<c-e>"] = {
         "cancel",
-        "fallback"
-      }
+        "fallback",
+      },
     },
 
     completion = {
