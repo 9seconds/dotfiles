@@ -125,7 +125,9 @@ return {
   },
 
   config = function(_, opts)
-    require("lualine").setup(opts)
+    local mod = require("lualine")
+
+    mod.setup(opts)
 
     local group = vim.api.nvim_create_augroup("9_Lualine", {})
     vim.api.nvim_create_autocmd("User", {
@@ -133,6 +135,7 @@ return {
       pattern = "CodeCompanionRequestStarted",
       callback = function()
         STATE.codecompanion_requests = STATE.codecompanion_requests + 1
+        mod.refresh()
       end,
     })
     vim.api.nvim_create_autocmd("User", {
@@ -140,6 +143,7 @@ return {
       pattern = "CodeCompanionRequestFinished",
       callback = function()
         STATE.codecompanion_requests = STATE.codecompanion_requests - 1
+        mod.refresh()
       end,
     })
     vim.api.nvim_create_autocmd("User", {
@@ -147,6 +151,7 @@ return {
       pattern = "CodeCompanionChatCleared",
       callback = function()
         STATE.codecompanion_requests = 0
+        mod.refresh()
       end,
     })
   end,
