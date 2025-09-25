@@ -37,4 +37,18 @@ return {
       },
     },
   },
+
+  config = function(_, opts)
+    require("copilot").setup(opts)
+    require("copilot.status").register_status_notification_handler(
+      function(data)
+        vim.g.copilot_status = data.status
+
+        local lualine = package.loaded["lualine"]
+        if lualine then
+          lualine.refresh()
+        end
+      end
+    )
+  end,
 }

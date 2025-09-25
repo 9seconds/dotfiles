@@ -21,10 +21,13 @@ return {
         "fallback",
       },
       ["<c-c>"] = {
-        "cancel",
-        function()
+        function(cmp)
+          if cmp.is_active() then
+            cmp.cancel()
+          end
           if package.loaded["copilot"] then
             require("copilot.suggestion").next()
+            return true
           end
         end,
         "fallback",
@@ -45,10 +48,6 @@ return {
       ["<c-k>"] = {
         "show_signature",
         "hide_signature",
-        "fallback",
-      },
-      ["<c-e>"] = {
-        "cancel",
         "fallback",
       },
     },

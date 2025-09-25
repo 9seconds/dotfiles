@@ -36,7 +36,7 @@ return {
       lualine_a = {
         {
           function()
-            if require("copilot.status").data.status == "InProgress" then
+            if vim.g.copilot_status == "InProgress" then
               return ""
             end
             return ""
