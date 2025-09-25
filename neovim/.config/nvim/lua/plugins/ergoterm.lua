@@ -257,7 +257,7 @@ return {
               opts.list = false
             end,
           })
-          vim.api.nvim_create_autocmd({ "TermLeave", "WinLeave" }, {
+          vim.api.nvim_create_autocmd("TermLeave", {
             buffer = term._state.bufnr,
             callback = function()
               vim.wo[term._state.window].winbar = " " .. term.name
