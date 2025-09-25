@@ -4,7 +4,6 @@
 return {
   "Saghen/blink.cmp",
   dependencies = {
-    "fang2hou/blink-copilot",
     {
       "xzbdmw/colorful-menu.nvim",
       config = true,
@@ -14,15 +13,21 @@ return {
   event = "FileType",
 
   opts = {
-    enabled = function()
-      return vim.bo.filetype ~= "copilot-chat"
-    end,
-
     keymap = {
       preset = "none",
 
       ["<c-a>"] = {
         "select_and_accept",
+        "fallback",
+      },
+      ["<c-c>"] = {
+        "cancel",
+        function()
+          if package.loaded["copilot"] then
+            require("copilot.suggestion").next()
+          end
+        end,
+        "fallback"
       },
       ["<c-n>"] = {
         "select_next",
@@ -42,6 +47,10 @@ return {
         "hide_signature",
         "fallback",
       },
+      ["<c-e>"] = {
+        "cancel",
+        "fallback"
+      }
     },
 
     completion = {
@@ -106,18 +115,31 @@ return {
     },
 
     sources = {
-      default = { "lsp", "path", "buffer", "copilot" },
+      default = { "lsp", "path", "buffer" },
       per_filetype = {
         codecompanion = { "codecompanion" },
       },
-      providers = {
-        copilot = {
-          name = "copilot",
-          module = "blink-copilot",
-          score_offset = 100,
-          async = true,
-        },
-      },
     },
   },
+
+  config = function(_, opts)
+    require("blink-cmp").setup(opts)
+
+    local augroup = vim.api.nvim_create_augroup("9_Blink", {})
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "BlinkCmpMenuOpen",
+      group = augroup,
+      callback = function()
+        vim.b.copilot_suggestion_hidden = true
+      end,
+    })
+
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "BlinkCmpMenuClose",
+      group = augroup,
+      callback = function()
+        vim.b.copilot_suggestion_hidden = false
+      end,
+    })
+  end,
 }
