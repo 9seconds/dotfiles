@@ -238,6 +238,12 @@ return {
         persist_mode = false,
         start_in_insert = true,
 
+        float_opts = {
+          height = math.floor(vim.o.lines * 0.85),
+          width = math.floor(vim.o.columns * 0.85),
+        },
+        float_winblend = 0,
+
         on_create = function(term)
           term._state._created_at = vim.fn.reltime()
 
