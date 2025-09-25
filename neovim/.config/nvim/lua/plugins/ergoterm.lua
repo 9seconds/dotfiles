@@ -18,7 +18,7 @@ local function generate_name()
 
   if words.code ~= 0 then
     vim.notify(
-      ("Failed to get random word: %s"):format(words.stderr),
+      string.format("Failed to get random word: %s", words.stderr),
       vim.log.levels.ERROR,
       { title = "ergoterm" }
     )
@@ -35,7 +35,8 @@ end
 local function make_start(direction)
   return function()
     vim.cmd(
-      ("TermNew auto_scroll=true layout=%s name=%s"):format(
+      string.format(
+        "TermNew auto_scroll=true layout=%s name=%s",
         direction,
         generate_name()
       )
@@ -87,20 +88,20 @@ local function choose()
 
       local reltime = ""
       if days > 0 then
-        reltime = (" %d days ago "):format(days)
+        reltime = string.format(" %d days ago ", days)
       elseif hours > 6 then
-        reltime = (" %d hours ago "):format(hours)
+        reltime = string.format(" %d hours ago ", hours)
       elseif hours > 0 then
-        reltime = (" %d hours, %d minutes ago "):format(hours, minutes)
+        reltime = string.format(" %d hours, %d minutes ago ", hours, minutes)
       elseif minutes > 0 then
-        reltime = (" %d minutes ago "):format(minutes)
+        reltime = string.format(" %d minutes ago ", minutes)
       else
-        reltime = (" %d seconds ago"):format(seconds)
+        reltime = string.format(" %d seconds ago", seconds)
       end
 
       return {
-        { ("%d:"):format(item.id), "SnacksPickerLabel" },
-        { (" %s "):format(item.name), "SnacksPickerBold" },
+        { string.format("%d:", item.id), "SnacksPickerLabel" },
+        { string.format(" %s ", item.name), "SnacksPickerBold" },
         { reltime, "SnacksPickerComment" },
       }
     end,
@@ -248,6 +249,21 @@ return {
             })
           end
 
+          vim.api.nvim_create_autocmd("TermEnter", {
+            buffer = term._state.bufnr,
+            callback = function()
+              local opts = vim.wo[term._state.window]
+              opts.winbar = term.name
+              opts.list = false
+            end,
+          })
+          vim.api.nvim_create_autocmd({ "TermLeave", "WinLeave" }, {
+            buffer = term._state.bufnr,
+            callback = function()
+              vim.wo[term._state.window].winbar = " " .. term.name
+            end,
+          })
+
           set("<Esc><Esc>", "<c-\\><c-n>")
           set(
             "<A-a>",
@@ -264,12 +280,6 @@ return {
           set("<C-j>", "<cmd>wincmd j<cr>")
           set("<C-k>", "<cmd>wincmd k<cr>")
           set("<C-l>", "<cmd>wincmd l<cr>")
-        end,
-
-        on_open = function(term)
-          local opts = vim.wo[term._state.window]
-          opts.winbar = term.name
-          opts.list = false
         end,
       },
     }

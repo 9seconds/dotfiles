@@ -45,7 +45,7 @@ local function rg_glob(query)
         word = word .. "**"
       end
 
-      flags = ("%s --iglob %s"):format(flags, vim.fn.shellescape(word))
+      flags = string.format("%s --iglob %s", flags, vim.fn.shellescape(word))
     end
   end
 
