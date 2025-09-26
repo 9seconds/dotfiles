@@ -269,6 +269,12 @@ return {
               vim.wo[term._state.window].winbar = " " .. term.name
             end,
           })
+          vim.api.nvim_create_autocmd("TermClose", {
+            buffer = term._state.bufnr,
+            callback = function()
+              vim.cmd("quit")
+            end,
+          })
 
           set("<Esc><Esc>", "<c-\\><c-n>")
           set(
