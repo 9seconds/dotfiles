@@ -44,10 +44,17 @@ return {
       desc = "Run zen mode",
     },
     {
-      "<leader>sz",
+      "<A-a>",
       function()
         require("snacks").zen.zoom()
       end,
+      mode = { "n", "x", "o" },
+      desc = "Run zoom zen mode",
+    },
+    {
+      "<A-a>",
+      "<c-\\><c-n><cmd>lua require('snacks.zen').zoom()<cr><cmd>startinsert<cr>",
+      mode = { "i", "t" },
       desc = "Run zoom zen mode",
     },
     {

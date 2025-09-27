@@ -1,6 +1,24 @@
 -- terminals
 -- https://github.com/waiting-for-dev/ergoterm.nvim
 
+local KEYS = {
+  close = "z",
+  quit = "q",
+  choose = "o",
+
+  right = "]",
+  below = "s",
+  tab = "t",
+  float = "f",
+
+  alt = function(self, mapping)
+    return string.format("<A-%s>", self[mapping])
+  end,
+  ctrl = function(self, mapping)
+    return string.format("<c-%s>", self[mapping])
+  end,
+}
+
 local function generate_name()
   local shuf_cmd = {
     vim.o.shell,
@@ -32,7 +50,7 @@ local function generate_name()
   return title
 end
 
-local function make_start(direction)
+local function term_open(direction)
   return function()
     vim.cmd(
       string.format(
@@ -41,6 +59,25 @@ local function make_start(direction)
         generate_name()
       )
     )
+  end
+end
+
+local function term_close(term)
+  if not term then
+    term = require("ergoterm.terminal").identify()
+  end
+  if term then
+    term:close()
+  end
+end
+
+local function term_quit(term)
+  if not term then
+    term = require("ergoterm.terminal").identify()
+  end
+  if term then
+    term:stop()
+    term:cleanup()
   end
 end
 
@@ -53,17 +90,7 @@ local function choose()
     return
   end
 
-  local function make_run_action(direction)
-    return function(picker, item)
-      picker:close()
-      if item:is_active() then
-        item:close()
-      end
-      item:focus(direction)
-    end
-  end
-
-  snacks.picker({
+  local snacks_config = {
     title = "Choose terminal",
     items = terminals,
 
@@ -106,63 +133,55 @@ local function choose()
       }
     end,
 
-    actions = {
-      open_horizontal = make_run_action("below"),
-      open_vertical = make_run_action("right"),
-      open_tab = make_run_action("tab"),
-      open_float = make_run_action("float"),
-      close = function(picker, item)
-        picker:close()
-        item:close()
-        vim.schedule(choose)
-      end,
-      shutdown = function(picker, item)
-        picker:close()
-        item:stop()
-        item:cleanup()
-        vim.schedule(choose)
-      end,
-    },
-
-    confirm = make_run_action("right"),
-
+    actions = {},
     win = {
       input = {
-        keys = {
-          ["<c-s>"] = {
-            "open_horizontal",
-            mode = { "n", "i" },
-            desc = "Open in horizontal split",
-          },
-          ["<c-v>"] = {
-            "open_vertical",
-            mode = { "n", "i" },
-            desc = "Open in vertical split",
-          },
-          ["<c-t>"] = {
-            "open_tab",
-            mode = { "n", "i" },
-            desc = "Open in tab",
-          },
-          ["<c-f>"] = {
-            "open_float",
-            mode = { "n", "i" },
-            desc = "Open in float window",
-          },
-          ["<c-q>"] = {
-            "close",
-            mode = { "n", "i" },
-            desc = "Close terminal",
-          },
-          ["<c-d>"] = {
-            "shutdown",
-            mode = { "n", "i" },
-            desc = "Shutdown terminal",
-          },
-        },
+        keys = {},
       },
     },
-  })
+  }
+
+  local function make_snacks_action(func)
+    return function(picker, item)
+      picker:close()
+      func(item)
+    end
+  end
+
+  local function make_open_action(direction)
+    return function(item)
+      if item:is_active() then
+        item:close()
+      end
+      item:focus(direction)
+    end
+  end
+
+  local function add_action(key, func)
+    local name = "press_" .. key
+
+    snacks_config.actions[name] = make_snacks_action(func)
+    snacks_config.win.input.keys[KEYS:ctrl(key)] = {
+      name,
+      mode = { "n", "i" },
+    }
+  end
+
+  add_action("right", make_open_action("right"))
+  add_action("below", make_open_action("below"))
+  add_action("tab", make_open_action("tab"))
+  add_action("float", make_open_action("float"))
+  add_action("close", function(term)
+    term_close(term)
+    vim.schedule(choose)
+  end)
+  add_action("quit", function(term)
+    term_quit(term)
+    vim.schedule(choose)
+  end)
+  snacks_config.confirm = make_open_action("right")
+
+  snacks.picker(snacks_config)
 end
 
 return {
@@ -180,56 +199,84 @@ return {
   },
   keys = {
     {
-      "<leader>]]",
-      make_start("right"),
+      KEYS:alt("right"),
+      term_open("right"),
       desc = "Open new vertical terminal",
     },
     {
-      "<leader>]s",
-      make_start("below"),
+      KEYS:alt("below"),
+      term_open("below"),
       desc = "Open new horizontal terminal",
     },
     {
-      "<leader>]t",
-      make_start("tab"),
+      KEYS:alt("tab"),
+      term_open("tab"),
       desc = "Open new terminal in tab",
     },
     {
-      "<leader>]f",
-      make_start("float"),
+      KEYS:alt("float"),
+      term_open("float"),
       desc = "Open new floating terminal",
     },
     {
-      "<leader>t]",
+      KEYS:alt("choose"),
       choose,
       desc = "Choose terminal",
     },
     {
-      "<A-z>",
-      function()
-        local term = require("ergoterm.terminal").identify()
-        if term then
-          term:close()
-        end
-      end,
+      KEYS:alt("close"),
+      term_close,
       ft = "Ergoterm",
       desc = "Close terminal",
     },
     {
-      "<A-q>",
-      function()
-        local term = require("ergoterm.terminal").identify()
-        if term then
-          term:stop()
-          term:cleanup()
-        end
-      end,
+      KEYS:alt("quit"),
+      term_quit,
       ft = "Ergoterm",
       desc = "Shutdown terminal",
     },
   },
 
   opts = function()
+    local function set_keys(term)
+      local function set(lhs, rhs)
+        vim.keymap.set("t", lhs, rhs, {
+          buffer = term._state.bufnr,
+          noremap = true,
+          silent = true,
+        })
+      end
+
+      set(KEYS:alt("right"), term_open("right"))
+      set(KEYS:alt("below"), term_open("below"))
+      set(KEYS:alt("tab"), term_open("tab"))
+      set(KEYS:alt("float"), term_open("float"))
+      set(KEYS:alt("choose"), choose)
+      set(KEYS:alt("close"), term_close)
+      set(KEYS:alt("quit"), term_quit)
+      set("<C-h>", "<cmd>wincmd h<cr>")
+      set("<C-j>", "<cmd>wincmd j<cr>")
+      set("<C-k>", "<cmd>wincmd k<cr>")
+      set("<C-l>", "<cmd>wincmd l<cr>")
+    end
+
+    local function set_autocommands(term)
+      vim.api.nvim_create_autocmd("TermEnter", {
+        buffer = term._state.bufnr,
+        callback = function()
+          local opts = vim.wo[term._state.window]
+          opts.winbar = term.name
+          opts.list = false
+        end,
+      })
+      vim.api.nvim_create_autocmd("TermLeave", {
+        buffer = term._state.bufnr,
+        callback = function()
+          vim.wo[term._state.window].winbar = " " .. term.name
+        end,
+      })
+    end
+
     return {
       terminal_defaults = {
         shell = vim.env.SHELL or vim.o.shell or "/bin/bash",
@@ -246,52 +293,8 @@ return {
 
         on_create = function(term)
           term._state._created_at = vim.fn.reltime()
-
-          local function set(lhs, rhs)
-            vim.keymap.set("t", lhs, rhs, {
-              buffer = term._state.bufnr,
-              noremap = true,
-              silent = true,
-            })
-          end
-
-          vim.api.nvim_create_autocmd("TermEnter", {
-            buffer = term._state.bufnr,
-            callback = function()
-              local opts = vim.wo[term._state.window]
-              opts.winbar = term.name
-              opts.list = false
-            end,
-          })
-          vim.api.nvim_create_autocmd("TermLeave", {
-            buffer = term._state.bufnr,
-            callback = function()
-              vim.wo[term._state.window].winbar = " " .. term.name
-            end,
-          })
-          vim.api.nvim_create_autocmd("TermClose", {
-            buffer = term._state.bufnr,
-            callback = function()
-              vim.cmd("quit")
-            end,
-          })
-
-          set("<Esc><Esc>", "<c-\\><c-n>")
-          set(
-            "<A-a>",
-            "<c-\\><c-n><cmd>lua require('snacks.zen').zoom()<cr><cmd>startinsert<cr>"
-          )
-          set("<A-z>", function()
-            term:close()
-          end)
-          set("<A-q>", function()
-            term:stop()
-            term:cleanup()
-          end)
-          set("<C-h>", "<cmd>wincmd h<cr>")
-          set("<C-j>", "<cmd>wincmd j<cr>")
-          set("<C-k>", "<cmd>wincmd k<cr>")
-          set("<C-l>", "<cmd>wincmd l<cr>")
+          set_autocommands(term)
+          set_keys(term)
         end,
       },
     }

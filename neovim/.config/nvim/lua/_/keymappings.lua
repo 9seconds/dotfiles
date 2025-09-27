@@ -16,9 +16,16 @@ local function cmap(key, action, opts)
   vim.keymap.set("c", key, action, opts)
 end
 
+local function tmap(key, action, opts)
+  vim.keymap.set("t", key, action, opts)
+end
+
 local function setup()
   nmap("<space>", "<nop>")
   vmap("<space>", "<nop>")
+
+  -- always go to insert mode even in terminals
+  tmap("<esc><esc>", "<c-\\><c-n>")
 
   -- sudo write
   -- type w!! and it would be converted into sudo tee >/dev/null <CONTENT FILENAME
