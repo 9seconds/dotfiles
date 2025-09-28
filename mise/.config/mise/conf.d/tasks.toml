@@ -3,30 +3,30 @@
 [task_config]
 dir = "~"
 
-[tasks."g:update"]
+[tasks."update"]
 description = "Update system"
 depends = [
-  "g:update:system",
-  "g:update:dotfiles",
-  "g:update:nvim",
-  "g:update:fish",
-  "g:update:mise",
-  "g:update:kitten",
+  "update:system",
+  "update:dotfiles",
+  "update:nvim",
+  "update:fish",
+  "update:mise",
+  "update:kitten",
 ]
 
-[tasks."g:update:system"]
+[tasks."update:system"]
 description = "Run system updates"
 depends = [
-  "g:update:system:{{ os() }}"
+  "update:system:{{ os() }}"
 ]
 
-[tasks."g:update:dotfiles"]
+[tasks."update:dotfiles"]
 description = "Update dotfiles"
 run = [
   "git -C {{ get_env(name='9SECONDS_DOTFILES_DIR', default='~/.dotfiles') }} pull --recurse-submodules --autostash --rebase"
 ]
 
-[tasks."g:update:system:linux"]
+[tasks."update:system:linux"]
 description = "Run system updates for Linux (assume Ubuntu)"
 env = { DEBIAN_FRONTEND = "noninteractive" }
 run = [
@@ -35,7 +35,7 @@ run = [
   "sudo apt autoremove --yes --purge",
 ]
 
-[tasks."g:update:system:macos"]
+[tasks."update:system:macos"]
 description = "Run system updates for MacOS"
 run = [
   "brew update",
@@ -45,24 +45,24 @@ run = [
   "rm -rf $(brew --cache)",
 ]
 
-[tasks."g:update:nvim"]
+[tasks."update:nvim"]
 description = "Update Neovim"
 wait_for = [
-  "g:update:dotfiles"
+  "update:dotfiles"
 ]
 run = "nvim --headless '+Lazy! sync' +qa"
 
-[tasks."g:update:fish"]
+[tasks."update:fish"]
 description = "Update fish"
 wait_for = [
-  "g:update:dotfiles"
+  "update:dotfiles"
 ]
 run = "fish -ic 'fisher update'"
 
-[tasks."g:update:mise"]
+[tasks."update:mise"]
 description = "Update mise"
 wait_for = [
-  "g:update:dotfiles"
+  "update:dotfiles"
 ]
 env = { RUSTUP_INIT_SKIP_PATH_CHECK = "1", MISE_YES="1" }
 run = [
@@ -73,6 +73,6 @@ run = [
   "mise reshim"
 ]
 
-[tasks."g:update:kitten"]
+[tasks."update:kitten"]
 description = "Update kitten"
 run = "command -v kitten 2>/dev/null && kitten update-self || true"
