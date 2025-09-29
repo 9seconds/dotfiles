@@ -13,23 +13,15 @@ return {
   event = "FileType",
 
   opts = {
+    enabled = function()
+      return vim.g.enable_autocompletion
+    end,
+
     keymap = {
       preset = "none",
 
       ["<c-a>"] = {
         "select_and_accept",
-        "fallback",
-      },
-      ["<c-c>"] = {
-        function(cmp)
-          if cmp.is_active() then
-            cmp.cancel()
-          end
-          if package.loaded["copilot"] then
-            require("copilot.suggestion").next()
-            return true
-          end
-        end,
         "fallback",
       },
       ["<c-n>"] = {

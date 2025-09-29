@@ -21,6 +21,7 @@ return {
     },
     suggestion = {
       enabled = true,
+      auto_trigger = true,
       keymap = {
         accept = "<c-a>",
         next = "<c-c>",
@@ -42,7 +43,11 @@ return {
     require("copilot").setup(opts)
     require("copilot.status").register_status_notification_handler(
       function(data)
-        vim.g.copilot_status = data.status
+        if vim.b.copilot_suggestion_auto_trigger then
+          vim.g.copilot_status = "InProgress"
+        else
+          vim.g.copilot_status = data.status
+        end
 
         local lualine = package.loaded["lualine"]
         if lualine then
@@ -50,5 +55,12 @@ return {
         end
       end
     )
+
+    vim.api.nvim_create_autocmd("BufEnter", {
+      group = vim.api.nvim_create_augroup("9_Copilot", {}),
+      callback = function()
+        vim.b.copilot_suggestion_auto_trigger = vim.g.enable_autocompletion
+      end,
+    })
   end,
 }

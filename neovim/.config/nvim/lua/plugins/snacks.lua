@@ -163,6 +163,8 @@ return {
   init = function()
     local augroup = vim.api.nvim_create_augroup("9_Snacks", {})
 
+    vim.g.enable_autocompletion = true
+
     vim.api.nvim_create_autocmd("User", {
       group = augroup,
       once = true,
@@ -174,6 +176,37 @@ return {
         snacks.toggle.dim():map("<leader>ud")
         snacks.toggle.indent():map("<leader>ui")
         snacks.toggle.treesitter():map("<leader>ut")
+        snacks
+          .toggle({
+            id = "autocomplete",
+            name = "Autocompletion",
+            get = function()
+              return vim.g.enable_autocompletion
+            end,
+
+            set = function(state)
+              vim.g.enable_autocompletion = state
+              vim.b.copilot_suggestion_auto_trigger = not state
+
+              local cmp = package.loaded["blink.cmp"]
+              if cmp and not state then
+                cmp.cancel()
+              end
+
+              local copilot = package.loaded["copilot"]
+              if not copilot then
+                return
+              end
+
+              local mod = require("copilot.suggestion")
+              if state then
+                mod.dismiss()
+              else
+                mod.next()
+              end
+            end,
+          })
+          :map("<C-x>", { mode = { "n", "i", "x", "v", "o" } })
 
         snacks.indent.enable()
       end,
