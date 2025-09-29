@@ -4,4 +4,4 @@ __pycache__/
 .nvim.lua
 *.orig
 .mise-tasks/
-mise.toml
+mise.local.toml
