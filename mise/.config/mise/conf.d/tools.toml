@@ -12,6 +12,8 @@ uv = "latest"
 watchexec = "latest"
 usage = "latest"
 
+neovim = "latest"
+
 "cargo:eza" = "latest"
 "cargo:git-absorb" = "latest"
 "cargo:mergiraf" = "latest"
