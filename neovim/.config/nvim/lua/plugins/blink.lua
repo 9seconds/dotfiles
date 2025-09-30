@@ -116,20 +116,13 @@ return {
   config = function(_, opts)
     require("blink-cmp").setup(opts)
 
-    local augroup = vim.api.nvim_create_augroup("9_Blink", {})
     vim.api.nvim_create_autocmd("User", {
-      pattern = "BlinkCmpMenuOpen",
-      group = augroup,
+      pattern = "EnableAutocompleteToggled",
+      group = vim.api.nvim_create_augroup("9_Blink", {}),
       callback = function()
-        vim.b.copilot_suggestion_hidden = true
-      end,
-    })
-
-    vim.api.nvim_create_autocmd("User", {
-      pattern = "BlinkCmpMenuClose",
-      group = augroup,
-      callback = function()
-        vim.b.copilot_suggestion_hidden = false
+        if not vim.g.enable_autocompletion then
+          require("blink.cmp").cancel()
+        end
       end,
     })
   end,

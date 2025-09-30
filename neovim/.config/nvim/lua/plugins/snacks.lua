@@ -1,8 +1,6 @@
 -- folke mini plugins
 -- https://github.com/folke/snacks.nvim
 
-local DIM_ENABLED = false
-
 return {
   "folke/snacks.nvim",
   version = "*",
@@ -37,13 +35,6 @@ return {
       desc = "Dismiss all notifications",
     },
     {
-      "<leader>sZ",
-      function()
-        require("snacks").zen()
-      end,
-      desc = "Run zen mode",
-    },
-    {
       "<A-a>",
       function()
         require("snacks").zen.zoom()
@@ -56,21 +47,6 @@ return {
       "<c-\\><c-n><cmd>lua require('snacks.zen').zoom()<cr><cmd>startinsert<cr>",
       mode = { "i", "t" },
       desc = "Run zoom zen mode",
-    },
-    {
-      "<leader>sd",
-      function()
-        local mod = require("snacks.dim")
-
-        if DIM_ENABLED then
-          mod.disable()
-        else
-          mod.enable()
-        end
-
-        DIM_ENABLED = not DIM_ENABLED
-      end,
-      desc = "Toggle Snacks dimming",
     },
   },
 
@@ -183,27 +159,11 @@ return {
             get = function()
               return vim.g.enable_autocompletion
             end,
-
             set = function(state)
               vim.g.enable_autocompletion = state
-              vim.b.copilot_suggestion_auto_trigger = not state
-
-              local cmp = package.loaded["blink.cmp"]
-              if cmp and not state then
-                cmp.cancel()
-              end
-
-              local copilot = package.loaded["copilot"]
-              if not copilot then
-                return
-              end
-
-              local mod = require("copilot.suggestion")
-              if state then
-                mod.dismiss()
-              else
-                mod.next()
-              end
+              vim.api.nvim_exec_autocmds("User", {
+                pattern = "EnableAutocompleteToggled",
+              })
             end,
           })
           :map("<C-x>", { mode = { "n", "i", "x", "v", "o" } })

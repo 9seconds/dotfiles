@@ -56,11 +56,31 @@ return {
       end
     )
 
-    vim.api.nvim_create_autocmd("BufEnter", {
-      group = vim.api.nvim_create_augroup("9_Copilot", {}),
-      callback = function()
-        vim.b.copilot_suggestion_auto_trigger = vim.g.enable_autocompletion
-      end,
+    local function toggle_copilot()
+      local enable = not vim.g.enable_autocompletion
+      vim.b.copilot_suggestion_auto_trigger = enable
+      vim.b.copilot_suggestion_hidden = not enable
+
+      local mod = require("copilot.suggestion")
+      if enable then
+        mod.next()
+      else
+        mod.dismiss()
+      end
+    end
+
+    toggle_copilot()
+
+    local group = vim.api.nvim_create_augroup("9_Copilot", {})
+    vim.api.nvim_create_autocmd("User", {
+      group = group,
+      pattern = "EnableAutocompleteToggled",
+      callback = toggle_copilot,
+    })
+
+    vim.api.nvim_create_autocmd({ "BufRead", "BufEnter" }, {
+      group = group,
+      callback = toggle_copilot,
     })
   end,
 }

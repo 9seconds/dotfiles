@@ -36,7 +36,10 @@ return {
       lualine_a = {
         {
           function()
-            if vim.g.copilot_status == "InProgress" then
+            if
+              not vim.g.enable_autocompletion
+              or vim.g.copilot_status == "InProgress"
+            then
               return ""
             end
             return ""
