@@ -22,9 +22,8 @@ depends = [
 
 [tasks."update:dotfiles"]
 description = "Update dotfiles"
-run = [
-  "git -C {{ get_env(name='9SECONDS_DOTFILES_DIR', default='~/.dotfiles') }} pull --recurse-submodules --autostash --rebase"
-]
+dir = "{{ get_env('9SECONDS_DOTFILES_DIR', default='~/.dotfiles') }}"
+run = "git pull --recurse-submodules --autostash --rebase"
 
 [tasks."update:system:linux"]
 description = "Run system updates for Linux (assume Ubuntu)"
