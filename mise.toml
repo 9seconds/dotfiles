@@ -13,21 +13,36 @@ stylua = "latest"
 
 # -----------------------------------------------------------------------------
 
-[tasks.plug]
-description = "Mount plug"
+[tasks."module:ensure"]
+description = "Mount module"
+alias = "plug"
 usage = '''
-  arg "<plug>" help="Name of the plug to connect to"
-  complete "plug" run="ls -l ~/.dotfiles | awk '$1 ~ /^d.*/ {print $NF}'"
+  arg "<module>" var=#true help="Name of the plug to connect to"
+  complete "module" run="ls -l ~/.dotfiles | awk '$1 ~ /^d.*/ {print $NF}'"
 '''
-run = "./dots plug {{ arg(name='plug') }}"
+wait_for = [
+  "module:regenerate"
+]
+run = "./dots ensure {{ arg(name='module') }}"
 
-[tasks.unplug]
+[tasks."module:regenerate"]
+description = "Regenerate dots state"
+run = [
+  "rm -rf {{ [xdg_state_home, '9dots', '*'] | join_path }}",
+  "./dots regenerate"
+]
+
+[tasks."module:drop"]
 description = "Unmount plug"
+alias = "unplug"
 usage = '''
-  arg "<plug>" help="Name of the plug to disconnect"
-  complete "plug" run="ls -l ~/.dotfiles | awk '$1 ~ /^d.*/ {print $NF}'"
+  arg "<module>" var=#true help="Name of the plug to disconnect"
+  complete "module" run="ls -l ~/.dotfiles | awk '$1 ~ /^d.*/ {print $NF}'"
 '''
-run = "./dots unplug {{ arg(name='plug') }}"
+wait_for = [
+  "module:regenerate"
+]
+run = "./dots drop {{ arg(name='plug') }}"
 
 # ============
 
