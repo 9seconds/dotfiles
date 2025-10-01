@@ -90,6 +90,10 @@ local function choose()
     return
   end
 
+  for _, term in ipairs(terminals) do
+    term.text = term.name
+  end
+
   local snacks_config = {
     title = "Choose terminal",
     items = terminals,
