@@ -161,7 +161,7 @@ local function choose()
     local name = "press_" .. key
 
     snacks_config.actions[name] = make_snacks_action(func)
-    snacks_config.win.input.keys[KEYS:ctrl(key)] = {
+    snacks_config.win.input.keys[KEYS:alt(key)] = {
       name,
       mode = { "n", "i" },
     }
@@ -267,12 +267,14 @@ return {
           local opts = vim.wo[term._state.window]
           opts.winbar = term.name
           opts.list = false
+          opts.number = false
         end,
       })
-      vim.api.nvim_create_autocmd("TermLeave", {
+      vim.api.nvim_create_autocmd({"TermLeave", "WinLeave"}, {
         buffer = term._state.bufnr,
         callback = function()
-          vim.wo[term._state.window].winbar = " " .. term.name
+          local opts = vim.wo[term._state.window]
+          opts.number = true
         end,
       })
     end
