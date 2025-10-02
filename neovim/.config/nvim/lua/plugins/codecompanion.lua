@@ -17,9 +17,9 @@ return {
   },
   keys = {
     {
-      "<leader>aa",
+      "<A-c>",
       "<cmd>CodeCompanionChat Toggle<cr>",
-      mode = { "n", "v" },
+      mode = { "i", "n", "v" },
       desc = "Open Code Companion",
     },
     {
