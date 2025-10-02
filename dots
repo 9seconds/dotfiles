@@ -308,8 +308,7 @@ def get_options() -> argparse.Namespace:
 
 
 def do_regenerate(_: argparse.Namespace) -> None:
-    target_state = reconstruct_target_state()
-    target_state.save()
+    reconstruct_target_state().save()
 
 
 def do_ensure(options: argparse.Namespace) -> None:
@@ -325,7 +324,7 @@ def do_ensure(options: argparse.Namespace) -> None:
 
     to_remove, to_create = target_state.compare_to(source_state)
     for path in to_remove:
-        LOG.info("Removing %s", path)
+        LOG.debug("Removing %s", path)
         try:
             path.unlink()
         except Exception as exc:
@@ -333,7 +332,7 @@ def do_ensure(options: argparse.Namespace) -> None:
             raise
 
     for link in to_create:
-        LOG.info("Creating %s -> %s", link.target, link.source)
+        LOG.debug("Creating %s -> %s", link.target, link.source)
         try:
             link.create()
         except Exception as exc:
@@ -409,6 +408,7 @@ def reconstruct_target_state() -> State:
                 case stat.S_IFLNK if (
                     resolved.is_relative_to(SOURCE) and
                     resolved.parent.is_relative_to(SOURCE) and
+                    resolved.parent != SOURCE and
                     resolved.is_file()
                 ):
                     mod_name = resolved.relative_to(SOURCE).parts[0]
