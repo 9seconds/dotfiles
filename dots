@@ -82,6 +82,9 @@ class Link:
         self.module = module
         self.filestem = filestem
 
+    def __repr__(self) -> str:
+        return f"{self.target} -> {self.source}"
+
     @property
     def source(self) -> pathlib.Path:
         return self.module.source / self.module.name / self.filestem
@@ -139,14 +142,14 @@ class Module:
             to_remove.discard(pathlib.Path(truth.target / stem))
 
         to_create: list[Link] = []
-        for lnk in (Link(self, stem) for stem in self.files):
-            match lnk.check():
-                case Link.LinkError.WRONG_TARGET:
-                    raise ValueError(f"Link {lnk.target} points is incorrect")
-                case Link.LinkError.MISSING_SOURCE:
-                    to_remove.add(lnk.target)
-                case Link.LinkError.MISSING_TARGET:
-                    to_create.append(lnk)
+        for lnk in (Link(self, stem) for stem in truth.files):
+            error = lnk.check()
+            if Link.LinkError.MISSING_TARGET in error:
+                to_create.append(lnk)
+            elif Link.LinkError.MISSING_SOURCE in error:
+                to_remove.add(lnk.target)
+            elif Link.LinkError.WRONG_TARGET in error:
+                raise ValueError(f"Link {lnk.target} points is incorrect")
 
         return to_remove, to_create
 
