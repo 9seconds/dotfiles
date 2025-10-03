@@ -229,9 +229,14 @@ return {
     },
     {
       KEYS:alt("close"),
-      term_close,
-      ft = "Ergoterm",
-      desc = "Close terminal",
+      function()
+        local term = require("ergoterm.terminal").get_last_focused()
+        if term then
+          term:toggle()
+        end
+      end,
+      mode = { "t", "n", "v", "x", "i" },
+      desc = "Toggle last focused terminal",
     },
     {
       KEYS:alt("quit"),
@@ -256,7 +261,6 @@ return {
       set(KEYS:alt("tab"), term_open("tab"))
       set(KEYS:alt("float"), term_open("float"))
       set(KEYS:alt("choose"), choose)
-      set(KEYS:alt("close"), term_close)
       set(KEYS:alt("quit"), term_quit)
       set("<C-h>", "<cmd>wincmd h<cr>")
       set("<C-j>", "<cmd>wincmd j<cr>")
