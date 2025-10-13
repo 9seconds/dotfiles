@@ -31,30 +31,26 @@ import dataclasses
 import enum
 import hashlib
 import hmac
-import json
 import logging
 import os
 import pathlib
 import pickle
 import pprint
-import random
-import shutil
 import stat
 import sys
 import typing as t
 
-if t.TYPE_CHECKING:
-    import io
-
-
 LOG: t.Final[logging.Logger] = logging.getLogger(__name__)
-PATH_STATE_HOME: t.Final[pathlib.Path] = pathlib.Path(os.getenv(
-    "XDG_STATE_HOME",
-    pathlib.Path.home() / ".local" / "state",
-))
-PATH_STATE: t.Final[pathlib.Path] = PATH_STATE_HOME / '9dots'
+PATH_STATE_HOME: t.Final[pathlib.Path] = pathlib.Path(
+    os.getenv(
+        "XDG_STATE_HOME",
+        pathlib.Path.home() / ".local" / "state",
+    ),
+)
+PATH_STATE: t.Final[pathlib.Path] = PATH_STATE_HOME / "9dots"
 
-SOURCE: pathlib.Path = pathlib.Path(__file__).parent.resolve()
+CURRENT_FILE: t.Final[pathlib.Path] = pathlib.Path(__file__)
+SOURCE: pathlib.Path = CURRENT_FILE.parent.resolve()
 TARGET: pathlib.Path = pathlib.Path.home().resolve()
 
 DOTS_SECRET_KEY: t.Final[str] = os.getenv("DOTS_SECRET_KEY", "")
@@ -64,7 +60,7 @@ if not DOTS_SECRET_KEY:
 HASH_KEY: t.Final[bytes] = hashlib.pbkdf2_hmac(
     "sha512",
     DOTS_SECRET_KEY.encode("utf-8"),
-    __file__.encode("utf-8"),
+    os.fspath(CURRENT_FILE.resolve()).encode("utf-8"),
     260_000,
 )
 
@@ -95,9 +91,9 @@ class Link:
 
     def check(self) -> Link.LinkError:
         error = (
-            self.LinkError.MISSING_SOURCE |
-            self.LinkError.MISSING_TARGET |
-            self.LinkError.WRONG_TARGET
+            self.LinkError.MISSING_SOURCE
+            | self.LinkError.MISSING_TARGET
+            | self.LinkError.WRONG_TARGET
         )
 
         if self.source.exists():
@@ -169,14 +165,11 @@ class State:
         to_remove: set[pathlib.Path] = set()
         to_create: list[Link] = []
 
-        for name, mod in truth.modules.items():
-            if name in self.modules:
-                rm, cr = mod.compare_to(mod)
+        for name, target_mod in self.modules.items():
+            if source_mod := truth.modules.get(name):
+                rm, cr = target_mod.compare_to(source_mod)
                 to_remove.update(rm)
                 to_create.extend(cr)
-            else:
-                for stem in mod.files:
-                    to_create.append(Link(mod, stem))
 
         return to_remove, to_create
 
@@ -220,7 +213,6 @@ class State:
 def main() -> None:
     global SOURCE
     global TARGET
-    global REBUILD_CACHE
 
     PATH_STATE.mkdir(parents=True, exist_ok=True)
 
@@ -284,7 +276,7 @@ def get_options() -> argparse.Namespace:
         help="Ensures that module is properly set up",
     )
     ensure_cmd.add_argument(
-        'module',
+        "module",
         nargs=argparse.ONE_OR_MORE,
         help="Module names",
     )
@@ -295,7 +287,7 @@ def get_options() -> argparse.Namespace:
         help="Drop modules",
     )
     drop_cmd.add_argument(
-        'module',
+        "module",
         nargs=argparse.ONE_OR_MORE,
         help="Module names",
     )
@@ -318,8 +310,7 @@ def do_ensure(options: argparse.Namespace) -> None:
     try:
         target_state = State.load()
     except Exception as exc:
-        LOG.debug("Cannot load a cache: %s. Please regenerate", exc)
-        sys.exit(1)
+        raise ValueError("Cannot load a cache") from exc
 
     source_state = State(
         modules={name: scan_module(name) for name in options.module},
@@ -382,9 +373,9 @@ def do_state(_: argparse.Namespace) -> None:
 
 
 def reconstruct_target_state() -> State:
-    futures: collections.deque[
-        concurrent.futures.Future[list[Module]]
-    ] = collections.deque()
+    futures: collections.deque[concurrent.futures.Future[list[Module]]] = (
+        collections.deque()
+    )
     pool = concurrent.futures.ThreadPoolExecutor()
     state = State()
 
@@ -409,10 +400,10 @@ def reconstruct_target_state() -> State:
 
             match stat.S_IFMT(stat_result):
                 case stat.S_IFLNK if (
-                    resolved.is_relative_to(SOURCE) and
-                    resolved.parent.is_relative_to(SOURCE) and
-                    resolved.parent != SOURCE and
-                    resolved.is_file()
+                    resolved.is_relative_to(SOURCE)
+                    and resolved.parent.is_relative_to(SOURCE)
+                    and resolved.parent != SOURCE
+                    and resolved.is_file()
                 ):
                     mod_name = resolved.relative_to(SOURCE).parts[0]
                     LOG.debug(

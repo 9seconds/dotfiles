@@ -7,9 +7,9 @@ GIT_REPO_PATH = "{{ config_root }}"
 [tools]
 "cargo:selene" = "latest"
 "pipx:mypy" = "latest"
-"pipx:isort" = "latest"
 ruff = "latest"
 stylua = "latest"
+python = "latest"
 
 # -----------------------------------------------------------------------------
 
@@ -23,6 +23,7 @@ usage = '''
 wait_for = [
   "module:regenerate"
 ]
+tools.python = "latest"
 run = "./dots ensure {{ arg(name='module') }}"
 
 [tasks."module:regenerate"]
@@ -42,6 +43,7 @@ usage = '''
 wait_for = [
   "module:regenerate"
 ]
+tools.python = "latest"
 run = "./dots drop {{ arg(name='plug') }}"
 
 # ============
@@ -87,73 +89,57 @@ usage = '''
 '''
 run = "selene {{ arg(name='source') }}"
 
-# ============
+
+# -----------------------------------------------------------------------------
+# PYTHON
+# -----------------------------------------------------------------------------
 
 [tasks."python"]
 description = "Run Python routines"
-depends = ["python:*"]
-sources = [
-  "ruff.toml",
-  "dots",
-  "**/*.py"
-]
-run = [
-  "mise tasks run 'python:*' dots",
-  "fd -e py -H -X mise tasks run 'python:*'"
+depends = [
+  "python:*",
 ]
 
 [tasks."python:format"]
 description = "Run all Python formatters"
-sources = [
-  "ruff.toml",
-  "dots",
-  "**/*.py"
-]
-run = [
-  "mise tasks run 'python:format:*' dots",
-  "fd -e py -H -X mise tasks run 'python:format:*'"
+tools.fd = "latest"
+depends = [
+  "python:format:*"
 ]
 
 [tasks."python:lint"]
 description = "Run all Python linters"
-sources = [
-  "ruff.toml",
-  "dots",
-  "**/*.py"
+tools.fd = "latest"
+wait_for = [
+  "python:format:*"
 ]
-run = [
-  "mise tasks run 'python:lint:*' dots",
-  "fd -e py -H -X mise tasks run 'python:lint:*'"
+depends = [
+  "python:lint:*"
 ]
 
 [tasks."python:lint:ruff"]
 description = "Run Ruff (linter)"
-usage = '''
-  arg "<source>" help="Name of the file to lint" var=#true
-  complete "source" run="echo dots; fd -e py -t file -t symlink -H"
-'''
-run = "ruff check {{ arg(name='source') }}"
+tools.ruff = "latest"
+tools.fd = "latest"
+run = [
+  "ruff check dots",
+  "fd -e py -t file -H -X ruff check"
+]
 
 [tasks."python:lint:mypy"]
 description = "Run MyPy"
-usage = '''
-  arg "<source>" help="Name of the file to lint" var=#true
-  complete "source" run="echo dots; fd -e py -t file -t symlink -H"
-'''
-run = "mypy {{ arg(name='source') }}"
+tools."pipx:mypy" = "latest"
+tools.fd = "latest"
+run = [
+  "mypy dots",
+  "fd -e py -t file -H -X mypy"
+]
 
 [tasks."python:format:ruff"]
 description = "Run Ruff (format)"
-usage = '''
-  arg "<source>" help="Name of the file to lint" var=#true
-  complete "source" run="echo dots; fd -e py -H"
-'''
-run = "ruff format {{ arg(name='source') }}"
-
-[tasks."python:format:isort"]
-description = "Run isort"
-usage = '''
-  arg "<source>" help="Name of the file to lint" var=#true
-  complete "source" run="echo dots; fd -e py -t file -t symlink -H"
-'''
-run = "isort --atomic --jobs {{ num_cpus() }} {{ arg(name='source') }}"
+tools.ruff = "latest"
+tools.fd = "latest"
+run = [
+  "ruff format dots",
+  "fd -e py -t file -H -X ruff format"
+]
