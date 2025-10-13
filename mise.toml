@@ -46,32 +46,21 @@ wait_for = [
 tools.python = "latest"
 run = "./dots drop {{ arg(name='plug') }}"
 
-# ============
+# -----------------------------------------------------------------------------
+# LUA
+# -----------------------------------------------------------------------------
 
 [tasks."lua"]
 description = "Run Lua routines"
 depends = ['lua:*']
-sources = [
-  ".stylua.toml",
-  "selene.toml",
-  "**/*.lua"
-]
 
 [tasks."lua:format"]
 description = "Run all Lua formatters"
 depends = ['lua:format:*']
-sources = [
-  "selene.toml",
-  "**/*.lua"
-]
 
 [tasks."lua:lint"]
 description = "Run all Lua linters"
 depends = ['lua:lint:*']
-sources = [
-  ".stylua.toml",
-  "**/*.lua"
-]
 
 [tasks."lua:format:stylua"]
 description = "Run Stylua"
@@ -79,15 +68,12 @@ usage = '''
   arg "<source>" help="Name of the file to process" default="." var=#true
   complete "source" run="fd -e lua -t file -t symlink -H"
 '''
-run = "stylua -a {{ arg(name='source') }}"
+tools.stylua = "latest"
+run = "stylua -a ."
 
 [tasks."lua:lint:selene"]
 description = "Run Selene"
-usage = '''
-  arg "<source>" help="Name of the file to lint" default="." var=#true
-  complete "source" run="fd -e lua -t file -t symlink -H"
-'''
-run = "selene {{ arg(name='source') }}"
+run = "selene ."
 
 
 # -----------------------------------------------------------------------------

@@ -8,7 +8,7 @@ return {
     {
       "<leader>gb",
       "<cmd>BlameToggle virtual<cr>",
-      desc = "Git blame as virtual text"
+      desc = "Git blame as virtual text",
     },
   },
 
