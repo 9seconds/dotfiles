@@ -7,8 +7,8 @@ return {
   keys = {
     {
       "<leader>gb",
-      "<cmd>BlameToggle virtual<cr>",
-      desc = "Git blame as virtual text",
+      "<cmd>BlameToggle window<cr>",
+      desc = "Git blame as window",
     },
   },
 
