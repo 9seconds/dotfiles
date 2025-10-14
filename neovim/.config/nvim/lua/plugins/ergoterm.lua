@@ -187,7 +187,7 @@ local function choose()
     term_quit(term)
     vim.schedule(choose)
   end)
-  snacks_config.confirm = make_open_action("right")
+  snacks_config.confirm = make_snacks_action(make_open_action("right"))
 
   snacks.picker(snacks_config)
 end
