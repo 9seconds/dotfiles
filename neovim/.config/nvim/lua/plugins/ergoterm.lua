@@ -169,6 +169,10 @@ local function choose()
       name,
       mode = { "n", "i" },
     }
+    snacks_config.win.input.keys[KEYS:ctrl(key)] = {
+      name,
+      mode = { "n", "i" },
+    }
   end
 
   add_action("right", make_open_action("right"))
