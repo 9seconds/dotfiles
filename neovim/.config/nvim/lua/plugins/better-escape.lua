@@ -7,5 +7,7 @@ return {
   event = "InsertEnter",
   main = "better_escape",
 
-  opts = {},
+  opts = {
+    default_mappings = false,
+  },
 }
