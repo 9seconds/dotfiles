@@ -1,9 +1,9 @@
 #!/usr/bin/env fish
 
-function shattach -d "attach to shpool session"
+function sha -d "attach to shpool session"
   set name $argv[1]
   if test (count $argv) != 1
-    printf "Usage: shattach <session>\n" 1>&2
+    printf "Usage: sha <session>\n" 1>&2
     exit 1
   end
 
