@@ -6,7 +6,7 @@ local KEYS = {
   quit = "q",
   choose = "o",
 
-  right = "]",
+  right = "v",
   below = "s",
   tab = "t",
   float = "f",
