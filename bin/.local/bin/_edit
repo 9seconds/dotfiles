@@ -1,0 +1,24 @@
+#!/usr/bin/env fish
+# vim: set sw=2 sts=2 ts=2
+
+# Edit the contents of a script with a given name
+
+argparse 'h/help' 'd/debug' -- $argv
+or return 1
+
+if set -q _flag_debug
+  set fish_trace 1
+end
+
+if set -q _flag_help
+  or test (count $argv) -ne 1
+  echo "Usage: $(basename $(status --current-filename)) [-h/--help] ARG"
+  echo
+  echo "Edit script content"
+  echo
+  echo "Options:"
+  echo "  -h, --help    Show this help message and exit"
+  return 0
+end
+
+exec $EDITOR $(type -P $argv[1])
