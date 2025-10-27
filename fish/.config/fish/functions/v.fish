@@ -7,5 +7,5 @@ else
 end
 
 function v -d "vim" -w $editor -V editor
-  type -P $editor $argv
+  $editor $argv
 end

@@ -1,0 +1,95 @@
+#!/usr/bin/env python3
+# ruff: noqa: T201
+
+import argparse
+import urllib.parse
+
+
+def main() -> None:
+    options = get_options()
+
+    nothing_selected = not any(
+        (
+            options.scheme,
+            options.netloc,
+            options.path,
+            options.query,
+            options.fragment,
+            options.params,
+        )
+    )
+
+    if options.scheme or nothing_selected:
+        print(f"scheme:{options.url.scheme}")
+
+    if options.netloc or nothing_selected:
+        print(f"netloc:{options.url.netloc}")
+
+    if options.path or nothing_selected:
+        print(f"path:{options.url.path}")
+
+    if options.query or nothing_selected:
+        for name, value in urllib.parse.parse_qsl(options.url.query):
+            print(f"query:{name}={value}")
+
+    if options.fragment or nothing_selected:
+        print(f"fragment:{options.url.fragment}")
+
+    if options.params or nothing_selected:
+        print(f"params:{options.url.params}")
+
+
+def get_options() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Parse URL",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+
+    parser.add_argument(
+        "-s",
+        "--scheme",
+        action="store_true",
+        help="Display the scheme component of the URL.",
+    )
+    parser.add_argument(
+        "-n",
+        "--netloc",
+        action="store_true",
+        help="Display the network location component of the URL.",
+    )
+    parser.add_argument(
+        "-p",
+        "--path",
+        action="store_true",
+        help="Display the path component of the URL.",
+    )
+    parser.add_argument(
+        "-q",
+        "--query",
+        action="store_true",
+        help="Display the query component of the URL.",
+    )
+    parser.add_argument(
+        "-f",
+        "--fragment",
+        action="store_true",
+        help="Display the fragment component of the URL.",
+    )
+    parser.add_argument(
+        "-r",
+        "--params",
+        action="store_true",
+        help="Display the parameters component of the URL.",
+    )
+
+    parser.add_argument(
+        "url",
+        type=urllib.parse.urlparse,
+        help="The URL to be parsed.",
+    )
+
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    main()
