@@ -9,5 +9,5 @@ if command -q eza
 end
 
 function ll -d 'list files' -w $wraps -V cmd
-  type -P $cmd $argv
+  $cmd $argv
 end
