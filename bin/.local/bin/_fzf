@@ -1,0 +1,27 @@
+#!/usr/bin/env fish
+# vim: set sw=2 sts=2 ts=2
+
+# Great fzf wrapper
+
+set -x COLORTERM truecolor
+
+set -a bind 'ctrl-n:preview-down'
+set -a bind 'ctrl-p:preview-up'
+set -a bind 'ctrl-d:preview-page-down'
+set -a bind 'ctrl-u:preview-page-up'
+set -a bind 'shift-up:half-page-up'
+set -a bind 'shift-down:half-page-down'
+set -a bind 'ctrl-t:change-preview-window(right,50%|hidden)'
+set -a bind 'ctrl-a:select-all'
+
+exec fzf \
+    -0 \
+    --ansi \
+    --height 20 \
+    --no-separator \
+    --info hidden \
+    --no-sort \
+    --with-shell "bash -c" \
+    --bind $(string join , $bind) \
+    --preview-window hidden \
+  $argv
