@@ -1,0 +1,80 @@
+#!/usr/bin/env fish
+# vim: set sw=2 sts=2 ts=2
+
+# Creates a local ssh tunnel to a remote host
+
+set this_script_path $(path resolve $(status --current-filename))
+set this_script_name $(path basename $this_script_path)
+
+function show_help
+  echo "Usage: $this_script_name [-h/--help] [-d/--debug] [-r/--reverse] [-c/--compression] [-p/--port <portno>] [-j/--jumphost] <host> <local_port> [<remote_port>] [remote_host]"
+  echo
+  echo 'Create local or remote SSH tunnel.'
+  echo
+  echo 'Options:'
+  echo '  -h, --help        Show this help message and exit'
+  echo '  -d, --debug       Run script in debug mode'
+  echo '  -r, --reverse     Run tunnel in reverse mode'
+  echo '  -c, --compression Compress traffic'
+  echo '  -p, --port        SSH port to connect to'
+  echo '  -j, --jumphost    Connect via jumphost'
+end
+
+argparse --min-args=2 --max-args=4 'h/help&' 'd/debug&' 'r/reverse&' 'c/compression&' 'j/jumphost=&' 'p/port=&!_validate_int --min 1 --max 65536' -- $argv
+or begin
+  show_help
+  return 1
+end
+
+if set -q _flag_debug
+  set fish_trace 1
+end
+
+if set -q _flag_help
+  show_help
+  return 0
+end
+
+set ssh_host $argv[1]
+set local_port $argv[2]
+set remote_host localhost
+
+switch (count $argv)
+  case 2  # _sshtun dev 5921
+    set remote_port $local_port
+  case 3  # _sshtun dev 5921 5921
+    set remote_port $argv[3]
+  case 4  # _sshtun dev 5921 5921 hostname
+    set remote_port $argv[3]
+    set remote_host $argv[4]
+end
+
+if string match -q '*:*' -- $remote_host
+  set remote_host "[$remote_host]"
+end
+
+set flags    $(type -P ssh) -NT
+set -a flags -o StrictHostKeyChecking=no
+set -a flags -o UserKnownHostsFile=/dev/null
+
+if set -q _flag_compression
+  set -a flags -C
+end
+
+if set -q _flag_port
+  set -a flags -p $_flag_port
+else
+  set -a flags -p 22
+end
+
+if set -q _flag_jumphost
+  set -a flags -J $_flag_jumphost
+end
+
+if set -q _flag_reverse
+  set -a flags -R {$remote_host}:{$remote_port}:{$local_port}
+else
+  set -a flags -L {$local_port}:{$remote_host}:{$remote_port}
+end
+
+exec $flags $ssh_host
