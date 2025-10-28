@@ -6,7 +6,7 @@ function __n -d 'Run a command and notify about elapsed time'
   set start (date +%s)
   echo
   commandline -r ''
-  eval $cmd
+  time eval $cmd
   commandline -f repaint
   set end (date +%s)
   set elapsed (math $end - $start)
