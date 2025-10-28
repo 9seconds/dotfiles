@@ -15,7 +15,7 @@ end
 
 if set -q _flag_help
   or test (count $argv) -ne 1
-  echo "Usage: $(basename $this_script_path) [-h/--help] ARG"
+  echo "Usage: $(basename $this_script_path) [-h/--help] [-d/--debug] ARG"
   echo
   echo "New great script"
   echo

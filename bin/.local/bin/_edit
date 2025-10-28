@@ -12,7 +12,7 @@ end
 
 if set -q _flag_help
   or test (count $argv) -ne 1
-  echo "Usage: $(basename $(status --current-filename)) [-h/--help] ARG"
+  echo "Usage: $(basename $(status --current-filename)) [-h/--help] [-d/--debug] ARG"
   echo
   echo "Edit script content"
   echo
