@@ -29,7 +29,6 @@ end
 if set -q _flag_debug
   set fish_trace 1
 end
-
 if set -q _flag_help
   show_help
   return 0
