@@ -6,7 +6,7 @@
 set this_script_path $(path resolve $(status --current-filename))
 set this_script_name $(path basename $this_script_path)
 
-argparse 'h/help' 'd/debug' -- $argv
+argparse 'h/help&' 'd/debug&' -- $argv
 or return 1
 
 if set -q _flag_debug

@@ -3,7 +3,7 @@
 
 # Edit the contents of a script with a given name
 
-argparse 'h/help' 'd/debug' -- $argv
+argparse 'h/help&' 'd/debug&' -- $argv
 or return 1
 
 if set -q _flag_debug
