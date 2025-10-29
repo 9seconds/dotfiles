@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import contextlib
+import errno
 import gzip
 import hashlib
 import logging
@@ -110,7 +111,11 @@ def run_command(cmd: list[str], cache_filepath: pathlib.Path) -> None:
             )
         )
         if os.isatty(sys.stdin.fileno()):
-            os.tcsetpgrp(sys.stdin.fileno(), os.getpgid(proc.pid))
+            try:
+                os.tcsetpgrp(sys.stdin.fileno(), os.getpgid(proc.pid))
+            except OSError as exc:
+                if exc.errno != errno.ENOTTY:
+                    raise
 
         last_pass = False
         while True:
