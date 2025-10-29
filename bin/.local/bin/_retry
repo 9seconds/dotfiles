@@ -1,0 +1,196 @@
+#!/usr/bin/env python3
+# ruff: noqa: PLW1509, S603, S311
+
+from __future__ import annotations
+
+import argparse
+import logging
+import os
+import random
+import re
+import shutil
+import signal
+import subprocess
+import sys
+import time
+import typing as t
+
+LOG: t.Final[logging.Logger] = logging.getLogger(__name__)
+TMP_FILE_SIZE: t.Final[int] = 10 * 1024 * 1024  # 10 MB
+
+
+def main() -> None:
+    options = get_options()
+
+    logging.basicConfig(
+        level=logging.DEBUG if options.debug else logging.INFO,
+        format=">>> %(message)s",
+    )
+    LOG.debug("Options %s", options)
+
+    if not options.command:
+        sys.exit("No command specified")
+
+    cmd_str = shutil.which(options.command[0])
+    if not cmd_str:
+        sys.exit(f"Command not found: {options.command[0]}")
+    options.command[0] = cmd_str
+
+    try:
+        sys.exit(execute(options))
+    except KeyboardInterrupt:
+        sys.exit(1)
+
+
+def execute(options: argparse.Namespace) -> int:
+    def exit_code_matcher(code: int) -> bool:
+        match_found = any(
+            start <= code <= end for start, end in options.exit_codes
+        )
+        return not match_found if options.inverse else match_found
+
+    sleep_time = options.base
+    exit_code = run(options.command)
+
+    while not exit_code_matcher(exit_code):
+        # https://aws.amazon.com/ru/blogs/architecture/exponential-backoff-and-jitter/
+        sleep_time = min(
+            options.cap, random.uniform(options.base, sleep_time * 3)
+        )
+        LOG.debug("Retry (sleep %f)", sleep_time)
+        time.sleep(sleep_time)
+
+        exit_code = run(options.command)
+
+    return exit_code
+
+
+def run(cmd: list[str]) -> int:
+    LOG.debug("Running command: %s", cmd)
+
+    with subprocess.Popen(cmd, preexec_fn=os.setpgrp) as proc:
+        old_handlers = {}
+
+        def new_signal_handler(signum: int, _: t.Any) -> None:  # noqa: ANN401
+            os.killpg(os.getpgid(proc.pid), signum)
+
+        for sig in signal.Signals:
+            if sig not in (signal.SIGKILL, signal.SIGSTOP, signal.SIGCHLD):
+                old_handlers[sig] = signal.getsignal(sig)
+                signal.signal(sig, new_signal_handler)
+
+        try:
+            proc.wait()
+        finally:
+            for sig, handler in old_handlers.items():
+                signal.signal(sig, handler)
+
+    return proc.returncode
+
+
+def get_options() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Retry with decorrelated jitter",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+
+    parser.add_argument(
+        "-d",
+        "--debug",
+        action="store_true",
+        default=False,
+        help="Run in debug mode.",
+    )
+    parser.add_argument(
+        "-e",
+        "--exit-codes",
+        type=type_exit_codes,
+        default="0",
+        help=(
+            "Range of exit codes that are considered successful. "
+            "Example 1-10,25,-10,20-"
+        ),
+    )
+    parser.add_argument(
+        "-i",
+        "--inverse",
+        action="store_true",
+        default=False,
+        help="Inverse repeat logic (retry on success codes).",
+    )
+
+    parser.add_argument(
+        "base", type=type_duration, help="Base sleep time between attempts"
+    )
+    parser.add_argument(
+        "cap", type=type_duration, help="Max time between attempts"
+    )
+    parser.add_argument(
+        "command", nargs=argparse.REMAINDER, help="Command to run."
+    )
+
+    return parser.parse_args()
+
+
+def type_duration(value: str) -> int:
+    matcher = re.fullmatch(
+        r"""
+        (?:(?P<days>[1-9]\d*)d)?      # days
+        (?:(?P<hours>[1-9]\d*)h)?     # hours
+        (?:(?P<minutes>[1-9]\d*)m)?   # minutes
+        (?:(?P<seconds>[1-9]\d*)s?)?  # seconds
+    """,
+        value,
+        re.VERBOSE | re.IGNORECASE,
+    )
+    if not matcher:
+        raise argparse.ArgumentTypeError(f"Invalid duration format: '{value}'")
+
+    data = matcher.groupdict()
+    days = int(data.get("days") or 0)
+    hours = int(data.get("hours") or 0)
+    minutes = int(data.get("minutes") or 0)
+    seconds = int(data.get("seconds") or 0)
+
+    return days * 86400 + hours * 3600 + minutes * 60 + seconds
+
+
+def type_exit_codes(value: str) -> list[tuple[int, int]]:  # noqa: C901
+    codes: list[tuple[int, int]] = []
+
+    def add_code(start: int, finish: int) -> None:
+        if start < 0 or start > 255:  # noqa: PLR2004
+            raise argparse.ArgumentTypeError(f"Invalid exit code: '{start}'")
+        if finish < 0 or finish > 255:  # noqa: PLR2004
+            raise argparse.ArgumentTypeError(f"Invalid exit code: '{finish}'")
+        codes.append((start, finish))
+
+    for part in (p.strip() for p in value.split(",")):
+        if part.isdigit():
+            parsed = int(part)
+            add_code(parsed, parsed)
+            continue
+
+        matcher = re.fullmatch(r"(?P<start>\d+)?-(?P<end>\d+)?", part)
+        if not matcher:
+            raise argparse.ArgumentTypeError(
+                f"Invalid exit code or range: '{part}'"
+            )
+
+        match {k: int(v) for k, v in matcher.groupdict(0).items()}:
+            case {"start": 0, "end": 0}:
+                raise argparse.ArgumentTypeError(
+                    f"Invalid exit code range: '{part}'"
+                )
+            case {"start": start, "end": 0}:
+                add_code(start, 255)
+            case {"start": 0, "end": end}:
+                add_code(0, end)
+            case {"start": start, "end": end}:
+                add_code(min(start, end), max(start, end))
+
+    return codes
+
+
+if __name__ == "__main__":
+    main()
