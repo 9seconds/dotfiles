@@ -1,0 +1,7 @@
+#!/usr/bin/env fish
+
+if type -q kitten
+  exec kitten clipboard -g
+else
+  fish_clipboard_paste
+end
