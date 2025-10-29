@@ -9,12 +9,10 @@ import errno
 import logging
 import os
 import re
-import select
 import shutil
 import signal
 import subprocess
 import sys
-import threading
 import typing as t
 
 LOG: t.Final[logging.Logger] = logging.getLogger(__name__)
@@ -42,105 +40,42 @@ def main() -> None:
 
 
 def run_proc(options: argparse.Namespace) -> int:
-    with contextlib.ExitStack() as stack:
-        master_fd, slave_fd = os.openpty()
-        stack.callback(os.close, master_fd)
-        stack.callback(os.close, slave_fd)
+    with subprocess.Popen(options.command, preexec_fn=os.setpgrp) as proc:
+        try:
+            os.tcsetpgrp(sys.stdin.fileno(), os.getpgid(proc.pid))
+        except OSError as exc:
+            if exc.errno != errno.ENOTTY:
+                raise
 
-        proc = stack.enter_context(
-            subprocess.Popen(
-                options.command,
-                stdin=slave_fd,
-                preexec_fn=os.setpgrp,
-            )
+        LOG.debug("Wait to the process to clearly complete")
+        with contextlib.suppress(subprocess.TimeoutExpired):
+            return proc.wait(timeout=options.duration)
+
+        LOG.debug("Timeout. Sent %s", options.grace_signal.name)
+        with contextlib.suppress(ProcessLookupError):
+            os.kill(proc.pid, options.grace_signal)
+
+        with contextlib.suppress(subprocess.TimeoutExpired):
+            return proc.wait(timeout=options.grace_period)
+
+        LOG.debug(
+            "Timeout. Send %s to a process leader %d",
+            options.grace_signal.name,
+            os.getpgid(proc.pid),
         )
-        if os.isatty(sys.stdin.fileno()):
-            try:
-                os.tcsetpgrp(sys.stdin.fileno(), os.getpgid(proc.pid))
-            except OSError as exc:
-                if exc.errno != errno.ENOTTY:
-                    raise
+        with contextlib.suppress(ProcessLookupError):
+            os.killpg(os.getpgid(proc.pid), options.grace_signal)
 
-        evt = threading.Event()
+        with contextlib.suppress(subprocess.TimeoutExpired):
+            return proc.wait(timeout=options.grace_period)
 
-        th = threading.Thread(
-            target=proc_monitor,
-            args=(proc, options, evt),
-            daemon=True,
+        LOG.debug(
+            "Timeout. Send SIGKILL to a process leader %d", os.getpgid(proc.pid)
         )
-        th.start()
+        with contextlib.suppress(ProcessLookupError):
+            os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
 
-        while not evt.wait(0.05):
-            rd, wr, _ = select.select([sys.stdin], [master_fd], [], 0.05)
-            if rd and wr:
-                os.write(master_fd, os.read(sys.stdin.fileno(), BUF_SIZE))
-
-        th.join()
-
-        return proc.returncode
-
-
-def proc_monitor(  # noqa: C901
-    proc: subprocess.Popen[t.AnyStr],
-    options: argparse.Namespace,
-    evt: threading.Event,
-) -> None:
-    LOG.debug("Wait to the process to clearly complete")
-    try:
-        proc.wait(timeout=options.duration)
-    except subprocess.TimeoutExpired:
-        pass
-    else:
-        return evt.set()
-
-    LOG.debug("Timeout. Sent %s", options.grace_signal.name)
-    try:
-        os.kill(proc.pid, options.grace_signal)
-    except ProcessLookupError:
-        LOG.debug("Process already terminated.")
-    else:
-        return evt.set()
-
-    try:
-        proc.wait(timeout=options.grace_period)
-    except subprocess.TimeoutExpired:
-        pass
-    else:
-        return evt.set()
-
-    LOG.debug(
-        "Timeout. Send %s to a process leader %d",
-        options.grace_signal.name,
-        os.getpgid(proc.pid)
-    )
-    try:
-        os.killpg(os.getpgid(proc.pid), options.grace_signal)
-    except ProcessLookupError:
-        LOG.debug("Process already terminated.")
-
-    try:
-        proc.wait(timeout=options.grace_period)
-    except subprocess.TimeoutExpired:
-        pass
-    else:
-        return evt.set()
-
-    LOG.debug(
-        "Timeout. Send SIGKILL to a process leader %d",
-        os.getpgid(proc.pid)
-    )
-    try:
-        os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
-    except ProcessLookupError:
-        LOG.debug("Process already terminated.")
-
-    try:
-        proc.wait()
-    except Exception as exc:
-        LOG.debug("Exception during final wait: %s", exc)
-        raise
-
-    return evt.set()
+        return proc.wait()
 
 
 def get_options() -> argparse.Namespace:

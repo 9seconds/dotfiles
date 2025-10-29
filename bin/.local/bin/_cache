@@ -11,17 +11,12 @@ import hashlib
 import logging
 import os
 import pathlib
-import pty
-import selectors
+import select
 import shlex
 import shutil
 import subprocess
 import sys
 import typing as t
-
-if t.TYPE_CHECKING:
-    import io
-
 
 LOG: t.Final[logging.Logger] = logging.getLogger(__name__)
 
@@ -32,11 +27,11 @@ PATH_STATE_HOME: t.Final[pathlib.Path] = pathlib.Path(
 )
 PATH_STATE: t.Final[pathlib.Path] = PATH_STATE_HOME / "_cache"
 
-BUF_SIZE: t.Final[int] = 16384
+BUF_SIZE: t.Final[int] = 4096
 
-CACHE_RECORD_STDOUT: t.Final[bytes] = b"\x01"
-CACHE_RECORD_STDERR: t.Final[bytes] = b"\x02"
-CACHE_RECORD_SIZE: t.Final[bytes] = b"\x03"
+RECORD_TYPE_STDOUT: t.Final[bytes] = b"\x01"
+RECORD_TYPE_STDERR: t.Final[bytes] = b"\x02"
+RECORD_TYPE_SIZE: t.Final[bytes] = b"\x03"
 
 
 def main() -> None:
@@ -73,73 +68,57 @@ def run_command(cmd: list[str], cache_filepath: pathlib.Path) -> None:
     LOG.debug("Running command: %s", shlex.join(cmd))
 
     with contextlib.ExitStack() as stack:
-        master_fd, slave_fd = pty.openpty()
-        stack.callback(os.close, slave_fd)
-        stack.callback(os.close, master_fd)
-
-        selector = selectors.DefaultSelector()
-        stack.callback(selector.close)
-
         stdout_r, stdout_w = os.pipe()
-        stack.callback(os.close, stdout_w)
-
         stderr_r, stderr_w = os.pipe()
-        stack.callback(os.close, stderr_w)
 
         cache_raw_fp = stack.enter_context(cache_filepath.open("wb"))
         cache_fp = gzip.GzipFile(fileobj=cache_raw_fp, mode="wb")
         stack.callback(cache_fp.close)
 
-        stdout_fileobj = os.fdopen(stdout_r, "rb")
-        selector.register(stdout_fileobj, selectors.EVENT_READ)
-        stack.callback(selector.unregister, stdout_fileobj)
-
-        stderr_fileobj = os.fdopen(stderr_r, "rb")
-        selector.register(stderr_fileobj, selectors.EVENT_READ)
-        stack.callback(selector.unregister, stderr_fileobj)
-
-        selector.register(sys.stdin, selectors.EVENT_READ)
-        stack.callback(selector.unregister, sys.stdin)
-
         proc = stack.enter_context(
             subprocess.Popen(
                 cmd,
-                stdin=slave_fd,
                 stdout=stdout_w,
                 stderr=stderr_w,
                 preexec_fn=os.setpgrp,
             )
         )
-        if os.isatty(sys.stdin.fileno()):
-            try:
-                os.tcsetpgrp(sys.stdin.fileno(), os.getpgid(proc.pid))
-            except OSError as exc:
-                if exc.errno != errno.ENOTTY:
-                    raise
 
-        last_pass = False
-        while True:
-            for key, _ in selector.select(0.05):
-                last_pass = False
-                data = os.read(key.fd, BUF_SIZE)
+        os.close(stdout_w)
+        os.close(stderr_w)
 
-                if key.fileobj == sys.stdin:
-                    os.write(master_fd, data)
-                if key.fd == stdout_r:
-                    write_cache_record(cache_fp, CACHE_RECORD_STDOUT, data)
-                elif key.fd == stderr_r:
-                    write_cache_record(cache_fp, CACHE_RECORD_STDERR, data)
+        try:
+            os.tcsetpgrp(sys.stdin.fileno(), os.getpgid(proc.pid))
+        except OSError as exc:
+            if exc.errno != errno.ENOTTY:
+                raise
 
-            if last_pass:
-                break
-            last_pass = proc.poll() is not None
+        reading = True
+        while reading:
+            reading = proc.poll() is None
+
+            rlist, wlist, _ = select.select(
+                [stdout_r, stderr_r],
+                [cache_fp],
+                [],
+                0.01,
+            )
+            if not (wlist and rlist):
+                continue
+
+            for fileno in rlist:
+                data = os.read(fileno, BUF_SIZE)
+                cache_fp.write(
+                    RECORD_TYPE_STDOUT if fileno == stdout_r
+                    else RECORD_TYPE_STDERR
+                )
+                cache_fp.write(len(data).to_bytes(2, "little"))
+                cache_fp.write(data)
 
         LOG.debug("Process exited with code: %d", proc.returncode)
 
-        cache_fp.write(CACHE_RECORD_SIZE)
-        cache_fp.write(
-            proc.returncode.to_bytes(2, signed=True, byteorder="little")
-        )
+        cache_fp.write(RECORD_TYPE_SIZE)
+        cache_fp.write(proc.returncode.to_bytes(2, "little", signed=True))
 
 
 def read_cache(cache_filepath: pathlib.Path) -> int:
@@ -148,36 +127,20 @@ def read_cache(cache_filepath: pathlib.Path) -> int:
     with contextlib.ExitStack() as stack:
         cache_fp = stack.enter_context(gzip.open(cache_filepath, "rb"))
 
-        while True:
-            record_type = cache_fp.read(1)
-            if record_type == CACHE_RECORD_STDOUT:
-                size_bytes = cache_fp.read(2)
-                size = int.from_bytes(
-                    size_bytes, signed=False, byteorder="little"
-                )
-                os.write(sys.stdout.fileno(), cache_fp.read(size))
-            elif record_type == CACHE_RECORD_STDERR:
-                size_bytes = cache_fp.read(2)
-                size = int.from_bytes(
-                    size_bytes, signed=False, byteorder="little"
-                )
-                os.write(sys.stderr.fileno(), cache_fp.read(size))
-            elif record_type == CACHE_RECORD_SIZE:
+        while record_type := cache_fp.read(1):
+            if record_type == RECORD_TYPE_SIZE:
                 return int.from_bytes(
                     cache_fp.read(2), signed=True, byteorder="little"
                 )
 
+            obj = sys.stdout
+            if record_type == RECORD_TYPE_STDERR:
+                obj = sys.stderr
+
+            size = int.from_bytes(cache_fp.read(2), "little")
+            os.write(obj.fileno(), cache_fp.read(size))
+
     return 0
-
-
-def write_cache_record(
-    cache_fp: io.IOBase, record_type: bytes, data: bytes
-) -> None:
-    LOG.debug("Writing cache record: %s (%d bytes)", record_type, len(data))
-
-    cache_fp.write(record_type)
-    cache_fp.write(len(data).to_bytes(2, signed=False, byteorder="little"))
-    cache_fp.write(data)
 
 
 def get_options() -> argparse.Namespace:
