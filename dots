@@ -44,10 +44,10 @@ LOG: t.Final[logging.Logger] = logging.getLogger(__name__)
 PATH_STATE_HOME: t.Final[pathlib.Path] = pathlib.Path(
     os.getenv(
         "XDG_STATE_HOME",
-        pathlib.Path.home() / ".local" / "state",
+        pathlib.Path.home() / ".local" / "state" / "9seconds"
     ),
 )
-PATH_STATE: t.Final[pathlib.Path] = PATH_STATE_HOME / "9dots"
+PATH_STATE: t.Final[pathlib.Path] = PATH_STATE_HOME / "dots"
 
 CURRENT_FILE: t.Final[pathlib.Path] = pathlib.Path(__file__)
 SOURCE: pathlib.Path = CURRENT_FILE.parent.resolve()

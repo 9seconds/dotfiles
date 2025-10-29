@@ -1,0 +1,209 @@
+#!/usr/bin/env python3
+# ruff: noqa: S603, PLW1509
+
+from __future__ import annotations
+
+import argparse
+import contextlib
+import gzip
+import hashlib
+import logging
+import os
+import pathlib
+import pty
+import selectors
+import shlex
+import shutil
+import subprocess
+import sys
+import typing as t
+
+if t.TYPE_CHECKING:
+    import io
+
+
+LOG: t.Final[logging.Logger] = logging.getLogger(__name__)
+
+PATH_STATE_HOME: t.Final[pathlib.Path] = pathlib.Path(
+    os.getenv(
+        "XDG_STATE_HOME", pathlib.Path.home() / ".local" / "state" / "9seconds"
+    ),
+)
+PATH_STATE: t.Final[pathlib.Path] = PATH_STATE_HOME / "_cache"
+
+BUF_SIZE: t.Final[int] = 16384
+
+CACHE_RECORD_STDOUT: t.Final[bytes] = b"\x01"
+CACHE_RECORD_STDERR: t.Final[bytes] = b"\x02"
+CACHE_RECORD_SIZE: t.Final[bytes] = b"\x03"
+
+
+def main() -> None:
+    options = get_options()
+    PATH_STATE.mkdir(parents=True, exist_ok=True)
+
+    logging.basicConfig(
+        level=logging.DEBUG if options.debug else logging.INFO,
+        format=">>> %(message)s",
+    )
+    LOG.debug("Options: %s", options)
+
+    if not options.command:
+        sys.exit("No command specified")
+
+    cmd_str = shutil.which(options.command[0])
+    if not cmd_str:
+        sys.exit(f"Command not found: {options.command[0]}")
+    options.command[0] = cmd_str
+
+    digest = hashlib.sha256(usedforsecurity=False)
+    for chunk in options.command:
+        digest.update(chunk.encode("utf-8"))
+        digest.update(b"\0")
+
+    cache_filepath = PATH_STATE / digest.hexdigest()
+    if options.ignore_cache or not cache_filepath.exists():
+        run_command(options.command, cache_filepath)
+
+    sys.exit(read_cache(cache_filepath))
+
+
+def run_command(cmd: list[str], cache_filepath: pathlib.Path) -> None:
+    LOG.debug("Running command: %s", shlex.join(cmd))
+
+    with contextlib.ExitStack() as stack:
+        master_fd, slave_fd = pty.openpty()
+        stack.callback(os.close, slave_fd)
+        stack.callback(os.close, master_fd)
+
+        selector = selectors.DefaultSelector()
+        stack.callback(selector.close)
+
+        stdout_r, stdout_w = os.pipe()
+        stack.callback(os.close, stdout_w)
+
+        stderr_r, stderr_w = os.pipe()
+        stack.callback(os.close, stderr_w)
+
+        cache_raw_fp = stack.enter_context(cache_filepath.open("wb"))
+        cache_fp = gzip.GzipFile(fileobj=cache_raw_fp, mode="wb")
+        stack.callback(cache_fp.close)
+
+        stdout_fileobj = os.fdopen(stdout_r, "rb")
+        selector.register(stdout_fileobj, selectors.EVENT_READ)
+        stack.callback(selector.unregister, stdout_fileobj)
+
+        stderr_fileobj = os.fdopen(stderr_r, "rb")
+        selector.register(stderr_fileobj, selectors.EVENT_READ)
+        stack.callback(selector.unregister, stderr_fileobj)
+
+        selector.register(sys.stdin, selectors.EVENT_READ)
+        stack.callback(selector.unregister, sys.stdin)
+
+        proc = stack.enter_context(
+            subprocess.Popen(
+                cmd,
+                stdin=slave_fd,
+                stdout=stdout_w,
+                stderr=stderr_w,
+                preexec_fn=os.setpgrp,
+            )
+        )
+        if os.isatty(sys.stdin.fileno()):
+            os.tcsetpgrp(sys.stdin.fileno(), os.getpgid(proc.pid))
+
+        last_pass = False
+        while True:
+            for key, _ in selector.select(0.05):
+                last_pass = False
+                data = os.read(key.fd, BUF_SIZE)
+
+                if key.fileobj == sys.stdin:
+                    os.write(master_fd, data)
+                if key.fd == stdout_r:
+                    write_cache_record(cache_fp, CACHE_RECORD_STDOUT, data)
+                elif key.fd == stderr_r:
+                    write_cache_record(cache_fp, CACHE_RECORD_STDERR, data)
+
+            if last_pass:
+                break
+            last_pass = proc.poll() is not None
+
+        LOG.debug("Process exited with code: %d", proc.returncode)
+
+        cache_fp.write(CACHE_RECORD_SIZE)
+        cache_fp.write(
+            proc.returncode.to_bytes(2, signed=True, byteorder="little")
+        )
+
+
+def read_cache(cache_filepath: pathlib.Path) -> int:
+    LOG.debug("Reading cache from: %s", str(cache_filepath))
+
+    with contextlib.ExitStack() as stack:
+        cache_fp = stack.enter_context(gzip.open(cache_filepath, "rb"))
+
+        while True:
+            record_type = cache_fp.read(1)
+            if record_type == CACHE_RECORD_STDOUT:
+                size_bytes = cache_fp.read(2)
+                size = int.from_bytes(
+                    size_bytes, signed=False, byteorder="little"
+                )
+                os.write(sys.stdout.fileno(), cache_fp.read(size))
+            elif record_type == CACHE_RECORD_STDERR:
+                size_bytes = cache_fp.read(2)
+                size = int.from_bytes(
+                    size_bytes, signed=False, byteorder="little"
+                )
+                os.write(sys.stderr.fileno(), cache_fp.read(size))
+            elif record_type == CACHE_RECORD_SIZE:
+                return int.from_bytes(
+                    cache_fp.read(2), signed=True, byteorder="little"
+                )
+
+    return 0
+
+
+def write_cache_record(
+    cache_fp: io.IOBase, record_type: bytes, data: bytes
+) -> None:
+    LOG.debug("Writing cache record: %s (%d bytes)", record_type, len(data))
+
+    cache_fp.write(record_type)
+    cache_fp.write(len(data).to_bytes(2, signed=False, byteorder="little"))
+    cache_fp.write(data)
+
+
+def get_options() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Cache result of a function execution",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+
+    parser.add_argument(
+        "-d",
+        "--debug",
+        action="store_true",
+        default=False,
+        help="Run in debug mode",
+    )
+    parser.add_argument(
+        "-n",
+        "--ignore-cache",
+        action="store_true",
+        default=False,
+        help="Ignore the cache and force re-execution",
+    )
+
+    parser.add_argument(
+        "command",
+        nargs=argparse.REMAINDER,
+        help="The command to execute",
+    )
+
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    main()
