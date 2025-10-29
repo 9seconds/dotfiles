@@ -1,0 +1,153 @@
+#!/usr/bin/env python3
+# ruff: noqa: PLW1509, S603, LOG015
+
+import argparse
+import logging
+import os
+import re
+import shutil
+import signal
+import subprocess
+import sys
+
+
+def main() -> None:
+    options = get_options()
+
+    logging.basicConfig(
+        level=logging.DEBUG if options.debug else logging.INFO,
+        format=">>> %(message)s",
+    )
+
+    if not options.command:
+        sys.exit("No command specified")
+
+    cmd_str = shutil.which(options.command[0])
+    if not cmd_str:
+        sys.exit(f"Command not found: {options.command[0]}")
+    options.command[0] = cmd_str
+
+    sys.exit(run_proc(options) or 0)
+
+
+def run_proc(options: argparse.Namespace) -> int:  # noqa: C901
+    with subprocess.Popen(options.command, preexec_fn=os.setpgrp) as proc:
+        if os.isatty(sys.stdin.fileno()):
+            os.tcsetpgrp(sys.stdin.fileno(), proc.pid)
+
+        try:
+            proc.wait(timeout=options.duration)
+        except subprocess.TimeoutExpired:
+            pass
+        else:
+            return proc.returncode
+
+        try:
+            os.kill(proc.pid, options.grace_signal)
+        except ProcessLookupError:
+            logging.debug("Process already terminated.")
+
+        try:
+            proc.wait(timeout=options.grace_period)
+        except subprocess.TimeoutExpired:
+            pass
+        else:
+            return proc.returncode
+
+        try:
+            os.killpg(os.getpgid(proc.pid), options.grace_signal)
+        except ProcessLookupError:
+            logging.debug("Process already terminated.")
+        try:
+            proc.wait(timeout=options.grace_period)
+        except subprocess.TimeoutExpired:
+            pass
+        else:
+            return proc.returncode
+
+        try:
+            os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
+        except ProcessLookupError:
+            logging.debug("Process already terminated.")
+
+        try:
+            proc.wait()
+        except Exception as exc:
+            logging.debug("Exception during final wait: %s", exc)
+
+        return proc.returncode
+
+
+def get_options() -> argparse.Namespace:
+    def type_duration(value: str) -> int:
+        matcher = re.fullmatch(
+            r"""
+            (?:(?P<days>[1-9]\d*)d)?      # days
+            (?:(?P<hours>[1-9]\d*)h)?     # hours
+            (?:(?P<minutes>[1-9]\d*)m)?   # minutes
+            (?:(?P<seconds>[1-9]\d*)s?)?  # seconds
+        """,
+            value,
+            re.VERBOSE | re.IGNORECASE,
+        )
+        if not matcher:
+            raise argparse.ArgumentTypeError(
+                f"Invalid duration format: '{value}'"
+            )
+
+        data = matcher.groupdict()
+        days = int(data.get("days") or 0)
+        hours = int(data.get("hours") or 0)
+        minutes = int(data.get("minutes") or 0)
+        seconds = int(data.get("seconds") or 0)
+
+        return days * 86400 + hours * 3600 + minutes * 60 + seconds
+
+    def type_signal(value: str) -> signal.Signals:
+        if value.isdigit():
+            return signal.Signals(int(value))
+
+        if not value.startswith("SIG"):
+            value = f"SIG{value}"
+
+        return signal.Signals[value]
+
+    parser = argparse.ArgumentParser(
+        description="Better timeout with graceful termination",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+
+    parser.add_argument(
+        "-d",
+        "--debug",
+        action="store_true",
+        default=False,
+        help="Run in debug mode.",
+    )
+    parser.add_argument(
+        "-g",
+        "--grace-period",
+        type=type_duration,
+        default="3s",
+        help="Time to wait after sending SIGTERM before sending SIGKILL.",
+    )
+    parser.add_argument(
+        "-s",
+        "--grace-signal",
+        type=type_signal,
+        default="SIGTERM",
+        help="Signal to send for graceful termination.",
+    )
+
+    parser.add_argument(
+        "duration", type=type_duration, help="Time limit in seconds."
+    )
+    parser.add_argument(
+        "command", nargs=argparse.REMAINDER, help="Command to run."
+    )
+
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    main()
