@@ -51,14 +51,6 @@ return {
             end,
           },
 
-          variables = {
-            ["buffer"] = {
-              opts = {
-                default_params = "pin",
-              },
-            },
-          },
-
           tools = {
             opts = {
               default_tools = {
