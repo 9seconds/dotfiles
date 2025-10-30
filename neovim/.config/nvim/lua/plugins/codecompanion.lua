@@ -59,6 +59,14 @@ return {
               },
             },
           },
+
+          variables = {
+            buffer = {
+              opts = {
+                default_params = "watch",
+              },
+            },
+          },
         },
       },
 
