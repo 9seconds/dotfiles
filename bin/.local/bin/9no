@@ -7,7 +7,7 @@ set this_script_path $(path resolve $(status --current-filename))
 set this_script_name $(path basename $this_script_path)
 
 function show_help
-  echo "Usage: $this_script_name [-h/--help] [-d/--debug] [-c/--critical] [-a/--app] title body..."
+  echo "Usage: $this_script_name [-h/--help] [-d/--debug] [-c/--critical] title body..."
   echo
   echo 'Notify that command is done.'
   echo
@@ -15,10 +15,9 @@ function show_help
   echo '  -h, --help      Show this help message and exit'
   echo '  -d, --debug     Run in debug mode'
   echo '  -c, --critical  Execute with critical priority'
-  echo '  -a, --app       Called from a script'
 end
 
-argparse --min-args=2 'h/help&' 'd/debug&' 'c/critical&' 'a/app&' -- $argv
+argparse --min-args=2 'h/help&' 'd/debug&' 'c/critical&' -- $argv
 or begin
   show_help
   return 1
@@ -42,13 +41,7 @@ if set -q _flag_critical
   set -a flags --urgency critical
 end
 
-set title $argv[1]
-set body $(string join -- ' ' $(string escape -- $argv[2..]))
-
-if set -q _flag_app
-  set tmp $body
-  set body $title
-  set title $tmp
-end
-
-exec kitten notify $flags $title $body
+exec kitten notify \
+  $flags \
+  $argv[1] \
+  $(string join -- ' ' $(string escape -- $argv[2..]))

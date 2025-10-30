@@ -44,5 +44,5 @@ else
 end
 
 if set -q _flag_notify
-  9n "$this_script_name $argv" "Done"
+  9no -c "$this_script_name $argv" "Done"
 end
