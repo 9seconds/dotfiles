@@ -1,0 +1,448 @@
+#!/usr/bin/env python3
+# ruff: noqa: T201
+
+from __future__ import annotations
+
+import argparse
+import collections
+import itertools
+import logging
+import os
+import re
+import shlex
+import sys
+import typing as t
+
+LOG: t.Final[logging.Logger] = logging.getLogger(__name__)
+
+
+def main() -> None:
+    options = get_options()
+
+    logging.basicConfig(
+        level=logging.DEBUG if options.debug else logging.INFO,
+        format=">>> %(message)s",
+    )
+    LOG.debug("Options %s", options)
+
+    for elem in options.callback(options):
+        if len(elem) == 1:
+            print(elem[0])
+        elif options.separator:
+            print(options.separator.join(elem))
+        else:
+            print(shlex.join(elem))
+
+
+def get_options() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Reshape input data.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+
+    parser.add_argument(
+        "-d",
+        "--debug",
+        action="store_true",
+        default=False,
+        help="Enable debug mode.",
+    )
+    parser.add_argument(
+        "-s",
+        "--separator",
+        type=str,
+        default="",
+        help="Output separator. By default join like shell.",
+    )
+
+    commands = parser.add_subparsers(dest="command", required=True)
+
+    cmd_repeat = commands.add_parser(
+        "repeat",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        help="Repeat input stream N times",
+    )
+    cmd_repeat.add_argument(
+        "num",
+        type=argtype_non_neg_int,
+        help="Number of times to repeat the input stream. 0 means forever",
+    )
+    cmd_repeat.set_defaults(callback=do_repeat)
+
+    cmd_slice = commands.add_parser(
+        "slice",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        help="Slice input stream",
+    )
+    cmd_slice.add_argument(
+        "start",
+        type=argtype_non_neg_int,
+        help="Start index (inclusive)",
+    )
+    cmd_slice.add_argument(
+        "end",
+        type=argtype_non_neg_int,
+        nargs=argparse.OPTIONAL,
+        help="End index (inclusive)",
+    )
+    cmd_slice.add_argument(
+        "step",
+        type=argtype_non_zero_int,
+        nargs=argparse.OPTIONAL,
+        default=1,
+        help="Step size",
+    )
+    cmd_slice.set_defaults(callback=do_slice)
+
+    cmd_batch = commands.add_parser(
+        "batch",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        help="Batch input elements into groups of N",
+    )
+    cmd_batch.add_argument(
+        "size",
+        type=argtype_non_neg_int,
+        help="Batch size. 0 means all elements in a single batch",
+    )
+    cmd_batch.set_defaults(callback=do_batch)
+
+    cmd_combinations = commands.add_parser(
+        "combinations",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        help="Generate combinations of input elements",
+    )
+    cmd_combinations.add_argument(
+        "r",
+        type=argtype_positive_int,
+        help="Size of each combination",
+    )
+    cmd_combinations.set_defaults(callback=do_combinations)
+
+    cmd_rcombinations = commands.add_parser(
+        "rcombinations",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        help="Generate combinations with replacements of input elements",
+    )
+    cmd_rcombinations.add_argument(
+        "r",
+        type=argtype_positive_int,
+        help="Size of each combination",
+    )
+    cmd_rcombinations.set_defaults(callback=do_rcombinations)
+
+    cmd_permutations = commands.add_parser(
+        "permutations",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        help="Generate permutations of input elements",
+    )
+    cmd_permutations.add_argument(
+        "r",
+        type=argtype_positive_int,
+        help="Size of each permutation",
+    )
+    cmd_permutations.set_defaults(callback=do_permutations)
+
+    cmd_product = commands.add_parser(
+        "product",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        help="Generate cartesian product of input elements",
+    )
+    cmd_product.add_argument(
+        "input",
+        type=argparse.FileType("r"),
+        nargs=argparse.ONE_OR_MORE,
+        help="Input files. Use '-' for stdin",
+    )
+    cmd_product.set_defaults(callback=do_product)
+
+    cmd_field = commands.add_parser(
+        "field",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        help="Extract fields from input elements",
+    )
+    cmd_field.add_argument(
+        "-s",
+        "--separator",
+        type=str,
+        default="",
+        help="Input field separator. By default split like shell.",
+    )
+    cmd_field.add_argument(
+        "index",
+        type=argtype_non_neg_int,
+        nargs=argparse.ONE_OR_MORE,
+        help="Field indices (1-based)",
+    )
+    cmd_field.set_defaults(callback=do_field)
+
+    cmd_group = commands.add_parser(
+        "group",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        help="Group elements by first element",
+    )
+    cmd_group.add_argument(
+        "-s",
+        "--separator",
+        type=str,
+        default="",
+        help="Input field separator. By default split like shell.",
+    )
+    cmd_group.add_argument(
+        "-n",
+        "--no-group",
+        action="store_true",
+        default=False,
+        help="Do not show group key",
+    )
+    cmd_group.set_defaults(callback=do_group)
+
+    cmd_slide = commands.add_parser(
+        "slide",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        help="Slide a window over input elements",
+    )
+    cmd_slide.add_argument(
+        "-s",
+        "--small-windows",
+        action="store_true",
+        default=False,
+        help="Output smaller windows.",
+    )
+    cmd_slide.add_argument(
+        "size",
+        type=argtype_positive_int,
+        help="Window size",
+    )
+    cmd_slide.set_defaults(callback=do_slide)
+
+    cmd_template = commands.add_parser(
+        "template",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        help="Reformat input elements using a template string",
+    )
+    cmd_template.add_argument(
+        "template",
+        type=argtype_template_str,
+        help="Template string",
+    )
+    cmd_template.set_defaults(callback=do_template)
+
+    cmd_strip = commands.add_parser(
+        "strip",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        help="Strip regexps before and after",
+    )
+    cmd_strip.add_argument(
+        "before",
+        type=argtype_regexp,
+        help="Pattern to strip",
+    )
+    cmd_strip.add_argument(
+        "after",
+        type=argtype_regexp,
+        nargs=argparse.OPTIONAL,
+        default="",
+        help="Pattern to strip",
+    )
+    cmd_strip.set_defaults(callback=do_strip)
+
+    return parser.parse_args()
+
+
+def do_repeat(args: argparse.Namespace) -> t.Iterator[t.Iterable[str]]:
+    wrapped_it = ((item,) for item in input_elements())
+
+    if not args.num:
+        yield from itertools.cycle(wrapped_it)
+        return
+
+    elements = list(wrapped_it)
+    for _ in range(args.num):
+        yield from elements
+
+
+def do_slice(args: argparse.Namespace) -> t.Iterator[t.Iterable[str]]:
+    start = args.start - 1
+    if args.end is None:
+        start, end = 0, start
+    else:
+        end = args.end - 1
+
+    it = itertools.islice(
+        ((item,) for item in input_elements()),
+        start,
+        end + 1,
+        abs(args.step),
+    )
+    return it if args.step > 0 else reversed(list(it))
+
+
+def do_batch(args: argparse.Namespace) -> t.Iterator[t.Iterable[str]]:
+    if args.size == 0:
+        if elements := tuple(input_elements()):
+            yield elements
+        return
+
+    batch: list[str] = []
+    for item in input_elements():
+        batch.append(item)
+        if len(batch) == args.size:
+            yield batch
+            batch.clear()
+
+    if batch:
+        yield batch
+
+
+def do_combinations(args: argparse.Namespace) -> t.Iterator[t.Iterable[str]]:
+    yield from itertools.combinations(input_elements(), args.r)
+
+
+def do_rcombinations(args: argparse.Namespace) -> t.Iterator[t.Iterable[str]]:
+    yield from itertools.combinations_with_replacement(input_elements(), args.r)
+
+
+def do_permutations(args: argparse.Namespace) -> t.Iterator[t.Iterable[str]]:
+    yield from itertools.permutations(input_elements(), args.r)
+
+
+def do_product(args: argparse.Namespace) -> t.Iterator[t.Iterable[str]]:
+    iterables = [input_elements(file_) for file_ in args.input]
+    yield from itertools.product(*iterables)
+
+
+def do_template(args: argparse.Namespace) -> t.Iterator[t.Iterable[str]]:
+    yield from ((args.template.format(item),) for item in input_elements())
+
+
+def do_strip(args: argparse.Namespace) -> t.Iterator[t.Iterable[str]]:
+    for item in input_elements():
+        stripped = args.before.sub("", item)
+        stripped = args.after.sub("", stripped)
+        yield (stripped,)
+
+
+def do_field(args: argparse.Namespace) -> t.Iterator[t.Iterable[str]]:
+    for item in input_elements():
+        if args.separator:
+            fields = item.split(args.separator)
+        else:
+            fields = shlex.split(item)
+
+        yield tuple(
+            fields[index - 1]
+            for index in args.index
+            if 0 < index <= len(fields)
+        )
+
+
+def do_group(args: argparse.Namespace) -> t.Iterator[t.Iterable[str]]:
+    groups: collections.defaultdict[str, list[str]] = collections.defaultdict(
+        list
+    )
+
+    for item in input_elements():
+        if args.separator:
+            fields = item.split(args.separator)
+        else:
+            fields = shlex.split(item)
+
+        if not fields:
+            continue
+
+        key = fields[0]
+        if args.separator:
+            groups[key].append(args.separator.join(fields[1:]))
+        else:
+            groups[key].append(shlex.join(fields[1:]))
+
+    for group_id, data in groups.items():
+        if args.no_group:
+            yield data
+        else:
+            yield (group_id, *data)
+
+
+def do_slide(args: argparse.Namespace) -> t.Iterator[t.Iterable[str]]:
+    window: collections.deque[str] = collections.deque(maxlen=args.size)
+
+    for item in input_elements():
+        window.append(item)
+        if args.small_windows or len(window) == args.size:
+            yield window
+
+    if not args.small_windows:
+        if window:
+            yield window
+        return
+
+    while window:
+        yield window
+        window.popleft()
+
+
+def input_elements(base: t.Iterable[str] = sys.stdin) -> t.Iterator[str]:
+    for line in base:
+        yield line.rstrip(os.linesep)
+
+
+def argtype_non_neg_int(value: str) -> int:
+    try:
+        ivalue = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(f"{value} is not an integer") from exc
+
+    if ivalue < 0:
+        raise argparse.ArgumentTypeError(f"{value} is not a positive integer")
+
+    return ivalue
+
+
+def argtype_non_zero_int(value: str) -> int:
+    try:
+        ivalue = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(f"{value} is not an integer") from exc
+
+    if ivalue == 0:
+        raise argparse.ArgumentTypeError(f"{value} is not a non-zero integer")
+
+    return ivalue
+
+
+def argtype_positive_int(value: str) -> int:
+    try:
+        ivalue = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(f"{value} is not an integer") from exc
+
+    if ivalue <= 0:
+        raise argparse.ArgumentTypeError(f"{value} is not a positive integer")
+
+    return ivalue
+
+
+def argtype_template_str(value: str) -> str:
+    try:
+        value.format("")
+    except Exception as exc:
+        raise argparse.ArgumentTypeError(
+            f"{value} is not a valid template string"
+        ) from exc
+
+    return value
+
+
+def argtype_regexp(value: str) -> re.Pattern[str]:
+    try:
+        return re.compile(value, re.UNICODE)
+    except re.error as exc:
+        raise argparse.ArgumentTypeError(
+            f"{value} is not a valid regexp"
+        ) from exc
+
+    return value
+
+
+if __name__ == "__main__":
+    main()
