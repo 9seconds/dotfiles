@@ -1,7 +1,8 @@
 #!/usr/bin/env fish
 
+set copy_command fish_clipboard_copy
 if type -q kitten
-  exec kitten clipboard
-else
-  fish_clipboard_copy
+  set copy_command kitten clipboard
 end
+
+cat -- $argv | $copy_command

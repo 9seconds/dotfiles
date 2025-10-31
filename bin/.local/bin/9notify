@@ -44,4 +44,4 @@ end
 exec kitten notify \
   $flags \
   $argv[1] \
-  $(string join -- ' ' $(string escape -- $argv[2..]))
+  $(string join -- ' ' $(string escape -n -- $argv[2..]))

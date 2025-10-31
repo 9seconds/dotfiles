@@ -1,6 +1,6 @@
 #!/usr/bin/env fish
 
-function __n -d 'Run a command and notify about elapsed time'
+function __9time -d 'Run a command and notify about elapsed time'
   set cmd (commandline -b)
 
   set start (date +%s)
@@ -11,5 +11,7 @@ function __n -d 'Run a command and notify about elapsed time'
   set end (date +%s)
   set elapsed (math $end - $start)
 
-  _notify -a "Done in $elapsed seconds." $cmd
+  9notify \
+    $(string join -- ' ' $(string escape -- $cmd)) \
+    "Done in $elapsed seconds."
 end
