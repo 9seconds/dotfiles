@@ -456,7 +456,7 @@ def do_separate(
         if args.output_separator:
             yield Formatted(args.output_separator.join(fields))
         else:
-            yield Formatted(shlex.join(line))
+            yield Formatted(shlex.join(fields))
 
 
 def do_group(
