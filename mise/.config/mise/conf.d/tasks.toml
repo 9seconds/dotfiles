@@ -47,7 +47,9 @@ run = [
 [tasks."update:nvim"]
 description = "Update Neovim"
 wait_for = [
-  "update:dotfiles"
+  "update:dotfiles",
+  "update:system:linux",
+  "update:mise",
 ]
 run = "nvim --headless '+Lazy! sync' +qa"
 
@@ -61,7 +63,8 @@ run = "fish -ic 'fisher update'"
 [tasks."update:mise"]
 description = "Update mise"
 wait_for = [
-  "update:dotfiles"
+  "update:dotfiles",
+  "update:system:linux",
 ]
 env = { RUSTUP_INIT_SKIP_PATH_CHECK = "1", MISE_YES="1" }
 run = [
