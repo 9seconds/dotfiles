@@ -8,6 +8,7 @@ return {
       "xzbdmw/colorful-menu.nvim",
       config = true,
     },
+    "zbirenbaum/copilot.lua",
   },
   version = "*",
   event = "FileType",
