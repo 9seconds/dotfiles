@@ -24,7 +24,8 @@ return {
       auto_trigger = true,
       keymap = {
         accept = "<c-a>",
-        next = "<c-c>",
+        next = "<c-n>",
+        prev = "<c-p>",
         accept_word = "<c-w>",
         accept_line = "<c-l>",
         dismiss = "<c-d>",
