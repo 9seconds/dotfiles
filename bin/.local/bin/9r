@@ -1,0 +1,803 @@
+#!/usr/bin/env python3
+# ruff: noqa: T201
+
+from __future__ import annotations
+
+import argparse
+import collections
+import contextlib
+import csv
+import dataclasses
+import io
+import json
+import logging
+import os
+import pathlib
+import re
+import shlex
+import sys
+import typing as t
+
+if t.TYPE_CHECKING:
+    JSON = str | int | float | bool | None | dict[str, "JSON"] | list["JSON"]
+
+T = t.TypeVar("T")
+
+DOC: t.Final[str] = """
+This is how 9seconds works on lines of text.
+
+This tool treats input data differently. We have lines, each line is separated
+by newline. But usually our data is quite structured, e.g. CSV, TSV, etc. And
+this makes us to want to work on this structure directly. For example,
+to replace 5th field in each line, where each field is separated by comma.
+
+This tool should work in a following way:
+
+1. Convert input stream into records. Each record is a tuple of fields
+2. If necessary, it reshapes a data, making new records, treating all lines
+   as a constant stream of fields.
+3. Processes records (replaces by regexp, reshuffles, groups etc)
+4. Desctructures records back into lines, joining fields by separator
+
+Each record is the set of fields as arguments in shell meaning. So, you can
+have fields with spaces, quotes, etc.
+"""
+LOG: t.Final[logging.Logger] = logging.getLogger(__name__)
+
+
+class IntDict(dict[int, T]):
+    """Dictionary that works as a collection for integer keys."""
+
+
+if t.TYPE_CHECKING:
+    IntDictJSON = (
+        None
+        | str
+        | int
+        | float
+        | bool
+        | IntDict["IntDictJSON"]
+        | dict[str, "IntDictJSON"]
+    )
+    IntDictJSONType = t.TypeVar("IntDictJSONType", bound=IntDictJSON)
+
+
+@dataclasses.dataclass(frozen=True)
+class Record:
+    fields: list[str] = dataclasses.field(default_factory=list)
+
+    def __len__(self) -> int:
+        return len(self.fields)
+
+    def __str__(self) -> str:
+        return shlex.join(self.fields)
+
+    def __getitem__(self, index: int) -> str:
+        match index:
+            case 0:
+                raise IndexError("Record indices start from 1")
+            case value if value > 0:
+                return self.fields[index - 1]
+        return self.fields[index]
+
+
+@dataclasses.dataclass(frozen=True)
+class FieldRegexp:
+    field_num: int
+    regexp: re.Pattern[str]
+
+    def matches(self, record: Record) -> bool:
+        try:
+            field_value = record[self.field_num]
+        except IndexError:
+            return False
+        return bool(self.regexp.fullmatch(field_value))
+
+
+def main() -> None:
+    options = get_options()
+
+    logging.basicConfig(
+        level=logging.DEBUG if options.debug else logging.INFO,
+        format=">>> %(message)s",
+    )
+    LOG.debug("Options %s", options)
+
+    for item in options.callback(options):
+        print(item)
+
+
+def get_options() -> argparse.Namespace:  # noqa: PLR0915
+    parser = argparse.ArgumentParser(
+        description=DOC.strip(),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    add_input = []
+
+    def add_parser(  # noqa: PLR0913
+        cmds: argparse._SubParsersAction,  # type: ignore[type-arg]
+        name: str,
+        description: str,
+        *,
+        aliases: list[str] | None = None,
+        cb: t.Callable[[argparse.Namespace], t.Iterator[Record | str]]
+        | None = None,
+        to_input: bool = True,
+    ) -> argparse.ArgumentParser:
+        hlp = description.lower().removesuffix(".")
+        if not description.endswith("."):
+            description += "."
+
+        cmd = cmds.add_parser(
+            name,
+            description=description,
+            aliases=aliases or [],
+            help=hlp,
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        )
+        if cb is not None:
+            cmd.set_defaults(callback=cb)
+        if to_input:
+            add_input.append(cmd)
+
+        return cmd  # type: ignore[no-any-return]
+
+    parser.add_argument(
+        "-d",
+        "--debug",
+        action="store_true",
+        default=False,
+        help="enable debug logging",
+    )
+
+    commands = parser.add_subparsers(dest="command", required=True)
+
+    cmd_in = add_parser(
+        commands,
+        "in",
+        "Process input data into records",
+        aliases=["i"],
+        to_input=False,
+    )
+    cmd_in_commands = cmd_in.add_subparsers(dest="in_command", required=True)
+
+    add_parser(
+        cmd_in_commands,
+        "lines",
+        "Read lines as records",
+        aliases=["l"],
+        cb=do_in_lines,
+    )
+    cmd_in_split = add_parser(
+        cmd_in_commands,
+        "split",
+        "Split lines into records by separator",
+        aliases=["s"],
+        cb=do_in_split,
+    )
+    cmd_in_split.add_argument(
+        "-r",
+        "--regexp",
+        type=argtype_regexp,
+        default=r"\s+",
+        help="regular expression to split lines by",
+    )
+    cmd_in_split.add_argument(
+        "-n",
+        "--max-splits",
+        type=int,
+        default="0",
+        help="maximum number of splits per line (0 means no limit)",
+    )
+
+    cmd_in_width = add_parser(
+        cmd_in_commands,
+        "width",
+        "Split lines into records by fixed field widths",
+        aliases=["w"],
+        cb=do_in_width,
+    )
+    cmd_in_width.add_argument(
+        "width",
+        type=argtype_pos_int,
+        help="fixed field width",
+    )
+
+    cmd_in_csv = add_parser(
+        cmd_in_commands,
+        "csv",
+        "Process CSV data into records",
+        aliases=["c"],
+        cb=do_in_csv,
+    )
+    cmd_in_csv.add_argument(
+        "dialect",
+        choices=sorted(csv.list_dialects()),
+        default="unix",
+        nargs=argparse.OPTIONAL,
+        help="CSV dialect to use for input",
+    )
+
+    add_parser(
+        cmd_in_commands,
+        "json",
+        "Process JSON data into records",
+        aliases=["j"],
+        cb=do_in_json,
+    )
+
+    cmd_shape = add_parser(
+        commands,
+        "shape",
+        "Reshape records",
+        aliases=["s"],
+        to_input=False,
+    )
+    cmd_shape_commands = cmd_shape.add_subparsers(
+        dest="shape_command", required=True
+    )
+
+    cmd_shape_batch = add_parser(
+        cmd_shape_commands,
+        "batch",
+        "Reshape records into batches of fixed size",
+        aliases=["b"],
+        cb=do_shape_batch,
+    )
+    cmd_shape_batch.add_argument(
+        "size",
+        type=argtype_non_neg_int,
+        default="0",
+        help="number of records per batch (0 means no limit)",
+    )
+
+    cmd_shape_window = add_parser(
+        cmd_shape_commands,
+        "window",
+        "Reshape records into sliding windows",
+        aliases=["w"],
+        cb=do_shape_window,
+    )
+    cmd_shape_window.add_argument(
+        "size",
+        type=argtype_pos_int,
+        help="window size",
+    )
+
+    cmd_shape_group = add_parser(
+        cmd_shape_commands,
+        "group",
+        "Group records by first N fields",
+        aliases=["g"],
+        cb=do_shape_group,
+    )
+    cmd_shape_group.add_argument(
+        "-n",
+        "--no_group_keys",
+        action="store_true",
+        default=False,
+        help="do not include group keys in output records",
+    )
+    cmd_shape_group.add_argument(
+        "num_fields",
+        type=argtype_pos_int,
+        help="number of fields to group by",
+    )
+
+    cmd_shape_ungroup = add_parser(
+        cmd_shape_commands,
+        "ungroup",
+        "Ungroup records (flatten)",
+        aliases=["u"],
+        cb=do_shape_ungroup,
+    )
+    cmd_shape_ungroup.add_argument(
+        "num_fields",
+        type=argtype_pos_int,
+        default="1",
+        nargs=argparse.OPTIONAL,
+        help="number of fields in a group",
+    )
+    cmd_shape_ungroup.add_argument(
+        "size",
+        type=argtype_non_neg_int,
+        default="1",
+        nargs=argparse.OPTIONAL,
+        help="number of fields per record (excluding group)",
+    )
+
+    cmd_filter = add_parser(
+        commands,
+        "filter",
+        "Filter records",
+        aliases=["f"],
+        to_input=False,
+    )
+    cmd_filter_commands = cmd_filter.add_subparsers(
+        dest="filter_command", required=True
+    )
+
+    cmd_filter_count = add_parser(
+        cmd_filter_commands,
+        "count",
+        "Count records",
+        aliases=["c"],
+        cb=do_filter_count,
+    )
+    cmd_filter_count.add_argument(
+        "min_count",
+        type=argtype_non_neg_int,
+        help="minimum number of fields in record to pass filter",
+    )
+    cmd_filter_count.add_argument(
+        "max_count",
+        type=argtype_non_neg_int,
+        nargs=argparse.OPTIONAL,
+        default=str(sys.maxsize),
+        help="maximum number of fields in record to pass filter",
+    )
+
+    cmd_filter_regexp = add_parser(
+        cmd_filter_commands,
+        "regexp",
+        "Filter records by regular expression",
+        aliases=["r"],
+        cb=do_filter_regexp,
+    )
+    cmd_filter_regexp.add_argument(
+        "-o",
+        "--or",
+        type=argtype_field_regexp,
+        action="append",
+        help="Pair of field number and regular expression separated by ':'",
+    )
+    cmd_filter_regexp.add_argument(
+        "field_regexp",
+        type=argtype_field_regexp,
+        help="Pair of field number and regular expression separated by ':'",
+    )
+
+    cmd_edit = add_parser(
+        commands,
+        "edit",
+        "Edit records",
+        aliases=["e"],
+        to_input=False,
+    )
+    cmd_edit_commands = cmd_edit.add_subparsers(
+        dest="edit_command", required=True
+    )
+
+    cmd_edit_replace = add_parser(
+        cmd_edit_commands,
+        "replace",
+        "Replace fields in records by regular expression",
+        aliases=["r"],
+        cb=do_edit_replace,
+    )
+    cmd_edit_replace.add_argument(
+        "field",
+        type=argtype_pos_int,
+        help="field number to perform replacement on",
+    )
+    cmd_edit_replace.add_argument(
+        "pattern",
+        type=argtype_regexp,
+        help="regular expression pattern to search for",
+    )
+    cmd_edit_replace.add_argument(
+        "replacement",
+        default=r"\g<0>",
+        nargs=argparse.OPTIONAL,
+        help="replacement string",
+    )
+
+    cmd_edit_restructure = add_parser(
+        cmd_edit_commands,
+        "restructure",
+        "Restructure records by field positions",
+        aliases=["s"],
+        cb=do_edit_restructure,
+    )
+    cmd_edit_restructure.add_argument(
+        "positions",
+        type=argtype_positions,
+        help="Comma-separated list of field positions and intervals",
+    )
+
+    cmd_out = add_parser(
+        commands,
+        "out",
+        "Destructure records into output data",
+        aliases=["o"],
+        to_input=False,
+    )
+    cmd_out_commands = cmd_out.add_subparsers(dest="out_command", required=True)
+
+    cmd_out_plain = add_parser(
+        cmd_out_commands,
+        "plain",
+        "Output records as lines with fields joined by separator",
+        aliases=["p"],
+        cb=do_out_plain,
+    )
+    cmd_out_plain.add_argument(
+        "separator",
+        default=" ",
+        nargs=argparse.OPTIONAL,
+        help="output field separator",
+    )
+
+    cmd_out_csv = add_parser(
+        cmd_out_commands,
+        "csv",
+        "Output records as CSV",
+        aliases=["c"],
+        cb=do_out_csv,
+    )
+    cmd_out_csv.add_argument(
+        "dialect",
+        choices=sorted(csv.list_dialects()),
+        default="unix",
+        nargs=argparse.OPTIONAL,
+        help="CSV dialect to use for output",
+    )
+
+    add_parser(
+        cmd_out_commands,
+        "json",
+        (
+            "Output records as JSON. "
+            "This support only splits done by JSON arrays and objects."
+        ),
+        aliases=["j"],
+        cb=do_out_json,
+    )
+
+    for cmd in add_input:
+        cmd.add_argument(
+            "input",
+            type=argtype_stream,
+            default="-",
+            nargs=argparse.OPTIONAL,
+            help="input stream to read data from",
+        )
+
+    return parser.parse_args()
+
+
+def argtype_stream(value: str) -> io.TextIOWrapper:
+    if value == "-":
+        return io.TextIOWrapper(sys.stdin.buffer, encoding="utf-8")
+    return pathlib.Path(value).open("r", encoding="utf-8")
+
+
+def argtype_regexp(value: str) -> re.Pattern[str]:
+    return re.compile(value, re.UNICODE)
+
+
+def argtype_non_neg_int(value: str) -> int:
+    try:
+        iv = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("Invalid integer") from exc
+    if iv < 0:
+        raise argparse.ArgumentTypeError("Invalid non-negative integer")
+
+    return iv
+
+
+def argtype_pos_int(value: str) -> int:
+    try:
+        iv = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("Invalid integer") from exc
+    if iv <= 0:
+        raise argparse.ArgumentTypeError("Invalid positive integer")
+
+    return iv
+
+
+def argtype_field_regexp(value: str) -> FieldRegexp:
+    try:
+        field_str, regexp_str = value.split(":", maxsplit=1)
+        field_num = argtype_pos_int(field_str.strip())
+        regexp = argtype_regexp(regexp_str.strip())
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(
+            f"Invalid field regexp specification {value}"
+        ) from exc
+
+    return FieldRegexp(field_num=field_num, regexp=regexp)
+
+
+def argtype_positions(value: str) -> list[slice]:
+    positions: list[slice] = []
+
+    for part in value.split(","):
+        matcher = re.fullmatch(r"\s*(\d+)(?::(\d+))?(?::(\d+))?\s*", part)
+        if not matcher:
+            raise argparse.ArgumentTypeError(
+                f"Invalid field position specification {part}"
+            )
+
+        start, stop, step = matcher.groups()
+        start_idx = argtype_pos_int(start)
+        match stop, step:
+            case None, None:
+                positions.append(slice(start_idx - 1, start_idx))
+            case str(), None:
+                stop_idx = argtype_pos_int(stop)
+                positions.append(slice(start_idx - 1, stop_idx))
+            case str(), str():
+                stop_idx = argtype_pos_int(stop)
+                step_idx = argtype_pos_int(step)
+                positions.append(slice(start_idx - 1, stop_idx, step_idx))
+            case _:
+                raise argparse.ArgumentTypeError(
+                    f"Invalid field position specification {part}"
+                )
+
+    return positions
+
+
+def make_raw_stream(inp: io.TextIOWrapper) -> t.Iterator[str]:
+    with contextlib.closing(inp):
+        for line in inp:
+            yield line.rstrip(os.linesep)
+
+
+def make_record_stream(stream: t.Iterator[str]) -> t.Iterator[Record]:
+    for line in stream:
+        yield Record(shlex.split(line))
+
+
+def do_in_lines(options: argparse.Namespace) -> t.Iterator[Record]:
+    yield from make_record_stream(make_raw_stream(options.input))
+
+
+def do_in_split(options: argparse.Namespace) -> t.Iterator[Record]:
+    for line in make_raw_stream(options.input):
+        fields = options.regexp.split(line, maxsplit=options.max_splits)
+        yield Record(fields)
+
+
+def do_in_width(options: argparse.Namespace) -> t.Iterator[Record]:
+    for line in make_raw_stream(options.input):
+        fields: list[str] = []
+        while line:
+            fields.append(line[: options.width])
+            line = line[options.width :]  # noqa: PLW2901
+        yield Record(fields)
+
+
+def do_in_csv(options: argparse.Namespace) -> t.Iterator[Record]:
+    reader = csv.reader(options.input, dialect=options.dialect)
+    for row in reader:
+        yield Record(row)
+
+
+def do_in_json(options: argparse.Namespace) -> t.Iterator[Record]:  # noqa: C901
+    def rec(data: JSON, prefix: str) -> t.Iterator[Record]:  # noqa: C901
+        match data:
+            case list() as lst:
+                field_len = len(str(len(lst)))
+                for idx, el in enumerate(lst):
+                    yield from rec(el, f"{prefix}{str(idx).zfill(field_len)}.")
+            case dict() as dct:
+                for key, value in sorted(dct.items()):
+                    key = str(key)  # noqa: PLW2901
+                    if re.search(r"[^a-zA-Z_]", key):
+                        key = json.dumps(key)  # noqa: PLW2901
+                    yield from rec(value, f"{prefix}{key}.")
+            case bool():
+                yield Record([prefix, "bool", "1" if data else "0"])
+            case int():
+                yield Record([prefix, "int", str(data)])
+            case float():
+                yield Record([prefix, "float", str(data)])
+            case None:
+                yield Record([prefix, "none", ""])
+            case str():
+                yield Record([prefix, "str", data])
+            case _:
+                raise ValueError(f"Unsupported JSON data type: {type(data)}")
+
+    yield from rec(json.load(options.input), ".")
+
+
+def do_shape_batch(options: argparse.Namespace) -> t.Iterator[Record]:
+    fields: list[str] = []
+
+    for line in make_record_stream(make_raw_stream(options.input)):
+        fields.extend(line.fields)
+        while options.size > 0 and len(fields) >= options.size:
+            yield Record(fields[: options.size])
+            fields = fields[options.size :]
+
+    if fields:
+        yield Record(fields)
+
+
+def do_shape_window(options: argparse.Namespace) -> t.Iterator[Record]:
+    fields: list[str] = []
+
+    for line in make_record_stream(make_raw_stream(options.input)):
+        fields.extend(line.fields)
+        while len(fields) > options.size:
+            yield Record(fields[: options.size])
+            fields = fields[1:]
+
+    if fields:
+        yield Record(fields)
+
+
+def do_shape_group(options: argparse.Namespace) -> t.Iterator[Record]:
+    group_dict: collections.defaultdict[tuple[str, ...], list[str]] = (
+        collections.defaultdict(list)
+    )
+
+    for record in make_record_stream(make_raw_stream(options.input)):
+        key = tuple(record.fields[: options.num_fields])
+        values = record.fields[options.num_fields :]
+        group_dict[key].extend(values)
+
+    for key, values in sorted(group_dict.items()):
+        if options.no_group_keys:
+            yield Record(values)
+        else:
+            yield Record(list(key) + values)
+
+
+def do_shape_ungroup(options: argparse.Namespace) -> t.Iterator[Record]:
+    for record in make_record_stream(make_raw_stream(options.input)):
+        group_keys = record.fields[: options.num_fields]
+        record_fields = record.fields[options.num_fields :]
+        while record_fields:
+            yield Record(group_keys + record_fields[: options.size])
+            record_fields = record_fields[options.size :]
+
+
+def do_filter_count(options: argparse.Namespace) -> t.Iterator[Record]:
+    for record in make_record_stream(make_raw_stream(options.input)):
+        if options.min_count <= len(record) <= options.max_count:
+            yield record
+
+
+def do_filter_regexp(options: argparse.Namespace) -> t.Iterator[Record]:
+    regexps = [options.field_regexp, *(getattr(options, "or") or [])]
+    for record in make_record_stream(make_raw_stream(options.input)):
+        if any(fr.matches(record) for fr in regexps):
+            yield record
+
+
+def do_edit_replace(options: argparse.Namespace) -> t.Iterator[Record]:
+    for record in make_record_stream(make_raw_stream(options.input)):
+        try:
+            field_value = record[options.field]
+        except IndexError:
+            yield record
+            continue
+
+        new_value = options.pattern.sub(options.replacement, field_value)
+        record.fields[options.field - 1] = new_value
+        yield record
+
+
+def do_edit_restructure(options: argparse.Namespace) -> t.Iterator[Record]:
+    for record in make_record_stream(make_raw_stream(options.input)):
+        new_fields: list[str] = []
+        for position in options.positions:
+            new_fields.extend(record.fields[position])
+        yield Record(new_fields)
+
+
+def do_out_plain(options: argparse.Namespace) -> t.Iterator[str]:
+    for record in make_record_stream(make_raw_stream(options.input)):
+        yield options.separator.join(record.fields)
+
+
+def do_out_csv(options: argparse.Namespace) -> t.Iterator[str]:
+    writer = csv.writer(sys.stdout, dialect=options.dialect)
+    writer.writerows(
+        record.fields
+        for record in make_record_stream(make_raw_stream(options.input))
+    )
+    return iter([])
+
+
+def do_out_json(options: argparse.Namespace) -> t.Iterator[str]:  # noqa: C901
+    def parse_record(rec: Record) -> IntDictJSON:
+        if len(rec) != 3:  # noqa: PLR2004
+            raise ValueError(f"Invalid record for JSON output: {rec}")
+        parsed_value: int | str | bool | float | None = None
+
+        match rec.fields[1]:
+            case "int":
+                parsed_value = int(rec.fields[2])
+            case "float":
+                parsed_value = float(rec.fields[2])
+            case "bool":
+                parsed_value = rec.fields[2] == "1"
+            case "none":
+                parsed_value = None
+            case "str":
+                parsed_value = rec.fields[2]
+            case _:
+                raise ValueError(f"Invalid type in record: {rec.fields[1]}")
+
+        return parse_path(f".root{rec.fields[0]}", parsed_value)
+
+    def parse_path(path: str, value: IntDictJSON) -> IntDictJSON:
+        path = path.strip()
+
+        if path in (".", ""):
+            return value
+        if m := re.fullmatch(r"\.(\d+)(\..*)", path):
+            return IntDict({int(m.group(1)): parse_path(m.group(2), value)})
+        if m := re.fullmatch(r'\.("(?:\\.|[^"])*")(\..*)', path):
+            return {json.loads(m.group(1)): parse_path(m.group(2), value)}
+        if m := re.fullmatch(r"\.([^\.]*)(\..*)", path):
+            return {m.group(1): parse_path(m.group(2), value)}
+
+        raise ValueError(f"Invalid path in record: {path}")
+
+    def merge_intjsons(
+        acc: IntDictJSONType,
+        value: IntDictJSONType,
+    ) -> IntDictJSONType:
+        if type(acc) is not type(value):
+            raise ValueError(f"Type mismatch during merge: {acc} vs {value}")
+
+        if not isinstance(acc, dict):
+            return value
+
+        assert isinstance(value, dict)  # noqa: S101
+        for k, v in value.items():
+            acc[k] = merge_intjsons(acc[k], v) if k in acc else v
+
+        return acc
+
+    def merge_to_json(acc: IntDictJSON) -> JSON:
+        match acc:
+            case IntDict() as idct:
+                flat: list[JSON] = []
+                for idx in range(len(idct)):
+                    if idx not in idct:
+                        raise ValueError(f"Missing index {idx} in {idct}")
+                    flat.append(merge_to_json(idct[idx]))
+                return flat
+            case dict() as dct:
+                return {key: merge_to_json(val) for key, val in dct.items()}
+
+        return acc
+
+    parsed_records = (
+        parse_record(record)
+        for record in make_record_stream(make_raw_stream(options.input))
+    )
+    if not parsed_records:
+        return iter(["{}"])
+
+    acc: IntDictJSON = {}
+    for record in make_record_stream(make_raw_stream(options.input)):
+        acc = merge_intjsons(acc, parse_record(record))
+
+    acc = t.cast("dict[str, IntDictJSON]", acc)
+    if "root" not in acc:
+        return iter(["{}"])
+
+    print(
+        json.dumps(
+            merge_to_json(acc["root"]),
+            ensure_ascii=False,
+            check_circular=False,
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return iter([])
+
+
+if __name__ == "__main__":
+    main()
