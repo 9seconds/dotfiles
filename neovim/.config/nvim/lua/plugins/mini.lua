@@ -144,16 +144,6 @@ local mini_git = {
   event = {
     "BufReadPost",
   },
-  keys = {
-    {
-      "<leader>gg",
-      function()
-        require("mini.git").show_at_cursor()
-      end,
-      mode = { "v", "x", "o", "n" },
-      desc = "Show git data",
-    },
-  },
 
   opts = {},
 }

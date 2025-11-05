@@ -11,8 +11,17 @@ return {
     "folke/snacks.nvim",
   },
   cmd = {
-    "Neogit"
+    "Neogit",
+  },
+  keys = {
+    {
+      "<leader>gg",
+      function()
+        require("neogit").open()
+      end,
+      desc = "Run Neogit",
+    },
   },
 
-  opts = {}
+  opts = {},
 }
