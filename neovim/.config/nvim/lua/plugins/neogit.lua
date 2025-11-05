@@ -7,7 +7,6 @@ return {
   dependencies = {
     "nvim-lua/plenary.nvim",
     "sindrets/diffview.nvim",
-    "ibhagwan/fzf-lua",
     "folke/snacks.nvim",
   },
   cmd = {
@@ -23,5 +22,10 @@ return {
     },
   },
 
-  opts = {},
+  opts = {
+    integrations = {
+      snacks = true,
+      diffview = true,
+    },
+  },
 }
