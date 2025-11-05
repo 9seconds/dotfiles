@@ -22,7 +22,7 @@
     df = diff --minimal
     dfc = df --cached
     dff = difftool
-    dffc = dfc --cached
+    dffc = dff --cached
     fixup = commit --fixup
     ftch = fetch --tags --atomic
     gcc = !git reflog expire --expire=all --stale-fix --all && git worktree prune --expire 0 && git gc --prune=all && git repack -a -d -b --depth 200 --window 100
