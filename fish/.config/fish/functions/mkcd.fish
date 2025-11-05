@@ -5,6 +5,6 @@ function mkcd -d 'Create a directory and step into that'
     echo "Usage: mkcd <path>" 1>&2
     return 1
   end
-  type -P mkdir -pv $argv[1]
-  type -P cd $argv[1]
+  mkdir -pv $argv[1]
+  cd $argv[1]
 end
