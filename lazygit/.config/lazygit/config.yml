@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jesseduffield/lazygit/master/schema/config.json
+# vim: set sw=2 sts=2 ts=2 et:
+
+git:
+  pagers:
+    - externalDiffCommand: difft --color=always
