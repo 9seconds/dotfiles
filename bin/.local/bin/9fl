@@ -1,0 +1,42 @@
+#!/usr/bin/env fish
+
+set this_script_path $(path resolve $(status --current-filename))
+set this_script_name $(path basename $this_script_path)
+
+function show_help
+  echo "Usage: $this_script_name [-a/--all] [-h/--help] [-d/--debug] example fd_option..."
+  echo
+  echo 'Find files of a same mimetype as a given one.'
+end
+
+argparse --min-args=1 'h/help&' 'd/debug&' 'a/all&' -- $argv
+or begin
+  show_help
+  return 1
+end
+
+if set -q _flag_debug
+  set fish_trace 1
+end
+if set -q _flag_help
+  show_help
+  return 0
+end
+
+set mime $(file -L --mime-type -- $argv[1] | string match -gr "\S+\s+(.+)\$" | string escape --style=regex)
+
+set filter_cmd string match -gr "(.+)\:\s+$mime\$"
+if type -qf rg
+  set filter_cmd rg --color=never -o -r '$1' "(.+)\:\s+$mime"
+end
+
+set find_cmd find $(pwd) \( -type f -o -type l \) -exec file -L --mime-type '{}' +
+if type -qf fd
+  set find_cmd fd $argv[2..] -a -c never -t f -t l
+  if set -q _flag_all
+    set -a find_cmd -u
+  end
+  set -a find_cmd -X file -L --mime-type
+end
+
+$find_cmd | $filter_cmd
