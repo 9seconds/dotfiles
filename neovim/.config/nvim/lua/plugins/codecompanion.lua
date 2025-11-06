@@ -19,7 +19,7 @@ return {
     {
       "<A-c>",
       "<cmd>CodeCompanionChat Toggle<cr>",
-      mode = { "i", "n", "v" },
+      mode = { "i", "n", "v", "t" },
       desc = "Open Code Companion",
     },
     {
