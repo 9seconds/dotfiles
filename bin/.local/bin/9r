@@ -226,6 +226,29 @@ def get_options() -> argparse.Namespace:  # noqa: PLR0915
         cb=do_in_json,
     )
 
+    cmd_in_texttable = add_parser(
+        cmd_in_commands,
+        "text-table",
+        "Process crap in ASCII text tables",
+        aliases=["t"],
+        cb=do_in_texttable,
+    )
+    cmd_in_texttable.add_argument(
+        "-f",
+        "--fill-gaps",
+        action="store_true",
+        help=(
+            "fill gaps with previous parameters. "
+            "makes sense for multiline tables"
+        ),
+    )
+    cmd_in_texttable.add_argument(
+        "-n",
+        "--no-header",
+        action="store_true",
+        help="Do not show 1st element"
+    )
+
     cmd_shape = add_parser(
         commands,
         "shape",
@@ -377,7 +400,7 @@ def get_options() -> argparse.Namespace:  # noqa: PLR0915
     )
     cmd_edit_replace.add_argument(
         "field",
-        type=argtype_pos_int,
+        type=argtype_field_index,
         help="field number to perform replacement on",
     )
     cmd_edit_replace.add_argument(
@@ -401,7 +424,7 @@ def get_options() -> argparse.Namespace:  # noqa: PLR0915
     )
     cmd_edit_restructure.add_argument(
         "positions",
-        type=argtype_positions,
+        type=argtype_field_positions,
         help="Comma-separated list of field positions and intervals",
     )
 
@@ -483,7 +506,6 @@ def argtype_non_neg_int(value: str) -> int:
         raise argparse.ArgumentTypeError("Invalid integer") from exc
     if iv < 0:
         raise argparse.ArgumentTypeError("Invalid non-negative integer")
-
     return iv
 
 
@@ -494,14 +516,23 @@ def argtype_pos_int(value: str) -> int:
         raise argparse.ArgumentTypeError("Invalid integer") from exc
     if iv <= 0:
         raise argparse.ArgumentTypeError("Invalid positive integer")
+    return iv
 
+
+def argtype_field_index(value: str) -> int:
+    try:
+        iv = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("Invalid integer") from exc
+    if not iv:
+        raise argparse.ArgumentTypeError("Invalid field index")
     return iv
 
 
 def argtype_field_regexp(value: str) -> FieldRegexp:
     try:
         field_str, regexp_str = value.split(":", maxsplit=1)
-        field_num = argtype_pos_int(field_str.strip())
+        field_num = argtype_field_index(field_str.strip())
         regexp = argtype_regexp(regexp_str.strip())
     except ValueError as exc:
         raise argparse.ArgumentTypeError(
@@ -511,7 +542,7 @@ def argtype_field_regexp(value: str) -> FieldRegexp:
     return FieldRegexp(field_num=field_num, regexp=regexp)
 
 
-def argtype_positions(value: str) -> list[slice]:
+def argtype_field_positions(value: str) -> list[slice]:
     positions: list[slice] = []
 
     for part in value.split(","):
@@ -522,16 +553,16 @@ def argtype_positions(value: str) -> list[slice]:
             )
 
         start, stop, step = matcher.groups()
-        start_idx = argtype_pos_int(start)
+        start_idx = argtype_field_index(start)
         match stop, step:
             case None, None:
                 positions.append(slice(start_idx - 1, start_idx))
             case str(), None:
-                stop_idx = argtype_pos_int(stop)
+                stop_idx = argtype_field_index(stop)
                 positions.append(slice(start_idx - 1, stop_idx))
             case str(), str():
-                stop_idx = argtype_pos_int(stop)
-                step_idx = argtype_pos_int(step)
+                stop_idx = argtype_field_index(stop)
+                step_idx = argtype_field_index(step)
                 positions.append(slice(start_idx - 1, stop_idx, step_idx))
             case _:
                 raise argparse.ArgumentTypeError(
@@ -604,6 +635,50 @@ def do_in_json(options: argparse.Namespace) -> t.Iterator[Record]:  # noqa: C901
                 raise ValueError(f"Unsupported JSON data type: {type(data)}")
 
     yield from rec(json.load(options.input), ".")
+
+
+def do_in_texttable(options: argparse.Namespace) -> t.Iterator[Record]:  # noqa: C901
+    separator: str | None = None
+    table_row_re = re.compile(r"(\S).+\w.+\1", re.UNICODE)
+    field_no: int | None = None
+    previous_params: list[str] = []
+    show = not options.no_header
+
+    for raw_line in make_raw_stream(options.input):
+        matcher = table_row_re.fullmatch(raw_line)
+        if not matcher:
+            continue
+        elif separator is None:
+            separator = matcher.group(1)
+        elif separator != matcher.group(1):
+            raise ValueError(
+                f"Inconsistent table format. Expected {separator} separator, "
+                f"but got {matcher.group(1)} for '{raw_line}' instead"
+            )
+
+        _, *els, _ = raw_line.split(separator)
+        if field_no is None:
+            field_no = len(els)
+        elif len(els) != field_no:
+            raise ValueError(
+                f"Inconsistent table format. Expected {field_no} fields, "
+                f"got {len(els)} for '{raw_line}' instead"
+            )
+
+        els = [el.strip() for el in els]
+        if not previous_params:
+            previous_params = els
+
+        if options.fill_gaps:
+            for idx, just_read in enumerate(list(els)):
+                if not just_read:
+                    els[idx] = previous_params[idx]
+                else:
+                    previous_params[idx] = els[idx]
+
+        if show:
+            yield Record(els)
+        show = True
 
 
 def do_shape_batch(options: argparse.Namespace) -> t.Iterator[Record]:
