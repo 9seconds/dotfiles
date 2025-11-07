@@ -107,25 +107,16 @@ depends = [
 description = "Run Ruff (linter)"
 tools.ruff = "latest"
 tools.fd = "latest"
-run = [
-  "ruff check dots",
-  "fd -e py -t file -H -X ruff check"
-]
+run = "ruff check $(9fl -a dots)"
 
 [tasks."python:lint:mypy"]
 description = "Run MyPy"
 tools."pipx:mypy" = "latest"
 tools.fd = "latest"
-run = [
-  "mypy dots",
-  "fd -e py -t file -H -X mypy"
-]
+run = "mypy $(9fl -a dots)"
 
 [tasks."python:format:ruff"]
 description = "Run Ruff (format)"
 tools.ruff = "latest"
 tools.fd = "latest"
-run = [
-  "ruff format dots",
-  "fd -e py -t file -H -X ruff format"
-]
+run = "ruff format $(9fl -a dots)"
