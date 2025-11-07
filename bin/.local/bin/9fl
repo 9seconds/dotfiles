@@ -23,20 +23,25 @@ if set -q _flag_help
   return 0
 end
 
-set mime $(file -L --mime-type -- $argv[1] | string match -gr "\S+\s+(.+)\$" | string escape --style=regex)
+set mime_cmd file -L --mime-type --
+if type -qf magika
+  set mime_cmd magika --no-colors -i --
+end
+
+set mime $($mime_cmd $argv[1] | string match -gr "\S+\s+(.+)\$" | string escape --style=regex)
 
 set filter_cmd string match -gr "(.+)\:\s+$mime\$"
 if type -qf rg
   set filter_cmd rg --color=never -o -r '$1' "(.+)\:\s+$mime"
 end
 
-set find_cmd find $(pwd) \( -type f -o -type l \) -exec file -L --mime-type '{}' +
+set find_cmd find $(pwd) \( -type f -o -type l \) -exec $mime_cmd '{}' +
 if type -qf fd
   set find_cmd fd $argv[2..] -a -c never -t f -t l
   if set -q _flag_all
     set -a find_cmd -u
   end
-  set -a find_cmd -X file -L --mime-type
+  set -a find_cmd -X $mime_cmd
 end
 
 $find_cmd | $filter_cmd
