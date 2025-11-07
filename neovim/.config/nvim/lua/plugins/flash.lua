@@ -31,5 +31,22 @@ return {
     },
   },
 
-  opts = {},
+  opts = {
+    search = {
+      mode = "fuzzy",
+      incremental = true,
+    },
+    jump = {
+      pos = "end",
+      autojump = true,
+    },
+    label = {
+      uppercase = false,
+    },
+    modes = {
+      char = {
+        enabled = false,
+      },
+    },
+  },
 }
