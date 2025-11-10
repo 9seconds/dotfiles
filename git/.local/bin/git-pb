@@ -33,7 +33,8 @@ set -a fzf_flags --prompt='branch> '
 set -a fzf_flags --preview='git l --color=always -n 30 {}'
 
 if test (count $argv) -ne 0
-  set -a fzf_cmd --select-1 --tiebreak=begin --query=$(string collect $argv)
+  set -a fzf_flags --select-1
+  set -a fzf_flags --query=$(string escape -- $(string join -- ' ' $argv))
 end
 
 git branch $git_flags \
