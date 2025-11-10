@@ -1,0 +1,40 @@
+#!/usr/bin/env fish
+
+set this_script_path $(path resolve $(status --current-filename))
+set this_script_name $(path basename $this_script_path)
+
+function show_help
+  echo "Usage: $this_script_name [-h/--help] [-d/--debug] [-r/--rebase] [base]"
+  echo
+  echo 'Melt commits using git absorb'
+end
+
+argparse --max-args=1 'h/help&' 'd/debug&' 'r/rebase' -- $argv
+or begin
+  show_help
+  return 1
+end
+
+if set -q _flag_debug
+  set fish_trace 1
+end
+if set -q _flag_help
+  show_help
+  return 0
+end
+
+if test (count $argv) -eq 1
+  set base $argv[1]
+else
+  set base $(git merge-base HEAD @{upstream} 2>/dev/null)
+  if test $status -ne 0
+    set base $(git pc)
+  end
+end
+
+set flags
+if set -q _flag_rebase
+  set flags -r
+end
+
+exec git absorb -b $base $flags
