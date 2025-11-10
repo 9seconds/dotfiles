@@ -64,7 +64,7 @@ end
 
 local function term_close(term)
   if not term then
-    term = require("ergoterm.terminal").identify()
+    term = require("ergoterm").identify()
   end
   if term then
     term:close()
@@ -73,7 +73,7 @@ end
 
 local function term_quit(term)
   if not term then
-    term = require("ergoterm.terminal").identify()
+    term = require("ergoterm").identify()
   end
   if term then
     term:stop()
@@ -82,7 +82,7 @@ local function term_quit(term)
 end
 
 local function choose()
-  local terminals = require("ergoterm.terminal").get_all()
+  local terminals = require("ergoterm").get_all()
   local snacks = require("snacks")
   local preview = require("snacks.picker.preview").file
 
@@ -234,7 +234,7 @@ return {
     {
       KEYS:alt("close"),
       function()
-        local term = require("ergoterm.terminal").get_last_focused()
+        local term = require("ergoterm").get_last_focused()
         if term then
           term:toggle()
         end
@@ -305,7 +305,7 @@ return {
         },
         float_winblend = 0,
 
-        on_create = function(term)
+        on_open = function(term)
           term._state._created_at = vim.fn.reltime()
           set_autocommands(term)
           set_keys(term)
