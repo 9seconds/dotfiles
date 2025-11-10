@@ -30,7 +30,6 @@
     l = log --date=short '--pretty=format:%C(auto)%h (%ad) %Cgreen%aN%Cblue%d%Creset: %s' --no-merges --abbrev-commit
     lg = lgg --simplify-by-decoration
     lgg = l --graph
-    pf = !git status --porcelain=2 | awk '{print $NF}' | 9fzf --scheme=path --prompt='file> ' --preview='bat --plain --color=always {}'
     psh = push --atomic
     pshf = psh --force-with-lease
     root = rev-parse --show-toplevel
