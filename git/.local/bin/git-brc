@@ -1,0 +1,33 @@
+#!/usr/bin/env fish
+
+set this_script_path $(path resolve $(status --current-filename))
+set this_script_name $(path basename $this_script_path)
+
+function show_help
+  echo "Usage: $this_script_name [-h/--help] [-d/--debug]"
+  echo
+  echo 'Cleanup gone branches'
+end
+
+argparse --max-args=0 'h/help&' 'd/debug&' 'a/all&' -- $argv
+or begin
+  show_help
+  return 1
+end
+
+if set -q _flag_debug
+  set fish_trace 1
+end
+if set -q _flag_help
+  show_help
+  return 0
+end
+
+set branches $(\
+  git branch -v \
+    | string replace -fr '^..(\S+)\s+\S+\s+\[gone\].*' '$1' \
+    | 9fzf --multi --sort --prompt='branch> ' --preview='git l --color=always -n 30' \
+)
+if test (count $branches) -gt 0
+  exec git branch -D $branches
+end
