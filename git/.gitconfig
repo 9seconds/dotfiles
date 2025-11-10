@@ -30,7 +30,6 @@
     l = log --date=short '--pretty=format:%C(auto)%h (%ad) %Cgreen%aN%Cblue%d%Creset: %s' --no-merges --abbrev-commit
     lg = lgg --simplify-by-decoration
     lgg = l --graph
-    pc = !git l -n 1000 --color=always | 9fzf --scheme=history --prompt='commit> ' --preview='DFT_DISPLAY=inline DFT_COLOR=always git difftool -t difftastic {+1}~1 {+1}' --accept-nth 1
     pf = !git status --porcelain=2 | awk '{print $NF}' | 9fzf --scheme=path --prompt='file> ' --preview='bat --plain --color=always {}'
     psh = push --atomic
     pshf = psh --force-with-lease
