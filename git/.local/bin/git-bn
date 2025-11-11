@@ -1,0 +1,59 @@
+#!/usr/bin/env fish
+
+set this_script_path $(path resolve $(status --current-filename))
+set this_script_name $(path basename $this_script_path)
+
+function show_help
+  echo "Usage: $this_script_name [-h/--help] [-d/--debug] [-u/--url] [-t/--test] name [start-point]"
+  echo
+  echo 'Create and setup a new branch'
+end
+
+argparse --min-args=1 --max-args=2 'h/help&' 'd/debug&' 'u/url=&' 't/test&' -- $argv
+or begin
+  show_help
+  return 1
+end
+
+if set -q _flag_debug
+  set fish_trace 1
+end
+if set -q _flag_help
+  show_help
+  return 0
+end
+
+if test (count $argv) -ne 2
+  set start_point $(git rev-parse --abbrev-ref @{u})
+else
+  set start_point $argv[2]
+end
+
+set name $GIT_USERNAME
+if set -q GIT_URL_MATCH; and set -q _flag_url
+  set replace_to '$1'
+  if set -q GIT_URL_REPLACE
+    set replace_to $GIT_URL_REPLACE
+  end
+  set -a name $(string replace -r -- $GIT_URL_MATCH $replace_to $_flag_url)
+end
+set -a name $argv[1]
+
+set branch_name $(string lower -- $name)
+set branch_name $(string join -- '-' $branch_name)
+set branch_name $(string escape -- $branch_name)
+
+if set -q _flag_test
+  echo 'Branch name:' $branch_name
+  echo 'Start point:' $start_point
+  return 0
+end
+
+git switch --no-track --no-guess -c $branch_name $start_point
+git config set --local branch.{$branch_name}.remote origin
+git config set --local branch.{$branch_name}.merge refs/heads/$branch_name
+git config set --local branch.{$branch_name}.upstream $start_point
+
+if set -q _flag_url
+  git config set --local branch.{$branch_name}.url $(string escape -- $_flag_url)
+end

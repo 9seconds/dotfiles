@@ -1,5 +1,5 @@
 [[env]]
-GIT_USERNAME = "9econds"
+GIT_USERNAME = "9seconds"
 GIT_REPO_PATH = "{{ config_root }}"
 
 # -----------------------------------------------------------------------------

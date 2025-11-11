@@ -9,7 +9,7 @@ function show_help
   echo 'Show what you are going to push to upstream'
 end
 
-argparse --max-args=0 'h/help&' 'd/debug&' 'a/all&' -- $argv
+argparse --max-args=0 'h/help&' 'd/debug&' -- $argv
 or begin
   show_help
   return 1

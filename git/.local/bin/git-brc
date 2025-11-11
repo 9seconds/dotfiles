@@ -9,7 +9,7 @@ function show_help
   echo 'Cleanup gone branches'
 end
 
-argparse --max-args=0 'h/help&' 'd/debug&' 'a/all&' -- $argv
+argparse --max-args=0 'h/help&' 'd/debug&' -- $argv
 or begin
   show_help
   return 1

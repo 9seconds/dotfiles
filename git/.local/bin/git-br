@@ -36,7 +36,7 @@ if test (count $argv) -ne 0
   set -a fzf_flags --query=$(string escape -- $(string join -- ' ' $argv))
 end
 
-exec git switch --guess $(\
+exec git switch $(\
   git branch $git_flags \
     | string match -gr '^\s+(\S+)$' \
     | sort \
