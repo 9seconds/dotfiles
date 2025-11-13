@@ -1,4 +1,5 @@
 #!/usr/bin/env fish
+# vim: set ts=2 sts=2 sw=2:
 
 set this_script_path $(path resolve $(status --current-filename))
 set this_script_name $(path basename $this_script_path)
@@ -6,10 +7,14 @@ set this_script_name $(path basename $this_script_path)
 function show_help
   echo "Usage: $this_script_name [-h/--help] [-d/--debug] [query...]"
   echo
-  echo 'Pick files with fzf'
+  echo 'Pick files with fzf.'
+  echo '  query          fzf query to insert'
+  echo
+  echo '  -h / --help    show this help'
+  echo '  -d / --debug   run in debug mode'
 end
 
-argparse 'h/help&' 'd/debug&' 'a/all&' -- $argv
+argparse 'h/help&' 'd/debug&' -- $argv
 or begin
   show_help
   return 1
@@ -31,7 +36,7 @@ set -a fzf_flags --preview='bat --plain --color=always {}'
 
 if test (count $argv) -ne 0
   set -a fzf_flags --select-1
-  set -a fzf_flags --query=$(string escape -- $(string join -- ' ' $argv))
+  set -a fzf_flags "--query=$(string join -- ' ' $argv)"
 end
 
 set root $(git rev-parse --show-toplevel)
