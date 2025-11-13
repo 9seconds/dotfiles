@@ -1,15 +1,22 @@
 #!/usr/bin/env fish
+# vim: set ts=2 sts=2 sw=2:
 
 set this_script_path $(path resolve $(status --current-filename))
 set this_script_name $(path basename $this_script_path)
 
 function show_help
-  echo "Usage: $this_script_name [-h/--help] [-d/--debug] [branch]"
+  echo "Usage: $this_script_name [-h/--help] [-d/--debug] [-b/--branch branch] [-s/--short] [query...]"
   echo
-  echo 'Pick commit with fzf'
+  echo 'Pick commit with fzf.'
+  echo '  query          fzf query to insert'
+  echo
+  echo '  -h / --help    show this help'
+  echo '  -d / --debug   run in debug mode'
+  echo '  -b / --branch  name of the branch to look into'
+  echo '  -s / --short   show short commit hashes only'
 end
 
-argparse --max-args=1 'h/help&' 'd/debug&' -- $argv
+argparse --max-args=1 'h/help&' 'd/debug&' 's/short&' 'b/branch=&' -- $argv
 or begin
   show_help
   return 1
@@ -24,17 +31,25 @@ if set -q _flag_help
 end
 
 set git_log_cmd git l -n 100 --color=always
+if set -q _flag_branch
+  set -a git_log_cmd $_flag_branch
+end
+
+set    fzf_flags --scheme=history
+set -a fzf_flags --prompt='commit> '
+set -a fzf_flags --preview='git difftool -t difftastic {+1}~1 {+1}'
+set -a fzf_flags --accept-nth 1
+
 if test (count $argv) -ne 0
-  set -a git_log_cmd $argv[1]
+  set -a fzf_flags --select-1
+  set -a fzf_flags "--query=$(string join -- ' ' $argv)"
 end
 
 set -x DFT_DISPLAY inline
 set -x DFT_COLOR always
 
-exec git rev-parse $(\
-  $git_log_cmd \
-    | 9fzf \
-      --scheme=history \
-      --prompt='commit> ' \
-      --preview='git difftool -t difftastic {+1}~1 {+1}' --accept-nth 1 \
-  )
+set commit $($git_log_cmd | 9fzf $fzf_flags)
+if not set -q _flag_short
+  exec git rev-parse $commit
+end
+echo $commit
