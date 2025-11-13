@@ -1,4 +1,5 @@
 #!/usr/bin/env fish
+# vim: set ts=2 sts=2 sw=2:
 
 set this_script_path $(path resolve $(status --current-filename))
 set this_script_name $(path basename $this_script_path)
@@ -6,7 +7,10 @@ set this_script_name $(path basename $this_script_path)
 function show_help
   echo "Usage: $this_script_name [-h/--help] [-d/--debug]"
   echo
-  echo 'Cleanup gone branches'
+  echo 'Cleanup gone branches.'
+  echo
+  echo '  -h / --help    show this help'
+  echo '  -d / --debug   run in debug mode'
 end
 
 argparse --max-args=0 'h/help&' 'd/debug&' -- $argv
