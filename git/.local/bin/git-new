@@ -6,7 +6,10 @@ set this_script_name $(path basename $this_script_path)
 function show_help
   echo "Usage: $this_script_name [-h/--help] [-d/--debug]"
   echo
-  echo 'Show what you are going to push to upstream'
+  echo 'Show what you are going to push to upstream.'
+  echo
+  echo '  -h / --help    show this help'
+  echo '  -d / --debug   run in debug mode'
 end
 
 argparse --max-args=0 'h/help&' 'd/debug&' -- $argv
