@@ -44,7 +44,7 @@ wait_for = [
   "module:regenerate"
 ]
 tools.python = "latest"
-run = "./dots drop {{ arg(name='plug') }}"
+run = "./dots drop {{ arg(name='module') }}"
 
 # -----------------------------------------------------------------------------
 # LUA
