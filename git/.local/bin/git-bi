@@ -1,4 +1,5 @@
 #!/usr/bin/env fish
+# vim: set ts=2 sts=2 sw=2:
 
 set this_script_path $(path resolve $(status --current-filename))
 set this_script_name $(path basename $this_script_path)
@@ -6,7 +7,12 @@ set this_script_name $(path basename $this_script_path)
 function show_help
   echo "Usage: $this_script_name [-h/--help] [-d/--debug] [name]"
   echo
-  echo 'Show information about branch'
+  echo 'Show information about the branch.'
+  echo 'Create and setup a new branch.'
+  echo '  name           branch name'
+  echo
+  echo '  -h / --help    show this help'
+  echo '  -d / --debug   run in debug mode'
 end
 
 argparse --max-args=1 'h/help&' 'd/debug&' -- $argv
@@ -24,20 +30,33 @@ if set -q _flag_help
 end
 
 if test (count $argv) -eq 0
-  set name $(git symbolic-ref --short HEAD)
+  set name $(git branch --show-current)
 else
   set name $argv[1]
 end
 
-set remote $(git config get --local branch.{$name}.remote)
-set merge $(git config get --local branch.{$name}.merge)
-set upstream $(git config get --local branch.{$name}.upstream)
-set url $(git config get --local branch.{$name}.url)
+set config_prefix branch.$name
+
+set remote $(git config get --local {$config_prefix}.remote)
+set merge $(git config get --local {$config_prefix}.merge)
+set upstream $(git config get --local {$config_prefix}.upstream)
+set start_commit $(git config get --local {$config_prefix}.startcommit)
+set url $(git config get --local {$config_prefix}.url)
 
 set remote_branch $remote$(string replace -- 'refs/heads' '' $merge)
 
-git rev-list --left-right --count $remote_branch...$name | read remote_ahead local_ahead
+git rev-list --left-right --count $remote_branch...$name 2>/dev/null \
+  | read remote_ahead local_ahead
+set commits_count $(git rev-list --count {$name}...{$start_commit})
 
-echo "Remote branch [local:$local_ahead remote:$remote_ahead]: $remote_branch"
-echo "Upstream:" $upstream
-echo "URL:" $url
+set remote_status 'not pushed yet'
+if test -n "$remote_ahead"
+  set remote_status "on local: $local_ahead, on remote $remote_ahead"
+end
+
+echo "Remote branch: $remote_branch"
+echo "Remote status: $remote_status"
+echo "Upstream:      $upstream"
+echo "Start commit:  $start_commit"
+echo "Commits count: $commits_count"
+echo "URL:           $url"
