@@ -109,7 +109,8 @@ def run_command(cmd: list[str], cache_filepath: pathlib.Path) -> None:
             for fileno in rlist:
                 data = os.read(fileno, BUF_SIZE)
                 cache_fp.write(
-                    RECORD_TYPE_STDOUT if fileno == stdout_r
+                    RECORD_TYPE_STDOUT
+                    if fileno == stdout_r
                     else RECORD_TYPE_STDERR
                 )
                 cache_fp.write(len(data).to_bytes(2, "little"))

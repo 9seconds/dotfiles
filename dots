@@ -43,8 +43,7 @@ import typing as t
 LOG: t.Final[logging.Logger] = logging.getLogger(__name__)
 PATH_STATE_HOME: t.Final[pathlib.Path] = pathlib.Path(
     os.getenv(
-        "XDG_STATE_HOME",
-        pathlib.Path.home() / ".local" / "state" / "9seconds"
+        "XDG_STATE_HOME", pathlib.Path.home() / ".local" / "state" / "9seconds"
     ),
 )
 PATH_STATE: t.Final[pathlib.Path] = PATH_STATE_HOME / "dots"

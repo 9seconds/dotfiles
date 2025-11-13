@@ -243,10 +243,7 @@ def get_options() -> argparse.Namespace:  # noqa: PLR0915
         ),
     )
     cmd_in_texttable.add_argument(
-        "-n",
-        "--no-header",
-        action="store_true",
-        help="Do not show 1st element"
+        "-n", "--no-header", action="store_true", help="Do not show 1st element"
     )
 
     cmd_shape = add_parser(
