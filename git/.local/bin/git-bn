@@ -1,4 +1,5 @@
 #!/usr/bin/env fish
+# vim: set ts=2 sts=2 sw=2:
 
 set this_script_path $(path resolve $(status --current-filename))
 set this_script_name $(path basename $this_script_path)
@@ -6,7 +7,14 @@ set this_script_name $(path basename $this_script_path)
 function show_help
   echo "Usage: $this_script_name [-h/--help] [-d/--debug] [-u/--url] [-t/--test] name [start-point]"
   echo
-  echo 'Create and setup a new branch'
+  echo 'Create and setup a new branch.'
+  echo '  name           stem of the branch'
+  echo '  start-point    what branch to use as a start point'
+  echo
+  echo '  -h / --help    show this help'
+  echo '  -d / --debug   run in debug mode'
+  echo '  -u / --url     issue URL. Do not forget to set GIT_URL_MATCH AND GIT_URL_REPLACE.'
+  echo '  -t / --test    test what it would create'
 end
 
 argparse --min-args=1 --max-args=2 'h/help&' 'd/debug&' 'u/url=&' 't/test&' -- $argv
@@ -49,11 +57,14 @@ if set -q _flag_test
   return 0
 end
 
+set config_prefix branch.$branch_name
+
 git switch --no-track --no-guess -c $branch_name $start_point
-git config set --local branch.{$branch_name}.remote origin
-git config set --local branch.{$branch_name}.merge refs/heads/$branch_name
-git config set --local branch.{$branch_name}.upstream $start_point
+git config set --local {$config_prefix}.remote origin
+git config set --local {$config_prefix}.merge refs/heads/$branch_name
+git config set --local {$config_prefix}.upstream $start_point
+git config set --local {$config_prefix}.startcommit $(git rev-parse $start_point)
 
 if set -q _flag_url
-  git config set --local branch.{$branch_name}.url $(string escape -- $_flag_url)
+  git config set --local {$config_prefix}.url $_flag_url
 end
