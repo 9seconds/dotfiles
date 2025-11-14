@@ -67,7 +67,9 @@ local function term_close(term)
     term = require("ergoterm").identify()
   end
   if term then
-    term:close()
+    vim.schedule(function()
+      term:close()
+    end)
   end
 end
 
@@ -76,8 +78,9 @@ local function term_quit(term)
     term = require("ergoterm").identify()
   end
   if term then
-    term:stop()
-    term:cleanup()
+    vim.schedule(function()
+      term:cleanup({ force = true })
+    end)
   end
 end
 
@@ -154,10 +157,17 @@ local function choose()
 
   local function make_open_action(direction)
     return function(item)
-      if item:is_active() then
-        item:close()
+      local windows = vim.api.nvim_tabpage_list_wins(0)
+
+      for _, term in ipairs(require("ergoterm").get_all()) do
+        if vim.tbl_contains(windows, term._state.window) then
+          term:close()
+        end
       end
-      item:focus(direction)
+
+      vim.schedule(function()
+        item:focus(direction)
+      end)
     end
   end
 
@@ -297,6 +307,7 @@ return {
         layout = "right",
         dir = "git_dir",
         persist_mode = false,
+        persist_size = false,
         start_in_insert = true,
 
         float_opts = {
