@@ -9,7 +9,6 @@
     ab = !git absorb -r -b $(git pc)
     apa = ap --all
     bl = blame --show-stats --date iso
-    brd = !git branch | 9fzf --prompt='branch> ' --multi --preview='echo {+2}"\t"{+1} | rev | cut -f1  | rev | xargs -r -n 1 git l --color=always -n 30' | cut -c 3- | xargs -r git branch -D
     cl = clean -fdq
     clx = cl -x
     cm = commit -m
