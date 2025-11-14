@@ -1,7 +1,7 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 add_newline = true
-format = """$time${env_var.mkex}${env_var.shpool}$directory$cmd_duration$git_branch$git_commit$git_state$git_status
+format = """$time$hostname${env_var.mkex}${env_var.shpool}$directory$cmd_duration$git_branch$git_commit$git_state$git_status
 $character
 """
 
@@ -52,3 +52,8 @@ style = "dimmed"
 format = "󰙨 "
 variable = "MKEX_DIR"
 style = "dimmed"
+
+[hostname]
+ssh_only = true
+style = "dimmed"
+format = "[󱇱 ]($style) "
