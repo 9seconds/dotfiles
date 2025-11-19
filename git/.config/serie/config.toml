@@ -1,0 +1,16 @@
+[core.option]
+protocol = "kitty"
+
+[core.search]
+fuzzy = true
+
+[core.user_command.commands_1]
+name = "diff"
+commands = [
+  "git",
+  "--no-pager",
+  "difftool",
+  "--color=always",
+  "-t", "difftastic",
+  "{{first_parent_hash}}", "{{target_hash}}"
+]

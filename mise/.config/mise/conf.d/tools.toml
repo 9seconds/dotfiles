@@ -17,6 +17,7 @@ neovim = "latest"
 "cargo:eza" = "latest"
 "cargo:git-absorb" = "latest"
 "cargo:mergiraf" = "latest"
+"cargo:serie" = "latest"
 # "cargo:shpool" = { version = "latest", os = ["linux"]}
 "cargo:starship" = "latest"
 "cargo:tree-sitter-cli" = "latest"

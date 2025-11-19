@@ -1,7 +1,6 @@
 #!/usr/bin/env fish
 
 alias g=git
-alias t=tig
-alias ta='tig -a'
 alias mkdir='mkdir -pv'
+alias gl='DFT_COLOR=always serie'
 alias lg=lazygit
