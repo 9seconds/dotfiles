@@ -61,10 +61,11 @@ end
 set config_prefix branch.$branch_name
 
 git switch --no-track --no-guess -c $branch_name $start_point
-git config set --local {$config_prefix}.remote      origin
-git config set --local {$config_prefix}.merge       refs/heads/$branch_name
-git config set --local {$config_prefix}.upstream    $start_point
+git config set --local {$config_prefix}.remote origin
+git config set --local {$config_prefix}.merge refs/heads/$branch_name
+git config set --local {$config_prefix}.upstream $start_point
 git config set --local {$config_prefix}.startcommit $(git rev-parse HEAD)
+git config set --local {$config_prefix}.pr '-'
 
 if set -q _flag_url
   git config set --local {$config_prefix}.url $_flag_url

@@ -42,6 +42,7 @@ set merge $(git config get --local {$config_prefix}.merge)
 set upstream $(git config get --local {$config_prefix}.upstream)
 set start_commit $(git config get --local {$config_prefix}.startcommit)
 set url $(git config get --local {$config_prefix}.url)
+set pr $(git config get --local {$config_prefix}.pr)
 
 set remote_branch $remote$(string replace -- 'refs/heads' '' $merge)
 
@@ -60,3 +61,4 @@ echo "Upstream:      $upstream"
 echo "Start commit:  $start_commit"
 echo "Commits count: $commits_count"
 echo "URL:           $url"
+echo "PR:            $pr"
