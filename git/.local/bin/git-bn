@@ -5,7 +5,7 @@ set this_script_path $(path resolve $(status --current-filename))
 set this_script_name $(path basename $this_script_path)
 
 function show_help
-  echo "Usage: $this_script_name [-h/--help] [-d/--debug] [-u/--url] [-t/--test] name [start-point]"
+  echo "Usage: $this_script_name [-h/--help] [-d/--debug] [-u/--url] [-t/--test] name start-point"
   echo
   echo 'Create and setup a new branch.'
   echo '  name           stem of the branch'
@@ -17,7 +17,7 @@ function show_help
   echo '  -t / --test    test what it would create'
 end
 
-argparse --min-args=1 --max-args=2 'h/help&' 'd/debug&' 'u/url=&' 't/test&' -- $argv
+argparse --min-args=2 --max-args=2 'h/help&' 'd/debug&' 'u/url=&' 't/test&' -- $argv
 or begin
   show_help
   return 1
@@ -31,13 +31,14 @@ if set -q _flag_help
   return 0
 end
 
-if test (count $argv) -ne 2
-  set start_point $(git rev-parse --abbrev-ref @{u})
-else
-  set start_point $argv[2]
+set name $GIT_USERNAME
+
+set start_point $argv[2]
+if not git show-ref --verify refs/remotes/$start_point 2>/dev/null 1>&2
+  echo "Incorrect start point" 2>&1
+  return 1
 end
 
-set name $GIT_USERNAME
 if set -q GIT_URL_MATCH; and set -q _flag_url
   set replace_to '$1'
   if set -q GIT_URL_REPLACE
@@ -60,10 +61,10 @@ end
 set config_prefix branch.$branch_name
 
 git switch --no-track --no-guess -c $branch_name $start_point
-git config set --local {$config_prefix}.remote origin
-git config set --local {$config_prefix}.merge refs/heads/$branch_name
-git config set --local {$config_prefix}.upstream $start_point
-git config set --local {$config_prefix}.startcommit $(git rev-parse $start_point)
+git config set --local {$config_prefix}.remote      origin
+git config set --local {$config_prefix}.merge       refs/heads/$branch_name
+git config set --local {$config_prefix}.upstream    $start_point
+git config set --local {$config_prefix}.startcommit $(git rev-parse HEAD)
 
 if set -q _flag_url
   git config set --local {$config_prefix}.url $_flag_url
