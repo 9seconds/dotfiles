@@ -1,0 +1,60 @@
+#!/usr/bin/env fish
+# vim: set ts=2 sts=2 sw=2:
+
+set this_script_path $(path resolve $(status --current-filename))
+set this_script_name $(path basename $this_script_path)
+
+function show_help
+  echo "Usage: $this_script_name [-h/--help] [-d/--debug] key value [name]"
+  echo
+  echo 'Set branch properties.'
+  echo '  key            property key'
+  echo '  value          property value'
+  echo '  name           branch name'
+  echo
+  echo '  -h / --help    show this help'
+  echo '  -d / --debug   run in debug mode'
+  echo
+  echo 'Valid property keys:'
+  echo '  remote    name of the configured remote source'
+  echo '  merge     name of the branch to push to (--set-upstream-to)'
+  echo '  upstream  name of the branch you want to merge to'
+  echo '  commit    commit hash of the first commit'
+  echo '  pr        URL of the PR'
+  echo '  issue     URL of the issue'
+end
+
+argparse --min-args=2 --max-args=3 'h/help&' 'd/debug&' -- $argv
+or begin
+  show_help
+  return 1
+end
+
+if set -q _flag_debug
+  set fish_trace 1
+end
+if set -q _flag_help
+  show_help
+  return 0
+end
+
+if test (count $argv) -ne 3
+  set name $(git branch --show-current)
+else
+  set name $argv[3]
+end
+
+switch $argv[1]
+  case remote
+    exec git config set --local branch.{$name}.remote $argv[2]
+  case merge
+    exec git config set --local branch.{$name}.merge refs/heads/$argv[2]
+  case upstream
+    exec git config set --local branch.{$name}.upstream $argv[2]
+  case commit startcommit
+    exec git config set --local branch.{$name}.startcommit $argv[2]
+  case pr
+    exec git config set --local branch.{$name}.pr $argv[2]
+  case issue
+    exec git config set --local branch.{$name}.issue $argv[2]
+end

@@ -8,7 +8,6 @@ function show_help
   echo "Usage: $this_script_name [-h/--help] [-d/--debug] [name]"
   echo
   echo 'Show information about the branch.'
-  echo 'Create and setup a new branch.'
   echo '  name           branch name'
   echo
   echo '  -h / --help    show this help'
@@ -41,14 +40,18 @@ set remote $(git config get --local {$config_prefix}.remote)
 set merge $(git config get --local {$config_prefix}.merge)
 set upstream $(git config get --local {$config_prefix}.upstream)
 set start_commit $(git config get --local {$config_prefix}.startcommit)
-set url $(git config get --local {$config_prefix}.url)
+set issue $(git config get --local {$config_prefix}.issue)
 set pr $(git config get --local {$config_prefix}.pr)
 
 set remote_branch $remote$(string replace -- 'refs/heads' '' $merge)
 
 git rev-list --left-right --count $remote_branch...$name 2>/dev/null \
   | read remote_ahead local_ahead
-set commits_count $(git rev-list --count {$name}...{$start_commit})
+
+set commits_count ''
+if test -n "$start_commit"
+  set commits_count $(git rev-list --count {$name}...{$start_commit})
+end
 
 set remote_status 'not pushed yet'
 if test -n "$remote_ahead"
@@ -60,5 +63,5 @@ echo "Remote status: $remote_status"
 echo "Upstream:      $upstream"
 echo "Start commit:  $start_commit"
 echo "Commits count: $commits_count"
-echo "URL:           $url"
-echo "PR:            $pr"
+echo "Issue URL:     $issue"
+echo "PR URL:        $pr"

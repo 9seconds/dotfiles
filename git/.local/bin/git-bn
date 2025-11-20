@@ -39,12 +39,12 @@ if not git show-ref --verify refs/remotes/$start_point 2>/dev/null 1>&2
   return 1
 end
 
-if set -q GIT_URL_MATCH; and set -q _flag_url
+if set -q GIT_ISSUE_URL_MATCH; and set -q _flag_url
   set replace_to '$1'
-  if set -q GIT_URL_REPLACE
-    set replace_to $GIT_URL_REPLACE
+  if set -q GIT_ISSUE_URL_REPLACE
+    set replace_to $GIT_ISSUE_URL_REPLACE
   end
-  set -a name $(string replace -r -- $GIT_URL_MATCH $replace_to $_flag_url)
+  set -a name $(string replace -r -- $GIT_ISSUE_URL_MATCH $replace_to $_flag_url)
 end
 set -a name $argv[1]
 
@@ -65,8 +65,9 @@ git config set --local {$config_prefix}.remote origin
 git config set --local {$config_prefix}.merge refs/heads/$branch_name
 git config set --local {$config_prefix}.upstream $start_point
 git config set --local {$config_prefix}.startcommit $(git rev-parse HEAD)
-git config set --local {$config_prefix}.pr '-'
+git config set --local {$config_prefix}.pr ''
+git config set --local {$config_prefix}.issue ''
 
 if set -q _flag_url
-  git config set --local {$config_prefix}.url $_flag_url
+  git config set --local {$config_prefix}.issue $_flag_url
 end
