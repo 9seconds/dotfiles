@@ -13,10 +13,11 @@ function show_help
   echo '  -h / --help    show this help'
   echo '  -d / --debug   run in debug mode'
   echo '  -b / --branch  name of the branch to look into'
+  echo '  -n / --records how many records to look for (default is 100)'
   echo '  -s / --short   show short commit hashes only'
 end
 
-argparse --max-args=1 'h/help&' 'd/debug&' 's/short&' 'b/branch=&' -- $argv
+argparse --max-args=1 'h/help&' 'd/debug&' 's/short&' 'n/records=&' 'b/branch=&' -- $argv
 or begin
   show_help
   return 1
@@ -30,7 +31,13 @@ if set -q _flag_help
   return 0
 end
 
-set git_log_cmd git l -n 100 --color=always
+
+set git_log_cmd git l --color=always
+if set -q _flag_records
+  set -a git_log_cmd -n $flag_records
+else
+  set -a git_log_cmd -n 100
+end
 if set -q _flag_branch
   set -a git_log_cmd $_flag_branch
 end
