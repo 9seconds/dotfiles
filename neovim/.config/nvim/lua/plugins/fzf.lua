@@ -190,5 +190,10 @@ return {
       rg_glob = true,
       rg_glob_fn = rg_glob,
     },
+    keymap = {
+      fzf = {
+        ["ctrl-q"] = "select-all+accept",
+      },
+    },
   },
 }
