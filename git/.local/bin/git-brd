@@ -15,7 +15,7 @@ function show_help
   echo '  -r / --remote  remove remote branches as well'
 end
 
-argparse --max-args=0 'h/help&' 'd/debug&' 'r/remote&' -- $argv
+argparse 'h/help&' 'd/debug&' 'r/remote&' -- $argv
 or begin
   show_help
   return 1
