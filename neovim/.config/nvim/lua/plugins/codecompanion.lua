@@ -54,16 +54,7 @@ return {
           tools = {
             opts = {
               default_tools = {
-                "files",
-                "insert_edit_into_file",
-              },
-            },
-          },
-
-          variables = {
-            buffer = {
-              opts = {
-                default_params = "watch",
+                "full_stack_dev",
               },
             },
           },
