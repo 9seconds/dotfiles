@@ -132,46 +132,6 @@ local mini_surround = {
   },
 }
 
--- integrate git
--- https://github.com/nvim-mini/mini-git
-local mini_git = {
-  "nvim-mini/mini-git",
-  version = "*",
-  main = "mini.git",
-  cmd = {
-    "Git",
-  },
-  event = {
-    "BufReadPost",
-  },
-
-  opts = {},
-}
-
--- diff management
--- https://github.com/nvim-mini/mini.diff
-local mini_diff = {
-  "nvim-mini/mini.diff",
-  dependencies = {
-    "nvim-mini/mini-git",
-  },
-  version = "*",
-  event = {
-    "BufReadPost",
-  },
-  keys = {
-    {
-      "<leader>gd",
-      function()
-        return require("mini.diff").toggle_overlay()
-      end,
-      desc = "Toggle diff overlay",
-    },
-  },
-
-  opts = {},
-}
-
 return {
   mini_splitjoin,
   mini_cursorword,
@@ -179,6 +139,4 @@ return {
   mini_pairs,
   mini_snippets,
   mini_surround,
-  mini_git,
-  mini_diff,
 }

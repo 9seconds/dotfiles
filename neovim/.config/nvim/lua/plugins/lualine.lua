@@ -9,7 +9,6 @@ return {
   "nvim-lualine/lualine.nvim",
   dependencies = {
     "SmiteshP/nvim-navic",
-    "nvim-mini/mini-git",
     "nvim-mini/mini.icons",
   },
   event = "VeryLazy",
@@ -65,36 +64,23 @@ return {
         },
         {
           function()
-            local git_summary = vim.b.minigit_summary
-            local output = { " " .. git_summary.head_name }
+            local summary = vim.b.gitsigns_status_dict
+            local output = { " " .. summary.head }
 
-            if git_summary.in_progress ~= "" then
-              table.insert(output, "(" .. git_summary.in_progress .. ")")
+            if summary.added > 0 then
+              table.insert(output, " " .. tostring(summary.added))
             end
-
-            local diff_summary = vim.b.minidiff_summary
-              or {
-                n_ranges = 0,
-              }
-
-            if diff_summary.n_ranges > 0 then
-              table.insert(output, " " .. tostring(diff_summary.n_ranges))
-
-              if diff_summary.add > 0 then
-                table.insert(output, " " .. tostring(diff_summary.add))
-              end
-              if diff_summary.change > 0 then
-                table.insert(output, " " .. tostring(diff_summary.change))
-              end
-              if diff_summary.delete > 0 then
-                table.insert(output, " " .. tostring(diff_summary.delete))
-              end
+            if summary.changed > 0 then
+              table.insert(output, " " .. tostring(summary.changed))
+            end
+            if summary.removed > 0 then
+              table.insert(output, " " .. tostring(summary.removed))
             end
 
             return vim.iter(output):join(" ")
           end,
           cond = function()
-            return vim.b.minigit_summary ~= nil
+            return vim.b.gitsigns_status_dict ~= nil
           end,
         },
       },
