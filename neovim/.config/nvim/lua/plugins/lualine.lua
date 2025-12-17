@@ -27,8 +27,6 @@ return {
       "lazy",
       "oil",
       "quickfix",
-      "toggleterm",
-      "trouble",
     },
 
     sections = {

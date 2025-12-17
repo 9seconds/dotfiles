@@ -11,7 +11,7 @@ return {
     "zbirenbaum/copilot.lua",
   },
   version = "*",
-  event = "FileType",
+  event = "InsertEnter",
 
   opts = {
     enabled = function()
