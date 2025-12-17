@@ -81,6 +81,28 @@ return {
       mode = { "o", "x" },
       desc = "GitSign: Select hunk",
     },
+    {
+      "<leader>gr",
+      function()
+        require("gitsigns").reset_hunk()
+      end,
+      desc = "GitSign: Reset hunk",
+    },
+    {
+      "<leader>gr",
+      function()
+        require("gitsigns").reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+      end,
+      mode = { "v" },
+      desc = "GitSign: Reset hunk",
+    },
+    {
+      "<leader>gR",
+      function()
+        require("gitsigns").reset_buffer()
+      end,
+      desc = "GitSign: Reset whole buffer",
+    },
   },
 
   opts = {},
