@@ -126,10 +126,20 @@ local mini_surround = {
       find = "gsf",
       find_left = "gsF",
       highlight = "gsh",
-      replace = "gsr",
+      replace = "gsc",
       update_n_lines = "gsn",
     },
   },
+}
+
+-- bracketed movements
+-- https://github.com/nvim-mini/mini.bracketed
+local mini_bracketed = {
+  "nvim-mini/mini.bracketed",
+  version = "*",
+  event = "VeryLazy",
+
+  opts = {},
 }
 
 return {
@@ -139,4 +149,5 @@ return {
   mini_pairs,
   mini_snippets,
   mini_surround,
+  mini_bracketed,
 }
