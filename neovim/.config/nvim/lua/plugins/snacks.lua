@@ -4,6 +4,8 @@
 return {
   "folke/snacks.nvim",
   version = "*",
+  lazy = false,
+  priority = 1001,
 
   keys = {
     {
