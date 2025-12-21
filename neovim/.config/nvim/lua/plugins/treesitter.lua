@@ -29,6 +29,7 @@ local treesitter_config = {
       "javascript",
       "json",
       "just",
+      "regex",
       "kdl",
       "lua",
       "make",
