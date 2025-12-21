@@ -22,14 +22,6 @@ return {
       desc = "Select treesitter with flash",
     },
     {
-      "g",
-      function()
-        return require("flash").remote()
-      end,
-      mode = "o",
-      desc = "Run remote Flash",
-    },
-    {
       "<c-s>",
       function()
         require("flash").toggle()
