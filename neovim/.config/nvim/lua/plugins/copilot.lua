@@ -3,15 +3,6 @@
 
 return {
   "zbirenbaum/copilot.lua",
-  dependencies = {
-    {
-      "copilotlsp-nvim/copilot-lsp",
-      init = function()
-        vim.g.copilot_nes_debounce = 500
-        vim.lsp.enable("copilot_ls")
-      end,
-    },
-  },
   cmd = "Copilot",
   event = "InsertEnter",
 
@@ -29,13 +20,6 @@ return {
         accept_word = "<c-w>",
         accept_line = "<c-l>",
         dismiss = "<c-d>",
-      },
-    },
-    nes = {
-      enabled = false,
-      keymap = {
-        accept_and_goto = "<c-i>",
-        dismiss = "<esc>",
       },
     },
   },
