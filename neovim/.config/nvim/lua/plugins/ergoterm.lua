@@ -244,7 +244,7 @@ return {
     {
       KEYS:alt("close"),
       function()
-        local term = require("ergoterm").get_last_focused()
+        local term = require("ergoterm").get_target_for_bang()
         if term then
           term:toggle()
         end
