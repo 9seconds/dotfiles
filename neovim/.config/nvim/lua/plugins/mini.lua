@@ -44,24 +44,6 @@ local mini_icons = {
   end,
 }
 
--- auto pairs
--- https://github.com/nvim-mini/mini.pairs
-local mini_pairs = {
-  "nvim-mini/mini.pairs",
-  version = "*",
-  event = {
-    "InsertEnter",
-    "CmdlineEnter",
-  },
-
-  opts = {
-    modes = {
-      insert = true,
-      command = true,
-    },
-  },
-}
-
 -- snippet management
 -- https://github.com/nvim-mini/mini.snippets
 local mini_snippets = {
@@ -146,7 +128,6 @@ return {
   mini_splitjoin,
   mini_cursorword,
   mini_icons,
-  mini_pairs,
   mini_snippets,
   mini_surround,
   mini_bracketed,
