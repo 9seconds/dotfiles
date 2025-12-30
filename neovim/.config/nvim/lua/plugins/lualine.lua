@@ -33,13 +33,10 @@ return {
       lualine_a = {
         {
           function()
-            if
-              not vim.g.enable_autocompletion
-              or vim.g.copilot_status == "InProgress"
-            then
-              return ""
+            if vim.g.enable_autocompletion then
+              return ""
             end
-            return ""
+            return ""
           end,
           cond = function()
             return package.loaded["copilot"] ~= nil
@@ -138,6 +135,13 @@ return {
       pattern = "CodeCompanionChatCleared",
       callback = function()
         STATE.codecompanion_requests = 0
+        mod.refresh()
+      end,
+    })
+    vim.api.nvim_create_autocmd("User", {
+      group = group,
+      pattern = "EnableAutocompleteToggled",
+      callback = function()
         mod.refresh()
       end,
     })

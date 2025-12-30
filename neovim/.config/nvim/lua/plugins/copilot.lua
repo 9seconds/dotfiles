@@ -26,20 +26,6 @@ return {
 
   config = function(_, opts)
     require("copilot").setup(opts)
-    require("copilot.status").register_status_notification_handler(
-      function(data)
-        if vim.b.copilot_suggestion_auto_trigger then
-          vim.g.copilot_status = "InProgress"
-        else
-          vim.g.copilot_status = data.status
-        end
-
-        local lualine = package.loaded["lualine"]
-        if lualine then
-          lualine.refresh()
-        end
-      end
-    )
 
     local function toggle_copilot()
       local enable = not vim.g.enable_autocompletion

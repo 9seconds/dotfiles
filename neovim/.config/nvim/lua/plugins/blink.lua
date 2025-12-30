@@ -38,7 +38,7 @@ return {
         "hide_documentation",
         "fallback",
       },
-      ["<c-k>"] = {
+      ["<c-s"] = {
         "show_signature",
         "hide_signature",
         "fallback",
@@ -99,6 +99,9 @@ return {
 
     signature = {
       enabled = true,
+      window = {
+        show_documentation = true,
+      },
     },
 
     appearance = {
