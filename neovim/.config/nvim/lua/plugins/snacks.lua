@@ -104,7 +104,7 @@ return {
 
     -- https://github.com/folke/snacks.nvim/blob/main/docs/notifier.md
     notifier = {
-      eanbled = true,
+      enabled = true,
     },
 
     -- https://github.com/folke/snacks.nvim/blob/main/docs/zen.md
@@ -169,6 +169,28 @@ return {
             end,
           })
           :map("<C-x>", { mode = { "n", "i", "x", "v", "o" } })
+
+        local state_diagnostic = false
+        snacks
+          .toggle({
+            id = "diagnostic",
+            name = "Diagnostic virtual line",
+            get = function()
+              return state_diagnostic
+            end,
+            set = function(state)
+              state_diagnostic = state
+              if state then
+                state = {
+                  current_line = true,
+                }
+              else
+                state = false
+              end
+              vim.diagnostic.config({ virtual_lines = state })
+            end,
+          })
+          :map("<leader>ux")
 
         snacks.indent.enable()
       end,
