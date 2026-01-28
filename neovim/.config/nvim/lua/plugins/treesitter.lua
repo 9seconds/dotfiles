@@ -1,6 +1,14 @@
 -- treesitter configuration
 -- https://github.com/nvim-treesitter/nvim-treesitter
 
+local skip_treesitter = {
+  "ergoterm",
+  "fzf",
+  "lazy",
+  "lazy_backdrop",
+  "snacks_notif",
+}
+
 local treesitter_config = {
   "nvim-treesitter/nvim-treesitter",
   branch = "main",
@@ -47,6 +55,10 @@ local treesitter_config = {
     vim.api.nvim_create_autocmd({ "FileType" }, {
       group = augroup,
       callback = function(args)
+        if vim.list_contains(skip_treesitter, args.match) then
+          return
+        end
+
         local parser_name = vim.treesitter.language.get_lang(args.match)
         if not parser_name then
           return
