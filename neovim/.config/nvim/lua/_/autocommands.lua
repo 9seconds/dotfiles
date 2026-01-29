@@ -26,6 +26,18 @@ local function setup()
       end
     end,
   })
+
+  -- set diagnostic on change
+  vim.api.nvim_create_autocmd({ "BufEnter", "DiagnosticChanged" }, {
+    group = vim.api.nvim_create_augroup("9_Diagnostics", {}),
+    callback = vim.schedule_wrap(function()
+      if vim.bo.buftype == "" then
+        vim.diagnostic.setloclist({
+          open = false,
+        })
+      end
+    end),
+  })
 end
 
 setup()
