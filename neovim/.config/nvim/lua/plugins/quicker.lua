@@ -6,14 +6,14 @@ return {
   ft = "qf",
   keys = {
     {
-      "<leader>q",
+      "<leader>qq",
       function()
         require("quicker").toggle()
       end,
-      desc = "Quicker: Toggle",
+      desc = "Quicker: Toggle quickfix",
     },
     {
-      "<leader>a",
+      "<leader>ql",
       function()
         require("quicker").toggle({ loclist = true })
       end,
