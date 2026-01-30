@@ -2,12 +2,18 @@
 -- https://github.com/nvim-treesitter/nvim-treesitter
 
 local skip_treesitter = {
+  "blink-cmp-documentation",
+  "blink-cmp-menu",
+  "blink-cmp-menu",
+  "blink-cmp-signature",
   "ergoterm",
   "fzf",
   "lazy",
   "lazy_backdrop",
   "qf",
   "snacks_notif",
+  "snacks_terminal",
+  "snacks_win_backdrop",
 }
 
 local treesitter_config = {
