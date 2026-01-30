@@ -192,16 +192,18 @@ return {
           })
           :map("<leader>ux")
 
-        snacks.toggle({
-          id = "spellcheck",
-          name = "spellcheck",
-          get = function()
-            return vim.o.spell or false
-          end,
-          set = function(state)
-            vim.o.spell = state
-          end,
-        }):map("<leader>us")
+        snacks
+          .toggle({
+            id = "spellcheck",
+            name = "spellcheck",
+            get = function()
+              return vim.o.spell or false
+            end,
+            set = function(state)
+              vim.o.spell = state
+            end,
+          })
+          :map("<leader>us")
 
         snacks.indent.enable()
       end,
