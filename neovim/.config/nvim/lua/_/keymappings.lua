@@ -77,11 +77,6 @@ local function setup()
 
   -- disable default signature help
   imap("<c-s>", "<nop>")
-
-  -- spellcheck
-  nmap("<leader>?", function()
-    vim.o.spell = not vim.o.spell
-  end)
 end
 
 setup()
