@@ -13,6 +13,7 @@ usage = "latest"
 
 neovim = "latest"
 
+"cargo:git-absorb" = "latest"
 "cargo:mergiraf" = "latest"
 "cargo:shpool" = { version = "latest", os = ["linux"]}
 "cargo:tree-sitter-cli" = "latest"
@@ -22,7 +23,6 @@ neovim = "latest"
 "github:lusingander/serie" = "latest"
 "github:skim-rs/skim" = "latest"
 "github:starship/starship" = "latest"
-"github:tummychow/git-absorb" = "latest"
 bat = "latest"
 difftastic = "latest"
 fd = "latest"
