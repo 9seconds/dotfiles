@@ -8,7 +8,6 @@ python = "latest"
 rust = "latest"
 sops = "latest"
 uv = "latest"
-watchexec = "latest"
 usage = "latest"
 
 neovim = "latest"
