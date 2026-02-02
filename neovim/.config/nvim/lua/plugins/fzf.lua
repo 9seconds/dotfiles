@@ -185,7 +185,7 @@ return {
 
   opts = function()
     local base = {
-      "fzf-native",
+      { "fzf-native", "borderless-full" },
       fzf_colors = true,
       grep = {
         rg_glob = true,
@@ -201,6 +201,8 @@ return {
     if vim.fn.executable("sk") then
       base["fzf_bin"] = "sk"
       base["fzf_opts"] = { ["--algo"] = "frizbee" }
+      base["fzf_colors"] = false
+      base[1][1] = "skim"
     end
 
     return base
