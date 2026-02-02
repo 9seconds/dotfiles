@@ -183,17 +183,26 @@ return {
     "FzfLua",
   },
 
-  opts = {
-    "fzf-native",
-    fzf_colors = true,
-    grep = {
-      rg_glob = true,
-      rg_glob_fn = rg_glob,
-    },
-    keymap = {
-      fzf = {
-        ["ctrl-q"] = "select-all+accept",
+  opts = function()
+    local base = {
+      "fzf-native",
+      fzf_colors = true,
+      grep = {
+        rg_glob = true,
+        rg_glob_fn = rg_glob,
       },
-    },
-  },
+      keymap = {
+        fzf = {
+          ["ctrl-q"] = "select-all+accept",
+        },
+      },
+    }
+
+    if vim.fn.executable("sk") then
+      base["fzf_bin"] = "sk"
+      base["fzf_opts"] = { ["--algo"] = "frizbee" }
+    end
+
+    return base
+  end,
 }
