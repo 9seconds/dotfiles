@@ -16,6 +16,14 @@ return {
     {
       "S",
       function()
+        return require("flash").jump({ continue = true })
+      end,
+      mode = { "n", "x", "o" },
+      desc = "Jump with flash",
+    },
+    {
+      "T",
+      function()
         return require("flash").treesitter()
       end,
       mode = { "n", "x", "o" },
@@ -33,7 +41,6 @@ return {
 
   opts = {
     search = {
-      mode = "fuzzy",
       incremental = true,
     },
     jump = {
