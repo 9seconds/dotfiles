@@ -37,11 +37,29 @@ return {
       mode = "c",
       desc = "Switch flash search mode",
     },
+    {
+      "s",
+      function()
+        require("flash").remote()
+      end,
+      mode = "o",
+      desc = "Run flash in remote mode",
+    },
+    -- these are mappings for clever-f
+    "f",
+    "F",
+    "t",
+    "T",
+    ";",
+    ",",
   },
 
   opts = {
     search = {
       incremental = true,
+      mode = function(str)
+        return "\\<" .. str
+      end,
     },
     jump = {
       pos = "end",
@@ -52,8 +70,13 @@ return {
     },
     modes = {
       char = {
-        enabled = false,
+        enabled = true,
+        jump_labels = true,
       },
+    },
+    remote_op = {
+      restore = true,
+      motion = true,
     },
   },
 }

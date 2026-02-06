@@ -7,6 +7,7 @@ local skip_treesitter = {
   "blink-cmp-menu",
   "blink-cmp-signature",
   "ergoterm",
+  "flash_prompt",
   "fzf",
   "lazy",
   "lazy_backdrop",
