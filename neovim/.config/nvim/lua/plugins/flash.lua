@@ -11,15 +11,25 @@ return {
         return require("flash").jump()
       end,
       mode = { "n", "x", "o" },
-      desc = "Jump with flash",
+      desc = "Flash: Jump to the label",
     },
     {
       "S",
       function()
+        return require("flash").jump({
+          jump = { pos = "start" },
+        })
+      end,
+      mode = { "n", "x", "o" },
+      desc = "Flash: Jump to the start",
+    },
+    {
+      "gs",
+      function()
         return require("flash").jump({ continue = true })
       end,
       mode = { "n", "x", "o" },
-      desc = "Jump with flash",
+      desc = "Flash: Continue",
     },
     {
       "T",
