@@ -68,7 +68,10 @@ return {
     search = {
       incremental = true,
       mode = function(str)
-        return "\\<" .. str
+        if str:find("%u") then
+          return "\\<" .. str .. "\\C"
+        end
+        return "\\<" .. str .. "\\c"
       end,
     },
     jump = {
@@ -77,6 +80,9 @@ return {
     },
     label = {
       uppercase = false,
+      rainbox = {
+        enabled = true,
+      },
     },
     modes = {
       char = {
