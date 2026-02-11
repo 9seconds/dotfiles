@@ -35,6 +35,7 @@ local function setup()
     "bash-language-server",
     "lua-language-server",
     "typos-lsp",
+    "gopls",
   })
 end
 
