@@ -1,6 +1,13 @@
 -- flash as a modern leap
 -- https://github.com/folke/flash.nvim
 
+local function make_smart_case(value)
+  if value:find("%n") then
+    return value .. "\\C"
+  end
+  return value .. "\\c"
+end
+
 return {
   "folke/flash.nvim",
   version = "*",
@@ -8,7 +15,11 @@ return {
     {
       "s",
       function()
-        return require("flash").jump()
+        return require("flash").jump({
+          search = {
+            mode = make_smart_case,
+          },
+        })
       end,
       mode = { "n", "x", "o" },
       desc = "Flash: Jump to the label",
@@ -17,11 +28,15 @@ return {
       "S",
       function()
         return require("flash").jump({
-          jump = { pos = "start" },
+          search = {
+            mode = function(str)
+              return make_smart_case("\\<" .. str)
+            end,
+          },
         })
       end,
       mode = { "n", "x", "o" },
-      desc = "Flash: Jump to the start",
+      desc = "Flash: Jump searching only for beginning",
     },
     {
       "gs",
@@ -55,24 +70,11 @@ return {
       mode = "o",
       desc = "Run flash in remote mode",
     },
-    -- these are mappings for clever-f
-    "f",
-    "F",
-    "t",
-    "T",
-    ";",
-    ",",
   },
 
   opts = {
     search = {
       incremental = true,
-      mode = function(str)
-        if str:find("%u") then
-          return "\\<" .. str .. "\\C"
-        end
-        return "\\<" .. str .. "\\c"
-      end,
     },
     jump = {
       pos = "end",
@@ -86,7 +88,6 @@ return {
     },
     modes = {
       char = {
-        enabled = true,
         jump_labels = true,
       },
     },
