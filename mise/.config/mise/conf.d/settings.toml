@@ -4,5 +4,8 @@
 # https://mise.jdx.dev/configuration/settings.html#auto_install
 cache_prune_age = "7d"
 
+# https://mise.jdx.dev/tasks/task-configuration.html#env_shell_expand
+env_shell_expand = false
+
 # https://mise.jdx.dev/configuration/settings.html#go_default_packages_file
 go_default_packages_file = "~/.cache/mise/go-packages"
