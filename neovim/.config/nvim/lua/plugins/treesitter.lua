@@ -11,6 +11,7 @@ local skip_treesitter = {
   "fzf",
   "lazy",
   "lazy_backdrop",
+  "oil",
   "qf",
   "snacks_notif",
   "snacks_terminal",
