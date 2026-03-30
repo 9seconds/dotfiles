@@ -30,13 +30,15 @@ local function setup()
     },
   })
 
-  vim.lsp.enable({
-    "basedpyright",
-    "bash-language-server",
-    "lua-language-server",
-    "typos-lsp",
-    "gopls",
-  })
+  vim.schedule_wrap(function()
+    vim.lsp.enable({
+      "basedpyright",
+      "bash-language-server",
+      "lua-language-server",
+      "typos-lsp",
+      "gopls",
+    })
+  end)
 end
 
 setup()
