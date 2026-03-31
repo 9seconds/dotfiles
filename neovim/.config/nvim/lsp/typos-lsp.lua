@@ -4,7 +4,7 @@
 -- https://github.com/tekumara/typos-lsp/blob/main/docs/neovim-lsp-config.md
 -- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/configs/typos_lsp.lua
 
-return require("_.lsp").define("typos-lsp", {
+return {
   cmd = {
     "typos-lsp",
   },
@@ -12,4 +12,4 @@ return require("_.lsp").define("typos-lsp", {
     config = os.getenv("TYPOS_CONFIG_PATH"),
     diagnosticSeverity = "Hint",
   },
-})
+}

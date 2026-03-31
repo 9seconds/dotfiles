@@ -1,7 +1,7 @@
 -- https://github.com/LuaLS/lua-language-server
 -- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/configs/lua_ls.lua
 
-return require("_.lsp").define("lua-language-server", {
+return {
   cmd = {
     "lua-language-server",
   },
@@ -19,4 +19,4 @@ return require("_.lsp").define("lua-language-server", {
       },
     },
   },
-})
+}

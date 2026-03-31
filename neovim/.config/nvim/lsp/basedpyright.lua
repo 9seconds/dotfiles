@@ -1,7 +1,7 @@
 -- https://docs.basedpyright.com/latest/
 -- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/configs/basedpyright.lua
 
-return require("_.lsp").define("basedpyright", {
+return {
   cmd = {
     "basedpyright-langserver",
     "--stdio",
@@ -31,4 +31,4 @@ return require("_.lsp").define("basedpyright", {
       },
     },
   },
-})
+}

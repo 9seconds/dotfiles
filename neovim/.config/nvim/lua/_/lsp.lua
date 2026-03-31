@@ -1,17 +1,14 @@
 -- different LSP helpers
 
-local M = {}
+local function enable(server_name)
+  vim.schedule(function()
+    vim.lsp.enable(server_name)
+  end)
+end
 
-function M.define(server_name, opts)
-  if vim.g.lsp_configs[server_name] == false then
-    return {}
-  end
-
-  return vim.tbl_deep_extend(
-    "force",
-    opts,
-    vim.g.lsp_configs[server_name] or {}
-  )
+local function define(server_name, opts)
+  vim.lsp.config(server_name, opts)
+  enable(server_name)
 end
 
 local function setup()
@@ -29,18 +26,10 @@ local function setup()
       },
     },
   })
-
-  vim.schedule_wrap(function()
-    vim.lsp.enable({
-      "basedpyright",
-      "bash-language-server",
-      "lua-language-server",
-      "typos-lsp",
-      "gopls",
-    })
-  end)
 end
 
-setup()
-
-return M
+return {
+  define = define,
+  enable = enable,
+  setup = setup,
+}

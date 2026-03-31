@@ -1,7 +1,7 @@
 -- https://github.com/bash-lsp/bash-language-server
 -- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/configs/bashls.lua
 
-return require("_.lsp").define("bash-language-server", {
+return {
   cmd = {
     "bash-language-server",
     "start",
@@ -11,4 +11,4 @@ return require("_.lsp").define("bash-language-server", {
     "shell",
     "sh",
   },
-})
+}

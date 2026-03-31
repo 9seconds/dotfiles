@@ -1,6 +1,6 @@
 -- https://github.com/neovim/nvim-lspconfig/blob/master/lsp/gopls.lua
 
-return require("_.lsp").define("gopls", {
+return {
   cmd = {
     "gopls",
   },
@@ -10,4 +10,4 @@ return require("_.lsp").define("gopls", {
     "gowork",
     "gotmpl",
   },
-})
+}
