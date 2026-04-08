@@ -85,5 +85,6 @@ require("_.pack").add(
         "minipairs_bs",
       }
     )
-  end
+  end,
+  true
 )
