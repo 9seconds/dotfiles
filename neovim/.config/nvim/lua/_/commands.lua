@@ -13,6 +13,17 @@ local function setup()
   vim.cmd(
     "command! -nargs=+ -complete=file LGrep noautocmd lgrep! <args> | redraw! | lopen"
   )
+
+  vim.api.nvim_create_user_command("PackUpdates", function()
+    vim.pack.update()
+  end, {
+      desc = "Update all plugins"
+    })
+  vim.api.nvim_create_user_command("PackLock", function()
+    vim.pack.update(nil, {target = "lockfile"})
+  end, {
+      desc = "Install from a lockfile"
+    })
 end
 
 setup()
