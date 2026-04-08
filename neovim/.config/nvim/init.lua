@@ -6,6 +6,11 @@
 -- https://neovim.io/doc/user/lua/#vim.loader.enable()
 vim.loader.enable()
 
+-- https://neovim.io/doc/user/lua/#ui2
+require('vim._core.ui2').enable({
+  enable = true,
+})
+
 local datapath = vim.fn.stdpath("data") .. "/lazy"
 local lazypath = datapath .. "/lazy.nvim"
 
