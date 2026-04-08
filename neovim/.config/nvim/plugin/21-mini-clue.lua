@@ -43,6 +43,13 @@ require("_.pack").add(
         { mode = "x", keys = "z" },
       },
 
+      window = {
+        delay = 500,
+        config = {
+          width = "auto"
+        }
+      },
+
       clues = {
         -- Enhance this by adding descriptions for <Leader> mapping groups
         miniclue.gen_clues.square_brackets(),
