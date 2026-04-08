@@ -20,40 +20,17 @@ require("_.pack").add(
         ["<C-x>"] = "actions.select_split",
       },
     })
+
+    vim.keymap.set(
+      "n",
+      "-",
+      function()
+        require("oil").open()
+      end,
+      {
+        desc = "Oil: Open a directory"
+      }
+    )
   end,
   true
 )
---
--- return {
---   version = "*",
---   dependencies = {
---     "nvim-mini/mini.icons",
---   },
---   keys = {
---     {
---       "-",
---       function()
---         require("oil").open()
---       end,
---       mode = { "n" },
---       desc = "Open directory with Oil",
---     },
---     {
---       "<leader>-",
---       function()
---         require("oil").open_float(
---           vim.env["9SECONDS_DIR_DOTFILES"] or "~/.dotfiles"
---         )
---       end,
---       mode = { "n" },
---       desc = "Open directory with Oil within a floating window",
---     },
---   },
---   cmd = "Oil",
---
---   opts = {
---   },
---
---   init = function()
---   end,
--- }
