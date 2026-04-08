@@ -1,0 +1,59 @@
+-- file buffer manager
+-- https://github.com/stevearc/oil.nvim
+
+vim.g.loaded_netrwPlugin = 1
+vim.g.loaded_netrw = 1
+
+require("_.pack").add(
+  "https://github.com/stevearc/oil.nvim",
+  vim.version.range("*"),
+  function()
+    require("oil").setup({
+      columns = {
+        "icon",
+        "permissions",
+        "size",
+      },
+      keymaps = {
+        ["<C-h>"] = false,
+        ["<C-l>"] = false,
+        ["<C-x>"] = "actions.select_split",
+      },
+    })
+  end,
+  true
+)
+--
+-- return {
+--   version = "*",
+--   dependencies = {
+--     "nvim-mini/mini.icons",
+--   },
+--   keys = {
+--     {
+--       "-",
+--       function()
+--         require("oil").open()
+--       end,
+--       mode = { "n" },
+--       desc = "Open directory with Oil",
+--     },
+--     {
+--       "<leader>-",
+--       function()
+--         require("oil").open_float(
+--           vim.env["9SECONDS_DIR_DOTFILES"] or "~/.dotfiles"
+--         )
+--       end,
+--       mode = { "n" },
+--       desc = "Open directory with Oil within a floating window",
+--     },
+--   },
+--   cmd = "Oil",
+--
+--   opts = {
+--   },
+--
+--   init = function()
+--   end,
+-- }

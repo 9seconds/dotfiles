@@ -16,7 +16,9 @@ function M.add(path, version, config, lazy)
       load = function(data)
         local function loader()
           vim.cmd.packadd(data.spec.name)
-          config()
+          if config then
+            config()
+          end
         end
 
         if lazy == nil or lazy == false then

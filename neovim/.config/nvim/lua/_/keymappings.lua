@@ -63,17 +63,11 @@ local function setup()
   nmap("<c-l>", "<c-w>l")
   vmap("<c-l>", "<c-w>l")
 
-  nmap("<leader><space>", "<cmd>update<cr>", { silent = true })
-
   -- select just pasted
   nmap("gp", "`[v`]")
 
   -- clear highlight
   nmap("<leader>l", "<cmd>nohlsearch<cr>", { silent = true })
-
-  -- exit insert mode
-  imap("jj", "<esc>")
-  imap("kk", "<esc>")
 
   -- disable default signature help
   imap("<c-s>", "<nop>")
