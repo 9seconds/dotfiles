@@ -66,10 +66,10 @@ local function rg_glob(query)
   return new_query, flags
 end
 
-require("_.pack").add(
-  "https://github.com/ibhagwan/fzf-lua",
-  nil,
-  function()
+require("_.pack").add({
+  url = "https://github.com/ibhagwan/fzf-lua",
+  lazy = true,
+  config = function()
     local opts = {
       { "fzf-native", "borderless-full" },
       fzf_colors = true,
@@ -165,5 +165,4 @@ require("_.pack").add(
         return require("fzf-lua").diagnostics_workspace({})
     end)
   end,
-  true
-)
+})

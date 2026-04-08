@@ -4,10 +4,11 @@
 vim.g.loaded_netrwPlugin = 1
 vim.g.loaded_netrw = 1
 
-require("_.pack").add(
-  "https://github.com/stevearc/oil.nvim",
-  vim.version.range("*"),
-  function()
+require("_.pack").add({
+  url = "https://github.com/stevearc/oil.nvim",
+  releases = true,
+  lazy = true,
+  config = function()
     require("oil").setup({
       columns = {
         "icon",
@@ -32,5 +33,4 @@ require("_.pack").add(
       }
     )
   end,
-  true
-)
+})

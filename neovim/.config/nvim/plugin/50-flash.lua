@@ -23,10 +23,11 @@ local function make_smart_case(value)
   return value .. "\\c"
 end
 
-require("_.pack").add(
-  "https://github.com/folke/flash.nvim",
-  vim.version.range("*"),
-  function()
+require("_.pack").add({
+  url = "https://github.com/folke/flash.nvim",
+  releases = true,
+  lazy = true,
+  config = function()
     require("flash").setup({
     search = {
       incremental = true,
@@ -81,5 +82,4 @@ require("_.pack").add(
     end, "o")
 
   end,
-  true
-)
+})

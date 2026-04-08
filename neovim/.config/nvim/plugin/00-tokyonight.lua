@@ -1,10 +1,10 @@
 -- tokyonight colorscheme
 -- https://github.com/folke/tokyonight.nvim
 
-require("_.pack").add(
-  "https://github.com/folke/tokyonight.nvim",
-  vim.version.range("*"),
-  function()
+require("_.pack").add({
+  url = "https://github.com/folke/tokyonight.nvim",
+  releases = true,
+  config = function()
     vim.o.background = "dark"
 
     require("tokyonight").setup({
@@ -17,4 +17,4 @@ require("_.pack").add(
 
     vim.cmd("colorscheme tokyonight")
   end
-)
+})

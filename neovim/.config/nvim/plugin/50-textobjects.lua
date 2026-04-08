@@ -1,10 +1,10 @@
 -- various textobjects
 -- https://github.com/chrisgrieser/nvim-various-textobjs
 
-require("_.pack").add(
-  "https://github.com/chrisgrieser/nvim-various-textobjs",
-  nil,
-  function()
+require("_.pack").add({
+  url = "https://github.com/chrisgrieser/nvim-various-textobjs",
+  lazy = true,
+  config = function()
     require("various-textobjs").setup({
     keymaps = {
       useDefaults = true,
@@ -16,5 +16,4 @@ require("_.pack").add(
     },
     })
   end,
-  true
-)
+})

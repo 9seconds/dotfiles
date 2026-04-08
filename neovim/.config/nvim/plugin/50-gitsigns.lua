@@ -16,10 +16,11 @@ local function keymap(name, key, func, mode)
   )
 end
 
-require("_.pack").add(
-  "https://github.com/lewis6991/gitsigns.nvim",
-  vim.version.range("*"),
-  function()
+require("_.pack").add({
+  url = "https://github.com/lewis6991/gitsigns.nvim",
+  releases = true,
+  lazy = {"BufRead", "BufNew"},
+  config = function()
     require("gitsigns").setup({})
 
     keymap("Preview hunk", "P", function()
@@ -69,5 +70,4 @@ require("_.pack").add(
       }
     )
   end,
-  {"BufRead", "BufNew"}
-)
+})

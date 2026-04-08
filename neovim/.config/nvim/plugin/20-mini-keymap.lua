@@ -1,10 +1,11 @@
 -- better escape and multistep keymapping
 -- https://github.com/nvim-mini/mini.keymap
 
-require("_.pack").add(
-  "https://github.com/nvim-mini/mini.keymap",
-  vim.version.range("*"),
-  function()
+require("_.pack").add({
+  url = "https://github.com/nvim-mini/mini.keymap",
+  releases = true,
+  lazy = true,
+  config = function()
     local combo = require("mini.keymap").map_combo
     local multi = require("mini.keymap").map_multistep
 
@@ -44,7 +45,7 @@ require("_.pack").add(
     )
 
     -- fast save
-    combo("n", "<leader><leader>", "<cmd>update<cr>", {desc = "Update file"})
+    combo("n", "<leader><leader>", "<cmd>update<cr>", {silent = false, desc = "Update file"})
 
     -- supertab
     multi(
@@ -116,5 +117,4 @@ require("_.pack").add(
       }
     )
   end,
-  true
-)
+})

@@ -52,10 +52,10 @@ local ensure_installed = {
 }
 
 
-require("_.pack").add(
-  "https://github.com/neovim-treesitter/nvim-treesitter",
-  "main",
-  function()
+require("_.pack").add({
+  url = "https://github.com/neovim-treesitter/nvim-treesitter",
+  releases = "main",
+  config = function()
     local mod = require("nvim-treesitter")
 
     mod.install(ensure_installed)
@@ -87,4 +87,4 @@ require("_.pack").add(
       }
     )
   end
-)
+})

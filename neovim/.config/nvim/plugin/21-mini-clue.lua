@@ -1,10 +1,10 @@
 -- keyboard hints
 -- https://github.com/nvim-mini/mini.clue
 
-require("_.pack").add(
-  "https://github.com/nvim-mini/mini.clue",
-  vim.version.range("*"),
-  function()
+require("_.pack").add({
+  url = "https://github.com/nvim-mini/mini.clue",
+  releases = true,
+  config = function()
     local miniclue = require("mini.clue")
 
     miniclue.setup({
@@ -62,4 +62,4 @@ require("_.pack").add(
       },
     })
   end
-)
+})

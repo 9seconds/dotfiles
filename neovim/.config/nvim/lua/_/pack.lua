@@ -4,33 +4,37 @@ local M = {}
 
 local augroup = vim.api.nvim_create_augroup("9_VimPack", {})
 
-function M.add(path, version, config, lazy)
+function M.add(opts)
+  if opts.releases == true then
+    opts.releases = vim.version.range("*")
+  end
+
   vim.pack.add(
     {
       {
-        src = path,
-        version = version,
+        src = opts.url,
+        version = opts.releases,
       }
     },
     {
       load = function(data)
         local function loader()
           vim.cmd.packadd(data.spec.name)
-          if config then
-            config()
+          if opts.config then
+            opts.config()
           end
         end
 
-        if lazy == nil or lazy == false then
+        if opts.lazy == nil or opts.lazy == false then
           return loader()
         end
 
-        if lazy == true then
+        if opts.lazy == true then
           return vim.schedule(loader)
         end
 
         vim.api.nvim_create_autocmd(
-          lazy,
+          opts.lazy,
           {
             once = true,
             group = augroup,

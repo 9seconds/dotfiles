@@ -1,10 +1,11 @@
 -- snippet support
 -- https://github.com/nvim-mini/mini.snippets
 
-require("_.pack").add(
-  "https://github.com/nvim-mini/mini.snippets",
-  vim.version.range("*"),
-  function()
+require("_.pack").add({
+  url = "https://github.com/nvim-mini/mini.snippets",
+  releases = true,
+  lazy = true,
+  config = function()
     local mod = require("mini.snippets")
 
     mod.setup({
@@ -47,5 +48,4 @@ require("_.pack").add(
       }
     )
   end,
-  true
-)
+})

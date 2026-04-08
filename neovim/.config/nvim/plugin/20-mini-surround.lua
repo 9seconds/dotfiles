@@ -1,10 +1,11 @@
 -- surround plugin
 -- https://github.com/nvim-mini/mini.surround
 
-require("_.pack").add(
-  "https://github.com/nvim-mini/mini.surround",
-  vim.version.range("*"),
-  function()
+require("_.pack").add({
+  url = "https://github.com/nvim-mini/mini.surround",
+  releases = true,
+  lazy = true,
+  config = function()
     require("mini.surround").setup({
       mappings = {
       add = "gsa",
@@ -17,5 +18,4 @@ require("_.pack").add(
       }
     })
   end,
-  true
-)
+})
