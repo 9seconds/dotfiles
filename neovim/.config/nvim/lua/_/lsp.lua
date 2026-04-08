@@ -6,11 +6,6 @@ local function enable(server_name)
   end)
 end
 
-local function define(server_name, opts)
-  vim.lsp.config(server_name, opts)
-  enable(server_name)
-end
-
 local function setup()
   vim.lsp.inlay_hint.enable(false)
 
@@ -29,7 +24,6 @@ local function setup()
 end
 
 return {
-  define = define,
   enable = enable,
   setup = setup,
 }
