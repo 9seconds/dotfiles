@@ -68,9 +68,6 @@ local function setup()
 
   -- clear highlight
   nmap("<leader>l", "<cmd>nohlsearch<cr>", { silent = true })
-
-  -- disable default signature help
-  imap("<c-s>", "<nop>")
 end
 
 setup()
