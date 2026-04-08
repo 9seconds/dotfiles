@@ -44,7 +44,7 @@ require("_.pack").add(
       },
 
       window = {
-        delay = 500,
+        delay = 300,
         config = {
           width = "auto"
         }

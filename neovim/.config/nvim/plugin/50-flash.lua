@@ -43,7 +43,7 @@ require("_.pack").add(
     },
     modes = {
       char = {
-        jump_labels = true,
+        enabled = false,
       },
     },
     remote_op = {

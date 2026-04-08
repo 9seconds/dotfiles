@@ -85,6 +85,36 @@ require("_.pack").add(
         "minipairs_bs",
       }
     )
+
+    -- gitsigns integration
+    multi(
+      {"n", "x"},
+      "]h",
+      {
+        {
+          condition = function()
+            return package.loaded["gitsigns"] and not vim.wo.diff
+          end,
+          action = function()
+            require("gitsigns").nav_hunk("next")
+          end
+        }
+      }
+    )
+    multi(
+      {"n", "x"},
+      "[h",
+      {
+        {
+          condition = function()
+            return package.loaded["gitsigns"] and not vim.wo.diff
+          end,
+          action = function()
+            require("gitsigns").nav_hunk("prev")
+          end
+        }
+      }
+    )
   end,
   true
 )
