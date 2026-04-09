@@ -37,6 +37,7 @@ require("_.pack").add({
           require("blink.cmp").select_next()
         end,
       },
+      "blink_next",
       "minisnippets_expand",
       "jump_after_tsnode",
       "jump_after_close",
@@ -49,6 +50,7 @@ require("_.pack").add({
           require("blink.cmp").select_prev()
         end,
       },
+      "blink_prev",
       "jump_before_tsnode",
       "jump_before_open",
     })
@@ -61,6 +63,7 @@ require("_.pack").add({
           require("blink.cmp").accept()
         end,
       },
+      "blink_accept",
       "minipairs_cr",
     })
     multi("i", "<BS>", {
