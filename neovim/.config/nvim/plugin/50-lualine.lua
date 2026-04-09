@@ -30,6 +30,14 @@ require("_.pack").add({
     sections = {
       lualine_a = {
         {
+            function()
+              if vim.g.copilot_mode then
+                return ""
+              end
+              return ""
+            end
+        },
+        {
           function()
             if STATE.codecompanion_requests > 0 then
               return "󰭻"

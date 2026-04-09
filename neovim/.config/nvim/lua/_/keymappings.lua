@@ -63,6 +63,9 @@ local function setup()
   nmap("<c-l>", "<c-w>l")
   vmap("<c-l>", "<c-w>l")
 
+  -- fast save
+  nmap("<leader><leader>", "<cmd>update<cr>", { silent = false })
+
   -- select just pasted
   nmap("gp", "`[v`]")
 

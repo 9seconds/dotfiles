@@ -1,6 +1,8 @@
 -- folke mini plugins
 -- https://github.com/folke/snacks.nvim
 
+local PREFIX = "<leader>s"
+
 require("_.pack").add({
   url = "https://github.com/folke/snacks.nvim",
   releases = true,
@@ -94,10 +96,10 @@ require("_.pack").add({
     })
 
 
-        mod.toggle.inlay_hints():map("<leader>sh")
-        mod.toggle.dim():map("<leader>sd")
-        mod.toggle.indent():map("<leader>si")
-        mod.toggle.treesitter():map("<leader>st")
+        mod.toggle.inlay_hints():map(PREFIX .. "h")
+        mod.toggle.dim():map(PREFIX .. "m")
+        mod.toggle.indent():map(PREFIX .. "i")
+        mod.toggle.treesitter():map(PREFIX .. "t")
 
         local state_diagnostic = false
         mod
@@ -119,7 +121,7 @@ require("_.pack").add({
               vim.diagnostic.config({ virtual_lines = state })
             end,
           })
-          :map("<leader>sx")
+          :map(PREFIX .. "d")
 
         mod
           .toggle({
@@ -132,7 +134,26 @@ require("_.pack").add({
               vim.o.spell = state
             end,
           })
-          :map("<leader>ss")
+          :map(PREFIX .. "s")
+
+        mod
+          .toggle({
+            id = "copilot",
+            name = "copilot completions",
+            get = function()
+              return vim.g.copilot_mode or false
+            end,
+            set = function(state)
+              vim.g.copilot_mode = state
+              vim.api.nvim_exec_autocmds(
+                "User",
+                {
+                  pattern = "CopilotRequested"
+                }
+              )
+            end,
+          })
+          :map(PREFIX .. "c")
 
         mod.indent.enable()
 
@@ -156,7 +177,7 @@ require("_.pack").add({
     )
     vim.keymap.set(
       "n",
-      "<leader>sg",
+      PREFIX .. "g",
       function()
         require("snacks").lazygit()
       end,

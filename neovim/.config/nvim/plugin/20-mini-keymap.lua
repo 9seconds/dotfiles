@@ -1,6 +1,10 @@
 -- better escape and multistep keymapping
 -- https://github.com/nvim-mini/mini.keymap
 
+local function is_copilot_active()
+  return package.loaded["blink.cmp"] and vim.g.copilot_mode
+end
+
 require("_.pack").add({
   url = "https://github.com/nvim-mini/mini.keymap",
   releases = true,
@@ -44,16 +48,18 @@ require("_.pack").add({
       }
     )
 
-    -- fast save
-    combo("n", "<leader><leader>", "<cmd>update<cr>", {silent = false, desc = "Update file"})
-
     -- supertab
     multi(
       "i",
       "<Tab>",
       {
         "minisnippets_next",
-        "blink_next",
+        {
+          condition = is_copilot_active,
+          action = function ()
+            require("blink.cmp").select_next()
+          end
+        },
         "minisnippets_expand",
         "jump_after_tsnode",
         "jump_after_close",
@@ -64,7 +70,12 @@ require("_.pack").add({
       "<S-Tab>",
       {
         "minisnippets_prev",
-        "blink_prev",
+        {
+          condition = is_copilot_active,
+          action = function ()
+            require("blink.cmp").select_prev()
+          end
+        },
         "jump_before_tsnode",
         "jump_before_open",
       }
@@ -75,7 +86,12 @@ require("_.pack").add({
       "i",
       "<CR>",
       {
-        "blink_accept",
+        {
+          condition = is_copilot_active,
+          action = function ()
+            require("blink.cmp").accept()
+          end
+        },
         "minipairs_cr",
       }
     )

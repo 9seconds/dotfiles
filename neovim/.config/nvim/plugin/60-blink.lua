@@ -40,7 +40,15 @@ require("_.pack").add({
             enabled = false,
           }
         },
+        ghost_text = {
+          enabled = function()
+            return vim.g.copilot_mode or false
+          end,
+        },
         menu = {
+        auto_show = function()
+          return not vim.g.copilot_mode
+        end,
         draw = {
           -- see https://github.com/xzbdmw/colorful-menu.nvim
           columns = { { "kind_icon" }, { "label", gap = 1 } },
@@ -71,7 +79,12 @@ require("_.pack").add({
     },
 
     sources = {
-      default = { "lsp", "copilot", "snippets", "path" },
+      default = function()
+        if vim.g.copilot_mode then
+          return { "copilot" }
+        end
+        return { "lsp", "snippets", "path" }
+      end,
       providers = {
           copilot = {
           name = "copilot",
@@ -85,5 +98,6 @@ require("_.pack").add({
       },
     },
     })
+
   end
 })
