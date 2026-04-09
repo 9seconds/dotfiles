@@ -21,7 +21,10 @@ require("_.pack").add({
   releases = true,
   lazy = {"BufRead", "BufNew"},
   config = function()
-    require("gitsigns").setup({})
+    require("gitsigns").setup({
+      numhl = true,
+      signcolumn = false,
+    })
 
     keymap("Preview hunk", "P", function()
         require("gitsigns").preview_hunk()
