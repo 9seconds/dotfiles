@@ -21,7 +21,7 @@ require("_.pack").add({
       -- https://cmp.saghen.dev/configuration/completion.html
       completion = {
         keyword = {
-          range = "full"
+          range = "full",
         },
         trigger = {
           show_on_trigger_character = true,
@@ -30,7 +30,7 @@ require("_.pack").add({
           selection = {
             preselect = true,
             auto_insert = true,
-          }
+          },
         },
         documentation = {
           auto_show = false,
@@ -38,7 +38,7 @@ require("_.pack").add({
         accept = {
           auto_brackets = {
             enabled = false,
-          }
+          },
         },
         ghost_text = {
           enabled = function()
@@ -46,58 +46,59 @@ require("_.pack").add({
           end,
         },
         menu = {
-        auto_show = function()
-          return not vim.g.copilot_mode
-        end,
-        draw = {
-          -- see https://github.com/xzbdmw/colorful-menu.nvim
-          columns = { { "kind_icon" }, { "label", gap = 1 } },
-          components = {
-            label = {
-              text = function(ctx)
-                return require("colorful-menu").blink_components_text(ctx)
-              end,
-              highlight = function(ctx)
-                return require("colorful-menu").blink_components_highlight(ctx)
-              end,
+          auto_show = function()
+            return not vim.g.copilot_mode
+          end,
+          draw = {
+            -- see https://github.com/xzbdmw/colorful-menu.nvim
+            columns = { { "kind_icon" }, { "label", gap = 1 } },
+            components = {
+              label = {
+                text = function(ctx)
+                  return require("colorful-menu").blink_components_text(ctx)
+                end,
+                highlight = function(ctx)
+                  return require("colorful-menu").blink_components_highlight(
+                    ctx
+                  )
+                end,
+              },
             },
+            treesitter = { "lsp" },
           },
-          treesitter = { "lsp" },
         },
-        }
       },
 
       fuzzy = {
         implementation = "rust",
       },
 
-    signature = {
-      enabled = false,
-      window = {
-        show_documentation = true,
+      signature = {
+        enabled = false,
+        window = {
+          show_documentation = true,
+        },
       },
-    },
 
-    sources = {
-      default = function()
-        if vim.g.copilot_mode then
-          return { "copilot" }
-        end
-        return { "lsp", "snippets", "path" }
-      end,
-      providers = {
+      sources = {
+        default = function()
+          if vim.g.copilot_mode then
+            return { "copilot" }
+          end
+          return { "lsp", "snippets", "path" }
+        end,
+        providers = {
           copilot = {
-          name = "copilot",
-          module = "blink-copilot",
-          score_offset = 100,
-          async = true,
-          }
+            name = "copilot",
+            module = "blink-copilot",
+            score_offset = 100,
+            async = true,
+          },
+        },
+        per_filetype = {
+          codecompanion = { "codecompanion" },
+        },
       },
-      per_filetype = {
-        codecompanion = { "codecompanion" },
-      },
-    },
     })
-
-  end
+  end,
 })

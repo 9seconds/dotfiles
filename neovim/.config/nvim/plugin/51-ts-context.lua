@@ -7,7 +7,7 @@ require("_.pack").add({
     require("treesitter-context").setup({
       enable = true,
       max_lines = 10,
-      separator = "-"
+      separator = "-",
     })
-  end
+  end,
 })

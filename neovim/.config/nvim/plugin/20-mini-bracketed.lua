@@ -4,8 +4,8 @@
 require("_.pack").add({
   url = "https://github.com/nvim-mini/mini.bracketed",
   releases = true,
-  lazy = {"BufRead", "BufNew"},
+  lazy = { "BufRead", "BufNew" },
   config = function()
     require("mini.bracketed").setup()
-  end
+  end,
 })

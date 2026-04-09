@@ -11,5 +11,5 @@ require("_.pack").add({
   url = "https://github.com/andymass/vim-matchup",
   config = function()
     require("match-up").setup({})
-  end
+  end,
 })

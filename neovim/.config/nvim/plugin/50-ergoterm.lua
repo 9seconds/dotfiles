@@ -247,8 +247,6 @@ require("_.pack").add({
       })
     end
 
-
-
     require("ergoterm").setup({
       terminal_defaults = {
         shell = vim.env.SHELL or vim.o.shell or "/bin/bash",
@@ -273,14 +271,9 @@ require("_.pack").add({
     })
 
     local function keymap(key, action, desc)
-      vim.keymap.set(
-        "n",
-        KEYS:alt(key),
-        action,
-        {
-          desc = "ErgoTerm: " .. desc
-        }
-      )
+      vim.keymap.set("n", KEYS:alt(key), action, {
+        desc = "ErgoTerm: " .. desc,
+      })
     end
 
     keymap("right", term_open("right"), "Open new vertical terminal")
@@ -288,5 +281,5 @@ require("_.pack").add({
     keymap("tab", term_open("tab"), "Open new tab terminal")
     keymap("float", term_open("float"), "Open new float terminal")
     keymap("choose", choose, "Choose terminal")
-  end
+  end,
 })

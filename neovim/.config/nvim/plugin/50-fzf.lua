@@ -2,14 +2,9 @@
 -- https://github.com/ibhagwan/fzf-lua
 
 local function keymap(name, key, func)
-  vim.keymap.set(
-    "n",
-    "<leader>t" .. key,
-    func,
-    {
-      desc = "FZF: " .. name
-    }
-  )
+  vim.keymap.set("n", "<leader>t" .. key, func, {
+    desc = "FZF: " .. name,
+  })
 end
 
 local function rg_glob(query)
@@ -104,7 +99,7 @@ require("_.pack").add({
     end)
 
     keymap("Buffers", "b", function()
-        return require("fzf-lua").buffers({})
+      return require("fzf-lua").buffers({})
     end)
 
     keymap("Symbols", "s", function()
@@ -130,39 +125,39 @@ require("_.pack").add({
     end)
 
     keymap("Grep", "f", function()
-        return require("fzf-lua").live_grep({})
+      return require("fzf-lua").live_grep({})
     end)
 
     keymap("Grep current buffer", "F", function()
-        return require("fzf-lua").grep_curbuf({})
+      return require("fzf-lua").grep_curbuf({})
     end)
 
     keymap("Git status", "l", function()
-        return require("fzf-lua").git_status({})
+      return require("fzf-lua").git_status({})
     end)
 
     keymap("References", "r", function()
-        return require("fzf-lua").lsp_references({})
+      return require("fzf-lua").lsp_references({})
     end)
 
     keymap("Incoming calls", "c", function()
-        return require("fzf-lua").lsp_incoming_calls({})
+      return require("fzf-lua").lsp_incoming_calls({})
     end)
 
     keymap("Outgoing calls", "C", function()
-        return require("fzf-lua").lsp_outgoing_calls({})
+      return require("fzf-lua").lsp_outgoing_calls({})
     end)
 
     keymap("Resume", "y", function()
-        return require("fzf-lua").resume({})
+      return require("fzf-lua").resume({})
     end)
 
     keymap("Diagnostics for current buffer", "d", function()
-        return require("fzf-lua").diagnostics_document({})
+      return require("fzf-lua").diagnostics_document({})
     end)
 
     keymap("Diagnostics for workspace", "D", function()
-        return require("fzf-lua").diagnostics_workspace({})
+      return require("fzf-lua").diagnostics_workspace({})
     end)
   end,
 })

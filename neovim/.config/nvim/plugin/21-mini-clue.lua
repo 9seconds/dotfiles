@@ -46,8 +46,8 @@ require("_.pack").add({
       window = {
         delay = 300,
         config = {
-          width = "auto"
-        }
+          width = "auto",
+        },
       },
 
       clues = {
@@ -61,5 +61,5 @@ require("_.pack").add({
         miniclue.gen_clues.z(),
       },
     })
-  end
+  end,
 })

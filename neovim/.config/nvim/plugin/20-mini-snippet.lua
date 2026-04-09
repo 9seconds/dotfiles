@@ -35,17 +35,12 @@ require("_.pack").add({
       },
     })
 
-    vim.keymap.set(
-      {"n", "x"},
-      "<leader>c",
-      function()
-        while mod.session.get() do
-          mod.session.stop()
-        end
-      end,
-      {
-        desc = "mini.snippets: Stop sessions"
-      }
-    )
+    vim.keymap.set({ "n", "x" }, "<leader>c", function()
+      while mod.session.get() do
+        mod.session.stop()
+      end
+    end, {
+      desc = "mini.snippets: Stop sessions",
+    })
   end,
 })

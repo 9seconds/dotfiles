@@ -16,5 +16,5 @@ require("_.pack").add({
     })
 
     vim.cmd("colorscheme tokyonight")
-  end
+  end,
 })

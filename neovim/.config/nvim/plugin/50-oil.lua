@@ -22,15 +22,10 @@ require("_.pack").add({
       },
     })
 
-    vim.keymap.set(
-      "n",
-      "-",
-      function()
-        require("oil").open()
-      end,
-      {
-        desc = "Oil: Open a directory"
-      }
-    )
+    vim.keymap.set("n", "-", function()
+      require("oil").open()
+    end, {
+      desc = "Oil: Open a directory",
+    })
   end,
 })

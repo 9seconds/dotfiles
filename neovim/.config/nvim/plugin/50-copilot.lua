@@ -10,7 +10,7 @@ require("_.pack").add({
       },
       suggestion = {
         enabled = false,
-      }
+      },
     })
-  end
+  end,
 })

@@ -6,14 +6,14 @@ require("_.pack").add({
   lazy = true,
   config = function()
     require("various-textobjs").setup({
-    keymaps = {
-      useDefaults = true,
-    },
-    textobjs = {
-      subword = {
-        noCamelToPascalCase = false,
+      keymaps = {
+        useDefaults = true,
       },
-    },
+      textobjs = {
+        subword = {
+          noCamelToPascalCase = false,
+        },
+      },
     })
   end,
 })

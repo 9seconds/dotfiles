@@ -17,13 +17,13 @@ local function setup()
   vim.api.nvim_create_user_command("PackUpdates", function()
     vim.pack.update()
   end, {
-      desc = "Update all plugins"
-    })
+    desc = "Update all plugins",
+  })
   vim.api.nvim_create_user_command("PackLock", function()
-    vim.pack.update(nil, {target = "lockfile"})
+    vim.pack.update(nil, { target = "lockfile" })
   end, {
-      desc = "Install from a lockfile"
-    })
+    desc = "Install from a lockfile",
+  })
 end
 
 setup()

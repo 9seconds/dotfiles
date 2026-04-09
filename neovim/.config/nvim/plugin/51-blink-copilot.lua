@@ -3,5 +3,5 @@
 
 require("_.pack").add({
   url = "https://github.com/fang2hou/blink-copilot",
-  releases = true
+  releases = true,
 })

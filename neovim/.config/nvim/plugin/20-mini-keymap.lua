@@ -14,123 +14,79 @@ require("_.pack").add({
     local multi = require("mini.keymap").map_multistep
 
     -- map jk and kj to work exit insert and terminal modes
-    combo(
-      {"i", "c", "x", "s"},
-      "jk",
-      "<BS><BS><Esc>",
-      {
-        desc = "Exit insert mode"
-      }
-    )
-    combo(
-      {"i", "c", "x", "s"},
-      "kj",
-      "<BS><BS><Esc>",
-      {
-        desc = "Exit insert mode"
-      }
-    )
+    combo({ "i", "c", "x", "s" }, "jk", "<BS><BS><Esc>", {
+      desc = "Exit insert mode",
+    })
+    combo({ "i", "c", "x", "s" }, "kj", "<BS><BS><Esc>", {
+      desc = "Exit insert mode",
+    })
 
-    combo(
-      "t",
-      "jk",
-      "<BS><BS><C-\\><C-n>",
-      {
-        desc = "Exit insert mode"
-      }
-    )
-    combo(
-      "t",
-      "kj",
-      "<BS><BS><C-\\><C-n>",
-      {
-        desc = "Exit insert mode"
-      }
-    )
+    combo("t", "jk", "<BS><BS><C-\\><C-n>", {
+      desc = "Exit insert mode",
+    })
+    combo("t", "kj", "<BS><BS><C-\\><C-n>", {
+      desc = "Exit insert mode",
+    })
 
     -- supertab
-    multi(
-      "i",
-      "<Tab>",
+    multi("i", "<Tab>", {
+      "minisnippets_next",
       {
-        "minisnippets_next",
-        {
-          condition = is_copilot_active,
-          action = function ()
-            require("blink.cmp").select_next()
-          end
-        },
-        "minisnippets_expand",
-        "jump_after_tsnode",
-        "jump_after_close",
-      }
-    )
-    multi(
-      "i",
-      "<S-Tab>",
+        condition = is_copilot_active,
+        action = function()
+          require("blink.cmp").select_next()
+        end,
+      },
+      "minisnippets_expand",
+      "jump_after_tsnode",
+      "jump_after_close",
+    })
+    multi("i", "<S-Tab>", {
+      "minisnippets_prev",
       {
-        "minisnippets_prev",
-        {
-          condition = is_copilot_active,
-          action = function ()
-            require("blink.cmp").select_prev()
-          end
-        },
-        "jump_before_tsnode",
-        "jump_before_open",
-      }
-    )
+        condition = is_copilot_active,
+        action = function()
+          require("blink.cmp").select_prev()
+        end,
+      },
+      "jump_before_tsnode",
+      "jump_before_open",
+    })
 
     -- integrate mini.pairs
-    multi(
-      "i",
-      "<CR>",
+    multi("i", "<CR>", {
       {
-        {
-          condition = is_copilot_active,
-          action = function ()
-            require("blink.cmp").accept()
-          end
-        },
-        "minipairs_cr",
-      }
-    )
-    multi(
-      "i",
-      "<BS>",
-      {
-        "minipairs_bs",
-      }
-    )
+        condition = is_copilot_active,
+        action = function()
+          require("blink.cmp").accept()
+        end,
+      },
+      "minipairs_cr",
+    })
+    multi("i", "<BS>", {
+      "minipairs_bs",
+    })
 
     -- gitsigns integration
-    multi(
-      {"n", "x"},
-      "]h",
+    multi({ "n", "x" }, "]h", {
       {
-        {
-          condition = function()
-            return package.loaded["gitsigns"] and not vim.wo.diff
-          end,
-          action = function()
-            require("gitsigns").nav_hunk("next")
-          end
-        }
-      }
-    )
-    multi(
-      {"n", "x"},
-      "[h",
+        condition = function()
+          return package.loaded["gitsigns"] and not vim.wo.diff
+        end,
+        action = function()
+          require("gitsigns").nav_hunk("next")
+        end,
+      },
+    })
+    multi({ "n", "x" }, "[h", {
       {
-        {
-          condition = function()
-            return package.loaded["gitsigns"] and not vim.wo.diff
-          end,
-          action = function()
-            require("gitsigns").nav_hunk("prev")
-          end
-        }
-      }
-    )
+        condition = function()
+          return package.loaded["gitsigns"] and not vim.wo.diff
+        end,
+        action = function()
+          require("gitsigns").nav_hunk("prev")
+        end,
+      },
+    })
   end,
 })

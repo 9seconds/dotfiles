@@ -1,9 +1,5 @@
 -- This module contains basic keymappings
 
-local function imap(key, action, opts)
-  vim.keymap.set("i", key, action, opts)
-end
-
 local function nmap(key, action, opts)
   vim.keymap.set("n", key, action, opts)
 end
