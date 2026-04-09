@@ -94,6 +94,10 @@ require("_.pack").add({
             score_offset = 100,
             async = true,
           },
+          codecompanion = {
+            name = "CodeCompanion",
+            module = "codecompanion.providers.completion.blink",
+          },
         },
         per_filetype = {
           codecompanion = { "codecompanion" },
