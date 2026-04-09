@@ -255,6 +255,7 @@ require("_.pack").add({
         persist_mode = false,
         persist_size = false,
         start_in_insert = true,
+        cleanup_on_success = false,
 
         float_opts = {
           height = math.floor(vim.o.lines * 0.85),
@@ -266,6 +267,28 @@ require("_.pack").add({
           term._state._created_at = vim.fn.reltime()
           set_autocommands(term)
           set_keys(term)
+        end,
+
+        on_job_exit = function(term, _, exit_code)
+          if exit_code ~= 0 then
+            return
+          end
+
+          vim.schedule(function()
+            local wins = vim.api.nvim_list_wins()
+            local non_float = 0
+            for _, w in ipairs(wins) do
+              if vim.api.nvim_win_get_config(w).relative == "" then
+                non_float = non_float + 1
+              end
+            end
+
+            if non_float <= 1 then
+              vim.cmd("qa!")
+            else
+              term:cleanup()
+            end
+          end)
         end,
       },
     })

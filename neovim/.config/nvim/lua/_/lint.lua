@@ -1,7 +1,7 @@
 --- different lint stuff
 
 local M = {
-  configs = {}
+  configs = {},
 }
 
 function M.set(data)
