@@ -64,9 +64,6 @@ local function setup()
 
   -- select just pasted
   nmap("gp", "`[v`]")
-
-  -- clear highlight
-  nmap("<leader>l", "<cmd>nohlsearch<cr>", { silent = true })
 end
 
 setup()

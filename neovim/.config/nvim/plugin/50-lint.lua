@@ -3,6 +3,7 @@
 
 require("_.pack").add({
   url = "https://github.com/mfussenegger/nvim-lint",
+  lazy = true,
   config = function()
     local mod = require("lint")
     local augroup = vim.api.nvim_create_augroup("9_Lint", {})
@@ -10,12 +11,14 @@ require("_.pack").add({
     local function get_linters()
       local ft = vim.bo.filetype
 
-      return vim.iter(pairs(mod.linters_by_ft)):fold({}, function(acc, k, v)
+      local values = vim.iter(require("_.lint").configs):fold({}, function(acc, k, v)
         if k == "*" or k == ft then
           vim.list_extend(acc, v)
         end
         return acc
       end)
+
+      return vim.list.unique(values)
     end
 
     vim.api.nvim_create_autocmd("TextChanged", {

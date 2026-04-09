@@ -1,49 +1,16 @@
 --- different lint stuff
 
 local M = {
-  ALL = "*",
-
-  configs = {},
-  chains = {},
+  configs = {}
 }
 
-function M:set(language, linter, config)
-  if self.configs[language] == nil then
-    self.configs[language] = {}
-  end
-
-  self.configs[language][linter] = config or {}
-end
-
-function M:set_execution_chain(language, chain)
-  if self.chains[language] == nil then
-    self.chains[language] = {}
-  end
-
-  self.chains[language] = chain
-end
-
-function M:get_config()
-  local chains = {}
-  local configs = {}
-
-  for lang, conf in pairs(self.configs) do
-    if chains[lang] == nil then
-      chains[lang] = {}
+function M.set(data)
+  for k, v in pairs(data) do
+    if not M.configs[k] then
+      M.configs[k] = {}
     end
-
-    configs = vim.tbl_extend("force", configs, conf)
-    chains[lang] = vim.tbl_keys(conf)
+    vim.list_extend(M.configs[k], v)
   end
-
-  for lang, chain in pairs(self.chains) do
-    chains[lang] = chain
-  end
-
-  return {
-    linters_by_ft = chains,
-    linters = configs,
-  }
 end
 
 return M

@@ -1,13 +1,9 @@
-local conform = require("_.conform")
-conform:set("lua", "stylua")
+require("_.lint").set({
+  python = { "ruff" },
+  lua = { "selene" },
+})
 
-local lint = require("_.lint")
-lint:set("python", "mypy")
-lint:set("python", "ruff")
-lint:set("lua", "selene")
-
-local lsp = require("_.lsp")
-lsp.enable({
+vim.lsp.enable({
   "basedpyright",
   "bash-language-server",
   "lua-language-server",

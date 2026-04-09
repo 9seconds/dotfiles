@@ -40,6 +40,8 @@ local function setup_project_settings(root)
     return
   end
 
+  vim.cmd.source(exrc_path)
+
   if not xpcall(vim.cmd.source, debug.traceback, exrc_path) then
     vim.api.nvim_notify(
       string.format("Cannot load %s exrc", exrc_path),
