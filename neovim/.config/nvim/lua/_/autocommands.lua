@@ -17,6 +17,18 @@ local function setup()
     end,
   })
 
+  -- clear search highlight on cursor move
+  vim.on_key(function(char)
+    if vim.fn.mode() == "n" then
+      local key = vim.fn.keytrans(char)
+      local dominated_by_search =
+        vim.tbl_contains({ "<CR>", "n", "N", "*", "#", "?", "/" }, key)
+      if vim.opt.hlsearch:get() ~= dominated_by_search then
+        vim.opt.hlsearch = dominated_by_search
+      end
+    end
+  end, vim.api.nvim_create_namespace("9_AutoNoHlsearch"))
+
   -- disable mini.pairs for prompts
   vim.api.nvim_create_autocmd("BufEnter", {
     group = vim.api.nvim_create_augroup("9_MiniPairs", {}),
