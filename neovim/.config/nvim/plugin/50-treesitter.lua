@@ -87,5 +87,5 @@ pack.add({
   end,
 })
 pack.on_update("nvim-treesitter", function()
-  vim.cmd("<cmd>TSUpdate<cr>")
+  vim.cmd("<cmd>TSUpdate")
 end)
