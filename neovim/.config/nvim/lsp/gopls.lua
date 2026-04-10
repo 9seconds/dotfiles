@@ -10,4 +10,11 @@ return {
     "gowork",
     "gotmpl",
   },
+
+  settings = {
+    gopls = {
+      semanticTokens = true,
+      gofumpt = vim.fn.executable("gofumpt") == 1,
+    },
+  },
 }
