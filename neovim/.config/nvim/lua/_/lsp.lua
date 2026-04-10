@@ -1,11 +1,5 @@
 -- different LSP helpers
 
-local function enable(server_name)
-  vim.schedule(function()
-    vim.lsp.enable(server_name)
-  end)
-end
-
 local function setup()
   vim.lsp.inlay_hint.enable(false)
 
@@ -23,7 +17,4 @@ local function setup()
   })
 end
 
-return {
-  enable = enable,
-  setup = setup,
-}
+setup()
