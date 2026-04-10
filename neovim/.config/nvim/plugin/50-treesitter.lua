@@ -51,7 +51,9 @@ local ensure_installed = {
   "yaml",
 }
 
-require("_.pack").add({
+local pack = require("_.pack")
+
+pack.add({
   url = "https://github.com/neovim-treesitter/nvim-treesitter",
   releases = "main",
   config = function()
@@ -84,3 +86,6 @@ require("_.pack").add({
     })
   end,
 })
+pack.on_update("nvim-treesitter", function()
+  vim.cmd("<cmd>TSUpdate<cr>")
+end)
