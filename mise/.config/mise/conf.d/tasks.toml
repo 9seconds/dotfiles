@@ -51,7 +51,7 @@ wait_for = [
   "update:system:linux",
   "update:mise",
 ]
-run = "nvim --headless '+Lazy! sync' +qa"
+run = "nvim --headless +'lua vim.pack.update(nil, {force=true})' +qa"
 
 [tasks."update:fish"]
 description = "Update fish"
