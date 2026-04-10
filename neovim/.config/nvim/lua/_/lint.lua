@@ -1,7 +1,13 @@
 --- different lint stuff
 
 local M = {
-  configs = {},
+  configs = {
+    ["json"] = { "jsonlint", "json_tool" },
+    ["bash"] = { "shellcheck", "bash" },
+    ["sh"] = { "shellcheck" },
+    ["git"] = { "gitlint" },
+    ["fish"] = { "fish" },
+  },
 }
 
 function M.set(data)
