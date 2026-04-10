@@ -10,6 +10,9 @@ require("_.pack").add({
 
     mod.setup({
       mappings = {
+        expand = "",
+        jump_next = "",
+        jump_prev = "",
         stop = "<c-k>",
       },
 

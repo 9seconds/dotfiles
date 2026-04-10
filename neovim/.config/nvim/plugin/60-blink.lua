@@ -69,6 +69,10 @@ require("_.pack").add({
         },
       },
 
+      snippets = {
+        preset = "mini_snippets",
+      },
+
       fuzzy = {
         implementation = "rust",
       },

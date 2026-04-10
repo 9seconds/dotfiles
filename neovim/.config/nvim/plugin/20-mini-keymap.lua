@@ -38,7 +38,6 @@ require("_.pack").add({
         end,
       },
       "blink_next",
-      "minisnippets_expand",
       "jump_after_tsnode",
       "jump_after_close",
     })
