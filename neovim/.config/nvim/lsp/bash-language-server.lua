@@ -8,7 +8,6 @@ return {
   },
   filetypes = {
     "bash",
-    "shell",
     "sh",
   },
 }
