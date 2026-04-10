@@ -40,6 +40,7 @@ tmux = "latest"
 "npm:bash-language-server" = "latest"
 "pipx:basedpyright" = "latest"
 "pipx:magika" = "latest"
+"github:docker/docker-language-server" = "latest"
 
 # Linters
 "npm:jsonlint" = "latest"
