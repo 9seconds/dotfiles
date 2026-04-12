@@ -78,3 +78,21 @@ run = [
 [tasks."update:kitten"]
 description = "Update kitten"
 run = "command -v kitten 2>/dev/null && kitten update-self || true"
+
+[tasks.ai]
+description = "Run AI assistant"
+env.GITHUB_TOKEN = ""
+raw = true
+usage = """
+flag "-r --resume" help="Resume previous session"
+"""
+run = """
+#!/usr/bin/env fish
+
+set flags
+if test "$usage_resume" = "true"
+  set -a flags --resume
+end
+
+copilot $flags
+"""
