@@ -40,7 +40,7 @@ multi("i", "<Tab>", {
   {
     condition = is_copilot_active,
     action = function()
-      require("blink.cmp").select_next()
+      return require("blink.cmp").select_next() or false
     end,
   },
   "blink_next",
@@ -52,7 +52,7 @@ multi("i", "<S-Tab>", {
   {
     condition = is_copilot_active,
     action = function()
-      require("blink.cmp").select_prev()
+      return require("blink.cmp").select_prev() or false
     end,
   },
   "blink_prev",
@@ -65,7 +65,7 @@ multi("i", "<CR>", {
   {
     condition = is_copilot_active,
     action = function()
-      require("blink.cmp").accept()
+      return require("blink.cmp").accept() or false
     end,
   },
   "blink_accept",
