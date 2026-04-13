@@ -7,9 +7,8 @@ vim.g.matchup_matchparen_offscreen = {
 }
 vim.g.matchup_treesitter_stopline = 500
 
-require("_.pack").add({
-  url = "https://github.com/andymass/vim-matchup",
-  config = function()
-    require("match-up").setup({})
-  end,
+vim.pack.add({
+  "https://github.com/andymass/vim-matchup",
 })
+
+require("match-up").setup({})

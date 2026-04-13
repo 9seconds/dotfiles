@@ -1,6 +1,10 @@
 -- fuzzy finder. faster than telescope on leblon, so be it
 -- https://github.com/ibhagwan/fzf-lua
 
+vim.pack.add({
+  "https://github.com/ibhagwan/fzf-lua",
+})
+
 local function keymap(name, key, func)
   vim.keymap.set("n", "<leader>t" .. key, func, {
     desc = "FZF: " .. name,
@@ -61,103 +65,97 @@ local function rg_glob(query)
   return new_query, flags
 end
 
-require("_.pack").add({
-  url = "https://github.com/ibhagwan/fzf-lua",
-  lazy = true,
-  config = function()
-    local opts = {
-      { "fzf-native", "borderless-full" },
-      fzf_colors = true,
-      grep = {
-        rg_glob = true,
-        rg_glob_fn = rg_glob,
-      },
-      keymap = {
-        fzf = {
-          ["ctrl-q"] = "select-all+accept",
-        },
-      },
-    }
+local opts = {
+  { "fzf-native", "borderless-full" },
+  fzf_colors = true,
+  grep = {
+    rg_glob = true,
+    rg_glob_fn = rg_glob,
+  },
+  keymap = {
+    fzf = {
+      ["ctrl-q"] = "select-all+accept",
+    },
+  },
+}
 
-    if vim.fn.executable("sk") then
-      opts["fzf_bin"] = "sk"
-      opts["fzf_opts"] = { ["--algo"] = "frizbee" }
-      opts["fzf_colors"] = false
-      opts[1][1] = "skim"
+if vim.fn.executable("sk") then
+  opts["fzf_bin"] = "sk"
+  opts["fzf_opts"] = { ["--algo"] = "frizbee" }
+  opts["fzf_colors"] = false
+  opts[1][1] = "skim"
+end
+
+require("fzf-lua").setup(opts)
+
+keymap("Files", "t", function()
+  return require("fzf-lua").files({})
+end)
+
+keymap("Dotfiles", "T", function()
+  return require("fzf-lua").files({
+    cwd = vim.env["9SECONDS_DIR_DOTFILES"] or "~/.dotfiles",
+  })
+end)
+
+keymap("Buffers", "b", function()
+  return require("fzf-lua").buffers({})
+end)
+
+keymap("Symbols", "s", function()
+  local fzf = require("fzf-lua")
+  local clients = vim.lsp.get_clients({
+    bufnr = vim.api.nvim_get_current_buf(),
+  })
+
+  for _, client in ipairs(clients) do
+    if
+      client.server_capabilities
+      and client.server_capabilities.documentSymbolProvider
+    then
+      return fzf.lsp_document_symbols({})
     end
+  end
 
-    require("fzf-lua").setup(opts)
+  return fzf.treesitter({})
+end)
 
-    keymap("Files", "t", function()
-      return require("fzf-lua").files({})
-    end)
+keymap("All symbols", "S", function()
+  return require("fzf-lua").lsp_workspace_symbols({})
+end)
 
-    keymap("Dotfiles", "T", function()
-      return require("fzf-lua").files({
-        cwd = vim.env["9SECONDS_DIR_DOTFILES"] or "~/.dotfiles",
-      })
-    end)
+keymap("Grep", "f", function()
+  return require("fzf-lua").live_grep({})
+end)
 
-    keymap("Buffers", "b", function()
-      return require("fzf-lua").buffers({})
-    end)
+keymap("Grep current buffer", "F", function()
+  return require("fzf-lua").grep_curbuf({})
+end)
 
-    keymap("Symbols", "s", function()
-      local fzf = require("fzf-lua")
-      local clients = vim.lsp.get_clients({
-        bufnr = vim.api.nvim_get_current_buf(),
-      })
+keymap("Git status", "l", function()
+  return require("fzf-lua").git_status({})
+end)
 
-      for _, client in ipairs(clients) do
-        if
-          client.server_capabilities
-          and client.server_capabilities.documentSymbolProvider
-        then
-          return fzf.lsp_document_symbols({})
-        end
-      end
+keymap("References", "r", function()
+  return require("fzf-lua").lsp_references({})
+end)
 
-      return fzf.treesitter({})
-    end)
+keymap("Incoming calls", "c", function()
+  return require("fzf-lua").lsp_incoming_calls({})
+end)
 
-    keymap("All symbols", "S", function()
-      return require("fzf-lua").lsp_workspace_symbols({})
-    end)
+keymap("Outgoing calls", "C", function()
+  return require("fzf-lua").lsp_outgoing_calls({})
+end)
 
-    keymap("Grep", "f", function()
-      return require("fzf-lua").live_grep({})
-    end)
+keymap("Resume", "y", function()
+  return require("fzf-lua").resume({})
+end)
 
-    keymap("Grep current buffer", "F", function()
-      return require("fzf-lua").grep_curbuf({})
-    end)
+keymap("Diagnostics for current buffer", "d", function()
+  return require("fzf-lua").diagnostics_document({})
+end)
 
-    keymap("Git status", "l", function()
-      return require("fzf-lua").git_status({})
-    end)
-
-    keymap("References", "r", function()
-      return require("fzf-lua").lsp_references({})
-    end)
-
-    keymap("Incoming calls", "c", function()
-      return require("fzf-lua").lsp_incoming_calls({})
-    end)
-
-    keymap("Outgoing calls", "C", function()
-      return require("fzf-lua").lsp_outgoing_calls({})
-    end)
-
-    keymap("Resume", "y", function()
-      return require("fzf-lua").resume({})
-    end)
-
-    keymap("Diagnostics for current buffer", "d", function()
-      return require("fzf-lua").diagnostics_document({})
-    end)
-
-    keymap("Diagnostics for workspace", "D", function()
-      return require("fzf-lua").diagnostics_workspace({})
-    end)
-  end,
-})
+keymap("Diagnostics for workspace", "D", function()
+  return require("fzf-lua").diagnostics_workspace({})
+end)

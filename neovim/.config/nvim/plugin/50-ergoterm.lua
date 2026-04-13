@@ -1,6 +1,13 @@
 -- terminals
 -- https://github.com/waiting-for-dev/ergoterm.nvim
 
+vim.pack.add({
+  {
+    src = "https://github.com/waiting-for-dev/ergoterm.nvim",
+    version = vim.version.range("*"),
+  },
+})
+
 local KEYS = {
   close = "z",
   quit = "q",
@@ -202,107 +209,101 @@ local function choose()
   snacks.picker(snacks_config)
 end
 
-require("_.pack").add({
-  url = "https://github.com/waiting-for-dev/ergoterm.nvim",
-  releases = true,
-  config = function()
-    local function set_keys(term)
-      local function set(lhs, rhs)
-        vim.keymap.set("t", lhs, rhs, {
-          buffer = term._state.bufnr,
-          noremap = true,
-          silent = true,
-        })
+local function set_keys(term)
+  local function set(lhs, rhs)
+    vim.keymap.set("t", lhs, rhs, {
+      buffer = term._state.bufnr,
+      noremap = true,
+      silent = true,
+    })
+  end
+
+  set(KEYS:alt("right"), term_open("right"))
+  set(KEYS:alt("below"), term_open("below"))
+  set(KEYS:alt("tab"), term_open("tab"))
+  set(KEYS:alt("float"), term_open("float"))
+  set(KEYS:alt("choose"), choose)
+  set(KEYS:alt("close"), term_close)
+  set(KEYS:alt("quit"), term_quit)
+  set("<C-h>", "<cmd>wincmd h<cr>")
+  set("<C-j>", "<cmd>wincmd j<cr>")
+  set("<C-k>", "<cmd>wincmd k<cr>")
+  set("<C-l>", "<cmd>wincmd l<cr>")
+end
+
+local function set_autocommands(term)
+  vim.api.nvim_create_autocmd("TermEnter", {
+    buffer = term._state.bufnr,
+    callback = function()
+      local opts = vim.wo[term._state.window]
+      opts.winbar = term.name
+      opts.list = false
+      opts.number = false
+    end,
+  })
+  vim.api.nvim_create_autocmd("TermLeave", {
+    buffer = term._state.bufnr,
+    callback = function()
+      local opts = vim.wo[term._state.window]
+      opts.number = true
+    end,
+  })
+end
+
+require("ergoterm").setup({
+  terminal_defaults = {
+    shell = vim.env.SHELL or vim.o.shell or "/bin/bash",
+    layout = "right",
+    dir = "git_dir",
+    persist_mode = false,
+    persist_size = false,
+    start_in_insert = true,
+    cleanup_on_success = false,
+
+    float_opts = {
+      height = math.floor(vim.o.lines * 0.85),
+      width = math.floor(vim.o.columns * 0.85),
+    },
+    float_winblend = 0,
+
+    on_open = function(term)
+      term._state._created_at = vim.fn.reltime()
+      set_autocommands(term)
+      set_keys(term)
+    end,
+
+    on_job_exit = function(term, _, exit_code)
+      if exit_code ~= 0 then
+        return
       end
 
-      set(KEYS:alt("right"), term_open("right"))
-      set(KEYS:alt("below"), term_open("below"))
-      set(KEYS:alt("tab"), term_open("tab"))
-      set(KEYS:alt("float"), term_open("float"))
-      set(KEYS:alt("choose"), choose)
-      set(KEYS:alt("close"), term_close)
-      set(KEYS:alt("quit"), term_quit)
-      set("<C-h>", "<cmd>wincmd h<cr>")
-      set("<C-j>", "<cmd>wincmd j<cr>")
-      set("<C-k>", "<cmd>wincmd k<cr>")
-      set("<C-l>", "<cmd>wincmd l<cr>")
-    end
-
-    local function set_autocommands(term)
-      vim.api.nvim_create_autocmd("TermEnter", {
-        buffer = term._state.bufnr,
-        callback = function()
-          local opts = vim.wo[term._state.window]
-          opts.winbar = term.name
-          opts.list = false
-          opts.number = false
-        end,
-      })
-      vim.api.nvim_create_autocmd("TermLeave", {
-        buffer = term._state.bufnr,
-        callback = function()
-          local opts = vim.wo[term._state.window]
-          opts.number = true
-        end,
-      })
-    end
-
-    require("ergoterm").setup({
-      terminal_defaults = {
-        shell = vim.env.SHELL or vim.o.shell or "/bin/bash",
-        layout = "right",
-        dir = "git_dir",
-        persist_mode = false,
-        persist_size = false,
-        start_in_insert = true,
-        cleanup_on_success = false,
-
-        float_opts = {
-          height = math.floor(vim.o.lines * 0.85),
-          width = math.floor(vim.o.columns * 0.85),
-        },
-        float_winblend = 0,
-
-        on_open = function(term)
-          term._state._created_at = vim.fn.reltime()
-          set_autocommands(term)
-          set_keys(term)
-        end,
-
-        on_job_exit = function(term, _, exit_code)
-          if exit_code ~= 0 then
-            return
+      vim.schedule(function()
+        local wins = vim.api.nvim_list_wins()
+        local non_float = 0
+        for _, w in ipairs(wins) do
+          if vim.api.nvim_win_get_config(w).relative == "" then
+            non_float = non_float + 1
           end
+        end
 
-          vim.schedule(function()
-            local wins = vim.api.nvim_list_wins()
-            local non_float = 0
-            for _, w in ipairs(wins) do
-              if vim.api.nvim_win_get_config(w).relative == "" then
-                non_float = non_float + 1
-              end
-            end
-
-            if non_float <= 1 then
-              vim.cmd("qa!")
-            else
-              term:cleanup()
-            end
-          end)
-        end,
-      },
-    })
-
-    local function keymap(key, action, desc)
-      vim.keymap.set("n", KEYS:alt(key), action, {
-        desc = "ErgoTerm: " .. desc,
-      })
-    end
-
-    keymap("right", term_open("right"), "Open new vertical terminal")
-    keymap("below", term_open("below"), "Open new horizontal terminal")
-    keymap("tab", term_open("tab"), "Open new tab terminal")
-    keymap("float", term_open("float"), "Open new float terminal")
-    keymap("choose", choose, "Choose terminal")
-  end,
+        if non_float <= 1 then
+          vim.cmd("qa!")
+        else
+          term:cleanup()
+        end
+      end)
+    end,
+  },
 })
+
+local function keymap(key, action, desc)
+  vim.keymap.set("n", KEYS:alt(key), action, {
+    desc = "ErgoTerm: " .. desc,
+  })
+end
+
+keymap("right", term_open("right"), "Open new vertical terminal")
+keymap("below", term_open("below"), "Open new horizontal terminal")
+keymap("tab", term_open("tab"), "Open new tab terminal")
+keymap("float", term_open("float"), "Open new float terminal")
+keymap("choose", choose, "Choose terminal")

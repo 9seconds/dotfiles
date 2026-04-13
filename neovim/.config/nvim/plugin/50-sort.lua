@@ -1,11 +1,11 @@
 -- sort enhancements
 -- https://github.com/sQVe/sort.nvim
 
-require("_.pack").add({
-  url = "https://github.com/sQVe/sort.nvim",
-  releases = true,
-  lazy = true,
-  config = function()
-    require("sort").setup()
-  end,
+vim.pack.add({
+  {
+    src = "https://github.com/sQVe/sort.nvim",
+    version = vim.version.range("*"),
+  },
 })
+
+require("sort").setup({})

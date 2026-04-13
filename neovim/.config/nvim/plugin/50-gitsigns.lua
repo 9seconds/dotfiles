@@ -1,6 +1,13 @@
 -- git integration into main interface
 -- https://github.com/lewis6991/gitsigns.nvim
 
+vim.pack.add({
+  {
+    src = "https://github.com/lewis6991/gitsigns.nvim",
+    version = vim.version.range("*"),
+  },
+})
+
 local function keymap(name, key, func, mode)
   if not mode then
     mode = "n"
@@ -11,56 +18,49 @@ local function keymap(name, key, func, mode)
   })
 end
 
-require("_.pack").add({
-  url = "https://github.com/lewis6991/gitsigns.nvim",
-  releases = true,
-  lazy = { "BufRead", "BufNew" },
-  config = function()
-    require("gitsigns").setup({
-      numhl = true,
-      signcolumn = false,
-    })
+require("gitsigns").setup({
+  numhl = true,
+  signcolumn = false,
+})
 
-    keymap("Preview hunk", "P", function()
-      require("gitsigns").preview_hunk()
-    end)
+keymap("Preview hunk", "P", function()
+  require("gitsigns").preview_hunk()
+end)
 
-    keymap("Preview hunk inline", "p", function()
-      require("gitsigns").preview_hunk_inline()
-    end)
+keymap("Preview hunk inline", "p", function()
+  require("gitsigns").preview_hunk_inline()
+end)
 
-    keymap("Blame line", "b", function()
-      require("gitsigns").blame_line({ full = true })
-    end)
+keymap("Blame line", "b", function()
+  require("gitsigns").blame_line({ full = true })
+end)
 
-    keymap("Blame file", "B", function()
-      require("gitsigns").blame()
-    end)
+keymap("Blame file", "B", function()
+  require("gitsigns").blame()
+end)
 
-    keymap("Toggle current line blame", "l", function()
-      require("gitsigns").toggle_current_line_blame()
-    end)
+keymap("Toggle current line blame", "l", function()
+  require("gitsigns").toggle_current_line_blame()
+end)
 
-    keymap("Toggle word diff", "w", function()
-      require("gitsigns").toggle_word_diff()
-    end)
+keymap("Toggle word diff", "w", function()
+  require("gitsigns").toggle_word_diff()
+end)
 
-    keymap("Reset hunk", "r", function()
-      require("gitsigns").reset_hunk()
-    end)
+keymap("Reset hunk", "r", function()
+  require("gitsigns").reset_hunk()
+end)
 
-    keymap("Reset hunk", "r", function()
-      require("gitsigns").reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
-    end, { "v", "s" })
+keymap("Reset hunk", "r", function()
+  require("gitsigns").reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+end, { "v", "s" })
 
-    keymap("Reset whole buffer", "R", function()
-      require("gitsigns").reset_buffer()
-    end)
+keymap("Reset whole buffer", "R", function()
+  require("gitsigns").reset_buffer()
+end)
 
-    vim.keymap.set({ "n", "x", "o", "s" }, "ih", function()
-      require("gitsigns").select_hunk()
-    end, {
-      desc = "GitSigns: Select hunk",
-    })
-  end,
+vim.keymap.set({ "n", "x", "o", "s" }, "ih", function()
+  require("gitsigns").select_hunk()
+end, {
+  desc = "GitSigns: Select hunk",
 })

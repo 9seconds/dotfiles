@@ -1,40 +1,38 @@
 -- linters
 -- https://github.com/mfussenegger/nvim-lint
 
-require("_.pack").add({
-  url = "https://github.com/mfussenegger/nvim-lint",
-  lazy = true,
-  config = function()
-    local mod = require("lint")
-    local augroup = vim.api.nvim_create_augroup("9_Lint", {})
+vim.pack.add({
+  "https://github.com/mfussenegger/nvim-lint",
+})
 
-    local function get_linters()
-      local ft = vim.bo.filetype
+local mod = require("lint")
+local augroup = vim.api.nvim_create_augroup("9_Lint", {})
 
-      local values = vim
-        .iter(require("_.lint").configs)
-        :fold({}, function(acc, k, v)
-          if k == "*" or k == ft then
-            vim.list_extend(acc, v)
-          end
-          return acc
-        end)
+local function get_linters()
+  local ft = vim.bo.filetype
 
-      return vim.list.unique(values)
-    end
+  local values = vim
+    .iter(require("_.lint").configs)
+    :fold({}, function(acc, k, v)
+      if k == "*" or k == ft then
+        vim.list_extend(acc, v)
+      end
+      return acc
+    end)
 
-    vim.api.nvim_create_autocmd("TextChanged", {
-      group = augroup,
-      callback = function()
-        mod.try_lint(get_linters(), { filter = "stdin" })
-      end,
-    })
+  return vim.list.unique(values)
+end
 
-    vim.api.nvim_create_autocmd({ "BufWritePost", "FileType" }, {
-      group = augroup,
-      callback = function()
-        mod.try_lint(get_linters())
-      end,
-    })
+vim.api.nvim_create_autocmd("TextChanged", {
+  group = augroup,
+  callback = function()
+    mod.try_lint(get_linters(), { filter = "stdin" })
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "BufWritePost", "FileType" }, {
+  group = augroup,
+  callback = function()
+    mod.try_lint(get_linters())
   end,
 })

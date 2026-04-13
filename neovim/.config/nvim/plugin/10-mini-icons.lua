@@ -1,11 +1,11 @@
 -- icons
 -- https://github.com/nvim-mini/mini.icons
 
-require("_.pack").add({
-  url = "https://github.com/nvim-mini/mini.icons",
-  releases = true,
-  lazy = true,
-  config = function()
-    require("mini.icons").setup()
-  end,
+vim.pack.add({
+  {
+    src = "https://github.com/nvim-mini/mini.icons",
+    version = vim.version.range("*"),
+  },
 })
+
+require("mini.icons").setup({})

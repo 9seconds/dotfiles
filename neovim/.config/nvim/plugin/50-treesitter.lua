@@ -1,6 +1,13 @@
 -- treesitter wrappers
 -- https://github.com/neovim-treesitter/nvim-treesitter
 
+vim.pack.add({
+  {
+    src = "https://github.com/neovim-treesitter/nvim-treesitter",
+    releases = "main",
+  },
+})
+
 local skip_treesitter = {
   "blink-cmp-documentation",
   "blink-cmp-menu",
@@ -51,41 +58,42 @@ local ensure_installed = {
   "yaml",
 }
 
-local pack = require("_.pack")
+local mod = require("nvim-treesitter")
 
-pack.add({
-  url = "https://github.com/neovim-treesitter/nvim-treesitter",
-  releases = "main",
-  config = function()
-    local mod = require("nvim-treesitter")
+mod.install(ensure_installed)
 
-    mod.install(ensure_installed)
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("9_PackTreesitter", {}),
+  callback = function(args)
+    if vim.list_contains(skip_treesitter, args.match) then
+      return
+    end
 
-    vim.api.nvim_create_autocmd("FileType", {
-      group = vim.api.nvim_create_augroup("9_PackTreesitter", {}),
-      callback = function(args)
-        if vim.list_contains(skip_treesitter, args.match) then
-          return
-        end
+    local parser_name = vim.treesitter.language.get_lang(args.match)
+    if not parser_name then
+      return
+    end
 
-        local parser_name = vim.treesitter.language.get_lang(args.match)
-        if not parser_name then
-          return
-        end
+    local parser_installed =
+      pcall(vim.treesitter.get_parser, args.buf, parser_name)
+    if not parser_installed then
+      mod.install({ parser_name }):wait(30000)
+    end
 
-        local parser_installed =
-          pcall(vim.treesitter.get_parser, args.buf, parser_name)
-        if not parser_installed then
-          mod.install({ parser_name }):wait(30000)
-        end
+    vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 
-        vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-
-        pcall(vim.treesitter.start)
-      end,
-    })
+    pcall(vim.treesitter.start)
   end,
 })
-pack.on_update("nvim-treesitter", function()
-  vim.cmd("TSUpdate")
-end)
+
+vim.api.nvim_create_autocmd("PackChanged", {
+  group = vim.api.nvim_create_augroup("9_NvimTreesitter", {}),
+  callback = function(ev)
+    if ev.data.spec.name == "nvim-treesitter" and ev.data.kind ~= "delete" then
+      if not ev.data.active then
+        vim.cmd.packadd("nvim-treesitter")
+      end
+      vim.cmd("TSUpdate")
+    end
+  end,
+})
