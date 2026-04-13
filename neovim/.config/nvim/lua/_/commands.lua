@@ -14,11 +14,12 @@ local function setup()
     "command! -nargs=+ -complete=file LGrep noautocmd lgrep! <args> | redraw! | lopen"
   )
 
-  vim.api.nvim_create_user_command("PackUpdates", function()
+  vim.api.nvim_create_user_command("PackUpdate", function()
     vim.pack.update()
   end, {
     desc = "Update all plugins",
   })
+
   vim.api.nvim_create_user_command("PackLock", function()
     vim.pack.update(nil, { target = "lockfile" })
   end, {
