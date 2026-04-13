@@ -71,6 +71,9 @@ multi("i", "<CR>", {
   "blink_accept",
   "minipairs_cr",
 })
+multi("i", "<S-CR>", {
+  "minipairs_cr",
+})
 multi("i", "<BS>", {
   "minipairs_bs",
 })
