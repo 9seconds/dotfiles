@@ -81,8 +81,8 @@ run = "command -v kitten 2>/dev/null && kitten update-self || true"
 
 [tasks.ai]
 description = "Run AI assistant"
-env.GITHUB_TOKEN = ""
 raw = true
+dir = "{{ cwd }}"
 usage = """
 flag "-r --resume" help="Resume previous session"
 """
@@ -94,5 +94,5 @@ if test "$usage_resume" = "true"
   set -a flags --resume
 end
 
-copilot $flags
+exec env GITHUB_TOKEN= copilot $flags
 """
