@@ -17,7 +17,7 @@ require("blink.cmp").setup({
   keymap = {
     -- see 20-mini-keymap
     preset = "none",
-    ["<c-s"] = {
+    ["<c-s>"] = {
       "show_signature",
       "hide_signature",
       "fallback",
