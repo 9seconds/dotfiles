@@ -3,17 +3,40 @@
 from __future__ import annotations
 
 import argparse
+import datetime
+import gzip
 import http
 import json
 import logging
 import random
+import secrets
 import sys
 import time
 import typing as t
 import urllib.parse
 import urllib.request
 
-LOG: t.Final[logging.Logger] = logging.getLogger(__name__)
+if t.TYPE_CHECKING:
+
+    class JenkinsResponseDictT(t.TypedDict):
+        estimatedDuration: int
+        timestamp: int
+        result: t.Literal["SUCCESS", "FAILURE", "UNSTABLE", "ABORTED"] | None
+        fullDisplayName: str
+        building: bool
+
+    class NtfyResponseDictT(t.TypedDict):
+        id: str
+        sequence_id: str | None
+
+
+LOG: t.Final = logging.getLogger(__name__)
+SEND_EACH: t.Final = datetime.timedelta(minutes=5)
+
+
+class JenkinsRequestError(Exception):
+    def __init__(self, status: int) -> None:
+        super().__init__(f"Cannot fetch from Jenkins: {status}")
 
 
 def main() -> int | None:
@@ -24,36 +47,171 @@ def main() -> int | None:
         format=">>> %(message)s",
     )
 
-    url = options.job_url
-    if not url.endswith("/api/json"):
-        url = f"{url.rstrip('/')}/api/json"
+    topic_name: t.Final = f"9wj-{secrets.token_urlsafe(8)}"
+    sequence_id = ""
+    last_sent = datetime.datetime.fromtimestamp(0, datetime.timezone.utc)
 
-    request = urllib.request.Request(  # noqa: S310
-        url,
+    if not options.no_ntfy:
+        print(f"ntfy.sh topic: {topic_name}", file=sys.stderr)  # noqa: T201
+
+    poller = iter(get_status_poller(options))
+    for status in poller:
+        now = datetime.datetime.now(datetime.timezone.utc)
+
+        match status:
+            case {"building": True}:
+                percents, delta = process_in_progress(status)
+                if not (options.no_ntfy or now - last_sent < SEND_EACH):
+                    last_sent = now
+                    sequence_id = send_ntfy(
+                        sequence_id=sequence_id,
+                        data={
+                            "topic": topic_name,
+                            "message": f"{percents:.2f}% done. {delta} left.",
+                            "title": status["fullDisplayName"],
+                            "priority": 1,
+                            "click": options.job_url,
+                        },
+                    )
+            case {"result": "SUCCESS" | "UNSTABLE"} if sequence_id:
+                send_ntfy(
+                    sequence_id=sequence_id,
+                    data={
+                        "topic": topic_name,
+                        "message": "Job completed successfully!",
+                        "title": status["fullDisplayName"],
+                        "tags": ["white_check_mark"],
+                        "click": options.job_url,
+                    },
+                )
+                return 0
+            case {"result": "FAILURE"} if sequence_id:
+                send_ntfy(
+                    sequence_id=sequence_id,
+                    data={
+                        "topic": topic_name,
+                        "message": "Job failed!",
+                        "title": status["fullDisplayName"],
+                        "tags": ["x"],
+                        "click": options.job_url,
+                    },
+                )
+                return 1
+            case {"result": "ABORTED"} if sequence_id:
+                urllib.request.urlopen(
+                    f"https://ntfy.sh/{topic_name}/{sequence_id}",
+                    method="DELETE",
+                )
+                return 0
+            case {"result": "FAILURE"}:
+                return 1
+            case _:
+                return 0
+
+    return None
+
+
+def process_in_progress(status: JenkinsResponseDictT) -> tuple[float, str]:
+    seconds, ms = divmod(status["timestamp"], 1000)
+    started_at = datetime.datetime.fromtimestamp(
+        seconds, tz=datetime.timezone.utc
+    )
+    started_at = started_at.replace(microsecond=ms * 1000)
+    elapsed = datetime.datetime.now(datetime.timezone.utc) - started_at
+    estimated = datetime.timedelta(milliseconds=status["estimatedDuration"])
+
+    percents = 0.0
+    if et := estimated.total_seconds():
+        percents = (elapsed.total_seconds() / et) * 100.0
+
+    delta = human_readable_delta(estimated - elapsed)
+
+    LOG.info("%s: %f%%. %s left", status["fullDisplayName"], percents, delta)
+
+    return percents, delta
+
+
+def send_ntfy(sequence_id: str, data: dict[str, t.Any]) -> str:
+    if sequence_id:
+        data["sequence_id"] = sequence_id
+
+    resp = t.cast(
+        "NtfyResponseDictT",
+        make_request("https://ntfy.sh", json.dumps(data).encode("utf-8")),
+    )
+
+    return resp.get("sequence_id") or resp["id"]
+
+
+def get_status_poller(
+    options: argparse.Namespace,
+) -> t.Iterator[JenkinsResponseDictT]:
+    parsed_url = urllib.parse.urlparse(options.job_url)
+    if not parsed_url.path.endswith("/api/json"):
+        parsed_url = parsed_url._replace(
+            path=f"{parsed_url.path.rstrip('/')}/api/json"
+        )
+
+    parsed_url = parsed_url._replace(
+        query="tree=estimatedDuration,timestamp,fullDisplayName,building,result"
+    )
+    url = urllib.parse.urlunparse(parsed_url)
+    sleeper = sleep_time(options.base_sleep, options.sleep_cap)
+
+    while True:
+        yield t.cast("JenkinsResponseDictT", make_request(url))
+        time.sleep(next(sleeper))
+
+
+def human_readable_delta(td: datetime.timedelta) -> str:
+    total_seconds = int(td.total_seconds())
+    hours, remainder = divmod(abs(total_seconds), 3600)
+    minutes, seconds = divmod(remainder, 60)
+    sign = "-" if total_seconds < 0 else ""
+
+    chunks = []
+    if hours:
+        chunks.append(f"{hours}h")
+    if minutes:
+        chunks.append(f"{minutes}m")
+    if seconds:
+        chunks.append(f"{seconds}s")
+
+    return f"{sign}{' '.join(chunks)}"
+
+
+def make_request(
+    url: str,
+    data: str | bytes | None = None,
+) -> JenkinsResponseDictT:
+    if isinstance(data, str):
+        data = data.encode("utf-8")
+
+    req = urllib.request.Request(  # noqa: S310
+        url=url,
+        data=data,
         headers={
             "Accept": "application/json",
+            "Accept-Encoding": "gzip",
+            "Content-Type": "application/json",
             "User-Agent": "9wj/1.0",
         },
     )
 
-    sleeper = sleep_time(options.base_sleep, options.sleep_cap)
+    with urllib.request.urlopen(req, timeout=10) as resp:  # noqa: S310
+        if resp.status != http.HTTPStatus.OK:
+            LOG.error("Failed to fetch job status: %s", resp.status)
+            raise JenkinsRequestError(resp.status)
 
-    while True:
-        with urllib.request.urlopen(request, timeout=5) as resp:  # noqa: S310
-            if resp.status != http.HTTPStatus.OK:
-                LOG.error("Failed to fetch job status: %s", resp.status)
-                return 1
+        fp = resp
+        if resp.headers.get("Content-Encoding") == "gzip":
+            fp = gzip.GzipFile(fileobj=resp)
 
-            match json.load(resp):
-                case {"inProgress": True}:
-                    LOG.info("Job is still in progress...")
-                    time.sleep(next(sleeper))
-                case {"result": "SUCCESS"}:
-                    LOG.info("Job completed successfully.")
-                    return 0
-                case {"result": result}:
-                    LOG.error("Job failed with result: %s", result)
-                    return 1
+        rv = json.load(fp)
+
+    LOG.debug("URL %s: %s", url, rv)
+
+    return rv
 
 
 def get_options() -> argparse.Namespace:
@@ -105,6 +263,13 @@ def get_options() -> argparse.Namespace:
         type=type_sleep,
         default=1.0,
         help="Base sleep time between status checks (in seconds)",
+    )
+    parser.add_argument(
+        "-n",
+        "--no-ntfy",
+        action="store_true",
+        default=False,
+        help="Run without ntfy notifications",
     )
 
     parser.add_argument(
