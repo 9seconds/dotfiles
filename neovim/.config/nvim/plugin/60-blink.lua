@@ -18,9 +18,17 @@ require("blink.cmp").setup({
     -- see 20-mini-keymap
     preset = "none",
     ["<c-s>"] = {
-      "show_signature",
-      "hide_signature",
-      "fallback",
+      function(cmp)
+        if vim.bo.filetype == "codecompanion" then
+          return false
+        end
+        if cmp.is_signature_visible() then
+          cmp.hide_signature()
+        else
+          cmp.show_signature()
+        end
+        return true
+      end,
     },
   },
 
