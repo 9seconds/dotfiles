@@ -29,6 +29,7 @@ require("blink.cmp").setup({
         end
         return true
       end,
+      "fallback",
     },
   },
 
