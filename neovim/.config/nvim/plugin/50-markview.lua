@@ -10,6 +10,7 @@ vim.pack.add({
 
 require("markview").setup({
   preview = {
+    icon_provider = "mini",
     filetypes = { "markdown", "codecompanion" },
     ignore_buftypes = {},
   },
