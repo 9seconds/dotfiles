@@ -1,0 +1,6 @@
+#!/usr/bin/env fish
+
+set -x NTFY_TOPIC 9ntfy-(head -c 8 /dev/urandom | od -An -v -t x1 | tr -d '[:space:]')
+printf "Topic: %s\n" $NTFY_TOPIC
+
+exec ntfy pub $argv
