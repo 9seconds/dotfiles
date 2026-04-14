@@ -42,7 +42,3 @@ else if type -qf systemd-inhibit
 else
   tail --pid=$argv[1] -f /dev/null
 end
-
-if set -q _flag_notify
-  9no -c "$this_script_name $argv" "Done"
-end
