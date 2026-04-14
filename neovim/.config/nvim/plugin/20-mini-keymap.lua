@@ -8,6 +8,11 @@ vim.pack.add({
   },
 })
 
+local function is_blank_line()
+  local line = vim.api.nvim_get_current_line()
+  return line:find("^%s*$") ~= nil
+end
+
 local function is_copilot_active()
   return package.loaded["blink.cmp"] and vim.g.copilot_mode
 end
@@ -36,6 +41,12 @@ combo("t", "kj", "<BS><BS><C-\\><C-n>", {
 
 -- supertab
 multi("i", "<Tab>", {
+  {
+    condition = is_blank_line,
+    action = function()
+      vim.api.nvim_feedkeys("\t", "n", false)
+    end,
+  },
   "minisnippets_next",
   {
     condition = is_copilot_active,
