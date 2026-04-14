@@ -1,6 +1,8 @@
 #!/usr/bin/env fish
 
-set -x NTFY_TOPIC 9ntfy-(head -c 8 /dev/urandom | od -An -v -t x1 | tr -d '[:space:]')
-printf "Topic: %s\n" $NTFY_TOPIC
+if not set -q NTFY_TOPIC
+  set -x NTFY_TOPIC 9ntfy-(head -c 8 /dev/urandom | od -An -v -t x1 | tr -d '[:space:]')
+  printf "Topic: %s\n" $NTFY_TOPIC
+end
 
 exec ntfy pub $argv
