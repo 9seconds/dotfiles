@@ -4,6 +4,9 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
+import datetime
+import functools
 import logging
 import os
 import random
@@ -16,7 +19,6 @@ import time
 import typing as t
 
 LOG: t.Final[logging.Logger] = logging.getLogger(__name__)
-TMP_FILE_SIZE: t.Final[int] = 10 * 1024 * 1024  # 10 MB
 
 
 def main() -> None:
@@ -49,13 +51,14 @@ def execute(options: argparse.Namespace) -> int:
         )
         return not match_found if options.inverse else match_found
 
-    sleep_time = options.base
+    sleep_time = options.base_sleep
     exit_code = run(options.command)
 
     while not exit_code_matcher(exit_code):
         # https://aws.amazon.com/ru/blogs/architecture/exponential-backoff-and-jitter/
         sleep_time = min(
-            options.cap, random.uniform(options.base, sleep_time * 3)
+            options.cap_sleep,
+            random.uniform(options.base_sleep, sleep_time * 3),
         )
         LOG.debug("Retry (sleep %f)", sleep_time)
         time.sleep(sleep_time)
@@ -68,24 +71,21 @@ def execute(options: argparse.Namespace) -> int:
 def run(cmd: list[str]) -> int:
     LOG.debug("Running command: %s", cmd)
 
-    with subprocess.Popen(cmd, preexec_fn=os.setpgrp) as proc:
-        old_handlers = {}
+    with (
+        subprocess.Popen(cmd, preexec_fn=os.setpgrp) as proc,
+        redirect_signals(proc.pid),
+        move_to_front_of_tty(proc.pid),
+    ):
+        proc.wait()
 
-        def new_signal_handler(signum: int, _: t.Any) -> None:  # noqa: ANN401
-            os.killpg(os.getpgid(proc.pid), signum)
+        if proc.returncode < 0:
+            # Child was killed by a signal — propagate so 9retry doesn't
+            # silently retry after the user explicitly interrupted.
+            sig_num = -proc.returncode
+            signal.signal(signal.Signals(sig_num), signal.SIG_DFL)
+            os.kill(os.getpid(), sig_num)
 
-        for sig in signal.Signals:
-            if sig not in (signal.SIGKILL, signal.SIGSTOP, signal.SIGCHLD):
-                old_handlers[sig] = signal.getsignal(sig)
-                signal.signal(sig, new_signal_handler)
-
-        try:
-            proc.wait()
-        finally:
-            for sig, handler in old_handlers.items():
-                signal.signal(sig, handler)
-
-    return proc.returncode
+        return proc.returncode
 
 
 def get_options() -> argparse.Namespace:
@@ -118,41 +118,25 @@ def get_options() -> argparse.Namespace:
         default=False,
         help="Inverse repeat logic (retry on success codes).",
     )
-
     parser.add_argument(
-        "base", type=type_duration, help="Base sleep time between attempts"
+        "-b",
+        "--base-sleep",
+        default="5",
+        type=type_duration,
+        help="Base sleep time between attempts (e.g. 5s, 1m, 2h).",
     )
     parser.add_argument(
-        "cap", type=type_duration, help="Max time between attempts"
+        "-c",
+        "--cap-sleep",
+        default="60",
+        type=type_duration,
+        help="Max time between attempts (e.g. 5s, 1m, 2h).",
     )
     parser.add_argument(
         "command", nargs=argparse.REMAINDER, help="Command to run."
     )
 
     return parser.parse_args()
-
-
-def type_duration(value: str) -> int:
-    matcher = re.fullmatch(
-        r"""
-        (?:(?P<days>[1-9]\d*)d)?      # days
-        (?:(?P<hours>[1-9]\d*)h)?     # hours
-        (?:(?P<minutes>[1-9]\d*)m)?   # minutes
-        (?:(?P<seconds>[1-9]\d*)s?)?  # seconds
-    """,
-        value,
-        re.VERBOSE | re.IGNORECASE,
-    )
-    if not matcher:
-        raise argparse.ArgumentTypeError(f"Invalid duration format: '{value}'")
-
-    data = matcher.groupdict()
-    days = int(data.get("days") or 0)
-    hours = int(data.get("hours") or 0)
-    minutes = int(data.get("minutes") or 0)
-    seconds = int(data.get("seconds") or 0)
-
-    return days * 86400 + hours * 3600 + minutes * 60 + seconds
 
 
 def type_exit_codes(value: str) -> list[tuple[int, int]]:  # noqa: C901
@@ -190,6 +174,87 @@ def type_exit_codes(value: str) -> list[tuple[int, int]]:  # noqa: C901
                 add_code(min(start, end), max(start, end))
 
     return codes
+
+
+def type_duration(value: str) -> float:
+    if value.isdigit():
+        return float(value)
+
+    if not re.fullmatch(r"(\d+[hms])+", value, re.IGNORECASE):
+        raise argparse.ArgumentTypeError("Invalid duration format")
+
+    rv = datetime.timedelta()
+    for chunk in re.finditer(r"(\d+)([hms])", value, re.IGNORECASE):
+        v = int(chunk.group(1))
+        match chunk.group(2).lower():
+            case "h":
+                rv += datetime.timedelta(hours=v)
+            case "m":
+                rv += datetime.timedelta(minutes=v)
+            case "s":
+                rv += datetime.timedelta(seconds=v)
+
+    return rv / datetime.timedelta(seconds=1)
+
+
+@functools.lru_cache(maxsize=1)
+def get_tty_fd() -> int | None:
+    try:
+        if os.isatty(fd := sys.stdin.fileno()):
+            return fd
+    except (ValueError, OSError):
+        pass
+
+    return None
+
+
+@contextlib.contextmanager
+def move_to_front_of_tty(pid: int) -> t.Iterator[None]:
+    tty_fd = get_tty_fd()
+    if tty_fd is None:
+        yield
+        return
+
+    old_pgid = os.getpgrp()
+    child_pgid = os.getpgid(pid)
+
+    try:
+        os.tcsetpgrp(tty_fd, child_pgid)
+        yield
+    finally:
+        os.tcsetpgrp(tty_fd, old_pgid)
+
+
+@contextlib.contextmanager
+def redirect_signals(pid: int) -> t.Iterator[None]:
+    old_handlers = {}
+    child_pgid = os.getpgid(pid)
+
+    def new_signal_handler(signum: int, _: t.Any) -> None:  # noqa: ANN401
+        os.killpg(child_pgid, signum)
+
+    if get_tty_fd() is not None:
+        # SIGTTOU is sent to the process when it attempts to
+        # write to the terminal that is not in the foreground process group.
+        # By default, this signal stops the process.
+        old_handlers[signal.SIGTTOU] = signal.getsignal(signal.SIGTTOU)
+        signal.signal(signal.SIGTTOU, signal.SIG_IGN)
+
+    for sig in signal.Signals:
+        if sig not in (
+            signal.SIGKILL,
+            signal.SIGSTOP,
+            signal.SIGCHLD,
+            signal.SIGTTOU,
+        ):
+            old_handlers[sig] = signal.getsignal(sig)
+            signal.signal(sig, new_signal_handler)
+
+    try:
+        yield
+    finally:
+        for sig, handler in old_handlers.items():
+            signal.signal(sig, handler)
 
 
 if __name__ == "__main__":
