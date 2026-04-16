@@ -19,9 +19,6 @@ require("blink.cmp").setup({
     preset = "none",
     ["<c-s>"] = {
       function(cmp)
-        if vim.bo.filetype == "codecompanion" then
-          return false
-        end
         if cmp.is_signature_visible() then
           cmp.hide_signature()
         else
@@ -117,13 +114,6 @@ require("blink.cmp").setup({
         score_offset = 100,
         async = true,
       },
-      codecompanion = {
-        name = "CodeCompanion",
-        module = "codecompanion.providers.completion.blink",
-      },
-    },
-    per_filetype = {
-      codecompanion = { "codecompanion" },
     },
   },
 })

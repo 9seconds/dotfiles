@@ -49,7 +49,7 @@ local ensure_installed = {
   "kdl",
   "lua",
   "make",
-  "markdown", -- required for code-companion and markview
+  "markdown", -- required for markview
   "markdown_inline", -- required for markview
   "python",
   "requirements",

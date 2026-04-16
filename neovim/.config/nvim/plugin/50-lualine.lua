@@ -5,10 +5,6 @@ vim.pack.add({
   "https://github.com/nvim-lualine/lualine.nvim",
 })
 
-local STATE = {
-  codecompanion_requests = 0,
-}
-
 local mod = require("lualine")
 
 mod.setup({
@@ -33,14 +29,6 @@ mod.setup({
         function()
           if vim.g.copilot_mode then
             return ""
-          end
-          return ""
-        end,
-      },
-      {
-        function()
-          if STATE.codecompanion_requests > 0 then
-            return "󰭻"
           end
           return ""
         end,
@@ -96,33 +84,4 @@ mod.setup({
     lualine_y = { "searchcount" },
     lualine_z = { "location" },
   },
-})
-
-local group = vim.api.nvim_create_augroup("9_Lualine", {})
-
-vim.api.nvim_create_autocmd("User", {
-  group = group,
-  pattern = "CodeCompanionRequestStarted",
-  callback = function()
-    STATE.codecompanion_requests = STATE.codecompanion_requests + 1
-    mod.refresh()
-  end,
-})
-
-vim.api.nvim_create_autocmd("User", {
-  group = group,
-  pattern = "CodeCompanionRequestFinished",
-  callback = function()
-    STATE.codecompanion_requests = STATE.codecompanion_requests - 1
-    mod.refresh()
-  end,
-})
-
-vim.api.nvim_create_autocmd("User", {
-  group = group,
-  pattern = "CodeCompanionChatCleared",
-  callback = function()
-    STATE.codecompanion_requests = 0
-    mod.refresh()
-  end,
 })
