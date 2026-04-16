@@ -41,18 +41,13 @@ vim.api.nvim_create_autocmd("FileType", {
       },
     })
 
-    vim.keymap.set({ "n", "x", "s", "v", "t" }, "<A-k>", function()
+    vim.keymap.set({ "n", "x", "s", "v", "t" }, "<c-.>", function()
       require("sidekick.cli").toggle({
         name = vim.g.sidekick_tool or "copilot",
         focus = true,
       })
     end, {
       desc = "Sidekick: Toggle",
-    })
-    vim.keymap.set({ "n", "t", "i", "x" }, "<c-.>", function()
-      require("sidekick.cli").focus()
-    end, {
-      desc = "Sidekick: Focus",
     })
 
     -- keymaps for sending
