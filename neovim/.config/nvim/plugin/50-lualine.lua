@@ -27,10 +27,42 @@ mod.setup({
     lualine_a = {
       {
         function()
-          if vim.g.copilot_mode then
-            return ""
+          if vim.g.copilot_nes_mode then
+            return "󰟶 "
           end
           return ""
+        end,
+
+        color = function()
+          -- color is still called during setup
+          if package.loaded["sidekick"] == nil then
+            return
+          end
+
+          local status = require("sidekick.status").get()
+          if status.kind == "Error" then
+            return { fg = "DiagnosticError" }
+          elseif status.busy then
+            return { fg = "DiagnosticWarn" }
+          elseif require("sidekick.nes").have() then
+            return { bg = "bg_dark1", fg = "fg_dark", gui = "bold" }
+          end
+        end,
+
+        cond = function()
+          return package.loaded["sidekick"] ~= nil
+        end,
+      },
+      {
+        function()
+          if vim.g.copilot_mode then
+            return " "
+          end
+          return ""
+        end,
+
+        cond = function()
+          return package.loaded["copilot"] ~= nil
         end,
       },
       "mode",
@@ -57,8 +89,9 @@ mod.setup({
 
           return vim.iter(output):join(" ")
         end,
+
         cond = function()
-          return vim.b.gitsigns_status_dict ~= nil
+          return package.loaded["gitsigns"] ~= nil
         end,
       },
     },
@@ -84,4 +117,34 @@ mod.setup({
     lualine_y = { "searchcount" },
     lualine_z = { "location" },
   },
+})
+
+local group = vim.api.nvim_create_augroup("9_LuaLine", {})
+vim.api.nvim_create_autocmd("User", {
+  group = group,
+  pattern = "CopilotModeChanged",
+  callback = function()
+    mod.refresh()
+  end,
+})
+vim.api.nvim_create_autocmd("User", {
+  group = group,
+  pattern = "CopilotNesModeChanged",
+  callback = function()
+    mod.refresh()
+  end,
+})
+vim.api.nvim_create_autocmd("User", {
+  group = group,
+  pattern = "GitSignsUpdate",
+  callback = function()
+    mod.refresh()
+  end,
+})
+vim.api.nvim_create_autocmd("User", {
+  group = group,
+  pattern = "SidekickNesDone",
+  callback = function()
+    mod.refresh()
+  end,
 })

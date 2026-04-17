@@ -9,6 +9,7 @@ vim.pack.add({
 })
 
 local PREFIX = "<leader>s"
+local TOGGLE_PREFIX = PREFIX .. "t"
 local mod = require("snacks")
 
 mod.setup({
@@ -97,10 +98,10 @@ mod.setup({
   },
 })
 
-mod.toggle.inlay_hints():map(PREFIX .. "h")
-mod.toggle.dim():map(PREFIX .. "m")
-mod.toggle.indent():map(PREFIX .. "i")
-mod.toggle.treesitter():map(PREFIX .. "t")
+mod.toggle.inlay_hints():map(TOGGLE_PREFIX .. "h")
+mod.toggle.dim():map(TOGGLE_PREFIX .. "m")
+mod.toggle.indent():map(TOGGLE_PREFIX .. "i")
+mod.toggle.treesitter():map(TOGGLE_PREFIX .. "t")
 
 local state_diagnostic = false
 mod
@@ -122,7 +123,7 @@ mod
       vim.diagnostic.config({ virtual_lines = state })
     end,
   })
-  :map(PREFIX .. "d")
+  :map(TOGGLE_PREFIX .. "d")
 
 mod
   .toggle({
@@ -135,7 +136,7 @@ mod
       vim.o.spell = state
     end,
   })
-  :map(PREFIX .. "s")
+  :map(TOGGLE_PREFIX .. "s")
 
 mod
   .toggle({
@@ -147,11 +148,29 @@ mod
     set = function(state)
       vim.g.copilot_mode = state
       vim.api.nvim_exec_autocmds("User", {
-        pattern = "CopilotRequested",
+        pattern = "CopilotModeChanged",
+        data = state,
       })
     end,
   })
-  :map(PREFIX .. "c")
+  :map(TOGGLE_PREFIX .. "c")
+
+mod
+  .toggle({
+    id = "nes",
+    name = "copilot next edit suggestions",
+    get = function()
+      return vim.g.copilot_nes_mode or false
+    end,
+    set = function(state)
+      vim.g.copilot_nes_mode = state
+      vim.api.nvim_exec_autocmds("User", {
+        pattern = "CopilotNesModeChanged",
+        data = state,
+      })
+    end,
+  })
+  :map(TOGGLE_PREFIX .. "n")
 
 mod.indent.enable()
 

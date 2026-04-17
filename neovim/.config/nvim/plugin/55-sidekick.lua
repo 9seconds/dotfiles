@@ -16,6 +16,9 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.lsp.enable("copilot_ls")
 
     require("sidekick").setup({
+      nes = {
+        enabled = vim.g.copilot_nes_mode or false,
+      },
       cli = {
         mux = {
           enabled = false,
@@ -76,11 +79,6 @@ vim.api.nvim_create_autocmd("FileType", {
       desc = "Sidekick: Apply NES",
     })
 
-    vim.keymap.set({ "x", "n", "t" }, PREFIX .. "n", function()
-      require("sidekick.nes").toggle()
-    end, {
-      desc = "Sidekick: Toggle NES",
-    })
     vim.keymap.set({ "x", "n", "t" }, PREFIX .. "j", function()
       require("sidekick.nes").jump()
     end, {
@@ -95,6 +93,14 @@ vim.api.nvim_create_autocmd("FileType", {
       require("sidekick.nes").clear()
     end, {
       desc = "Sidekick: Clear NES",
+    })
+
+    vim.api.nvim_create_autocmd("User", {
+      group = vim.api.nvim_create_augroup("9_SideKick", {}),
+      pattern = "CopilotNesModeChanged",
+      callback = function(ev)
+        require("sidekick.nes").enable(ev.data)
+      end,
     })
   end,
 })
