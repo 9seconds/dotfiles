@@ -45,10 +45,7 @@ vim.api.nvim_create_autocmd("FileType", {
     })
 
     vim.keymap.set({ "n", "x", "s", "v", "t" }, "<c-.>", function()
-      require("sidekick.cli").toggle({
-        name = vim.g.sidekick_tool or "copilot",
-        focus = true,
-      })
+      require("sidekick.cli").focus({ name = vim.g.sidekick_tool or "copilot" })
     end, {
       desc = "Sidekick: Toggle",
     })
