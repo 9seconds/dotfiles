@@ -9,20 +9,17 @@ local mod = require("lualine")
 
 mod.setup({
   theme = "tokyonight",
-
   options = {
     section_separators = "",
     component_separators = "",
     globalstatus = true,
   },
-
   extensions = {
     "fzf",
     "lazy",
     "oil",
     "quickfix",
   },
-
   sections = {
     lualine_a = {
       {
@@ -32,7 +29,6 @@ mod.setup({
           end
           return ""
         end,
-
         color = function()
           -- color is still called during setup
           if package.loaded["sidekick"] == nil then
@@ -48,7 +44,6 @@ mod.setup({
             return { bg = "bg_dark1", fg = "fg_dark", gui = "bold" }
           end
         end,
-
         cond = function()
           return package.loaded["sidekick"] ~= nil
         end,
@@ -60,7 +55,6 @@ mod.setup({
           end
           return ""
         end,
-
         cond = function()
           return package.loaded["copilot"] ~= nil
         end,
@@ -89,7 +83,6 @@ mod.setup({
 
           return vim.iter(output):join(" ")
         end,
-
         cond = function()
           return package.loaded["gitsigns"] ~= nil
         end,

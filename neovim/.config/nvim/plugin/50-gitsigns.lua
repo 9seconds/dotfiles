@@ -53,14 +53,19 @@ end)
 
 keymap("Reset hunk", "r", function()
   require("gitsigns").reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
-end, { "v", "s" })
+end, { "v", "s" }
+)
 
 keymap("Reset whole buffer", "R", function()
   require("gitsigns").reset_buffer()
 end)
 
-vim.keymap.set({ "n", "x", "o", "s" }, "ih", function()
-  require("gitsigns").select_hunk()
-end, {
-  desc = "GitSigns: Select hunk",
-})
+vim.keymap.set(
+  { "n", "x", "o", "s" }, "ih",
+  function()
+    require("gitsigns").select_hunk()
+  end,
+  {
+    desc = "GitSigns: Select hunk",
+  }
+)

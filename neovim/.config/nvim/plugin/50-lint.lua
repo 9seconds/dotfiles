@@ -11,14 +11,12 @@ local augroup = vim.api.nvim_create_augroup("9_Lint", {})
 local function get_linters()
   local ft = vim.bo.filetype
 
-  local values = vim
-    .iter(require("_.lint").configs)
-    :fold({}, function(acc, k, v)
-      if k == "*" or k == ft then
-        vim.list_extend(acc, v)
-      end
-      return acc
-    end)
+  local values = vim.iter(require("_.lint").configs):fold({}, function(acc, k, v)
+    if k == "*" or k == ft then
+      vim.list_extend(acc, v)
+    end
+    return acc
+  end)
 
   return vim.list.unique(values)
 end

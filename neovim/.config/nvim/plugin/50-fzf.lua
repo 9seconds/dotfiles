@@ -33,19 +33,19 @@ local function rg_glob(query)
     if word == "+" then
       flags = flags .. " --word-regexp"
 
-    -- "! -- something" > rg -F something
+      -- "! -- something" > rg -F something
     elseif word == "!" then
       flags = flags .. " --fixed-strings"
 
-    -- ^python -> rg -t python
+      -- ^python -> rg -t python
     elseif vim.startswith(word, "^") then
       flags = flags .. " -t " .. vim.fn.shellescape(word:sub(2))
 
-    -- "-I -X ww" -> rg -I -X ww
+      -- "-I -X ww" -> rg -I -X ww
     elseif vim.startswith(word, "-") then
       flags = flags .. " " .. word
 
-    -- iglob clause
+      -- iglob clause
     else
       -- dots -> dots/**
       if not word:find("*") then
@@ -109,10 +109,7 @@ keymap("Symbols", "s", function()
   })
 
   for _, client in ipairs(clients) do
-    if
-      client.server_capabilities
-      and client.server_capabilities.documentSymbolProvider
-    then
+    if client.server_capabilities and client.server_capabilities.documentSymbolProvider then
       return fzf.lsp_document_symbols({})
     end
   end

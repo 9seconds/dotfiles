@@ -24,8 +24,12 @@ require("oil").setup({
   },
 })
 
-vim.keymap.set("n", "-", function()
-  require("oil").open()
-end, {
-  desc = "Oil: Open a directory",
-})
+vim.keymap.set(
+  "n", "-",
+  function()
+    require("oil").open()
+  end,
+  {
+    desc = "Oil: Open a directory",
+  }
+)

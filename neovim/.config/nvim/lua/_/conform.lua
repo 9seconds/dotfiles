@@ -1,10 +1,7 @@
 --- this module contains configuration for conform.nvim
 --- https://github.com/stevearc/conform.nvim/blob/master/doc/recipes.md#lazy-loading-with-lazynvim
 
-local M = {
-  configs = {},
-  chains = {},
-}
+local M = { configs = {}, chains = {} }
 
 function M:set(language, formatter, config)
   if self.configs[language] == nil then
@@ -39,10 +36,7 @@ function M:get_config()
     chains[lang] = chain
   end
 
-  return {
-    formatters_by_ft = chains,
-    formatters = configs,
-  }
+  return { formatters_by_ft = chains, formatters = configs }
 end
 
 return M

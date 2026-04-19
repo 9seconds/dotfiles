@@ -10,7 +10,6 @@ return {
     "gowork",
     "gotmpl",
   },
-
   settings = {
     gopls = {
       semanticTokens = true,

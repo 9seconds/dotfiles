@@ -12,12 +12,10 @@ local KEYS = {
   close = "z",
   quit = "q",
   choose = "o",
-
   right = "v",
   below = "s",
   tab = "t",
   float = "f",
-
   alt = function(self, mapping)
     return string.format("<A-%s>", self[mapping])
   end,
@@ -27,11 +25,7 @@ local KEYS = {
 }
 
 local function generate_name()
-  local shuf_cmd = {
-    vim.o.shell,
-    vim.o.shellcmdflag,
-    "sort -R /usr/share/dict/words | head -n 1",
-  }
+  local shuf_cmd = { vim.o.shell, vim.o.shellcmdflag, "sort -R /usr/share/dict/words | head -n 1" }
 
   if vim.fn.executable("shuf") == 1 then
     shuf_cmd = { "shuf", "-n", "1", "/usr/share/dict/words" }
@@ -43,8 +37,7 @@ local function generate_name()
 
   if words.code ~= 0 then
     vim.notify(
-      string.format("Failed to get random word: %s", words.stderr),
-      vim.log.levels.ERROR,
+      string.format("Failed to get random word: %s", words.stderr), vim.log.levels.ERROR,
       { title = "ergoterm" }
     )
     return
@@ -59,13 +52,7 @@ end
 
 local function term_open(direction)
   return function()
-    vim.cmd(
-      string.format(
-        "TermNew auto_scroll=true layout=%s name=%s",
-        direction,
-        generate_name()
-      )
-    )
+    vim.cmd(string.format("TermNew auto_scroll=true layout=%s name=%s", direction, generate_name()))
   end
 end
 
@@ -107,13 +94,11 @@ local function choose()
   local snacks_config = {
     title = "Choose terminal",
     items = terminals,
-
     preview = function(ctx)
       ctx.item.buf = ctx.item._state.bufnr
       preview(ctx)
       return true
     end,
-
     format = function(item)
       local ago = vim.fn.reltimefloat(vim.fn.reltime(item._state._created_at))
       local seconds = math.fmod(ago, 60)
@@ -142,11 +127,9 @@ local function choose()
 
       return {
         { string.format("%d:", item.id), "SnacksPickerLabel" },
-        { string.format(" %s ", item.name), "SnacksPickerBold" },
-        { reltime, "SnacksPickerComment" },
+        { string.format(" %s ", item.name), "SnacksPickerBold" }, { reltime, "SnacksPickerComment" },
       }
     end,
-
     actions = {},
     win = {
       input = {
@@ -182,14 +165,8 @@ local function choose()
     local name = "press_" .. key
 
     snacks_config.actions[name] = make_snacks_action(func)
-    snacks_config.win.input.keys[KEYS:alt(key)] = {
-      name,
-      mode = { "n", "i" },
-    }
-    snacks_config.win.input.keys[KEYS:ctrl(key)] = {
-      name,
-      mode = { "n", "i" },
-    }
+    snacks_config.win.input.keys[KEYS:alt(key)] = { name, mode = { "n", "i" } }
+    snacks_config.win.input.keys[KEYS:ctrl(key)] = { name, mode = { "n", "i" } }
   end
 
   add_action("right", make_open_action("right"))
@@ -259,19 +236,16 @@ require("ergoterm").setup({
     persist_size = false,
     start_in_insert = true,
     cleanup_on_success = false,
-
     float_opts = {
       height = math.floor(vim.o.lines * 0.85),
       width = math.floor(vim.o.columns * 0.85),
     },
     float_winblend = 0,
-
     on_open = function(term)
       term._state._created_at = vim.fn.reltime()
       set_autocommands(term)
       set_keys(term)
     end,
-
     on_job_exit = function(term, _, exit_code)
       if exit_code ~= 0 then
         return

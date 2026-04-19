@@ -8,7 +8,6 @@ GIT_REPO_PATH = "{{ config_root }}"
 "cargo:selene" = "latest"
 "pipx:mypy" = "latest"
 ruff = "latest"
-stylua = "latest"
 python = "latest"
 
 # -----------------------------------------------------------------------------
@@ -62,14 +61,10 @@ depends = ['lua:format:*']
 description = "Run all Lua linters"
 depends = ['lua:lint:*']
 
-[tasks."lua:format:stylua"]
-description = "Run Stylua"
-usage = '''
-  arg "<source>" help="Name of the file to process" default="." var=#true
-  complete "source" run="fd -e lua -t file -t symlink -H"
-'''
+[tasks."lua:format:luafmt"]
+description = "Run luafmt"
 tools.stylua = "latest"
-run = "stylua -a ."
+run = "fd -e lua -H -t file -t symlink | xargs -r luafmt --config luafmt.toml --level lua-jit --write"
 
 [tasks."lua:lint:selene"]
 description = "Run Selene"

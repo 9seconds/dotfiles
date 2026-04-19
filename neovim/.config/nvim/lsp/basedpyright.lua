@@ -6,15 +6,12 @@ return {
     "basedpyright-langserver",
     "--stdio",
   },
-
   filetypes = {
     "python",
   },
-
   handlers = {
     ["textDocument/publishDiagnostics"] = function() end,
   },
-
   settings = {
     basedpyright = {
       disableOrganizeImports = true,

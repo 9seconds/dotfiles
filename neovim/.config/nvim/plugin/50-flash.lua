@@ -76,4 +76,5 @@ end)
 
 keymap("Remote", "s", function()
   require("flash").remote()
-end, "o")
+end, "o"
+)

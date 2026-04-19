@@ -29,7 +29,6 @@ require("blink.cmp").setup({
       "fallback",
     },
   },
-
   -- https://cmp.saghen.dev/configuration/completion.html
   completion = {
     keyword = {
@@ -78,15 +77,12 @@ require("blink.cmp").setup({
       },
     },
   },
-
   snippets = {
     preset = "mini_snippets",
   },
-
   fuzzy = {
     implementation = "rust",
   },
-
   signature = {
     enabled = true,
     trigger = {
@@ -98,7 +94,6 @@ require("blink.cmp").setup({
       show_documentation = true,
     },
   },
-
   sources = {
     default = function()
       if vim.g.copilot_mode then
@@ -106,7 +101,6 @@ require("blink.cmp").setup({
       end
       return { "lsp", "snippets", "path" }
     end,
-
     providers = {
       copilot = {
         name = "copilot",

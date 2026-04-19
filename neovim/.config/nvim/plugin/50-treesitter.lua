@@ -10,19 +10,8 @@ vim.pack.add({
 })
 
 local skip_treesitter = {
-  "blink-cmp-documentation",
-  "blink-cmp-menu",
-  "blink-cmp-menu",
-  "blink-cmp-signature",
-  "ergoterm",
-  "flash_prompt",
-  "fzf",
-  "lazy",
-  "lazy_backdrop",
-  "oil",
-  "qf",
-  "snacks_notif",
-  "snacks_terminal",
+  "blink-cmp-documentation", "blink-cmp-menu", "blink-cmp-menu", "blink-cmp-signature", "ergoterm",
+  "flash_prompt", "fzf", "lazy", "lazy_backdrop", "oil", "qf", "snacks_notif", "snacks_terminal",
   "snacks_win_backdrop",
 }
 
@@ -75,8 +64,7 @@ vim.api.nvim_create_autocmd("FileType", {
       return
     end
 
-    local parser_installed =
-      pcall(vim.treesitter.get_parser, args.buf, parser_name)
+    local parser_installed = pcall(vim.treesitter.get_parser, args.buf, parser_name)
     if not parser_installed then
       mod.install({ parser_name }):wait(30000)
     end
