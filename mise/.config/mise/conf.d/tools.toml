@@ -47,3 +47,10 @@ tmux = "latest"
 "npm:jsonlint" = "latest"
 "pipx:gitlint-core" = "latest"
 "github:koalaman/shellcheck" = "latest"
+
+[tools."github:EmmyLuaLs/emmylua-analyzer-rust"]
+version = "latest"
+
+[tools."github:EmmyLuaLs/emmylua-analyzer-rust".platforms]
+linux-x64 = { asset_pattern = "emmylua_ls-linux-x64.tar.gz" }
+macos-arm64 = { asset_pattern = "emmylua_ls-darwin-arm64.tar.gz" }
