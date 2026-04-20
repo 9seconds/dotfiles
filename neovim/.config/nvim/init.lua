@@ -15,6 +15,7 @@ require("_.project_root")
 require("_.options")
 require("_.keymappings")
 require("_.autocommands")
+require("_.lsp")
 
 vim.schedule(function()
   require("_.commands")

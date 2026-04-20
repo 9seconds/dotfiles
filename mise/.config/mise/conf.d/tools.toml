@@ -40,7 +40,6 @@ poetry = "latest"
 tmux = "latest"
 
 # LSP
-"github:LuaLS/lua-language-server" = "latest"
 "github:tekumara/typos-lsp" = "latest"
 "npm:bash-language-server" = "latest"
 "pipx:basedpyright" = "latest"
