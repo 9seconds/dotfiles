@@ -14,6 +14,16 @@ local function setup()
     "PackUpdate",
     function()
       vim.pack.update()
+
+      local disabled_plugins = vim.iter(vim.pack.get()):filter(function(x)
+        return not x.active
+      end):map(function(x)
+        return x.spec.name
+      end):totable()
+
+      if #disabled_plugins > 0 then
+        vim.pack.del(disabled_plugins)
+      end
     end,
     {
       desc = "Update all plugins",
