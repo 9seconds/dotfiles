@@ -7,6 +7,8 @@ function __9seconds_set_r --on-variable PWD
   if test (count $inside) -eq 1; and $inside[1] = "true"
     set -gx R (git rev-parse --show-toplevel 2>/dev/null)
   else
-    set -eu R
+    set -gu R
   end
 end
+
+__9seconds_set_r
