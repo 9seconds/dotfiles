@@ -27,4 +27,5 @@ vim.lsp.enable({
   "bash-language-server",
   "typos-lsp",
   "emmylua_ls",
+  "ty",
 })

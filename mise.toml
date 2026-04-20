@@ -5,8 +5,8 @@ GIT_REPO_PATH = "{{ config_root }}"
 # -----------------------------------------------------------------------------
 
 [tools]
-"github:Kampfkarren/selene" = "latest"
-"pipx:mypy" = "latest"
+"cargo:selene" = "latest"
+"github:astral-sh/ty" = "latest"
 "github:astral-sh/ruff" = "latest"
 python = "latest"
 
