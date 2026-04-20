@@ -1,6 +1,5 @@
 [tool_alias]
 emmylua_ls = "github:EmmyLuaLs/emmylua-analyzer-rust"
-emmylua_check = "github:EmmyLuaLs/emmylua-analyzer-rust"
 luafmt = "github:EmmyLuaLs/emmylua-analyzer-rust"
 
 [tools]
@@ -59,13 +58,6 @@ version = "latest"
 [tools.emmylua_ls.platforms]
 linux-x64 = { asset_pattern = "emmylua_ls-linux-x64.tar.gz" }
 macos-arm64 = { asset_pattern = "emmylua_ls-darwin-arm64.tar.gz" }
-
-[tools.emmylua_check]
-version = "latest"
-
-[tools.emmylua_check.platforms]
-linux-x64 = { asset_pattern = "emmylua_check-linux-x64.tar.gz" }
-macos-arm64 = { asset_pattern = "emmylua_check-darwin-arm64.tar.gz" }
 
 [tools.luafmt]
 version = "latest"
