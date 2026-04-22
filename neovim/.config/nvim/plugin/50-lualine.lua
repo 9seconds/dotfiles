@@ -36,7 +36,9 @@ mod.setup({
           end
 
           local status = require("sidekick.status").get()
-          if status.kind == "Error" then
+          if status == nil then
+            return
+          elseif status.kind == "Error" then
             return { fg = "DiagnosticError" }
           elseif status.busy then
             return { fg = "DiagnosticWarn" }
