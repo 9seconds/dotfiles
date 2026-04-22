@@ -1,7 +1,7 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 add_newline = true
-format = """$time$hostname${env_var.mkex}${env_var.shpool}$directory$cmd_duration$git_branch$git_commit$git_state$git_status
+format = """$time$hostname${env_var.mkex}${env_var.ZMX_SESSION}$directory$cmd_duration$git_branch$git_commit$git_state$git_status
 $character
 """
 
@@ -43,9 +43,8 @@ style = "yellow"
 disabled = false
 utc_time_offset = "+1"
 
-[env_var.shpool]
+[env_var.ZMX_SESSION]
 format = "[ $env_value]($style) "
-variable = "SHPOOL_SESSION_NAME"
 style = "dimmed"
 
 [env_var.mkex]

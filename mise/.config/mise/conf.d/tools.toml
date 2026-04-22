@@ -18,7 +18,6 @@ neovim = "latest"
 
 "cargo:git-absorb" = "latest"
 "cargo:mergiraf" = "latest"
-"cargo:shpool" = { version = "latest", os = ["linux"]}
 "cargo:tree-sitter-cli" = "latest"
 "github:Wilfred/difftastic" = "latest"
 "github:ajeetdsouza/zoxide" = "latest"
@@ -50,6 +49,12 @@ tmux = "latest"
 "npm:jsonlint" = "latest"
 "pipx:gitlint-core" = "latest"
 "github:koalaman/shellcheck" = "latest"
+
+# zmx
+"http:zmx" = {
+  version = "0.5.0",
+  url = "https://zmx.sh/a/zmx-{{ version }}-{{ os() }}-{{ arch(arm64='aarch64') }}.tar.gz"
+}
 
 [tools.emmylua_ls]
 version = "latest"
