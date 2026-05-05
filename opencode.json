@@ -1,0 +1,6 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  "model": "openrouter/deepseek/deepseek-v4-pro",
+  "small_model": "openrouter/google/gemma-4-31b-it"
+}

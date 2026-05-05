@@ -5,3 +5,4 @@ __pycache__/
 *.orig
 .mise-tasks/
 mise.local.toml
+opencode.json

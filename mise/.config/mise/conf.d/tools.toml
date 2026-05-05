@@ -35,6 +35,7 @@ neovim = "latest"
 "github:skim-rs/skim" = "latest"
 "github:starship/starship" = "latest"
 "npm:@github/copilot" = "latest"
+"npm:opencode-ai" = "latest"
 poetry = "latest"
 tmux = "latest"
 
