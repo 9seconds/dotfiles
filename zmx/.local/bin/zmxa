@@ -7,6 +7,8 @@ function show_help
   echo "Usage: $this_script_name [-h/--help] [-d/--debug] [session]"
   echo
   echo 'Connect to the zmx'
+  echo 'To connect to a new session, please prefix with !:'
+  echo "  $this_script_name !newone"
 end
 
 argparse --max-args=1 'h/help&' 'd/debug&' -- $argv
@@ -34,7 +36,7 @@ if test (count $argv) -ne 0
   set -a fzf_flags --query=(string join ' ' $argv | string escape)
 end
 
-set session (zmx list | string replace -fr -m 1 '^.\s+name=(\S+).+$' '$1' | 9fzf $fzf_flags)
+set session (zmx list --short | 9fzf $fzf_flags)
 if test -z "$session"
   return 0
 end
