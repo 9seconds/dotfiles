@@ -1,0 +1,19 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  "autoupdate": false,
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "reserved": 10000
+  },
+
+  "permission": {
+    "edit": "ask",
+    "bash": {
+      "*": "ask",
+      "git log *": "allow",
+      "git diff *": "allow"
+    }
+  }
+}
