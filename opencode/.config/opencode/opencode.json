@@ -31,5 +31,11 @@
       "uniq *": "allow",
       "wc *": "allow"
     }
+  },
+
+  "lsp": {
+    "pyright": {
+      "disabled": true
+    }
   }
 }
