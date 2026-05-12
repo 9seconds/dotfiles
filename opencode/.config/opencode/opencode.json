@@ -37,5 +37,12 @@
     "pyright": {
       "disabled": true
     }
+  },
+
+  "mcp": {
+    "filesystem": {
+      "enabled": true,
+      "command": ["mcp-filesystem-server"]
+    }
   }
 }
