@@ -20,13 +20,13 @@ vim.api.nvim_create_autocmd("FileType", {
         enabled = vim.g.copilot_nes_mode or false,
       },
       cli = {
-        mux = {
-          enabled = false,
-        },
         win = {
           split = {
-            width = 120,
+            width = 0.5,
           },
+        },
+        mux = {
+          enabled = false,
         },
         picker = "fzf-lua",
         prompts = {
@@ -42,6 +42,9 @@ vim.api.nvim_create_autocmd("FileType", {
           ["This class"] = "{class}",
         },
       },
+      copilot = {},
+      ui = {},
+      debug = false,
     })
 
     vim.keymap.set(
