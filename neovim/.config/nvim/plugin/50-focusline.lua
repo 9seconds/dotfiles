@@ -11,8 +11,6 @@ require("focusline").setup(
     with_motion = {
       "zz",
       "z,",
-      { "k", rules = { await = 1000, on_repeat = 10 } },
-      { "j", rules = { await = 1000, on_repeat = 10 } },
     },
   }
 )
