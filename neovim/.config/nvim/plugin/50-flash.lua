@@ -50,7 +50,7 @@ require("flash").setup({
   },
 })
 
-keymap("Jump to the label", "s", function()
+keymap("Jump to the label", "s", function ()
   return require("flash").jump({
     search = {
       mode = make_smart_case,
@@ -58,23 +58,23 @@ keymap("Jump to the label", "s", function()
   })
 end)
 
-keymap("Jump to the beginning", "S", function()
+keymap("Jump to the beginning", "S", function ()
   return require("flash").jump({
-    mode = function(str)
+    mode = function (str)
       return make_smart_case("\\<" .. str)
     end,
   })
 end)
 
-keymap("Continue", "gs", function()
+keymap("Continue", "gs", function ()
   return require("flash").jump({ continue = true })
 end)
 
-keymap("Select treesitter", "T", function()
+keymap("Select treesitter", "T", function ()
   return require("flash").treesitter()
 end)
 
-keymap("Remote", "s", function()
+keymap("Remote", "s", function ()
   require("flash").remote()
 end, "o"
 )

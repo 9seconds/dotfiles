@@ -15,7 +15,7 @@ require("quicker").setup({
   keys = {
     {
       ">",
-      function()
+      function ()
         require("quicker").expand({
           before = 2,
           after = 2,
@@ -26,7 +26,7 @@ require("quicker").setup({
     },
     {
       "<",
-      function()
+      function ()
         require("quicker").collapse()
       end,
       desc = "Collapse quickfix context",
@@ -34,10 +34,10 @@ require("quicker").setup({
   },
 })
 
-keymap("q", "Toggle quickfix", function()
+keymap("q", "Toggle quickfix", function ()
   require("quicker").toggle()
 end)
 
-keymap("q", "Toggle loclist", function()
+keymap("q", "Toggle loclist", function ()
   require("quicker").toggle({ loclist = true })
 end)

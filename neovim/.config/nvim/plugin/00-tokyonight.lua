@@ -13,7 +13,7 @@ vim.o.background = "dark"
 require("tokyonight").setup({
   dim_inactive = true,
   lualine_bold = true,
-  on_colors = function(colors)
+  on_colors = function (colors)
     colors.border = colors.fg_gutter
   end,
 })

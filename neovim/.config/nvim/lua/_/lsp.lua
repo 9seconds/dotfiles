@@ -17,7 +17,7 @@ vim.lsp.config("*", {
 
 vim.lsp.config("basedpyright", {
   handlers = {
-    ["textDocument/publishDiagnostics"] = function() end,
+    ["textDocument/publishDiagnostics"] = function () end,
   },
   settings = {
     basedpyright = {
@@ -55,7 +55,7 @@ vim.lsp.config("typos_lsp", {
 
 vim.api.nvim_create_autocmd("FileType", {
   once = true,
-  callback = function()
+  callback = function ()
     vim.lsp.enable({
       "basedpyright",
       "bash-language-server",

@@ -23,46 +23,46 @@ require("gitsigns").setup({
   signcolumn = false,
 })
 
-keymap("Preview hunk", "P", function()
+keymap("Preview hunk", "P", function ()
   require("gitsigns").preview_hunk()
 end)
 
-keymap("Preview hunk inline", "p", function()
+keymap("Preview hunk inline", "p", function ()
   require("gitsigns").preview_hunk_inline()
 end)
 
-keymap("Blame line", "b", function()
+keymap("Blame line", "b", function ()
   require("gitsigns").blame_line({ full = true })
 end)
 
-keymap("Blame file", "B", function()
+keymap("Blame file", "B", function ()
   require("gitsigns").blame()
 end)
 
-keymap("Toggle current line blame", "l", function()
+keymap("Toggle current line blame", "l", function ()
   require("gitsigns").toggle_current_line_blame()
 end)
 
-keymap("Toggle word diff", "w", function()
+keymap("Toggle word diff", "w", function ()
   require("gitsigns").toggle_word_diff()
 end)
 
-keymap("Reset hunk", "r", function()
+keymap("Reset hunk", "r", function ()
   require("gitsigns").reset_hunk()
 end)
 
-keymap("Reset hunk", "r", function()
+keymap("Reset hunk", "r", function ()
   require("gitsigns").reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
 end, { "v", "s" }
 )
 
-keymap("Reset whole buffer", "R", function()
+keymap("Reset whole buffer", "R", function ()
   require("gitsigns").reset_buffer()
 end)
 
 vim.keymap.set(
   { "n", "x", "o", "s" }, "ih",
-  function()
+  function ()
     require("gitsigns").select_hunk()
   end,
   {

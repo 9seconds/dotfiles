@@ -18,7 +18,7 @@ require("blink.cmp").setup({
     -- see 20-mini-keymap
     preset = "none",
     ["<c-s>"] = {
-      function(cmp)
+      function (cmp)
         if cmp.is_signature_visible() then
           cmp.hide_signature()
         else
@@ -52,12 +52,12 @@ require("blink.cmp").setup({
       },
     },
     ghost_text = {
-      enabled = function()
+      enabled = function ()
         return vim.g.copilot_mode or false
       end,
     },
     menu = {
-      auto_show = function()
+      auto_show = function ()
         return not vim.g.copilot_mode
       end,
       draw = {
@@ -65,10 +65,10 @@ require("blink.cmp").setup({
         columns = { { "kind_icon" }, { "label", gap = 1 } },
         components = {
           label = {
-            text = function(ctx)
+            text = function (ctx)
               return require("colorful-menu").blink_components_text(ctx)
             end,
-            highlight = function(ctx)
+            highlight = function (ctx)
               return require("colorful-menu").blink_components_highlight(ctx)
             end,
           },
@@ -95,7 +95,7 @@ require("blink.cmp").setup({
     },
   },
   sources = {
-    default = function()
+    default = function ()
       if vim.g.copilot_mode then
         return { "copilot" }
       end

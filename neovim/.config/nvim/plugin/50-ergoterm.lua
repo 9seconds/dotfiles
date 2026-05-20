@@ -16,10 +16,10 @@ local KEYS = {
   below = "s",
   tab = "t",
   float = "f",
-  alt = function(self, mapping)
+  alt = function (self, mapping)
     return string.format("<A-%s>", self[mapping])
   end,
-  ctrl = function(self, mapping)
+  ctrl = function (self, mapping)
     return string.format("<c-%s>", self[mapping])
   end,
 }
@@ -51,7 +51,7 @@ local function generate_name()
 end
 
 local function term_open(direction)
-  return function()
+  return function ()
     vim.cmd(string.format("TermNew auto_scroll=true layout=%s name=%s", direction, generate_name()))
   end
 end
@@ -61,7 +61,7 @@ local function term_close(term)
     term = require("ergoterm").identify()
   end
   if term then
-    vim.schedule(function()
+    vim.schedule(function ()
       term:close()
     end)
   end
@@ -72,7 +72,7 @@ local function term_quit(term)
     term = require("ergoterm").identify()
   end
   if term then
-    vim.schedule(function()
+    vim.schedule(function ()
       term:cleanup({ force = true })
     end)
   end
@@ -94,12 +94,12 @@ local function choose()
   local snacks_config = {
     title = "Choose terminal",
     items = terminals,
-    preview = function(ctx)
+    preview = function (ctx)
       ctx.item.buf = ctx.item._state.bufnr
       preview(ctx)
       return true
     end,
-    format = function(item)
+    format = function (item)
       local ago = vim.fn.reltimefloat(vim.fn.reltime(item._state._created_at))
       local seconds = math.fmod(ago, 60)
 
@@ -139,14 +139,14 @@ local function choose()
   }
 
   local function make_snacks_action(func)
-    return function(picker, item)
+    return function (picker, item)
       picker:close()
       func(item)
     end
   end
 
   local function make_open_action(direction)
-    return function(item)
+    return function (item)
       local windows = vim.api.nvim_tabpage_list_wins(0)
 
       for _, term in ipairs(require("ergoterm").get_all()) do
@@ -155,7 +155,7 @@ local function choose()
         end
       end
 
-      vim.schedule(function()
+      vim.schedule(function ()
         item:focus(direction)
       end)
     end
@@ -173,11 +173,11 @@ local function choose()
   add_action("below", make_open_action("below"))
   add_action("tab", make_open_action("tab"))
   add_action("float", make_open_action("float"))
-  add_action("close", function(term)
+  add_action("close", function (term)
     term_close(term)
     vim.schedule(choose)
   end)
-  add_action("quit", function(term)
+  add_action("quit", function (term)
     term_quit(term)
     vim.schedule(choose)
   end)
@@ -211,7 +211,7 @@ end
 local function set_autocommands(term)
   vim.api.nvim_create_autocmd("TermEnter", {
     buffer = term._state.bufnr,
-    callback = function()
+    callback = function ()
       local opts = vim.wo[term._state.window]
       opts.winbar = term.name
       opts.list = false
@@ -220,7 +220,7 @@ local function set_autocommands(term)
   })
   vim.api.nvim_create_autocmd("TermLeave", {
     buffer = term._state.bufnr,
-    callback = function()
+    callback = function ()
       local opts = vim.wo[term._state.window]
       opts.number = true
     end,
@@ -241,17 +241,17 @@ require("ergoterm").setup({
       width = math.floor(vim.o.columns * 0.85),
     },
     float_winblend = 0,
-    on_open = function(term)
+    on_open = function (term)
       term._state._created_at = vim.fn.reltime()
       set_autocommands(term)
       set_keys(term)
     end,
-    on_job_exit = function(term, _, exit_code)
+    on_job_exit = function (term, _, exit_code)
       if exit_code ~= 0 then
         return
       end
 
-      vim.schedule(function()
+      vim.schedule(function ()
         local wins = vim.api.nvim_list_wins()
         local non_float = 0
         for _, w in ipairs(wins) do

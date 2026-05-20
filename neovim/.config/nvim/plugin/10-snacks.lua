@@ -95,10 +95,10 @@ local state_diagnostic = false
 mod.toggle({
   id = "diagnostic",
   name = "diagnostic virtual line",
-  get = function()
+  get = function ()
     return state_diagnostic
   end,
-  set = function(state)
+  set = function (state)
     state_diagnostic = state
     if state then
       state = { current_line = true }
@@ -112,10 +112,10 @@ mod.toggle({
 mod.toggle({
   id = "spellcheck",
   name = "spellcheck",
-  get = function()
+  get = function ()
     return vim.o.spell or false
   end,
-  set = function(state)
+  set = function (state)
     vim.o.spell = state
   end,
 }):map(TOGGLE_PREFIX .. "s")
@@ -123,10 +123,10 @@ mod.toggle({
 mod.toggle({
   id = "copilot",
   name = "copilot completions",
-  get = function()
+  get = function ()
     return vim.g.copilot_mode or false
   end,
-  set = function(state)
+  set = function (state)
     vim.g.copilot_mode = state
     vim.api.nvim_exec_autocmds("User", {
       pattern = "CopilotModeChanged",
@@ -138,10 +138,10 @@ mod.toggle({
 mod.toggle({
   id = "nes",
   name = "copilot next edit suggestions",
-  get = function()
+  get = function ()
     return vim.g.copilot_nes_mode or false
   end,
-  set = function(state)
+  set = function (state)
     vim.g.copilot_nes_mode = state
     vim.api.nvim_exec_autocmds("User", {
       pattern = "CopilotNesModeChanged",
@@ -163,7 +163,7 @@ vim.keymap.set(
 
 vim.keymap.set(
   { "n", "x", "o" }, "<A-a>",
-  function()
+  function ()
     require("snacks").zen.zoom()
   end,
   {
@@ -172,7 +172,7 @@ vim.keymap.set(
 )
 vim.keymap.set(
   "n", PREFIX .. "g",
-  function()
+  function ()
     require("snacks").lazygit()
   end,
   {
@@ -183,7 +183,7 @@ vim.keymap.set(
 vim.api.nvim_create_autocmd("User", {
   group = vim.api.nvim_create_augroup("9_Snacks", {}),
   pattern = "OilActionsPost",
-  callback = function(evt)
+  callback = function (evt)
     if evt.data.actions.type == "move" then
       require("snacks").rename.on_rename_file(evt.data.actions.src_url, evt.data.actions.dest_url)
     end

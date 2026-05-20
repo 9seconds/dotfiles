@@ -43,14 +43,14 @@ combo("t", "kj", "<BS><BS><C-\\><C-n>", {
 multi("i", "<Tab>", {
   {
     condition = is_blank_line,
-    action = function()
+    action = function ()
       vim.api.nvim_feedkeys("\t", "n", false)
     end,
   },
   "minisnippets_next",
   {
     condition = is_copilot_active,
-    action = function()
+    action = function ()
       return require("blink.cmp").select_next() or false
     end,
   },
@@ -62,7 +62,7 @@ multi("i", "<S-Tab>", {
   "minisnippets_prev",
   {
     condition = is_copilot_active,
-    action = function()
+    action = function ()
       return require("blink.cmp").select_prev() or false
     end,
   },
@@ -75,7 +75,7 @@ multi("i", "<S-Tab>", {
 multi("i", "<CR>", {
   {
     condition = is_copilot_active,
-    action = function()
+    action = function ()
       return require("blink.cmp").accept() or false
     end,
   },
@@ -93,7 +93,7 @@ multi("i", "<BS>", {
 multi({ "n", "x" }, "]h", {
   {
     condition = is_gitsigns_active,
-    action = function()
+    action = function ()
       require("gitsigns").nav_hunk("next")
     end,
   },
@@ -101,7 +101,7 @@ multi({ "n", "x" }, "]h", {
 multi({ "n", "x" }, "[h", {
   {
     condition = is_gitsigns_active,
-    action = function()
+    action = function ()
       require("gitsigns").nav_hunk("prev")
     end,
   },

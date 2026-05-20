@@ -26,7 +26,7 @@ require("oil").setup({
 
 vim.keymap.set(
   "n", "-",
-  function()
+  function ()
     require("oil").open()
   end,
   {

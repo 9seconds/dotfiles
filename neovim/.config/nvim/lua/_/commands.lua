@@ -12,12 +12,12 @@ local function setup()
 
   vim.api.nvim_create_user_command(
     "PackUpdate",
-    function()
+    function ()
       vim.pack.update()
 
-      local disabled_plugins = vim.iter(vim.pack.get()):filter(function(x)
+      local disabled_plugins = vim.iter(vim.pack.get()):filter(function (x)
         return not x.active
-      end):map(function(x)
+      end):map(function (x)
         return x.spec.name
       end):totable()
 
@@ -32,7 +32,7 @@ local function setup()
 
   vim.api.nvim_create_user_command(
     "PackLock",
-    function()
+    function ()
       vim.pack.update(nil, { target = "lockfile" })
     end,
     {

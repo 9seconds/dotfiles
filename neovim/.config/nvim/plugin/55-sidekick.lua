@@ -12,7 +12,7 @@ local PREFIX = "<leader>k"
 
 vim.api.nvim_create_autocmd("FileType", {
   once = true,
-  callback = function()
+  callback = function ()
     vim.lsp.enable("copilot_ls")
 
     require("sidekick").setup({
@@ -49,7 +49,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
     vim.keymap.set(
       { "n", "x", "s", "v", "t" }, "<c-.>",
-      function()
+      function ()
         require("sidekick.cli").focus({ name = vim.g.sidekick_tool or "opencode" })
       end,
       {
@@ -60,7 +60,7 @@ vim.api.nvim_create_autocmd("FileType", {
     -- keymaps for sending
     vim.keymap.set(
       { "n", "x" }, PREFIX .. "t",
-      function()
+      function ()
         require("sidekick.cli").send({ msg = "{this}" })
       end,
       {
@@ -70,7 +70,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
     vim.keymap.set(
       { "n", "x" }, PREFIX .. "f",
-      function()
+      function ()
         require("sidekick.cli").send({ msg = "{file}" })
       end,
       {
@@ -80,7 +80,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
     vim.keymap.set(
       { "x" }, PREFIX .. "v",
-      function()
+      function ()
         require("sidekick.cli").send({ msg = "{selection}" })
       end,
       {
@@ -91,7 +91,7 @@ vim.api.nvim_create_autocmd("FileType", {
     -- NES
     vim.keymap.set(
       { "x", "n", "t" }, PREFIX .. "a",
-      function()
+      function ()
         require("sidekick.nes").apply()
       end,
       {
@@ -101,7 +101,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
     vim.keymap.set(
       { "x", "n", "t" }, PREFIX .. "j",
-      function()
+      function ()
         require("sidekick.nes").jump()
       end,
       {
@@ -110,7 +110,7 @@ vim.api.nvim_create_autocmd("FileType", {
     )
     vim.keymap.set(
       { "x", "n", "t" }, PREFIX .. "u",
-      function()
+      function ()
         require("sidekick.nes").update()
       end,
       {
@@ -119,7 +119,7 @@ vim.api.nvim_create_autocmd("FileType", {
     )
     vim.keymap.set(
       { "x", "n", "t" }, PREFIX .. "c",
-      function()
+      function ()
         require("sidekick.nes").clear()
       end,
       {
@@ -130,7 +130,7 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.api.nvim_create_autocmd("User", {
       group = vim.api.nvim_create_augroup("9_SideKick", {}),
       pattern = "CopilotNesModeChanged",
-      callback = function(ev)
+      callback = function (ev)
         require("sidekick.nes").enable(ev.data)
       end,
     })

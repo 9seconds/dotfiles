@@ -9,7 +9,7 @@ vim.bo.expandtab = true
 vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = { "*.go" },
   group = vim.api.nvim_create_augroup("Golang", {}),
-  callback = function()
+  callback = function ()
     if vim.g._go_auto_organize_imports then
       vim.lsp.buf.code_action({
         context = {

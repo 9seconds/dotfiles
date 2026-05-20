@@ -88,21 +88,21 @@ end
 
 require("fzf-lua").setup(opts)
 
-keymap("Files", "t", function()
+keymap("Files", "t", function ()
   return require("fzf-lua").files({})
 end)
 
-keymap("Dotfiles", "T", function()
+keymap("Dotfiles", "T", function ()
   return require("fzf-lua").files({
     cwd = vim.env["9SECONDS_DIR_DOTFILES"] or "~/.dotfiles",
   })
 end)
 
-keymap("Buffers", "b", function()
+keymap("Buffers", "b", function ()
   return require("fzf-lua").buffers({})
 end)
 
-keymap("Symbols", "s", function()
+keymap("Symbols", "s", function ()
   local fzf = require("fzf-lua")
   local clients = vim.lsp.get_clients({
     bufnr = vim.api.nvim_get_current_buf(),
@@ -117,42 +117,42 @@ keymap("Symbols", "s", function()
   return fzf.treesitter({})
 end)
 
-keymap("All symbols", "S", function()
+keymap("All symbols", "S", function ()
   return require("fzf-lua").lsp_workspace_symbols({})
 end)
 
-keymap("Grep", "f", function()
+keymap("Grep", "f", function ()
   return require("fzf-lua").live_grep({})
 end)
 
-keymap("Grep current buffer", "F", function()
+keymap("Grep current buffer", "F", function ()
   return require("fzf-lua").grep_curbuf({})
 end)
 
-keymap("Git status", "l", function()
+keymap("Git status", "l", function ()
   return require("fzf-lua").git_status({})
 end)
 
-keymap("References", "r", function()
+keymap("References", "r", function ()
   return require("fzf-lua").lsp_references({})
 end)
 
-keymap("Incoming calls", "c", function()
+keymap("Incoming calls", "c", function ()
   return require("fzf-lua").lsp_incoming_calls({})
 end)
 
-keymap("Outgoing calls", "C", function()
+keymap("Outgoing calls", "C", function ()
   return require("fzf-lua").lsp_outgoing_calls({})
 end)
 
-keymap("Resume", "y", function()
+keymap("Resume", "y", function ()
   return require("fzf-lua").resume({})
 end)
 
-keymap("Diagnostics for current buffer", "d", function()
+keymap("Diagnostics for current buffer", "d", function ()
   return require("fzf-lua").diagnostics_document({})
 end)
 
-keymap("Diagnostics for workspace", "D", function()
+keymap("Diagnostics for workspace", "D", function ()
   return require("fzf-lua").diagnostics_workspace({})
 end)

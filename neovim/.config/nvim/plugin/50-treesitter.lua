@@ -38,7 +38,7 @@ local ensure_installed = {
   "kdl",
   "lua",
   "make",
-  "markdown", -- required for markview
+  "markdown",        -- required for markview
   "markdown_inline", -- required for markview
   "python",
   "requirements",
@@ -54,7 +54,7 @@ mod.install(ensure_installed)
 
 vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("9_PackTreesitter", {}),
-  callback = function(args)
+  callback = function (args)
     if vim.list_contains(skip_treesitter, args.match) then
       return
     end
@@ -77,7 +77,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
 vim.api.nvim_create_autocmd("PackChanged", {
   group = vim.api.nvim_create_augroup("9_NvimTreesitter", {}),
-  callback = function(ev)
+  callback = function (ev)
     if ev.data.spec.name == "nvim-treesitter" and ev.data.kind ~= "delete" then
       if not ev.data.active then
         vim.cmd.packadd("nvim-treesitter")

@@ -17,6 +17,6 @@ require("_.keymappings")
 require("_.autocommands")
 require("_.lsp")
 
-vim.schedule(function()
+vim.schedule(function ()
   require("_.commands")
 end)

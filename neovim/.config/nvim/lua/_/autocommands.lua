@@ -9,7 +9,7 @@ vim.api.nvim_create_autocmd("VimResized", {
 -- delete trailing whitespaces
 vim.api.nvim_create_autocmd("BufWritePre", {
   group = vim.api.nvim_create_augroup("9_StripTrailingWhitespaces", {}),
-  callback = function()
+  callback = function ()
     local save = vim.fn.winsaveview()
     vim.cmd([[%s/\s\+$//e]])
     vim.fn.winrestview(save)
@@ -17,7 +17,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 })
 
 -- clear search highlight on cursor move
-vim.on_key(function(char)
+vim.on_key(function (char)
   if vim.fn.mode() == "n" then
     local key = vim.fn.keytrans(char)
     local dominated_by_search = vim.tbl_contains({ "<CR>", "n", "N", "*", "#", "?", "/" }, key)
@@ -25,13 +25,12 @@ vim.on_key(function(char)
       vim.opt.hlsearch = dominated_by_search
     end
   end
-end,
-  vim.api.nvim_create_namespace("9_AutoNoHlsearch"))
+end, vim.api.nvim_create_namespace("9_AutoNoHlsearch"))
 
 -- disable mini.pairs for prompts
 vim.api.nvim_create_autocmd("BufEnter", {
   group = vim.api.nvim_create_augroup("9_MiniPairs", {}),
-  callback = function()
+  callback = function ()
     if vim.bo.buftype == "prompt" then
       vim.b.minipairs_disable = true
     end
@@ -41,7 +40,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
 -- set diagnostic on change
 vim.api.nvim_create_autocmd({ "BufEnter", "DiagnosticChanged" }, {
   group = vim.api.nvim_create_augroup("9_Diagnostics", {}),
-  callback = vim.schedule_wrap(function()
+  callback = vim.schedule_wrap(function ()
     if vim.bo.buftype == "" then
       vim.diagnostic.setloclist({
         open = false,
