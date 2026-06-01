@@ -1,0 +1,34 @@
+#!/usr/bin/env fish
+
+set this_script_path $(path resolve $(status --current-filename))
+set this_script_name $(path basename $this_script_path)
+
+function show_help
+  echo "Usage: $this_script_name [-t/--tail] [-h/--help] [-d/--debug] session"
+  echo
+  echo 'Show the history of zmx session'
+  echo '  -t for tailing'
+end
+
+argparse --min-args=1 --max-args=1 't/tail&' 'h/help&' 'd/debug&' -- $argv
+or begin
+  show_help
+  return 1
+end
+
+if set -q _flag_debug
+  set fish_trace 1
+end
+if set -q _flag_help
+  show_help
+  return 0
+end
+
+set cmd zmx
+if set -q _flag_tail
+  set -a cmd tail
+else
+  set -a cmd history
+end
+
+exec $cmd (zml $argv)

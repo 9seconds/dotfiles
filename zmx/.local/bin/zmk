@@ -1,0 +1,33 @@
+#!/usr/bin/env fish
+
+set this_script_path $(path resolve $(status --current-filename))
+set this_script_name $(path basename $this_script_path)
+
+function show_help
+  echo "Usage: $this_script_name [-h/--help] [-d/--debug] [session]"
+  echo
+  echo 'Kill zmx sessions'
+end
+
+argparse --max-args=1 'h/help&' 'd/debug&' -- $argv
+or begin show_help
+  return 1
+end
+
+if set -q _flag_debug
+  set fish_trace 1
+end
+if set -q _flag_help
+  show_help
+  return 0
+end
+
+set -a fzf_flags --sort
+set -a fzf_flags --multi
+set -a fzf_flags --prompt='session> '
+
+if test (count $argv) -ne 0
+  set -a fzf_flags --query=(string join ' ' $argv | string escape)
+end
+
+zmx kill (zmx list --short | 9fzf $fzf_flags)
