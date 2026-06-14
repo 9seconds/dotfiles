@@ -17,3 +17,5 @@ set -gx HOMEBREW_NO_INSTALL_UPGRADE 1
 if command -q bat then
   set -gx HOMEBREW_BAT 1
 end
+
+fish_add_path /opt/homebrew/sbin
