@@ -41,6 +41,8 @@
       "rtk grep *": "allow",
       "rtk head *": "allow",
       "rtk ls": "allow",
+      "rtk systemctl cat *": "allow",
+      "systemctl cat *": "allow",
       "rtk man *": "allow",
       "rtk rg *": "allow",
       "sort *": "allow",
