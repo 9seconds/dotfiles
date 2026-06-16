@@ -64,6 +64,22 @@ local function setup()
 
   -- select just pasted
   nmap("gp", "`[v`]")
+
+  -- lsp commands
+  vim.keymap.set(
+    {"n", "v", "x"},
+    "<leader>lc",
+    function()
+      vim.lsp.buf.code_action()
+    end
+  )
+  vim.keymap.set(
+    {"n", "v", "x"},
+    "<leader>l=",
+    function()
+      vim.lsp.buf.format()
+    end
+  )
 end
 
 setup()
