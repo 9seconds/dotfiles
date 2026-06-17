@@ -21,6 +21,9 @@ vim.api.nvim_create_autocmd("FileType", {
       },
       cli = {
         win = {
+          keys = {
+            escape = { "<Esc>", "<c-[>", mode = "t" },
+          },
           split = {
             width = 0.5,
           },
