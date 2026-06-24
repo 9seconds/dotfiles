@@ -6,3 +6,4 @@ __pycache__/
 .mise-tasks/
 mise.local.toml
 /opencode.json
+/.codegraph
