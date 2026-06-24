@@ -21,7 +21,6 @@ neovim = "latest"
 "cargo:tree-sitter-cli" = "latest"
 "github:Wilfred/difftastic" = "latest"
 "github:ajeetdsouza/zoxide" = "latest"
-"github:anomalyco/opencode" = "latest"
 "github:atanunq/viu" = "latest"
 "github:binwiederhier/ntfy" = "latest"
 "github:mark3labs/mcp-filesystem-server" = "latest"
@@ -51,6 +50,10 @@ tmux = "latest"
 "npm:jsonlint" = "latest"
 "pipx:gitlint-core" = "latest"
 "github:koalaman/shellcheck" = "latest"
+
+# AI
+"github:anomalyco/opencode" = "latest"
+"npm:@colbymchenry/codegraph" = "latest"
 
 # zmx
 "http:zmx" = {
