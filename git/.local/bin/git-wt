@@ -376,7 +376,10 @@ def git_exec(*cmd: str | pathlib.Path, set_git_dir: bool = True) -> list[str]:
         "--no-advice",
         *git_dir_cmd,
         *cmd,
-        env={"NO_COLOR": "1"},
+        env={
+            "NO_COLOR": "1",
+            "TZ": "UTC",
+        },
     )
 
 
