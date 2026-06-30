@@ -212,28 +212,30 @@ class Branch:
 
     @property
     def upstream_state(self) -> str:
-        if self.gone:
-            return "⌀"
-        if self.ahead and self.behind:
-            return "⇅"
-        if self.ahead:
-            return "↑"
-        if self.behind:
-            return "↓"
-        return "✔"
+        match self:
+            case Branch(gone=True):
+                return "⌀"
+            case Branch(ahead=True, behind=True):
+                return "⇅"
+            case Branch(ahead=True):
+                return "↑"
+            case Branch(behind=True):
+                return "↓"
+            case _:
+                return "✔"
 
     @functools.cached_property
     def commits(self) -> int:
-        if "/" not in self.name and self.target:
-            return int(
-                git_exec(
-                    "rev-list",
-                    "--count",
-                    f"{self.target}..{self.name}"
-                )[0]
-            )
+        if "/" in self.name or not self.target:
+            return 0
 
-        return 0
+        return int(
+            git_exec(
+                "rev-list",
+                "--count",
+                f"{self.target}..{self.name}"
+            )[0]
+        )
 
 
 class BranchMatcher:
@@ -618,7 +620,7 @@ def cmd_set(options: argparse.Namespace) -> None:
             "set",
             "--local",
             f"branch.{options.branch}.merge",
-            "refs/heads/" + Branch.get_remote_branch(options.value),
+            f"refs/heads/{Branch.get_remote_branch(options.value)}",
         )
         return
 
