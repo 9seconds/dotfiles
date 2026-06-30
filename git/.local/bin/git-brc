@@ -27,11 +27,12 @@ if set -q _flag_help
   return 0
 end
 
-set branches $(\
-  git branch -v \
-    | string replace -fr '^..(\S+)\s+\S+\s+\[gone\].*' '$1' \
-    | 9fzf --multi --sort --prompt='branch> ' --preview='git l --color=always -n 30' \
-)
+set    fzf_flags -m
+set -a fzf_flags --accept-nth=1
+set -a fzf_flags '--prompt=branch> '
+set -a fzf_flags --preview='git l --color=always -n 30 {}'
+
+set branches $(git br list -a -u gone -- name target ago | 9fzf $fzf_flags)
 if test (count $branches) -gt 0
   exec git branch -D $branches
 end

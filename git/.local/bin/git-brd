@@ -29,19 +29,20 @@ if set -q _flag_help
   return 0
 end
 
-set    fzf_flags --multi
-set -a fzf_flags --prompt='branch> '
+set    fzf_flags --select-1
+set -a fzf_flags --multi
+set -a fzf_flags --accept-nth=1,2,3
+set -a fzf_flags '--prompt=branch> '
+set -a fzf_flags --preview='git l --color=always -n 30 {}'
 if test (count $argv) -ne 0
-  set -a fzf_flags --select-1
   set -a fzf_flags "--query=$(string join -- ' ' $argv)"
 end
 
-git for-each-ref --color=always --format='%(refname:short)  %(color:dim)%(upstream:short)' refs/heads \
+git br -x list -a -c -- name upstream_repo upstream_branch target ago commits \
   | 9fzf $fzf_flags \
-  | while read -t local remote
-    string replace -r '^([^/]+)/(.+)$' '$1 $2' $remote | read origin name
-    git branch -D $local
-    if set -q _flag_remote; and test -n "$origin"
-      git push --delete $origin $name
-    end
-end
+  | while read -t local upstream_repo upstream_branch
+      git branch -D $local
+      if set -q _flag_remote; and test -n "$upstream_repo"
+        git push --delete $upstream_repo $upstream_branch
+      end
+  end
