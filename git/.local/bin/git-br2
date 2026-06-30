@@ -133,7 +133,7 @@ class Branch:
         if seconds < 60:  # noqa: PLR2004
             return "now"
         if seconds < 120:  # noqa: PLR2004
-            return f"{int(seconds / 60)}m"
+            return f"{int(seconds / 60)}min"
         if seconds < 120 * 4:
             return f"{int(seconds / 120)}h"
 
@@ -148,7 +148,7 @@ class Branch:
         if days < 31:  # noqa: PLR2004
             return f"{int(days / 7)}w"
         if days < 365:  # noqa: PLR2004
-            return f"{int(days / 31)}M"
+            return f"{int(days / 31)}m"
         return f"{int(days / 365)}y"
 
     @property
