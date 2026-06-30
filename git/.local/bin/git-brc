@@ -32,7 +32,7 @@ set -a fzf_flags --accept-nth=1
 set -a fzf_flags '--prompt=branch> '
 set -a fzf_flags --preview='git l --color=always -n 30 {}'
 
-set branches $(git br list -a -u gone -- name target ago | 9fzf $fzf_flags)
+set branches $(git br list -c -a -u gone -- name target ago | 9fzf $fzf_flags)
 if test (count $branches) -gt 0
   exec git branch -D $branches
 end
