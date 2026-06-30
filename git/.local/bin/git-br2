@@ -112,7 +112,7 @@ class Branch:
         return repo
 
     @classmethod
-    def _get_remote_branch(cls, value: str) -> str:
+    def get_remote_branch(cls, value: str) -> str:
         try:
             _, branch = value.split("/", maxsplit=1)
         except ValueError:
@@ -153,7 +153,7 @@ class Branch:
 
     @property
     def branch_name(self) -> str:
-        return self._get_remote_branch(self.name) or self.name
+        return self.get_remote_branch(self.name) or self.name
 
     @property
     def upstream_repo(self) -> str:
@@ -161,7 +161,7 @@ class Branch:
 
     @property
     def upstream_branch(self) -> str:
-        return self._get_remote_branch(self.upstream)
+        return self.get_remote_branch(self.upstream)
 
     @functools.cached_property
     def target(self) -> str:
@@ -178,7 +178,7 @@ class Branch:
 
     @property
     def target_branch(self) -> str:
-        return self._get_remote_branch(self.target)
+        return self.get_remote_branch(self.target)
 
     @property
     def gone(self) -> bool:
@@ -281,12 +281,7 @@ class BranchMatcher:
         self.matchers.append(match)
 
     def skip_current(self) -> None:
-        try:
-            output = git_exec("branch", "--show-current")
-        except SubcommandError:
-            current = ""
-        else:
-            current = output[0]
+        current = git_current_branch()
 
         def match(branch: Branch) -> bool:
             result = branch.branch_name != current
@@ -384,6 +379,11 @@ def get_options() -> argparse.Namespace:
             raise argparse.ArgumentTypeError("ambiguous origin")
         return type_existing_branch(value)
 
+    def type_existing_local_branch(value: str) -> str:
+        if "/" in value:
+            raise argparse.ArgumentTypeError("not a local branch")
+        return type_existing_branch(value)
+
     parser = argparse.ArgumentParser(
         description="9seconds manages git branches.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -442,6 +442,31 @@ def get_options() -> argparse.Namespace:
         type=type_existing_remote_branch,
         default="origin/master",
         help="branch that is used as a target for this one"
+    )
+
+    set_cmd = commands.add_parser(
+        "set",
+        aliases=["s"],
+        description="Set parameters for branches",
+        help="set parameters for branches",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    set_cmd.set_defaults(cmd=cmd_set)
+    set_cmd.add_argument(
+        "parameter",
+        choices=["pr", "issue", "target", "upstream"],
+        help="parameter to set",
+    )
+    set_cmd.add_argument(
+        "value",
+        help="value to set"
+    )
+    set_cmd.add_argument(
+        "branch",
+        nargs=argparse.OPTIONAL,
+        type=type_existing_local_branch,
+        default=git_current_branch(),
+        help="Branch to set to"
     )
 
     list_cmd = commands.add_parser(
@@ -561,6 +586,33 @@ def cmd_new(options: argparse.Namespace) -> None:
     LOG.info("Set empty PR")
 
 
+def cmd_set(options: argparse.Namespace) -> None:
+    if options.parameter == "upstream":
+        git_exec(
+            "config",
+            "set",
+            "--local",
+            f"branch.{options.branch}.remote",
+            Branch.get_remote_repo(options.value)
+        )
+        git_exec(
+            "config",
+            "set",
+            "--local",
+            f"branch.{options.branch}.merge",
+            "refs/heads/" + Branch.get_remote_branch(options.value)
+        )
+        return
+
+    git_exec(
+        "config",
+        "set",
+        "--local",
+        f"branch.{options.branch}.{options.parameter}",
+        options.value
+    )
+
+
 def cmd_list(options: argparse.Namespace) -> None:  # noqa: C901, PLR0912
     matcher = BranchMatcher()
 
@@ -642,6 +694,15 @@ def git_common_dir() -> pathlib.Path:
 @functools.lru_cache(maxsize=1)
 def git_user_name() -> str:
     return git_exec("config", "get", "user.name")[0]
+
+
+@functools.lru_cache(maxsize=1)
+def git_current_branch() -> str:
+    try:
+        output = git_exec("branch", "--show-current")
+    except SubcommandError:
+        return ""
+    return output[0]
 
 
 @functools.lru_cache
