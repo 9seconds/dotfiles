@@ -280,6 +280,24 @@ class BranchMatcher:
 
         self.matchers.append(match)
 
+    def skip_current(self) -> None:
+        try:
+            output = git_exec("branch", "--show-current")
+        except SubcommandError:
+            current = ""
+        else:
+            current = output[0]
+
+        def match(branch: Branch) -> bool:
+            result = branch.branch_name != current
+            LOG.debug(
+                "  skip_current: branch=%s, current=%s",
+                branch.branch_name, current
+            )
+            return result
+
+        self.matchers.append(match)
+
 
 def make_branch_sorted(fields: list[str]) -> t.Callable[[Branch], tuple]:
     def make_tuple(field_name: str, reversed_: bool, branch: Branch) -> tuple:  # noqa: FBT001
@@ -444,6 +462,12 @@ def get_options() -> argparse.Namespace:
         )
     )
     list_cmd.add_argument(
+        "-c", "--skip-current",
+        action="store_true",
+        default=False,
+        help="skip current branch",
+    )
+    list_cmd.add_argument(
         "-u", "--upstream-state",
         choices=["gone", "ahead", "behind"],
         help="show only branches with that upstream state"
@@ -537,11 +561,13 @@ def cmd_new(options: argparse.Namespace) -> None:
     LOG.info("Set empty PR")
 
 
-def cmd_list(options: argparse.Namespace) -> None:  # noqa: C901
+def cmd_list(options: argparse.Namespace) -> None:  # noqa: C901, PLR0912
     matcher = BranchMatcher()
 
     if options.all == 0:
         matcher.match_prefix(options.prefix)
+    if options.skip_current:
+        matcher.skip_current()
     if options.target is not None:
         matcher.match_target(options.target)
     if options.upstream_state is not None:
