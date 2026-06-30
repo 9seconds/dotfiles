@@ -751,10 +751,10 @@ def git_user_name() -> str:
 @functools.lru_cache(maxsize=1)
 def git_current_branch() -> str:
     try:
-        output = git_exec("branch", "--show-current")
+        output = git_exec("symbolic-ref", "--short", "--quiet", "HEAD")
     except SubcommandError:
         return ""
-    return output[0]
+    return output[0] if output else ""
 
 
 @functools.lru_cache
