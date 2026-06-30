@@ -20,6 +20,10 @@ import sys
 import typing as t
 import unicodedata
 
+if t.TYPE_CHECKING:
+    import collections.abc
+
+
 LOG: t.Final = logging.getLogger()
 POOL: t.Final = concurrent.futures.ThreadPoolExecutor()
 
@@ -207,14 +211,16 @@ class Branch:
     @functools.cached_property
     def commits(self) -> int:
         if "/" not in self.name and self.target:
-            return len(git_exec(
-                "log",
-                "--format=%%",
-                "--left-only",
-                "--no-merges",
-                "--cherry-pick",
-                f"{self.name}...{self.target}"
-            ))
+            return len(
+                git_exec(
+                    "log",
+                    "--format=%%",
+                    "--left-only",
+                    "--no-merges",
+                    "--cherry-pick",
+                    f"{self.name}...{self.target}",
+                )
+            )
 
         return 0
 
@@ -235,7 +241,7 @@ class BranchMatcher:
             LOG.debug(
                 "  match_upstream_state: upstream_state=%s, result=%s",
                 state,
-                result
+                result,
             )
             return result
 
@@ -244,11 +250,7 @@ class BranchMatcher:
     def match_target(self, target: str) -> None:
         def match(branch: Branch) -> bool:
             result = branch.target == target
-            LOG.debug(
-                "  match_target: target=%s, result=%s",
-                target,
-                result
-            )
+            LOG.debug("  match_target: target=%s, result=%s", target, result)
             return result
 
         self.matchers.append(match)
@@ -261,7 +263,7 @@ class BranchMatcher:
                 "  match_older_than_days: age=%s, age_in_days=%s, result=%s",
                 branch.age,
                 age_in_days,
-                result
+                result,
             )
             return result
 
@@ -287,7 +289,8 @@ class BranchMatcher:
             result = branch.branch_name != current
             LOG.debug(
                 "  skip_current: branch=%s, current=%s",
-                branch.branch_name, current
+                branch.branch_name,
+                current,
             )
             return result
 
@@ -346,11 +349,9 @@ def main() -> None:
         sys.exit(exc.exit_code)
 
 
-def get_options() -> argparse.Namespace:
+def get_options() -> argparse.Namespace:  # noqa: C901
     def env_var_argument(
-        message: str,
-        name: str,
-        default: t.Callable[[], t.Any]
+        message: str, name: str, default: t.Callable[[], t.Any]
     ) -> dict:
         value = os.getenv(name, "")
         return {
@@ -401,10 +402,8 @@ def get_options() -> argparse.Namespace:
         "--prefix",
         type=slugify,
         **env_var_argument(
-            "branch prefix",
-            "GIT_BR_PREFIX",
-            lambda: slugify(git_user_name())
-        )
+            "branch prefix", "GIT_BR_PREFIX", lambda: slugify(git_user_name())
+        ),
     )
     parser.set_defaults(cmd=lambda _: parser.print_help())
 
@@ -418,30 +417,24 @@ def get_options() -> argparse.Namespace:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     new_cmd.set_defaults(cmd=cmd_new)
+    new_cmd.add_argument("-u", "--issue-url", help="URL to the issue")
     new_cmd.add_argument(
-        "-u", "--issue-url",
-        help="URL to the issue"
-    )
-    new_cmd.add_argument(
-        "-U", "--regex-issue-url",
+        "-U",
+        "--regex-issue-url",
         type=lambda val: re.compile(val, re.UNICODE),
         **env_var_argument(
             "regular expression used to extract issue number from URL",
             "GIT_BR_ISSUE_URL_RE",
             lambda: None,
-        )
+        ),
     )
-    new_cmd.add_argument(
-        "stem",
-        type=slugify,
-        help="Stem of the branch"
-    )
+    new_cmd.add_argument("stem", type=slugify, help="Stem of the branch")
     new_cmd.add_argument(
         "target",
         nargs=argparse.OPTIONAL,
         type=type_existing_remote_branch,
         default="origin/master",
-        help="branch that is used as a target for this one"
+        help="branch that is used as a target for this one",
     )
 
     set_cmd = commands.add_parser(
@@ -457,16 +450,13 @@ def get_options() -> argparse.Namespace:
         choices=["pr", "issue", "target", "upstream"],
         help="parameter to set",
     )
-    set_cmd.add_argument(
-        "value",
-        help="value to set"
-    )
+    set_cmd.add_argument("value", help="value to set")
     set_cmd.add_argument(
         "branch",
         nargs=argparse.OPTIONAL,
         type=type_existing_local_branch,
         default=git_current_branch(),
-        help="Branch to set to"
+        help="Branch to set to",
     )
 
     list_cmd = commands.add_parser(
@@ -478,49 +468,65 @@ def get_options() -> argparse.Namespace:
     )
     list_cmd.set_defaults(cmd=cmd_list)
     list_cmd.add_argument(
-        "-a", "--all",
+        "-a",
+        "--all",
         action="count",
         default=0,
         help=(
             "show all branches, not only prefixed. "
             "2+ times to also show remotes"
-        )
+        ),
     )
     list_cmd.add_argument(
-        "-c", "--skip-current",
+        "-c",
+        "--skip-current",
         action="store_true",
         default=False,
         help="skip current branch",
     )
     list_cmd.add_argument(
-        "-u", "--upstream-state",
+        "-u",
+        "--upstream-state",
         choices=["gone", "ahead", "behind"],
-        help="show only branches with that upstream state"
+        help="show only branches with that upstream state",
     )
+    list_cmd.add_argument("-t", "--target", help="target to filter by")
     list_cmd.add_argument(
-        "-t", "--target",
-        help="target to filter by"
-    )
-    list_cmd.add_argument(
-        "-o", "--older-than-days",
+        "-o",
+        "--older-than-days",
         type=type_non_neg_int,
-        help="show branches that are older than this number of days"
+        help="show branches that are older than this number of days",
     )
     list_cmd.add_argument(
-        "-s", "--sort",
+        "-s",
+        "--sort",
         nargs=argparse.ZERO_OR_MORE,
-        choices=list(
-            Branch.SORT_FIELDS
-        ) + [f"_{name}" for name in Branch.SORT_FIELDS],
+        choices=list(Branch.SORT_FIELDS)
+        + [f"_{name}" for name in Branch.SORT_FIELDS],
         default=["name"],
-        help="sort branches"
+        help="sort branches",
     )
     list_cmd.add_argument(
         "field",
         nargs=argparse.ZERO_OR_MORE,
         choices=Branch.FIELDS,
         default="name",
-        help="fields to show"
+        help="fields to show",
+    )
+
+    info_cmd = commands.add_parser(
+        "info",
+        aliases=["i"],
+        description="Information about a local branch.",
+        help="information about a local branch",
+    )
+    info_cmd.set_defaults(cmd=cmd_info)
+    info_cmd.add_argument(
+        "branch",
+        nargs=argparse.OPTIONAL,
+        type=type_existing_local_branch,
+        default=git_current_branch(),
+        help="branch to show information about",
     )
 
     return parser.parse_args()
@@ -563,7 +569,7 @@ def cmd_new(options: argparse.Namespace) -> None:
         "set",
         "--local",
         f"branch.{branch_name}.target",
-        options.target
+        options.target,
     )
     LOG.info("Set target to %s", options.target)
 
@@ -572,17 +578,11 @@ def cmd_new(options: argparse.Namespace) -> None:
         "set",
         "--local",
         f"branch.{branch_name}.issue",
-        options.issue_url or ""
+        options.issue_url or "",
     )
     LOG.info("Set issue_url to %s", options.issue_url or "")
 
-    git_exec(
-        "config",
-        "set",
-        "--local",
-        f"branch.{branch_name}.pr",
-        ""
-    )
+    git_exec("config", "set", "--local", f"branch.{branch_name}.pr", "")
     LOG.info("Set empty PR")
 
 
@@ -593,14 +593,14 @@ def cmd_set(options: argparse.Namespace) -> None:
             "set",
             "--local",
             f"branch.{options.branch}.remote",
-            Branch.get_remote_repo(options.value)
+            Branch.get_remote_repo(options.value),
         )
         git_exec(
             "config",
             "set",
             "--local",
             f"branch.{options.branch}.merge",
-            "refs/heads/" + Branch.get_remote_branch(options.value)
+            "refs/heads/" + Branch.get_remote_branch(options.value),
         )
         return
 
@@ -609,11 +609,11 @@ def cmd_set(options: argparse.Namespace) -> None:
         "set",
         "--local",
         f"branch.{options.branch}.{options.parameter}",
-        options.value
+        options.value,
     )
 
 
-def cmd_list(options: argparse.Namespace) -> None:  # noqa: C901, PLR0912
+def cmd_list(options: argparse.Namespace) -> None:
     matcher = BranchMatcher()
 
     if options.all == 0:
@@ -628,8 +628,7 @@ def cmd_list(options: argparse.Namespace) -> None:  # noqa: C901, PLR0912
         matcher.match_older_than_days(options.older_than_days)
 
     branches = [
-        br for br in git_branches(with_remotes=options.all > 1)
-        if matcher(br)
+        br for br in git_branches(with_remotes=options.all > 1) if matcher(br)
     ]
     branches.sort(key=make_branch_sorted(options.sort))
 
@@ -642,13 +641,37 @@ def cmd_list(options: argparse.Namespace) -> None:  # noqa: C901, PLR0912
         for fut in [POOL.submit(getattr, br, "commits") for br in branches]:
             fut.result()
 
-    rows = [
-        [str(getattr(br, field)) for field in fields_to_show]
-        for br in branches
-    ]
+    print_rows(
+        [
+            [str(getattr(br, field)) for field in fields_to_show]
+            for br in branches
+        ]
+    )
+
+
+def cmd_info(options: argparse.Namespace) -> None:
+    branch = git_branches(branch=options.branch, with_remotes=False)[0]
+
+    print_rows(
+        [
+            ("Name", branch.name),
+            ("Head", branch.head),
+            ("Short Head", branch.abbrev_head),
+            ("Subject", branch.subject),
+            ("Age", branch.ago),
+            ("Target", branch.target),
+            ("Upstream", branch.upstream),
+            ("Upstream State", branch.upstream_state),
+            ("Commits", branch.commits),
+        ]
+    )
+
+
+def print_rows(rows: list[collections.abc.Sequence[t.Any]]) -> None:
     if not rows:
         return
 
+    rows = [[str(r) for r in row] for row in rows]
     lengths = [0] * len(rows[0])
 
     for row in rows:
@@ -706,48 +729,42 @@ def git_current_branch() -> str:
 
 
 @functools.lru_cache
-def git_branches(*, with_remotes: bool) -> list[Branch]:
-    branches: list[Branch] = []
+def git_branches(*, branch: str = "", with_remotes: bool) -> list[Branch]:
+    refs: list[str] = []
+
+    if branch:
+        refs.append(f"refs/heads/{branch}")
+    else:
+        refs.append("refs/heads")
+
+    if with_remotes:
+        if branch:
+            refs.append(f"refs/remotes/*/{branch}")
+        else:
+            refs.append("refs/remotes")
 
     output = git_exec(
-        "for-each-ref", "refs/heads",
+        "for-each-ref",
+        *refs,
+        "--exclude=refs/remotes/*/HEAD",
         #         0                  1                   2                   3               4                     5                          6  # noqa: E501
-        "--format=%(refname:short)%00%(upstream:short)%00%(upstream:track)%00%(objectname)%00%(objectname:short)%00%(authordate:iso-strict)%00%(subject)"
+        "--format=%(refname:short)%00%(upstream:short)%00%(upstream:track)%00%(objectname)%00%(objectname:short)%00%(authordate:iso-strict)%00%(subject)",
     )
+
+    branches: list[Branch] = []
     for line in output:
         fields = line.split("\x00")
         branches.append(
             Branch(
                 name=fields[0],
-                abbrev_head=fields[4],
+                upstream=fields[1],
+                upstream_state=fields[2],
                 head=fields[3],
+                abbrev_head=fields[4],
                 date=fields[5],
                 subject=fields[6],
-                upstream=fields[1],
-                upstream_state=fields[2]
             )
         )
-
-    if with_remotes:
-        output = git_exec(
-            "for-each-ref", "refs/remotes",
-            "--exclude=refs/remotes/*/HEAD",
-            #         0                  1               2                     3                          4  # noqa: E501
-            "--format=%(refname:short)%00%(objectname)%00%(objectname:short)%00%(authordate:iso-strict)%00%(subject)"
-        )
-        for line in output:
-            fields = line.split("\x00")
-            branches.append(
-                Branch(
-                    name=fields[0],
-                    abbrev_head=fields[2],
-                    head=fields[1],
-                    date=fields[3],
-                    subject=fields[4],
-                    upstream="",
-                    upstream_state=""
-                )
-            )
 
     return branches
 
