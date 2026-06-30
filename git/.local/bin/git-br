@@ -212,15 +212,12 @@ class Branch:
     @functools.cached_property
     def commits(self) -> int:
         if "/" not in self.name and self.target:
-            return len(
+            return int(
                 git_exec(
-                    "log",
-                    "--format=%%",
-                    "--left-only",
-                    "--no-merges",
-                    "--cherry-pick",
-                    f"{self.name}...{self.target}",
-                )
+                    "rev-list",
+                    "--count",
+                    f"{self.target}..{self.name}"
+                )[0]
             )
 
         return 0
