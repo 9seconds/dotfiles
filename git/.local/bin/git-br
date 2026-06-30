@@ -66,7 +66,9 @@ class Branch:
         "ago",
         "commits",
         "head",
+        "issue",
         "name",
+        "pr",
         "subject",
         "target",
         "target_branch",
@@ -124,6 +126,14 @@ class Branch:
             return ""
         return branch
 
+    @functools.lru_cache
+    def _get_git_config(self, value: str) -> str:
+        try:
+            output = git_exec("config", "get", f"branch.{self.name}.{value}")
+        except SubcommandError:
+            return ""
+        return output[0]
+
     @functools.cached_property
     def age(self) -> int | float:
         now = datetime.datetime.now(datetime.timezone.utc)
@@ -168,14 +178,17 @@ class Branch:
     def upstream_branch(self) -> str:
         return self.get_remote_branch(self.upstream)
 
-    @functools.cached_property
+    @property
     def target(self) -> str:
-        try:
-            output = git_exec("config", "get", f"branch.{self.name}.target")
-        except SubcommandError:
-            return ""
+        return self._get_git_config("target")
 
-        return output[0]
+    @property
+    def pr(self) -> set:
+        return self._get_git_config("pr")
+
+    @property
+    def issue(self) -> set:
+        return self._get_git_config("issue")
 
     @property
     def target_repo(self) -> str:
@@ -207,7 +220,7 @@ class Branch:
             return "↑"
         if self.behind:
             return "↓"
-        return ""
+        return "✔"
 
     @functools.cached_property
     def commits(self) -> int:
@@ -669,6 +682,8 @@ def cmd_info(options: argparse.Namespace) -> None:
             ("Upstream", branch.upstream),
             ("Upstream State", branch.upstream_state),
             ("Commits", branch.commits),
+            ("Issue URL", branch.issue),
+            ("PR", branch.pr),
         ],
         is_shlex=options.shlex,
     )
