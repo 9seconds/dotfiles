@@ -126,7 +126,7 @@ class Branch:
             return ""
         return branch
 
-    @functools.lru_cache
+    @functools.cache  # noqa: B019
     def _get_git_config(self, value: str) -> str:
         try:
             output = git_exec("config", "get", f"branch.{self.name}.{value}")
