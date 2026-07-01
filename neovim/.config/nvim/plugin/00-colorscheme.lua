@@ -14,10 +14,7 @@ require("kanso").setup({
     dark = "ink",
     light = "pearl",
   },
-  foreground = {
-    dark = "default",
-    light = "default",
-  },
+  foreground = "default",
 })
 
 vim.cmd("colorscheme kanso")
