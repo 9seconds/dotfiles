@@ -188,11 +188,11 @@ class Branch:
         return self._get_git_config("target")
 
     @property
-    def pr(self) -> set:
+    def pr(self) -> str:
         return self._get_git_config("pr")
 
     @property
-    def issue(self) -> set:
+    def issue(self) -> str:
         return self._get_git_config("issue")
 
     @property
