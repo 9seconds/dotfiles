@@ -852,16 +852,13 @@ def cmd_exec(
 
 
 def slugify(value: str) -> str:
-    value = unicodedata.normalize("NFKC", value).lower()
-    chars = []
+    value = "".join(
+        ch if (unicodedata.category(ch)[0] in ("L", "N")) else "_"
+        for ch in unicodedata.normalize("NFKC", value).lower()
+    )
+    value = re.sub(r"_{2,}", "_", value)
 
-    for ch in value:
-        if unicodedata.category(ch).startswith(("L", "N")):
-            chars.append(ch)
-        else:
-            chars.append("_")
-
-    return "".join(chars)
+    return value.strip("_")
 
 
 if __name__ == "__main__":
