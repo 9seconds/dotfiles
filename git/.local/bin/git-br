@@ -73,6 +73,7 @@ class Branch:
         "target",
         "target_branch",
         "target_repo",
+        "timestamp",
         "upstream",
         "upstream_branch",
         "upstream_repo",
@@ -138,6 +139,10 @@ class Branch:
     def age(self) -> int | float:
         now = datetime.datetime.now(datetime.timezone.utc)
         return (now - self._timestamp).total_seconds()
+
+    @functools.cached_property
+    def timestamp(self) -> str:
+        return self._timestamp.isoformat()
 
     @property
     def ago(self) -> str:  # noqa: PLR0911
