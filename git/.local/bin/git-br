@@ -235,11 +235,7 @@ class Branch:
             return 0
 
         return int(
-            git_exec(
-                "rev-list",
-                "--count",
-                f"{self.target}..{self.name}"
-            )[0]
+            git_exec("rev-list", "--count", f"{self.target}..{self.name}")[0]
         )
 
 
