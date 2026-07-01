@@ -371,10 +371,9 @@ def get_options() -> argparse.Namespace:  # noqa: C901
     def env_var_argument(
         message: str, name: str, default: t.Callable[[], t.Any]
     ) -> dict:
-        value = os.getenv(name, "")
         return {
-            "help": f"{message} [envvar: {name}={value}]",
-            "default": value or default(),
+            "help": f"{message} [envvar: {name}]",
+            "default": os.getenv(name) or default(),
         }
 
     def type_non_neg_int(value: str) -> int:
