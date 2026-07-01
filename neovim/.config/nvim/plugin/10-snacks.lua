@@ -136,6 +136,21 @@ mod.toggle({
 }):map(TOGGLE_PREFIX .. "c")
 
 mod.toggle({
+  id = "background",
+  name = "background",
+  get = function ()
+    return vim.o.background == "dark"
+  end,
+  set = function (state)
+    if state then
+      vim.o.background = "dark"
+    else
+      vim.o.background = "light"
+    end
+  end,
+}):map(TOGGLE_PREFIX .. "b")
+
+mod.toggle({
   id = "nes",
   name = "copilot next edit suggestions",
   get = function ()

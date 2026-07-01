@@ -82,7 +82,7 @@ local opts = {
 if vim.fn.executable("sk") then
   opts["fzf_bin"] = "sk"
   opts["fzf_opts"] = { ["--algo"] = "frizbee" }
-  opts["fzf_colors"] = false
+  opts["fzf_colors"] = true
   opts[1][1] = "skim"
 end
 
