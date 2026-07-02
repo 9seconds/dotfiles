@@ -1,0 +1,73 @@
+# MIT License
+#
+# Copyright (c) 2026 Sergey Arkhipov
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+from __future__ import annotations
+
+import os
+import pathlib
+import typing as t
+
+
+CONFIG_HOME: t.Final = pathlib.Path(
+    os.getenv(
+        "XDG_CONFIG_HOME",
+        pathlib.Path.home() / ".config"
+    )
+)
+DATA_HOME: t.Final = pathlib.Path(
+    os.getenv(
+        "XDG_DATA_HOME",
+        pathlib.Path.home() / ".local" / "share"
+    )
+)
+STATE_HOME: t.Final = pathlib.Path(
+    os.getenv(
+        "XDG_STATE_HOME",
+        pathlib.Path.home() / ".local" / "state"
+    )
+)
+CACHE_HOME: t.Final = pathlib.Path(
+    os.getenv(
+        "XDG_CACHE_HOME",
+        pathlib.Path.home() / ".local" / "cache"
+    )
+)
+
+
+def config(name: str) -> pathlib.Path:
+    return _script_path(CONFIG_HOME, name)
+
+
+def data(name: str) -> pathlib.Path:
+    return _script_path(DATA_HOME, name)
+
+
+def state(name: str) -> pathlib.Path:
+    return _script_path(DATA_HOME, name)
+
+
+def cache(name: str) -> pathlib.Path:
+    return _script_path(DATA_HOME, name)
+
+
+def _script_path(root: pathlib.Path, name: str) -> pathlib.Path:
+    return root / "9seconds" / name

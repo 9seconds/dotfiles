@@ -1,55 +1,211 @@
 #!/usr/bin/env python3
-
-# ruff: noqa: PTH118
+# MIT License
+#
+# Copyright (c) 2026 Sergey Arkhipov
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 from __future__ import annotations
 
 import argparse
 import concurrent.futures
-import dataclasses
 import datetime
 import functools
 import logging
-import os
-import os.path
-import pathlib
 import re
-import shlex
-import shutil
-import subprocess
 import sys
 import typing as t
-import unicodedata
 
-if t.TYPE_CHECKING:
-    import collections.abc
+from nineseconds import cli
+from nineseconds import env
+from nineseconds import exceptions
+from nineseconds import git
+from nineseconds import strings
 
 
-LOG: t.Final = logging.getLogger()
+LOG: t.Final = logging.getLogger(__name__)
 POOL: t.Final = concurrent.futures.ThreadPoolExecutor()
+NOW: t.Final = datetime.datetime.now(datetime.timezone.utc)
 
 
-class LogFormatter(logging.Formatter):
-    DEBUG: t.ClassVar = logging.Formatter(">>> %(message)s")
-    MAIN: t.ClassVar = logging.Formatter(">   %(message)s")
-    WARN: t.ClassVar = logging.Formatter("!   %(message)s")
-    ALERT: t.ClassVar = logging.Formatter("!!! %(message)s")
+@cli.main
+def main() -> argparse.ArgumentParser:
+    def type_existing_branch(value: str) -> str:
+        try:
+            git.run("rev-parse", "--verify", value)
+        except exceptions.CommandError as exc:
+            raise argparse.ArgumentTypeError("branch does not exist") from exc
+        return value
 
-    def format(self, record: logging.LogRecord) -> str:
-        match record.levelno:
-            case logging.DEBUG:
-                return self.DEBUG.format(record)
-            case logging.INFO:
-                return self.MAIN.format(record)
-            case logging.WARNING:
-                return self.WARN.format(record)
-        return self.ALERT.format(record)
+    def type_existing_remote_branch(value: str) -> str:
+        if "/" not in value:
+            raise argparse.ArgumentTypeError("ambiguous origin")
+        return type_existing_branch(value)
 
+    def type_existing_local_branch(value: str) -> str:
+        if "/" in value:
+            raise argparse.ArgumentTypeError("not a local branch")
+        return type_existing_branch(value)
 
-@dataclasses.dataclass(frozen=True, kw_only=True)
-class SubcommandError(Exception):
-    stderr: list[str] = dataclasses.field(default_factory=list)
-    exit_code: int = dataclasses.field(default=1)
+    parser = argparse.ArgumentParser(
+        description="9seconds manages git branches.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+
+    parser.add_argument(
+        "-p",
+        "--prefix",
+        type=strings.slugify,
+        **cli.env_argument(
+            "branch prefix",
+            f"{env.PREFIX}_GIT_BR_PREFIX",
+            lambda: git.config_get("user.name"),
+        )
+    )
+
+    commands = parser.add_subparsers(title="Commands")
+
+    new_cmd = commands.add_parser(
+        "new",
+        aliases=["n"],
+        description="Create new branch.",
+        help="create branch",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    new_cmd.set_defaults(cmd=cmd_new)
+    new_cmd.add_argument("-u", "--issue-url", help="URL to the issue")
+    new_cmd.add_argument(
+        "-U",
+        "--regex-issue-url",
+        type=lambda val: re.compile(val, re.UNICODE),
+        **cli.env_argument(
+            "regular expression used to extract issue number from URL",
+            f"{env.PREFIX}_GIT_BR_ISSUE_URL_RE",
+            lambda: None,
+        )
+    )
+    new_cmd.add_argument(
+        "stem",
+        type=strings.slugify,
+        help="Stem of the branch"
+    )
+    new_cmd.add_argument(
+        "target",
+        nargs=argparse.OPTIONAL,
+        type=type_existing_remote_branch,
+        default="origin/master",
+        help="branch that is used as a target for this one",
+    )
+
+    set_cmd = commands.add_parser(
+        "set",
+        aliases=["s"],
+        description="Set parameters for branches",
+        help="set parameters for branches",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    set_cmd.set_defaults(cmd=cmd_set)
+    set_cmd.add_argument(
+        "parameter",
+        choices=["pr", "issue", "target", "upstream"],
+        help="parameter to set",
+    )
+    set_cmd.add_argument("value", help="value to set")
+    set_cmd.add_argument(
+        "branch",
+        nargs=argparse.OPTIONAL,
+        type=type_existing_local_branch,
+        default=git.get_current_branch(),
+        help="Branch to set to",
+    )
+
+    list_cmd = commands.add_parser(
+        "list",
+        aliases=["l", "ls"],
+        description="List branches.",
+        help="list branches",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    list_cmd.set_defaults(cmd=cmd_list)
+    list_cmd.add_argument(
+        "-a",
+        "--all",
+        action="count",
+        default=0,
+        help=(
+            "show all branches, not only prefixed. "
+            "2+ times to also show remotes"
+        ),
+    )
+    list_cmd.add_argument(
+        "-c",
+        "--skip-current",
+        action="store_true",
+        default=False,
+        help="skip current branch",
+    )
+    list_cmd.add_argument(
+        "-u",
+        "--upstream-state",
+        choices=["gone", "ahead", "behind"],
+        help="show only branches with that upstream state",
+    )
+    list_cmd.add_argument("-t", "--target", help="target to filter by")
+    list_cmd.add_argument(
+        "-o",
+        "--older-than-days",
+        type=cli.type_non_negative_int,
+        help="show branches that are older than this number of days",
+    )
+    list_cmd.add_argument(
+        "-s",
+        "--sort",
+        nargs=argparse.ZERO_OR_MORE,
+        choices=list(Branch.SORT_FIELDS)
+        + [f"_{name}" for name in Branch.SORT_FIELDS],
+        default=["name"],
+        help="sort branches",
+    )
+    list_cmd.add_argument(
+        "field",
+        nargs=argparse.ZERO_OR_MORE,
+        choices=Branch.FIELDS,
+        default="name",
+        help="fields to show",
+    )
+
+    info_cmd = commands.add_parser(
+        "info",
+        aliases=["i"],
+        description="Information about a local branch.",
+        help="information about a local branch",
+    )
+    info_cmd.set_defaults(cmd=cmd_info)
+    info_cmd.add_argument(
+        "branch",
+        nargs=argparse.OPTIONAL,
+        type=type_existing_local_branch,
+        default=git.get_current_branch(),
+        help="branch to show information about",
+    )
+
+    return parser
 
 
 class Branch:
@@ -129,16 +285,11 @@ class Branch:
 
     @functools.cache  # noqa: B019
     def _get_git_config(self, value: str) -> str:
-        try:
-            output = git_exec("config", "get", f"branch.{self.name}.{value}")
-        except SubcommandError:
-            return ""
-        return output[0]
+        return git.config_get(f"branch.{self.name}.{value}")
 
     @functools.cached_property
     def age(self) -> int | float:
-        now = datetime.datetime.now(datetime.timezone.utc)
-        return (now - self._timestamp).total_seconds()
+        return (NOW - self._timestamp).total_seconds()
 
     @functools.cached_property
     def timestamp(self) -> str:
@@ -146,8 +297,7 @@ class Branch:
 
     @property
     def ago(self) -> str:  # noqa: PLR0911
-        now = datetime.datetime.now(datetime.timezone.utc)
-        today = now - self._timestamp
+        today = NOW - self._timestamp
         seconds = today.total_seconds()
 
         if seconds < 60:  # noqa: PLR2004
@@ -157,7 +307,7 @@ class Branch:
         if seconds < 120 * 4:
             return f"{int(seconds / 120)}h"
 
-        days = (now.date() - self._timestamp.date()).days
+        days = (NOW.date() - self._timestamp.date()).days
 
         if days == 0:
             return "today"
@@ -235,7 +385,7 @@ class Branch:
             return 0
 
         return int(
-            git_exec("rev-list", "--count", f"{self.target}..{self.name}")[0]
+            git.run("rev-list", "--count", f"{self.target}..{self.name}")[0]
         )
 
 
@@ -297,7 +447,7 @@ class BranchMatcher:
         self.matchers.append(match)
 
     def skip_current(self) -> None:
-        current = git_current_branch()
+        current = git.get_current_branch()
 
         def match(branch: Branch) -> bool:
             result = branch.branch_name != current
@@ -342,216 +492,6 @@ def make_branch_sorted(fields: list[str]) -> t.Callable[[Branch], tuple]:
     return keyfunc
 
 
-def main() -> None:
-    options = get_options()
-
-    log_handler = logging.StreamHandler()
-    log_handler.setFormatter(LogFormatter())
-    LOG.addHandler(log_handler)
-    LOG.setLevel(logging.DEBUG if options.debug else logging.ERROR)
-
-    LOG.info("Options: %s", options)
-    LOG.info("Git binary: %s", git_bin())
-    LOG.info("Git directory: %s", git_dir())
-    LOG.info("Git common directory: %s", git_common_dir())
-
-    try:
-        options.cmd(options)
-    except SubcommandError as exc:
-        for line in exc.stderr:
-            print(line, file=sys.stderr)  # noqa: T201
-        sys.exit(exc.exit_code)
-
-
-def get_options() -> argparse.Namespace:  # noqa: C901
-    def env_var_argument(
-        message: str, name: str, default: t.Callable[[], t.Any]
-    ) -> dict:
-        return {
-            "help": f"{message} [envvar: {name}]",
-            "default": os.getenv(name) or default(),
-        }
-
-    def type_non_neg_int(value: str) -> int:
-        try:
-            converted = int(value)
-        except ValueError as exc:
-            raise argparse.ArgumentTypeError("not positive int") from exc
-        if converted < 0:
-            raise argparse.ArgumentTypeError("not positive int")
-        return converted
-
-    def type_existing_branch(value: str) -> str:
-        try:
-            git_exec("rev-parse", "--verify", value)
-        except SubcommandError as exc:
-            raise argparse.ArgumentTypeError("branch does not exist") from exc
-        return value
-
-    def type_existing_remote_branch(value: str) -> str:
-        if "/" not in value:
-            raise argparse.ArgumentTypeError("ambiguous origin")
-        return type_existing_branch(value)
-
-    def type_existing_local_branch(value: str) -> str:
-        if "/" in value:
-            raise argparse.ArgumentTypeError("not a local branch")
-        return type_existing_branch(value)
-
-    parser = argparse.ArgumentParser(
-        description="9seconds manages git branches.",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
-
-    parser.add_argument(
-        "-d",
-        "--debug",
-        action="store_true",
-        default=False,
-        help="run in debug mode",
-    )
-    parser.add_argument(
-        "-x",
-        "--shlex",
-        action="store_true",
-        default=False,
-        help="format columns for shell lexing",
-    )
-    parser.add_argument(
-        "-p",
-        "--prefix",
-        type=slugify,
-        **env_var_argument(
-            "branch prefix", "GIT_BR_PREFIX", lambda: slugify(git_user_name())
-        ),
-    )
-    parser.set_defaults(cmd=lambda _: parser.print_help())
-
-    commands = parser.add_subparsers(title="Commands")
-
-    new_cmd = commands.add_parser(
-        "new",
-        aliases=["n"],
-        description="Create new branch.",
-        help="create branch",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
-    new_cmd.set_defaults(cmd=cmd_new)
-    new_cmd.add_argument("-u", "--issue-url", help="URL to the issue")
-    new_cmd.add_argument(
-        "-U",
-        "--regex-issue-url",
-        type=lambda val: re.compile(val, re.UNICODE),
-        **env_var_argument(
-            "regular expression used to extract issue number from URL",
-            "GIT_BR_ISSUE_URL_RE",
-            lambda: None,
-        ),
-    )
-    new_cmd.add_argument("stem", type=slugify, help="Stem of the branch")
-    new_cmd.add_argument(
-        "target",
-        nargs=argparse.OPTIONAL,
-        type=type_existing_remote_branch,
-        default="origin/master",
-        help="branch that is used as a target for this one",
-    )
-
-    set_cmd = commands.add_parser(
-        "set",
-        aliases=["s"],
-        description="Set parameters for branches",
-        help="set parameters for branches",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
-    set_cmd.set_defaults(cmd=cmd_set)
-    set_cmd.add_argument(
-        "parameter",
-        choices=["pr", "issue", "target", "upstream"],
-        help="parameter to set",
-    )
-    set_cmd.add_argument("value", help="value to set")
-    set_cmd.add_argument(
-        "branch",
-        nargs=argparse.OPTIONAL,
-        type=type_existing_local_branch,
-        default=git_current_branch(),
-        help="Branch to set to",
-    )
-
-    list_cmd = commands.add_parser(
-        "list",
-        aliases=["l", "ls"],
-        description="List branches.",
-        help="list branches",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
-    list_cmd.set_defaults(cmd=cmd_list)
-    list_cmd.add_argument(
-        "-a",
-        "--all",
-        action="count",
-        default=0,
-        help=(
-            "show all branches, not only prefixed. "
-            "2+ times to also show remotes"
-        ),
-    )
-    list_cmd.add_argument(
-        "-c",
-        "--skip-current",
-        action="store_true",
-        default=False,
-        help="skip current branch",
-    )
-    list_cmd.add_argument(
-        "-u",
-        "--upstream-state",
-        choices=["gone", "ahead", "behind"],
-        help="show only branches with that upstream state",
-    )
-    list_cmd.add_argument("-t", "--target", help="target to filter by")
-    list_cmd.add_argument(
-        "-o",
-        "--older-than-days",
-        type=type_non_neg_int,
-        help="show branches that are older than this number of days",
-    )
-    list_cmd.add_argument(
-        "-s",
-        "--sort",
-        nargs=argparse.ZERO_OR_MORE,
-        choices=list(Branch.SORT_FIELDS)
-        + [f"_{name}" for name in Branch.SORT_FIELDS],
-        default=["name"],
-        help="sort branches",
-    )
-    list_cmd.add_argument(
-        "field",
-        nargs=argparse.ZERO_OR_MORE,
-        choices=Branch.FIELDS,
-        default="name",
-        help="fields to show",
-    )
-
-    info_cmd = commands.add_parser(
-        "info",
-        aliases=["i"],
-        description="Information about a local branch.",
-        help="information about a local branch",
-    )
-    info_cmd.set_defaults(cmd=cmd_info)
-    info_cmd.add_argument(
-        "branch",
-        nargs=argparse.OPTIONAL,
-        type=type_existing_local_branch,
-        default=git_current_branch(),
-        help="branch to show information about",
-    )
-
-    return parser.parse_args()
-
-
 def cmd_new(options: argparse.Namespace) -> None:
     branch_chunks = [options.prefix]
 
@@ -559,75 +499,42 @@ def cmd_new(options: argparse.Namespace) -> None:
         matched = options.regex_issue_url.search(options.issue_url)
         if matched is None:
             raise ValueError("Cannot extract issue from URL")
-        branch_chunks.append(slugify("".join(matched.groups())))
+        branch_chunks.append(strings.slugify("".join(matched.groups())))
 
     branch_chunks.append(options.stem)
     branch_name = "-".join(branch_chunks)
 
-    git_exec("switch", "--no-track", "--no-guess", "-c", branch_name)
+    git.run("switch", "--no-track", "--no-guess", "-c", branch_name)
     LOG.info("Branch %s is created", branch_name)
 
     remote = Branch.get_remote_repo(options.target)
-    git_exec(
-        "config",
-        "set",
-        "--local",
-        f"branch.{branch_name}.remote",
-        remote,
-    )
-    git_exec(
-        "config",
-        "set",
-        "--local",
-        f"branch.{branch_name}.merge",
-        f"refs/heads/{branch_name}",
-    )
+    git.config_set(f"branch.{branch_name}.remote", remote)
+    git.config_set(f"branch.{branch_name}.merge", f"refs/heads/{branch_name}")
     LOG.info("Set remote to %s", remote)
 
-    git_exec(
-        "config",
-        "set",
-        "--local",
-        f"branch.{branch_name}.target",
-        options.target,
-    )
+    git.config_set(f"branch.{branch_name}.target", options.target)
     LOG.info("Set target to %s", options.target)
 
-    git_exec(
-        "config",
-        "set",
-        "--local",
-        f"branch.{branch_name}.issue",
-        options.issue_url or "",
-    )
+    git.config_set(f"branch.{branch_name}.issue", options.issue_url or "")
     LOG.info("Set issue_url to %s", options.issue_url or "")
 
-    git_exec("config", "set", "--local", f"branch.{branch_name}.pr", "")
+    git.config_set(f"branch.{branch_name}.pr", "")
     LOG.info("Set empty PR")
 
 
 def cmd_set(options: argparse.Namespace) -> None:
     if options.parameter == "upstream":
-        git_exec(
-            "config",
-            "set",
-            "--local",
+        git.config_set(
             f"branch.{options.branch}.remote",
             Branch.get_remote_repo(options.value),
         )
-        git_exec(
-            "config",
-            "set",
-            "--local",
+        git.config_set(
             f"branch.{options.branch}.merge",
             f"refs/heads/{Branch.get_remote_branch(options.value)}",
         )
         return
 
-    git_exec(
-        "config",
-        "set",
-        "--local",
+    git.config_set(
         f"branch.{options.branch}.{options.parameter}",
         options.value,
     )
@@ -661,7 +568,7 @@ def cmd_list(options: argparse.Namespace) -> None:
         for fut in [POOL.submit(getattr, br, "commits") for br in branches]:
             fut.result()
 
-    print_rows(
+    strings.print_rows(
         [
             [str(getattr(br, field)) for field in fields_to_show]
             for br in branches
@@ -672,8 +579,7 @@ def cmd_list(options: argparse.Namespace) -> None:
 
 def cmd_info(options: argparse.Namespace) -> None:
     branch = git_branches(branch=options.branch, with_remotes=False)[0]
-
-    print_rows(
+    strings.print_rows(
         [
             ("Name", branch.name),
             ("Head", branch.head),
@@ -691,72 +597,6 @@ def cmd_info(options: argparse.Namespace) -> None:
     )
 
 
-def print_rows(
-    rows: list[collections.abc.Sequence[t.Any]],
-    *,
-    is_shlex: bool,
-) -> None:
-    if not rows:
-        return
-
-    stringify = shlex.quote if is_shlex else str
-    rows = [[stringify(r) for r in row] for row in rows]
-    lengths = [0] * len(rows[0])
-
-    for row in rows:
-        for idx, col in enumerate(row):
-            lengths[idx] = max(len(col), lengths[idx])
-
-    for row in rows:
-        values = (
-            col.ljust(length) for length, col in zip(lengths, row, strict=True)
-        )
-        print("\t".join(values))  # noqa: T201
-
-
-@functools.lru_cache(maxsize=1)
-def git_bin() -> pathlib.Path:
-    if value := os.getenv("GIT_EXEC_PATH"):
-        path = os.path.join(value, "git")
-    else:
-        path = shutil.which("git") or ""
-
-    if shutil.which(path) is None:
-        raise OSError(f"Cannot detect git binary: {path}")
-
-    return pathlib.Path(path).absolute()
-
-
-@functools.lru_cache(maxsize=1)
-def git_dir() -> pathlib.Path:
-    if value := os.getenv("GIT_DIR"):
-        path = value
-    else:
-        path = git_exec("rev-parse", "--absolute-git-dir", set_git_dir=False)[0]
-
-    return pathlib.Path(path).absolute()
-
-
-@functools.lru_cache(maxsize=1)
-def git_common_dir() -> pathlib.Path:
-    path = git_exec("rev-parse", "--git-common-dir")[0]
-    return pathlib.Path(path).absolute()
-
-
-@functools.lru_cache(maxsize=1)
-def git_user_name() -> str:
-    return git_exec("config", "get", "user.name")[0]
-
-
-@functools.lru_cache(maxsize=1)
-def git_current_branch() -> str:
-    try:
-        output = git_exec("symbolic-ref", "--short", "--quiet", "HEAD")
-    except SubcommandError:
-        return ""
-    return output[0] if output else ""
-
-
 @functools.lru_cache
 def git_branches(*, branch: str = "", with_remotes: bool) -> list[Branch]:
     refs: list[str] = []
@@ -772,7 +612,7 @@ def git_branches(*, branch: str = "", with_remotes: bool) -> list[Branch]:
         else:
             refs.append("refs/remotes")
 
-    output = git_exec(
+    output = git.run(
         "for-each-ref",
         *refs,
         "--exclude=refs/remotes/*/HEAD",
@@ -796,65 +636,6 @@ def git_branches(*, branch: str = "", with_remotes: bool) -> list[Branch]:
         )
 
     return branches
-
-
-def git_exec(*cmd: str | pathlib.Path, set_git_dir: bool = True) -> list[str]:
-    git_dir_cmd: list[str | pathlib.Path] = []
-    if set_git_dir:
-        git_dir_cmd = ["--git-dir", git_dir()]
-
-    return cmd_exec(
-        git_bin(),
-        "-P",  # no pager
-        "--no-advice",
-        *git_dir_cmd,
-        *cmd,
-        env={
-            "NO_COLOR": "1",
-            "TZ": "UTC",
-        },
-    )
-
-
-def cmd_exec(
-    *cmd: str | pathlib.Path,
-    cwd: None | pathlib.Path = None,
-    env: dict[str, str] | None = None,
-) -> list[str]:
-    LOG.debug("Execute %s", subprocess.list2cmdline(cmd))
-
-    result = subprocess.run(  # noqa: S603
-        [str(el) for el in cmd],
-        stdin=subprocess.DEVNULL,
-        check=False,
-        capture_output=True,
-        text=True,
-        cwd=cwd or pathlib.Path.cwd(),
-        env={**os.environ, **(env or {})},
-    )
-    stdout = result.stdout.splitlines()
-    stderr = result.stderr.splitlines()
-
-    LOG.debug("  Exit code: %d", result.returncode)
-    for line in stdout:
-        LOG.debug("  Stdout: %s", line)
-    for line in stderr:
-        LOG.debug("  Stderr: %s", line)
-
-    if result.returncode:
-        raise SubcommandError(exit_code=result.returncode, stderr=stderr)
-
-    return stdout
-
-
-def slugify(value: str) -> str:
-    value = "".join(
-        ch if (unicodedata.category(ch)[0] in ("L", "N")) else "_"
-        for ch in unicodedata.normalize("NFKC", value).lower()
-    )
-    value = re.sub(r"_{2,}", "_", value)
-
-    return value.strip("_")
 
 
 if __name__ == "__main__":
