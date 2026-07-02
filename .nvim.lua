@@ -22,6 +22,24 @@ vim.lsp.config("emmylua_ls", {
   },
 })
 
+vim.lsp.config("basedpyright", {
+  handlers = {
+    ["textDocument/publishDiagnostics"] = function() end,
+  },
+  settings = {
+    basedpyright = {
+      analysis = {
+        pythonVersion = "3.10",
+        pythonPlatform = "Linux",
+        typeCheckingMode = "off",
+        extraPaths = {
+          "bin/.local/share/9seconds/pythonpath"
+        },
+      }
+    },
+  },
+})
+
 vim.lsp.enable({
   "basedpyright",
   "bash-language-server",
