@@ -22,7 +22,6 @@ tmux = "latest"
 # Unix
 "github:atanunq/viu" = "latest"
 "github:binwiederhier/ntfy" = "latest"
-"github:burntsushi/ripgrep" = "latest"
 "github:jqlang/jq" = "latest"
 "github:junegunn/fzf" = "latest"
 "github:sharkdp/bat" = "latest"
