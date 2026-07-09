@@ -1,6 +1,5 @@
-[[env]]
+[env]
 GIT_USERNAME = "9seconds"
-GIT_REPO_PATH = "{{ config_root }}"
 PYTHONPATH = "{{ config_root }}/bin/.local/share/9seconds/pythonpath"
 
 # -----------------------------------------------------------------------------
@@ -9,7 +8,6 @@ PYTHONPATH = "{{ config_root }}/bin/.local/share/9seconds/pythonpath"
 "cargo:selene" = "latest"
 "github:astral-sh/ty" = "latest"
 "github:astral-sh/ruff" = "latest"
-python = "latest"
 
 # -----------------------------------------------------------------------------
 
