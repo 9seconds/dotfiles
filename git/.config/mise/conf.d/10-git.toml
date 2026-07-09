@@ -1,0 +1,2 @@
+[env]
+GIT_USERNAME = "{{ exec(command='git config get user.name') }}"

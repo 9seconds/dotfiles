@@ -1,5 +1,4 @@
 [env]
-GIT_USERNAME = "9seconds"
 PYTHONPATH = "{{ config_root }}/bin/.local/share/9seconds/pythonpath"
 
 # -----------------------------------------------------------------------------
