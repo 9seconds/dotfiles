@@ -1,6 +1,2 @@
-# this configuration comes from dotfiles/bin
-
-[[env]]
-PYTHONPATH = {
-  value = "{{ xdg_data_home }}/9seconds/pythonpath",
-}
+[env]
+PYTHONPATH = "{{ xdg_data_home }}/9seconds/pythonpath"
