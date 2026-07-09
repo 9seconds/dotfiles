@@ -11,13 +11,9 @@ tmux = "latest"
 "npm:@colbymchenry/codegraph" = "latest"
 
 # Dev
-"cargo:git-absorb" = "latest"
-"cargo:mergiraf" = "latest"
 "cargo:tree-sitter-cli" = "latest"
-"github:Wilfred/difftastic" = "latest"
 "github:crate-ci/typos" = "latest"
 "github:eza-community/eza" = "latest"
-"github:jesseduffield/lazygit" = "latest"
 
 # Unix
 "github:atanunq/viu" = "latest"
@@ -38,7 +34,6 @@ tmux = "latest"
 
 # Linters
 "npm:jsonlint" = "latest"
-"pipx:gitlint-core" = "latest"
 "github:koalaman/shellcheck" = "latest"
 
 [tools.emmylua_ls]

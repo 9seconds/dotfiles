@@ -1,2 +1,9 @@
+[tools]
+"github:Wilfred/difftastic" = "latest"
+"github:jesseduffield/lazygit" = "latest"
+"cargo:git-absorb" = "latest"
+"cargo:mergiraf" = "latest"
+"pipx:gitlint-core" = "latest"
+
 [env]
 GIT_USERNAME = "{{ exec(command='git config get user.name') }}"
