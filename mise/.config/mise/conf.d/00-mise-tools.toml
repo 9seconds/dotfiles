@@ -7,7 +7,6 @@ tmux = "latest"
 
 # AI
 "github:rtk-ai/rtk" = "latest"
-"github:anomalyco/opencode" = "latest"
 "npm:@colbymchenry/codegraph" = "latest"
 
 # Dev
