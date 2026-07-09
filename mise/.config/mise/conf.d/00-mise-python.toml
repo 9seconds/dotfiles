@@ -1,5 +1,7 @@
 [tools]
 python = "latest"
+uv = "latest"
+poetry = "latest"
 
 # -----------------------------------------------------------------------------
 [settings.python]

@@ -4,6 +4,6 @@
 # https://mise.jdx.dev/environments/#env-file
 _.file = [
   # Base environment variables
-  { path = "~/.config/mise/env.json", redact = true },
-  { path = "~/.config/mise/local-env.json", redact = true }
+  { path = "{{ xdg_config_home }}/mise/env.json", redact = true },
+  { path = "{{ xdg_config_home }}/mise/local-env.json", redact = true }
 ]
