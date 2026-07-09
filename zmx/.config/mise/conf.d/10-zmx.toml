@@ -1,0 +1,5 @@
+[tools]
+"http:zmx" = {
+  version = "0.6.0",
+  url = "https://zmx.sh/a/zmx-{{ version }}-{{ os() }}-{{ arch(x64='x86_64', arm64='aarch64') }}.tar.gz"
+}
