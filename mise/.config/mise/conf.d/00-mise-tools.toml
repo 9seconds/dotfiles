@@ -5,10 +5,6 @@ neovim = "latest"
 poetry = "latest"
 tmux = "latest"
 
-# AI
-"github:rtk-ai/rtk" = "latest"
-"npm:@colbymchenry/codegraph" = "latest"
-
 # Dev
 "cargo:tree-sitter-cli" = "latest"
 "github:crate-ci/typos" = "latest"
