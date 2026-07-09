@@ -1,0 +1,6 @@
+[tools]
+go = "latest"
+
+# -----------------------------------------------------------------------------
+[settings.go]
+# https://mise.jdx.dev/configuration/settings.html#go

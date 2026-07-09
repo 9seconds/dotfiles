@@ -1,0 +1,9 @@
+[env]
+# https://mise.jdx.dev/environments/#env-directives
+
+# https://mise.jdx.dev/environments/#env-file
+_.file = [
+  # Base environment variables
+  { path = "~/.config/mise/env.json", redact = true },
+  { path = "~/.config/mise/local-env.json", redact = true }
+]

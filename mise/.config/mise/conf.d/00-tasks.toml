@@ -1,0 +1,5 @@
+[task_config]
+# https://mise.jdx.dev/tasks/task-configuration.html#task-config-options
+
+# https://mise.jdx.dev/tasks/task-configuration.html#task-config-dir
+dir = "~"

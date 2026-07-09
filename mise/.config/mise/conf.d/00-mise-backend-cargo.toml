@@ -1,0 +1,6 @@
+[tools]
+cargo-binstall = "latest"
+
+# -----------------------------------------------------------------------------
+[settings.cargo]
+# https://mise.jdx.dev/configuration/settings.html#cargo

@@ -1,0 +1,21 @@
+# https://mise.jdx.dev/configuration.html#minimum-mise-version
+min_version = "2026.6.14"
+
+# -----------------------------------------------------------------------------
+# https://mise.jdx.dev/configuration/settings.html
+[settings]
+
+# https://mise.jdx.dev/configuration/settings.html#auto_install
+auto_install = false
+
+# https://mise.jdx.dev/configuration/settings.html#env_cache
+env_cache = true
+
+# https://mise.jdx.dev/configuration/settings.html#env_shell_expand
+env_shell_expand = false
+
+# https://mise.jdx.dev/configuration/settings.html#minimum_release_age
+minimum_release_age = "3d"
+
+# https://mise.jdx.dev/configuration/settings.html#not_found_auto_install
+not_found_auto_install = false

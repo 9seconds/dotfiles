@@ -1,0 +1,6 @@
+[tools]
+aube = "latest"
+
+# -----------------------------------------------------------------------------
+[settings.npm]
+# https://mise.jdx.dev/dev-tools/backends/npm.html

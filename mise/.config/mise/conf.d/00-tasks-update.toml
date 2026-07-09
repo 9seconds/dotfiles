@@ -1,29 +1,19 @@
-# vim: ts=2 sts=2 sw=2:
-
-[task_config]
-dir = "~"
-
 [tasks."update"]
+# https://mise.jdx.dev/tasks/toml-tasks.html
 description = "Update system"
-depends = [
-  "update:system",
-  "update:dotfiles",
-  "update:nvim",
-  "update:fish",
-  "update:mise",
-  "update:kitten",
+alias = "up"
+run = [
+  { task = "update:system:{{ os() }}"},
+  {
+    tasks = [
+      "update:dotfiles",
+      "update:nvim",
+      "update:fish",
+      "update:mise",
+      "update:kitten",
+    ]
+  }
 ]
-
-[tasks."update:system"]
-description = "Run system updates"
-depends = [
-  "update:system:{{ os() }}"
-]
-
-[tasks."update:dotfiles"]
-description = "Update dotfiles"
-dir = "{{ get_env(name='9SECONDS_DOTFILES_DIR', default='~/.dotfiles') }}"
-run = "git pull --recurse-submodules --autostash --rebase"
 
 [tasks."update:system:linux"]
 description = "Run system updates for Linux (assume Ubuntu)"
@@ -36,6 +26,7 @@ run = [
 
 [tasks."update:system:macos"]
 description = "Run system updates for MacOS"
+interactive = true
 run = [
   "brew update",
   "brew upgrade --greedy-latest",
@@ -44,11 +35,19 @@ run = [
   "rm -rf $(brew --cache)",
 ]
 
+[tasks."update:dotfiles"]
+description = "Update dotfiles repository"
+dir = "~/.dotfiles"
+wait_for = [
+    "update:system:{{ os() }}"
+]
+run = "git pull --recurse-submodules --autostash --rebase"
+
 [tasks."update:nvim"]
 description = "Update Neovim"
 wait_for = [
   "update:dotfiles",
-  "update:system:linux",
+  "update:system:{{ os() }}",
   "update:mise",
 ]
 run = "nvim --headless +'lua vim.pack.update(nil, {force=true})' +qa"
@@ -56,7 +55,8 @@ run = "nvim --headless +'lua vim.pack.update(nil, {force=true})' +qa"
 [tasks."update:fish"]
 description = "Update fish"
 wait_for = [
-  "update:dotfiles"
+  "update:dotfiles",
+  "update:system:{{ os() }}",
 ]
 run = "fish -ic 'fisher update'"
 
@@ -64,7 +64,7 @@ run = "fish -ic 'fisher update'"
 description = "Update mise"
 wait_for = [
   "update:dotfiles",
-  "update:system:linux",
+  "update:system:{{ os() }}",
 ]
 env = { RUSTUP_INIT_SKIP_PATH_CHECK = "1", MISE_YES="1" }
 run = [

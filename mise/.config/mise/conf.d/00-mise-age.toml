@@ -1,0 +1,19 @@
+# To decrypt my public key use
+#  age --decrypt ~/.config/mise/age1rn2yrt44jtx8lwsfazwzmq7d9zc5nysqcjqf4mvzwudmu29ysdws95xkgn.age
+
+[tools]
+age = "latest"
+sops = "latest"
+
+# -----------------------------------------------------------------------------
+[env]
+# https://mise.jdx.dev/environments/secrets/sops.html
+
+# https://getsops.io/docs/reference/#config-file-format
+SOPS_CONFIG = "~/.config/mise/sops.yaml"
+
+# https://getsops.io/docs/usage/identities/age/
+SOPS_AGE_KEY_FILE = "~/.config/mise/age.txt"
+
+# just a shortcut for my convenience
+9SECONDS_AGE_ME = "age1rn2yrt44jtx8lwsfazwzmq7d9zc5nysqcjqf4mvzwudmu29ysdws95xkgn"

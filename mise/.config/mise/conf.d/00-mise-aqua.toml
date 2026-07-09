@@ -1,0 +1,6 @@
+[tools]
+minisign = "latest"
+
+# -----------------------------------------------------------------------------
+# https://mise.jdx.dev/dev-tools/backends/aqua.html#settings
+[settings.aqua]

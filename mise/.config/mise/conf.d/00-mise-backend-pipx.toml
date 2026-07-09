@@ -1,0 +1,6 @@
+[tools]
+pipx = "latest"
+
+# -----------------------------------------------------------------------------
+[settings.pipx]
+# https://mise.jdx.dev/dev-tools/backends/pipx.html

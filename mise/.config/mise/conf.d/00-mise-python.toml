@@ -1,0 +1,9 @@
+[tools]
+python = "latest"
+
+# -----------------------------------------------------------------------------
+[settings.python]
+# https://mise.jdx.dev/configuration/settings.html#python
+
+# https://mise.jdx.dev/configuration/settings.html#python.uv_venv_auto
+uv_venv_auto = "source"

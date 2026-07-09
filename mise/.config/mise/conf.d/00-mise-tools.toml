@@ -1,43 +1,35 @@
-[tool_alias]
-emmylua_ls = "github:EmmyLuaLs/emmylua-analyzer-rust"
-luafmt = "github:EmmyLuaLs/emmylua-analyzer-rust"
-
 [tools]
-age = "latest"
-bun = "latest"
-go = "latest"
-node = "latest"
-pipx = "latest"
-python = "latest"
-rust = "latest"
-sops = "latest"
-uv = "latest"
+# Base tools
 usage = "latest"
-
 neovim = "latest"
+poetry = "latest"
+tmux = "latest"
 
+# AI
+"github:rtk-ai/rtk" = "latest"
+"github:anomalyco/opencode" = "latest"
+"npm:@colbymchenry/codegraph" = "latest"
+
+# Dev
 "cargo:git-absorb" = "latest"
 "cargo:mergiraf" = "latest"
 "cargo:tree-sitter-cli" = "latest"
 "github:Wilfred/difftastic" = "latest"
+"github:crate-ci/typos" = "latest"
+"github:eza-community/eza" = "latest"
+"github:jesseduffield/lazygit" = "latest"
+
+# Unix
 "github:ajeetdsouza/zoxide" = "latest"
 "github:atanunq/viu" = "latest"
 "github:binwiederhier/ntfy" = "latest"
-"github:mark3labs/mcp-filesystem-server" = "latest"
 "github:burntsushi/ripgrep" = "latest"
-"github:crate-ci/typos" = "latest"
-"github:rtk-ai/rtk" = "latest"
-"github:eza-community/eza" = "latest"
-"github:jesseduffield/lazygit" = "latest"
 "github:jqlang/jq" = "latest"
 "github:junegunn/fzf" = "latest"
-"github:lusingander/serie" = "latest"
 "github:sharkdp/bat" = "latest"
 "github:sharkdp/fd" = "latest"
 "github:skim-rs/skim" = "latest"
 "github:starship/starship" = "latest"
-poetry = "latest"
-tmux = "latest"
 
 # LSP
 "github:tekumara/typos-lsp" = "latest"
@@ -50,10 +42,6 @@ tmux = "latest"
 "npm:jsonlint" = "latest"
 "pipx:gitlint-core" = "latest"
 "github:koalaman/shellcheck" = "latest"
-
-# AI
-"github:anomalyco/opencode" = "latest"
-"npm:@colbymchenry/codegraph" = "latest"
 
 # zmx
 "http:zmx" = {
@@ -74,3 +62,7 @@ version = "latest"
 [tools.luafmt.platforms]
 linux-x64 = { asset_pattern = "luafmt-linux-x64.tar.gz" }
 macos-arm64 = { asset_pattern = "luafmt-darwin-arm64.tar.gz" }
+
+[tool_alias]
+emmylua_ls = "github:EmmyLuaLs/emmylua-analyzer-rust"
+luafmt = "github:EmmyLuaLs/emmylua-analyzer-rust"
