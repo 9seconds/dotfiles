@@ -36,6 +36,7 @@ from nineseconds import logging
 
 
 if t.TYPE_CHECKING:
+
     class EnvArgumentT(t.TypedDict):
         help: str
         default: str
@@ -49,9 +50,7 @@ if t.TYPE_CHECKING:
 LOG: t.Final[log.Logger] = log.getLogger(__name__)
 
 
-def main(
-    func: t.Callable[[], argparse.ArgumentParser]
-) -> t.Callable[[], None]:
+def main(func: t.Callable[[], argparse.ArgumentParser]) -> t.Callable[[], None]:
     @functools.wraps(func)
     def decorator() -> None:
         logging.configure()
@@ -71,7 +70,7 @@ def main(
                 "run in debug mode",
                 env.DEBUG,
                 env.debug,
-            )
+            ),
         )
 
         options = parser.parse_args()

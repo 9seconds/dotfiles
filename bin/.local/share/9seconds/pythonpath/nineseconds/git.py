@@ -28,6 +28,7 @@ import pathlib
 import shutil
 
 from nineseconds import cmd
+from nineseconds import exceptions
 
 
 @functools.cache
@@ -44,42 +45,59 @@ def get_bin() -> pathlib.Path:
 
 
 @functools.cache
-def get_dir() -> pathlib.Path:
+def get_dir(*, cwd: pathlib.Path | None = None) -> pathlib.Path:
     if value := os.getenv("GIT_DIR"):
         path = value
     else:
-        path = run("rev-parse", "--absolute-git-dir", set_git_dir=False)[0]
+        path = run(
+            "rev-parse", "--absolute-git-dir", cwd=cwd, set_git_dir=False
+        )[0]
 
     return pathlib.Path(path).absolute()
 
 
 @functools.cache
-def get_common_dir() -> pathlib.Path:
-    path = run("rev-parse", "--git-common-dir")[0]
+def get_common_dir(*, cwd: pathlib.Path | None = None) -> pathlib.Path:
+    path = run("rev-parse", "--git-common-dir", cwd=cwd)[0]
     return pathlib.Path(path).absolute()
 
 
 @functools.cache
 @cmd.first_or_empty_string
-def get_current_branch() -> list[str]:
-    return run("symbolic-ref", "--short", "--quiet", "HEAD")
+def get_current_branch(*, cwd: pathlib.Path | None = None) -> list[str]:
+    return run("symbolic-ref", "--short", "--quiet", "HEAD", cwd=cwd)
 
 
 @functools.cache
 @cmd.first_or_empty_string
-def config_get(setting: str) -> list[str]:
-    return run("config", "get", setting)
+def config_get(setting: str, *, cwd: pathlib.Path | None = None) -> list[str]:
+    return run("config", "get", setting, cwd=cwd)
 
 
-def config_set(key: str, value: str, *, local: bool = True) -> None:
+def config_set(
+    key: str, value: str, *, cwd: pathlib.Path | None = None, local: bool = True
+) -> None:
     command = ["config", "set"]
     if local:
         command.append("--local")
 
-    run(*command, key, value)
+    run(*command, key, value, cwd=cwd)
 
 
-def run(*args: str | pathlib.Path, set_git_dir: bool = True) -> list[str]:
+@functools.cache
+def is_inside_git_worktree(*, cwd: pathlib.Path) -> bool:
+    try:
+        run("rev-parse", "--is-inside-work-tree", cwd=cwd)
+    except exceptions.CommandError:
+        return False
+    return True
+
+
+def run(
+    *args: str | pathlib.Path,
+    cwd: pathlib.Path | None = None,
+    set_git_dir: bool = True,
+) -> list[str]:
     command = [
         get_bin(),
         "-P",
@@ -87,11 +105,12 @@ def run(*args: str | pathlib.Path, set_git_dir: bool = True) -> list[str]:
     ]
     if set_git_dir:
         command.append("--git-dir")
-        command.append(get_dir())
+        command.append(get_dir(cwd=cwd))
 
     command.extend(args)
 
     return cmd.run(
         *command,
+        cwd=cwd,
         env={"NO_COLOR": "1", "TZ": "UTC"},
     )

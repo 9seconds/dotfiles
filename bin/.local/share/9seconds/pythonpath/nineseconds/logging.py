@@ -34,7 +34,7 @@ class LogFormatter(logging.Formatter):
         logging.DEBUG: ">>>",
         logging.WARNING: "!  ",
         logging.ERROR: "!!!",
-        logging.CRITICAL: "!!!"
+        logging.CRITICAL: "!!!",
     }
 
     def format(self, record: logging.LogRecord) -> str:

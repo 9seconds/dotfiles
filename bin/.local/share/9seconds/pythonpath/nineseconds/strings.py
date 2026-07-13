@@ -37,7 +37,7 @@ def slugify(value: str, delimiter: str = "_") -> str:
         ch if (unicodedata.category(ch)[0] in ("L", "N")) else delimiter
         for ch in unicodedata.normalize("NFKC", value).lower()
     )
-    value = re.sub(f"{re.escape(delimiter)}{2,}", delimiter, value)
+    value = re.sub(f"{re.escape(delimiter)}{(2,)}", delimiter, value)
 
     return value.strip(delimiter)
 
@@ -45,7 +45,7 @@ def slugify(value: str, delimiter: str = "_") -> str:
 def print_rows(
     rows: collections.abc.Sequence[collections.abc.Sequence[str]],
     *,
-    is_shlex: bool = False
+    is_shlex: bool = False,
 ) -> None:
     if not rows:
         return
