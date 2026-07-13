@@ -8,16 +8,18 @@ import os
 import pathlib
 import typing as t
 
+from nineseconds import cache
 from nineseconds import cli
-from nineseconds import cmd
 from nineseconds import env
 from nineseconds import git
 from nineseconds import paths
 from nineseconds import strings
+from nineseconds import symlinks
 
 
 LOG: t.Final = logging.getLogger(__name__)
 TEMPLATES_DIR: t.Final = paths.config("git-wt")
+CACHE: t.Final = cache.Cache("git-wt")
 MAIN_PROJECT: t.Final = "MAIN"
 
 
@@ -75,6 +77,16 @@ class Worktrees:
 
 @cli.main
 def main() -> argparse.ArgumentParser:
+    def get_project() -> str:
+        if git.is_inside_git_worktree(cwd=pathlib.Path.cwd()):
+            return git.get_common_dir().parent.name
+        return ""
+
+    def get_storage() -> str:
+        if git.is_inside_git_worktree(cwd=pathlib.Path.cwd()):
+            return git.get_common_dir().parent.parent
+        return ""
+
     parser = argparse.ArgumentParser(
         description="9seconds manages git worktrees.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -86,7 +98,7 @@ def main() -> argparse.ArgumentParser:
         **cli.env_argument(
             "project name",
             f"{env.PREFIX}_GIT_WT_PROJECT",
-            lambda: git.get_common_dir().parent.name,
+            get_project,
         )
     )
     parser.add_argument(
@@ -96,7 +108,7 @@ def main() -> argparse.ArgumentParser:
         **cli.env_argument(
             "directory where projects are stored",
             f"{env.PREFIX}_GIT_WT_STORAGE",
-            lambda: str(git.get_common_dir().parent.parent),
+            get_storage,
         )
     )
 
@@ -165,10 +177,13 @@ def cmd_add(options: argparse.Namespace) -> None:
 
     options.template_dir.mkdir(exist_ok=True, parents=True)
 
-    wt_dir = options.storage / f"{options.project_name}-{options.name}"
-    git.run("worktree", "add", "--detach", wt_dir)
+    source_dir = options.template_dir / options.project_name
+    source_dir.parent.mkdir(exist_ok=True, parents=True)
 
-    wire_symlinks(options.template_dir / options.project_name, wt_dir)
+    target_dir = options.storage / f"{options.project_name}-{options.name}"
+    git.run("worktree", "add", "--detach", target_dir)
+
+    symlinks.mount_cached(CACHE, source_dir, target_dir)
 
 
 def cmd_list(options: argparse.Namespace) -> None:
@@ -195,71 +210,24 @@ def cmd_remove(options: argparse.Namespace) -> None:
         if name not in worktrees:
             raise ValueError(f"Unknown name {name}")
 
+    source_dir = options.template_dir / options.project_name
+
     for name in options.name:
+        target_dir = worktrees.path(name)
         git.run("worktree", "remove", "--force", worktrees.path(name))
+        CACHE.pop(symlinks.cache_key(source_dir, target_dir), None)
 
 
 def cmd_populate(options: argparse.Namespace) -> None:
-    wire_symlinks(
-        options.template_dir / options.project_name,
-        pathlib.Path(git.run("rev-parse", "--show-toplevel")[0]).absolute(),
-    )
+    source_dir = options.template_dir / options.project_name
+    target_dir = pathlib.Path(
+        git.run("rev-parse", "--show-toplevel")[0]
+    ).absolute()
 
-
-def wire_symlinks(template_dir: pathlib.Path, target_dir: pathlib.Path) -> None:  # noqa: C901
-    if not template_dir.is_dir():
-        raise ValueError(f"Template dir {template_dir} does not exist")
-
-    template_hook = template_dir.with_suffix(".bash")
-    if not template_hook.exists():
-        raise ValueError(f"Script {template_hook} does not exist")
-    if not os.access(template_hook, os.R_OK | os.X_OK):
-        raise ValueError(f"Script {template_hook} cannot be executed")
-
-    untracked_filenames = git.run(
-        "ls-files",
-        "--others",
-        "--ignored",
-        "--exclude-standard",
-    )
-    to_delete: list[pathlib.Path] = []
-    for filename in untracked_filenames:
-        path = target_dir / filename
-        if path.is_symlink() and path.resolve().is_relative_to(template_dir):
-            to_delete.append(path)
-
-    for path in sorted(to_delete, reverse=True):
-        path.unlink(missing_ok=True)
-        LOG.info("Deleted %s", path)
-
-        while (path := path.parent) and path.is_relative_to(target_dir):
-            if next(path.iterdir(), None) is None:
-                path.rmdir()
-                LOG.info("Removed empty dir %s", path)
-
-    git_dir = target_dir / ".git"
-    for dirname, _, filenames in os.walk(template_dir):
-        dirpath = pathlib.Path(dirname)
-        for filename in filenames:
-            filepath = dirpath / filename
-            wt_path = target_dir / filepath.relative_to(template_dir)
-            if (
-                wt_path.is_relative_to(git_dir) and not git_dir.is_dir()
-            ):  # worktree
-                LOG.info("Skip %s because %s is worktree", filepath, git_dir)
-                continue
-
-            wt_path.parent.mkdir(exist_ok=True, parents=True)
-            wt_path.symlink_to(filepath)
-            LOG.info("Symlinked %s to %s", wt_path, filepath)
-
-    cmd.run(
-        "bash",
-        template_hook,
-        cwd=target_dir,
-        env={"SHELLOPTS": "errexit:nounset:pipefail"},
-    )
-    LOG.info("Hook %s is executed", template_hook)
+    key = symlinks.cache_key(source_dir, target_dir)
+    symlinks.unmount_cached(CACHE, source_dir, target_dir)
+    CACHE.pop(key, None)
+    symlinks.mount_cached(CACHE, source_dir, target_dir)
 
 
 if __name__ == "__main__":
