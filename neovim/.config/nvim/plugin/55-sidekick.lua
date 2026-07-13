@@ -22,7 +22,7 @@ vim.api.nvim_create_autocmd("FileType", {
       cli = {
         win = {
           keys = {
-            escape = { "<Esc>", "<c-[>", mode = "t" },
+            escape = { "<Esc>", "<C-\\><Esc>", mode = "t", desc = "Send Escape to CLI" },
           },
           split = {
             width = 0.5,
