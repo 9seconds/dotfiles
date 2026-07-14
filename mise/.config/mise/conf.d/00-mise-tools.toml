@@ -1,12 +1,10 @@
 [tools]
 # Base tools
-usage = "latest"
-neovim = "latest"
+"github:jdx/usage" = "latest"
 poetry = "latest"
 tmux = "latest"
 
 # Dev
-"cargo:tree-sitter-cli" = "latest"
 "github:crate-ci/typos" = "latest"
 "github:eza-community/eza" = "latest"
 
