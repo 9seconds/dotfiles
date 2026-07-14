@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # MIT License
 #
-# Copyright (c) 2025 Sergey Arkhipov
+# Copyright (c) 2026 Sergey Arkhipov
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,431 +24,149 @@
 from __future__ import annotations
 
 import argparse
-import base64
-import collections
-import concurrent.futures
-import dataclasses
-import enum
-import hashlib
-import hmac
 import logging
 import os
 import pathlib
-import pickle
-import pprint
-import stat
-import sys
 import typing as t
 
-LOG: t.Final[logging.Logger] = logging.getLogger(__name__)
-PATH_STATE_HOME: t.Final[pathlib.Path] = pathlib.Path(
-    os.getenv(
-        "XDG_STATE_HOME", pathlib.Path.home() / ".local" / "state" / "9seconds"
-    ),
-)
-PATH_STATE: t.Final[pathlib.Path] = PATH_STATE_HOME / "dots"
-
-CURRENT_FILE: t.Final[pathlib.Path] = pathlib.Path(__file__)
-SOURCE: pathlib.Path = CURRENT_FILE.parent.resolve()
-TARGET: pathlib.Path = pathlib.Path.home().resolve()
-
-DOTS_SECRET_KEY: t.Final[str] = os.getenv("DOTS_SECRET_KEY", "")
-if not DOTS_SECRET_KEY:
-    sys.exit("DOTS_SECRET_KEY is not defined")
-
-HASH_KEY: t.Final[bytes] = hashlib.pbkdf2_hmac(
-    "sha512",
-    DOTS_SECRET_KEY.encode("utf-8"),
-    os.fspath(CURRENT_FILE.resolve()).encode("utf-8"),
-    260_000,
-)
+from nineseconds import cache
+from nineseconds import cli
+from nineseconds import env
+from nineseconds import symlinks
 
 
-class Link:
-    module: Module
-    filestem: str
-
-    class LinkError(enum.Flag):
-        MISSING_SOURCE = enum.auto()
-        MISSING_TARGET = enum.auto()
-        WRONG_TARGET = enum.auto()
-
-    def __init__(self, module: Module, filestem: str) -> None:
-        self.module = module
-        self.filestem = filestem
-
-    def __repr__(self) -> str:
-        return f"{self.target} -> {self.source}"
-
-    @property
-    def source(self) -> pathlib.Path:
-        return self.module.source / self.module.name / self.filestem
-
-    @property
-    def target(self) -> pathlib.Path:
-        return self.module.target / self.filestem
-
-    def check(self) -> Link.LinkError:
-        error = (
-            self.LinkError.MISSING_SOURCE
-            | self.LinkError.MISSING_TARGET
-            | self.LinkError.WRONG_TARGET
-        )
-
-        if self.source.exists():
-            error &= ~self.LinkError.MISSING_SOURCE
-        if self.target.exists():
-            error &= ~self.LinkError.MISSING_TARGET
-        if self.target.is_symlink() and self.target.resolve() == self.source:
-            error &= ~self.LinkError.WRONG_TARGET
-
-        return error
-
-    def create(self) -> None:
-        self.target.parent.mkdir(parents=True, exist_ok=True)
-        self.target.symlink_to(self.source)
+LOG: t.Final = logging.getLogger(__name__)
+CACHE: t.Final = cache.Cache("dots")
 
 
-@dataclasses.dataclass(kw_only=True, frozen=True)
-class Module:
-    name: str = dataclasses.field(repr=False)
-    source: pathlib.Path = dataclasses.field(
-        init=False,
-        repr=False,
-        default=SOURCE,
-    )
-    target: pathlib.Path = dataclasses.field(
-        init=False,
-        repr=False,
-        default=TARGET,
-    )
-    files: list[str] = dataclasses.field(default_factory=list)
-
-    def compare_to(self, truth: Module) -> tuple[set[pathlib.Path], list[Link]]:
-        if self.name != truth.name:
-            raise ValueError("Can only compare modules with the same name")
-        if self.source != truth.source:
-            raise ValueError("Can only compare modules with the same source")
-        if self.target != truth.target:
-            raise ValueError("Can only compare modules with the same target")
-
-        to_remove = {pathlib.Path(self.target / stem) for stem in self.files}
-        for stem in truth.files:
-            to_remove.discard(pathlib.Path(truth.target / stem))
-
-        to_create: list[Link] = []
-        for lnk in (Link(self, stem) for stem in truth.files):
-            error = lnk.check()
-            if Link.LinkError.MISSING_TARGET in error:
-                to_create.append(lnk)
-            elif Link.LinkError.MISSING_SOURCE in error:
-                to_remove.add(lnk.target)
-            elif Link.LinkError.WRONG_TARGET in error:
-                raise ValueError(f"Link {lnk.target} points is incorrect")
-
-        return to_remove, to_create
-
-
-@dataclasses.dataclass(kw_only=True, frozen=True)
-class State:
-    target: pathlib.Path = dataclasses.field(init=False, default=TARGET)
-    source: pathlib.Path = dataclasses.field(init=False, default=SOURCE)
-    modules: dict[str, Module] = dataclasses.field(default_factory=dict)
-
-    def compare_to(self, truth: State) -> tuple[set[pathlib.Path], list[Link]]:
-        if self.source != truth.source:
-            raise ValueError("Can only compare states with the same source")
-        if self.target != truth.target:
-            raise ValueError("Can only compare states with the same target")
-
-        to_remove: set[pathlib.Path] = set()
-        to_create: list[Link] = []
-
-        for name, target_mod in self.modules.items():
-            if source_mod := truth.modules.get(name):
-                rm, cr = target_mod.compare_to(source_mod)
-                to_remove.update(rm)
-                to_create.extend(cr)
-
-        return to_remove, to_create
-
-    def save(self) -> None:
-        state_path = PATH_STATE.joinpath(self.get_stem())
-        data_path = state_path.with_suffix(".pickle")
-        mac_path = state_path.with_suffix(".sig")
-
-        serialized_data = pickle.dumps(self)
-        data_path.write_bytes(serialized_data)
-        data_path.chmod(0o600)
-
-        mac = hmac.digest(HASH_KEY, serialized_data, "sha512")
-        mac_path.write_bytes(mac)
-        mac_path.chmod(0o600)
-
-    @classmethod
-    def load(cls) -> State:
-        state_path = PATH_STATE.joinpath(cls.get_stem())
-
-        serialized_data = state_path.with_suffix(".pickle").read_bytes()
-        mac = state_path.with_suffix(".sig").read_bytes()
-
-        expected_mac = hmac.digest(HASH_KEY, serialized_data, "sha512")
-        if not hmac.compare_digest(mac, expected_mac):
-            raise OSError("State file is corrupted")
-
-        data = pickle.loads(serialized_data)
-        if not isinstance(data, State):
-            raise OSError("State file is corrupted")
-
-        return data
-
-    @classmethod
-    def get_stem(cls) -> pathlib.Path:
-        base_stem = f"{SOURCE}:{TARGET}".encode()
-        encoded = base64.urlsafe_b64encode(base_stem).decode()
-        return PATH_STATE / encoded
-
-
-def main() -> None:
-    global SOURCE
-    global TARGET
-
-    PATH_STATE.mkdir(parents=True, exist_ok=True)
-
-    options = get_options()
-
-    logging.basicConfig(
-        level=logging.DEBUG if options.debug else logging.INFO,
-        format="%(message)s",
-    )
-    LOG.debug("Options: %s", options)
-
-    SOURCE = options.source_root.absolute()
-    TARGET = options.target_root.absolute()
-
-    options.do(options)
-
-
-def get_options() -> argparse.Namespace:
-    def type_directory(value: str) -> pathlib.Path:
-        path = pathlib.Path(value).expanduser().resolve()
-        if not path.is_dir():
-            raise argparse.ArgumentTypeError("Not a directory")
-        return path
-
+@cli.main
+def main() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="9seconds manages dotfiles",
+        description="9seconds manages dotfiles.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument(
-        "-d",
-        "--debug",
-        action="store_true",
-        default=False,
-        help="Run in debug mode",
-    )
+
     parser.add_argument(
         "-s",
-        "--source-root",
-        type=type_directory,
-        default=SOURCE,
-        help="Directory with modules",
+        "--sources",
+        type=cli.type_valid_dir,
+        **cli.env_argument(
+            "root to the modules",
+            f"{env.PREFIX}_DOTS_SOURCE",
+            lambda: os.fspath(pathlib.Path(__file__).absolute().parent),
+        ),
     )
     parser.add_argument(
         "-t",
-        "--target-root",
-        type=type_directory,
-        default=TARGET,
-        help="Directory to create links in",
+        "--target",
+        type=cli.type_valid_dir,
+        **cli.env_argument(
+            "target directory",
+            f"{env.PREFIX}_DOTS_TARGET",
+            lambda: os.fspath(pathlib.Path.home().absolute()),
+        ),
     )
 
-    commands = parser.add_subparsers(dest="command", required=True)
-
-    regenerate_cmd = commands.add_parser(
-        "regenerate",
-        help="Regenerates the cache",
-    )
-    regenerate_cmd.set_defaults(do=do_regenerate)
+    commands = parser.add_subparsers(title="Commands")
 
     ensure_cmd = commands.add_parser(
         "ensure",
-        help="Ensures that module is properly set up",
+        aliases=["e", "i", "mount"],
+        description="Ensure module is installed.",
+        help="ensure module is installed",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    ensure_cmd.add_argument(
-        "module",
-        nargs=argparse.ONE_OR_MORE,
-        help="Module names",
-    )
-    ensure_cmd.set_defaults(do=do_ensure)
+    ensure_cmd.set_defaults(cmd=cmd_ensure)
 
     drop_cmd = commands.add_parser(
         "drop",
-        help="Drop modules",
+        aliases=["d", "u", "unmount"],
+        description="Drop modules.",
+        help="drop modules",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    drop_cmd.add_argument(
-        "module",
-        nargs=argparse.ONE_OR_MORE,
-        help="Module names",
+    drop_cmd.set_defaults(cmd=cmd_drop)
+
+    integrate_cmd = commands.add_parser(
+        "integrate",
+        description="Integrate with existing symlinks",
+        help="integrate with existing symlinks",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    drop_cmd.set_defaults(do=do_drop)
+    integrate_cmd.set_defaults(cmd=cmd_integrate)
 
-    state_cmd = commands.add_parser(
-        "state",
-        help="Shows current state",
-    )
-    state_cmd.set_defaults(do=do_state)
+    for cmd in (ensure_cmd, drop_cmd):
+        cmd.add_argument(
+            "module", nargs=argparse.ONE_OR_MORE, help="module names"
+        )
 
-    return parser.parse_args()
-
-
-def do_regenerate(_: argparse.Namespace) -> None:
-    reconstruct_target_state().save()
+    return parser
 
 
-def do_ensure(options: argparse.Namespace) -> None:
-    try:
-        target_state = State.load()
-    except Exception as exc:
-        raise ValueError("Cannot load a cache") from exc
-
-    source_state = State(
-        modules={name: scan_module(name) for name in options.module},
-    )
-
-    to_remove, to_create = target_state.compare_to(source_state)
-    for path in to_remove:
-        LOG.debug("Removing %s", path)
-        try:
-            path.unlink()
-        except Exception as exc:
-            LOG.error("Cannot remove %s: %s", path, exc)
-            raise
-
-    for link in to_create:
-        LOG.debug("Creating %s -> %s", link.target, link.source)
-        try:
-            link.create()
-        except Exception as exc:
-            LOG.error(
-                "Cannot create %s -> %s: %s",
-                link.target,
-                link.source,
-                exc,
-            )
-            raise
-
-    target_state.modules.update(source_state.modules)
-    target_state.save()
+def cmd_ensure(options: argparse.Namespace) -> None:
+    for mod in get_module_paths(options):
+        symlinks.unmount(mod, options.target, cache_=CACHE)
+        symlinks.mount(mod, options.target, cache_=CACHE)
 
 
-def do_drop(options: argparse.Namespace) -> None:
-    try:
-        target_state = State.load()
-    except Exception as exc:
-        LOG.debug("Cannot load a cache: %s. Please regenerate", exc)
-        sys.exit(1)
+def cmd_drop(options: argparse.Namespace) -> None:
+    for mod in get_module_paths(options):
+        symlinks.unmount(mod, options.target, cache_=CACHE)
 
-    for mod_name in options.module:
-        mod = target_state.modules.pop(mod_name, None)
-        if mod is None:
+
+def cmd_integrate(options: argparse.Namespace) -> None:
+    all_symlinks = symlinks.collect(options.sources, options.target)
+    modules: dict[str, list[pathlib.Path]] = {
+        mod.name: []
+        for mod in options.sources.iterdir()
+        if not mod.name.startswith(".")
+        and options.sources.joinpath(mod).is_dir()
+    }
+
+    for target_filepath in all_symlinks:
+        LOG.info("Examine %s", target_filepath)
+
+        source_filepath = target_filepath.readlink()
+        LOG.info("  Source: %s", source_filepath)
+
+        if not source_filepath.exists():
+            LOG.info("    Does not exist")
             continue
 
-        LOG.debug("Scheduling module %s for removal", mod_name)
-        to_remove, _ = mod.compare_to(Module(name=mod_name))
-        for path in to_remove:
-            path.unlink(missing_ok=True)
+        relative_source = source_filepath.relative_to(options.sources)
+        if not relative_source.parts:
+            LOG.info("  Has no potential modules")
+            continue
 
-    target_state.save()
+        potential_mod = relative_source.parts[0]
+        LOG.info("  Potential module %s", potential_mod)
 
+        if potential_mod not in modules:
+            LOG.info("    Not in modules")
+            continue
 
-def do_state(_: argparse.Namespace) -> None:
-    try:
-        target_state = State.load()
-    except Exception as exc:
-        LOG.debug("Cannot load a cache: %s. Please regenerate", exc)
-        sys.exit(1)
+        rel_target = target_filepath.relative_to(options.target)
+        if rel_target != (rs := relative_source.relative_to(potential_mod)):
+            LOG.info("  %s != %s", rel_target, rs)
+            continue
 
-    pprint.pprint(target_state)  # noqa: T203
+        if (mod := relative_source.parts[0]) in modules:
+            modules[mod].append(target_filepath)
 
-
-def reconstruct_target_state() -> State:
-    futures: collections.deque[concurrent.futures.Future[list[Module]]] = (
-        collections.deque()
-    )
-    pool = concurrent.futures.ThreadPoolExecutor()
-    state = State()
-
-    def traverse_dir(path: pathlib.Path) -> list[Module]:
-        LOG.debug("Traversing %s", path)
-
-        modules: list[Module] = []
-
-        try:
-            elements = list(path.iterdir())
-        except Exception as exc:
-            LOG.warning("Skipping %s: %s", path, exc)
-            return modules
-
-        for el in elements:
-            try:
-                resolved = el.resolve()
-                stat_result = el.lstat().st_mode
-            except Exception as exc:
-                LOG.warning("Skipping %s: %s", el, exc)
-                continue
-
-            match stat.S_IFMT(stat_result):
-                case stat.S_IFLNK if (
-                    resolved.is_relative_to(SOURCE)
-                    and resolved.parent.is_relative_to(SOURCE)
-                    and resolved.parent != SOURCE
-                    and resolved.is_file()
-                ):
-                    mod_name = resolved.relative_to(SOURCE).parts[0]
-                    LOG.debug(
-                        "Found (module %s) %s -> %s",
-                        mod_name,
-                        el,
-                        resolved,
-                    )
-                    file_stem = os.fspath(
-                        resolved.relative_to(SOURCE / mod_name),
-                    )
-                    modules.append(Module(name=mod_name, files=[file_stem]))
-                case stat.S_IFDIR:
-                    futures.append(pool.submit(traverse_dir, el))
-
-        return modules
-
-    with pool:
-        futures.append(pool.submit(traverse_dir, TARGET))
-        while futures:
-            for mod in futures.popleft().result():
-                if mod.name not in state.modules:
-                    state.modules[mod.name] = mod
-                else:
-                    state.modules[mod.name].files.extend(mod.files)
-
-    return state
+    for mod, paths in modules.items():
+        key = symlinks.cache_key(options.sources / mod, options.target)
+        paths.sort(reverse=True)
+        CACHE[key] = paths
 
 
-def scan_module(name: str) -> Module:
-    path = SOURCE / name
-    if not path.is_dir():
-        raise ValueError(f"Module {name} does not exist")
+def get_module_paths(options: argparse.Namespace) -> list[pathlib.Path]:
+    modules = sorted({options.sources / mod for mod in options.module})
 
-    files: list[str] = []
-    for root, _, filenames in os.walk(path):
-        root_path = pathlib.Path(root)
-        for filename in filenames:
-            file_path = root_path / filename
-            if file_path.is_file():
-                files.append(os.fspath(file_path.relative_to(path)))
+    for mod in modules:
+        if not mod.is_dir():
+            raise ValueError(f"{mod} is not a module")
 
-    if not files:
-        raise ValueError(f"Module {name} is empty")
-
-    return Module(name=name, files=files)
+    return modules
 
 
 if __name__ == "__main__":
