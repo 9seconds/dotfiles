@@ -4,7 +4,6 @@ PYTHONPATH = "{{ config_root }}/bin/.local/share/9seconds/pythonpath"
 # -----------------------------------------------------------------------------
 
 [tools]
-"cargo:selene" = "latest"
 "pipx:magika" = "latest"
 "github:astral-sh/ruff" = "latest"
 "github:astral-sh/ty" = "latest"
@@ -46,9 +45,12 @@ run = "./dots integrate"
 
 [tasks.python]
 description = "Run Python tasks"
-alias = "p"
 run = [
   """fd -H --exclude .git -t file | xargs magika --format "%l %p" | awk '$1 == "python" {print $2}' | xargs ruff format""",
   """fd -H --exclude .git -t file | xargs magika --format "%l %p" | awk '$1 == "python" {print $2}' | xargs ruff check""",
   """fd -H --exclude .git -t file | xargs magika --format "%l %p" | awk '$1 == "python" {print $2}' | xargs ty check""",
 ]
+
+[tasks.lua]
+description = "Run Lua tasks"
+run = "fd -e lua -H -t file -X luafmt --config luafmt.toml --level lua-jit --write"
