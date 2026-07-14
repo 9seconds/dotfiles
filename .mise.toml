@@ -46,9 +46,9 @@ run = "./dots integrate"
 [tasks.python]
 description = "Run Python tasks"
 run = [
-  """fd -H --exclude .git -t file | xargs magika --format "%l %p" | awk '$1 == "python" {print $2}' | xargs ruff format""",
-  """fd -H --exclude .git -t file | xargs magika --format "%l %p" | awk '$1 == "python" {print $2}' | xargs ruff check""",
-  """fd -H --exclude .git -t file | xargs magika --format "%l %p" | awk '$1 == "python" {print $2}' | xargs ty check""",
+  """fd -H --exclude .git -t file -X magika --format "%l %p" | awk '$1 == "python" {print $2}' | xargs ruff format""",
+  """fd -H --exclude .git -t file -X magika --format "%l %p" | awk '$1 == "python" {print $2}' | xargs ruff check""",
+  """fd -H --exclude .git -t file -X magika --format "%l %p" | awk '$1 == "python" {print $2}' | xargs ty check""",
 ]
 
 [tasks.lua]
