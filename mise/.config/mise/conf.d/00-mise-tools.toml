@@ -15,13 +15,11 @@ tmux = "latest"
 "github:junegunn/fzf" = "latest"
 "github:sharkdp/fd" = "latest"
 "github:skim-rs/skim" = "latest"
-"github:starship/starship" = "latest"
 
 # LSP
 "github:tekumara/typos-lsp" = "latest"
 "npm:bash-language-server" = "latest"
 "pipx:basedpyright" = "latest"
-"pipx:magika" = "latest"
 "github:docker/docker-language-server" = "latest"
 
 # Linters
