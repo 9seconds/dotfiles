@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import configparser
 import functools
+import itertools
 import logging
 import os
 import pathlib
@@ -83,6 +84,8 @@ class Hooks:
 def mount(
     source_dir: pathlib.Path,
     target_dir: pathlib.Path,
+    *,
+    cache_: cache.Cache | None = None,
 ) -> list[pathlib.Path]:
     source_dir = source_dir.absolute()
     target_dir = target_dir.absolute()
@@ -103,11 +106,14 @@ def mount(
             parser.read(dirpath / CONFIG_NAME)
             filenames.remove(CONFIG_NAME)
 
-        hooks.add(
-            dirpath, parser.get(parser.default_section, "hook", fallback="")
+        config_hook = parser.get(parser.default_section, "hook", fallback="")
+        config_type = parser.get(
+            parser.default_section, "type", fallback="granular"
         )
 
-        match parser.get(parser.default_section, "type", fallback="granular"):
+        hooks.add(dirpath, config_hook)
+
+        match config_type:
             case "granular":
                 mounted.extend(
                     make_symlink(dirpath / filename) for filename in filenames
@@ -120,17 +126,10 @@ def mount(
 
     hooks.apply()
 
+    if cache_ is not None:
+        cache_[cache_key(source_dir, target_dir)] = mounted
+
     return mounted
-
-
-def mount_cached(
-    cache_: cache.Cache, source_dir: pathlib.Path, target_dir: pathlib.Path
-) -> list[pathlib.Path]:
-    result = mount(source_dir, target_dir)
-    key = cache_key(source_dir, target_dir)
-    cache_[key] = result
-
-    return result
 
 
 def _mount_make_symlink(
@@ -148,7 +147,7 @@ def _mount_make_symlink(
     return target_file
 
 
-def _unmount_scan(
+def collect(
     source_dir: pathlib.Path,
     target_dir: pathlib.Path,
 ) -> list[pathlib.Path]:
@@ -162,29 +161,30 @@ def _unmount_scan(
     if is_ok(target_dir):
         return [target_dir]
 
-    for dirpath_, _, filenames in os.walk(target_dir.absolute()):
+    for dirpath_, dirnames, filenames in os.walk(target_dir.absolute()):
         dirpath = pathlib.Path(dirpath_)
-        found.extend(
-            path for filename in filenames if is_ok(path := dirpath / filename)
-        )
+        names = itertools.chain(filenames, dirnames)
+        found.extend(path for name in names if is_ok(path := dirpath / name))
 
     found.sort(reverse=True)
 
     return found
 
 
-def _unmount(
+def unmount(
     source_dir: pathlib.Path,
     target_dir: pathlib.Path,
     *,
-    _scan: t.Callable[
-        [pathlib.Path, pathlib.Path], list[pathlib.Path]
-    ] = _unmount_scan,
+    cache_: cache.Cache | None = None,
 ) -> list[pathlib.Path]:
     source_dir = source_dir.absolute()
     target_dir = target_dir.absolute()
+    key = cache_key(source_dir, target_dir)
 
-    to_delete = _scan(source_dir, target_dir)
+    if cache_ is not None and key in cache_:
+        to_delete = t.cast("list[pathlib.Path]", cache_[key])
+    else:
+        to_delete = collect(source_dir, target_dir)
 
     for filename in to_delete:
         filename.unlink()
@@ -196,30 +196,10 @@ def _unmount(
                 parent.rmdir()
                 LOG.info("Deleted empty %s", parent)
 
+    if cache_ is not None and key in cache_:
+        del cache_[key]
+
     return to_delete
-
-
-def unmount(
-    source_dir: pathlib.Path,
-    target_dir: pathlib.Path,
-) -> list[pathlib.Path]:
-    return _unmount(source_dir, target_dir, _scan=_unmount_scan)
-
-
-def unmount_cached(
-    cache_: cache.Cache,
-    source_dir: pathlib.Path,
-    target_dir: pathlib.Path,
-) -> list[pathlib.Path]:
-    def scan(
-        source_dir: pathlib.Path, target_dir: pathlib.Path
-    ) -> list[pathlib.Path]:
-        key = cache_key(source_dir, target_dir)
-        if key in cache_:
-            return cache_[key]
-        return _unmount_scan(source_dir, target_dir)
-
-    return _unmount(source_dir, target_dir, _scan=scan)
 
 
 def cache_key(source_dir: pathlib.Path, target_dir: pathlib.Path) -> str:

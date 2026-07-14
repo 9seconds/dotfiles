@@ -84,7 +84,7 @@ def main() -> argparse.ArgumentParser:
 
     def get_storage() -> str:
         if git.is_inside_git_worktree(cwd=pathlib.Path.cwd()):
-            return git.get_common_dir().parent.parent
+            return str(git.get_common_dir().parent.parent)
         return ""
 
     parser = argparse.ArgumentParser(
@@ -99,7 +99,7 @@ def main() -> argparse.ArgumentParser:
             "project name",
             f"{env.PREFIX}_GIT_WT_PROJECT",
             get_project,
-        )
+        ),
     )
     parser.add_argument(
         "-s",
@@ -109,7 +109,7 @@ def main() -> argparse.ArgumentParser:
             "directory where projects are stored",
             f"{env.PREFIX}_GIT_WT_STORAGE",
             get_storage,
-        )
+        ),
     )
 
     commands = parser.add_subparsers(title="Commands")
@@ -183,7 +183,7 @@ def cmd_add(options: argparse.Namespace) -> None:
     target_dir = options.storage / f"{options.project_name}-{options.name}"
     git.run("worktree", "add", "--detach", target_dir)
 
-    symlinks.mount_cached(CACHE, source_dir, target_dir)
+    symlinks.mount(source_dir, target_dir, cache_=CACHE)
 
 
 def cmd_list(options: argparse.Namespace) -> None:
@@ -224,10 +224,8 @@ def cmd_populate(options: argparse.Namespace) -> None:
         git.run("rev-parse", "--show-toplevel")[0]
     ).absolute()
 
-    key = symlinks.cache_key(source_dir, target_dir)
-    symlinks.unmount_cached(CACHE, source_dir, target_dir)
-    CACHE.pop(key, None)
-    symlinks.mount_cached(CACHE, source_dir, target_dir)
+    symlinks.unmount(source_dir, target_dir, cache_=CACHE)
+    symlinks.mount(source_dir, target_dir, cache_=CACHE)
 
 
 if __name__ == "__main__":
