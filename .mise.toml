@@ -5,111 +5,50 @@ PYTHONPATH = "{{ config_root }}/bin/.local/share/9seconds/pythonpath"
 
 [tools]
 "cargo:selene" = "latest"
-"github:astral-sh/ty" = "latest"
+"pipx:magika" = "latest"
 "github:astral-sh/ruff" = "latest"
+"github:astral-sh/ty" = "latest"
 
 # -----------------------------------------------------------------------------
 
 [tasks."module:ensure"]
 description = "Mount module"
-alias = "plug"
+alias = "m"
 usage = '''
-  arg "<module>" var=#true help="Name of the plug to connect to"
-  complete "module" run="ls -l ~/.dotfiles | awk '$1 ~ /^d.*/ {print $NF}'"
+arg "<module>" {
+  double_dash optional
+  help "Name of the plug to connect to"
+}
 '''
 wait_for = [
-  "module:regenerate"
+  "module:integrate"
 ]
-tools.python = "latest"
-run = "./dots ensure {{ arg(name='module') }}"
-
-[tasks."module:regenerate"]
-description = "Regenerate dots state"
-run = [
-  "rm -rf {{ [xdg_state_home, '9dots', '*'] | join_path }}",
-  "./dots regenerate"
-]
+run = "./dots ensure $usage_module"
 
 [tasks."module:drop"]
-description = "Unmount plug"
-alias = "unplug"
+description = "Drop module"
+alias = "d"
 usage = '''
-  arg "<module>" var=#true help="Name of the plug to disconnect"
-  complete "module" run="ls -l ~/.dotfiles | awk '$1 ~ /^d.*/ {print $NF}'"
+arg "<module>" {
+  double_dash optional
+  help "Name of the plug to connect to"
+}
 '''
 wait_for = [
-  "module:regenerate"
+  "module:integrate"
 ]
-tools.python = "latest"
-run = "./dots drop {{ arg(name='module') }}"
+run = "./dots drop $usage_module"
 
-# -----------------------------------------------------------------------------
-# LUA
-# -----------------------------------------------------------------------------
+[tasks."module:integrate"]
+description = "Reintegrate modules"
+alias = "r"
+run = "./dots integrate"
 
-[tasks."lua"]
-description = "Run Lua routines"
-depends = ['lua:*']
-
-[tasks."lua:format"]
-description = "Run all Lua formatters"
-depends = ['lua:format:*']
-
-[tasks."lua:lint"]
-description = "Run all Lua linters"
-depends = ['lua:lint:*']
-
-[tasks."lua:format:luafmt"]
-description = "Run luafmt"
-tools.stylua = "latest"
-run = "fd -e lua -H -t file -t symlink | xargs -r luafmt --config luafmt.toml --level lua-jit --write"
-
-[tasks."lua:lint:selene"]
-description = "Run Selene"
-run = "selene ."
-
-
-# -----------------------------------------------------------------------------
-# PYTHON
-# -----------------------------------------------------------------------------
-
-[tasks."python"]
-description = "Run Python routines"
-depends = [
-  "python:*",
+[tasks.python]
+description = "Run Python tasks"
+alias = "p"
+run = [
+  """fd -H --exclude .git -t file | xargs magika --format "%l %p" | awk '$1 == "python" {print $2}' | xargs ruff format""",
+  """fd -H --exclude .git -t file | xargs magika --format "%l %p" | awk '$1 == "python" {print $2}' | xargs ruff check""",
+  """fd -H --exclude .git -t file | xargs magika --format "%l %p" | awk '$1 == "python" {print $2}' | xargs ty check""",
 ]
-
-[tasks."python:format"]
-description = "Run all Python formatters"
-tools.fd = "latest"
-depends = [
-  "python:format:*"
-]
-
-[tasks."python:lint"]
-description = "Run all Python linters"
-tools.fd = "latest"
-wait_for = [
-  "python:format:*"
-]
-depends = [
-  "python:lint:*"
-]
-
-[tasks."python:lint:ruff"]
-description = "Run Ruff (linter)"
-tools.ruff = "latest"
-tools.fd = "latest"
-run = "9fl -a dots | xargs ruff check"
-
-[tasks."python:lint:mypy"]
-description = "Run MyPy"
-tools."pipx:mypy" = "latest"
-tools.fd = "latest"
-run = "9fl -a dots | xargs -n 1 mypy"
-
-[tasks."python:format:ruff"]
-description = "Run Ruff (format)"
-tools.ruff = "latest"
-tools.fd = "latest"
-run = "9fl -a dots | xargs ruff format"

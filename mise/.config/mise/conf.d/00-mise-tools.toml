@@ -3,6 +3,7 @@
 "github:jdx/usage" = "latest"
 poetry = "latest"
 tmux = "latest"
+python = "latest"
 
 # Dev
 "github:crate-ci/typos" = "latest"
