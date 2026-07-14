@@ -76,7 +76,7 @@ def main() -> argparse.ArgumentParser:
             "branch prefix",
             f"{env.PREFIX}_GIT_BR_PREFIX",
             lambda: git.config_get("user.name"),
-        )
+        ),
     )
 
     commands = parser.add_subparsers(title="Commands")
@@ -98,12 +98,10 @@ def main() -> argparse.ArgumentParser:
             "regular expression used to extract issue number from URL",
             f"{env.PREFIX}_GIT_BR_ISSUE_URL_RE",
             lambda: None,
-        )
+        ),
     )
     new_cmd.add_argument(
-        "stem",
-        type=strings.slugify,
-        help="Stem of the branch"
+        "stem", type=strings.slugify, help="Stem of the branch"
     )
     new_cmd.add_argument(
         "target",
