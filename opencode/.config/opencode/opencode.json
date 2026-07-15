@@ -31,26 +31,20 @@
       "man *": "allow",
       "python -m py_compile *": "allow",
       "rg *": "allow",
-      "rtk col *": "allow",
-      "rtk find *": "allow",
-      "rtk git blame *": "allow",
-      "rtk git diff *": "allow",
-      "rtk git log *": "allow",
-      "rtk git merge-base *": "allow",
-      "rtk git show *": "allow",
-      "rtk git status *": "allow",
-      "rtk grep *": "allow",
-      "rtk head *": "allow",
-      "rtk ls": "allow",
-      "rtk man *": "allow",
-      "rtk rg *": "allow",
-      "rtk systemctl cat *": "allow",
       "sort *": "allow",
       "systemctl cat *": "allow",
       "systemctl list-*": "allow",
       "systemctl show *": "allow",
       "uniq *": "allow",
       "wc *": "allow"
+    }
+  },
+
+  "mcp": {
+    "cs": {
+      "command": ["cs", "--find-root", "--mcp"],
+      "type": "local",
+      "enabled": true
     }
   },
 
