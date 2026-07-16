@@ -53,6 +53,12 @@
       "command": ["context7-mcp"],
       "type": "local",
       "enabled": true
+    },
+
+    "tavily": {
+      "command": ["tavily-mcp"],
+      "type": "local",
+      "enabled": true
     }
   },
 

@@ -2,3 +2,4 @@
 "github:anomalyco/opencode" = "latest"
 "github:boyter/cs" = "latest"
 "npm:@upstash/context7-mcp" = "latest"
+"npm:tavily-mcp" = "latest"
