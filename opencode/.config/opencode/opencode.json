@@ -47,6 +47,12 @@
       "command": ["cs", "--find-root", "--mcp"],
       "type": "local",
       "enabled": true
+    },
+
+    "context7": {
+      "command": ["context7-mcp"],
+      "type": "local",
+      "enabled": true
     }
   },
 
