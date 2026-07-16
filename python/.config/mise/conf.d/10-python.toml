@@ -1,0 +1,5 @@
+[tools]
+python = "latest"
+poetry = "latest"
+"pipx:basedpyright" = "latest"
+"github:astral-sh/ruff" = "latest"

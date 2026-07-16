@@ -1,0 +1,78 @@
+line-length = 80
+target-version = "py310"
+exclude = [
+    ".git"
+]
+
+[format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = true
+line-ending = "auto"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
+[lint]
+select = [
+    # https://docs.astral.sh/ruff/rules/#pyflakes-f
+    "F",
+    # https://docs.astral.sh/ruff/rules/#pycodestyle-e-w
+    "E", "W",
+    # https://docs.astral.sh/ruff/rules/#pep8-naming-n
+    "N",
+    # https://docs.astral.sh/ruff/rules/#mccabe-c90
+    "C90",
+    # https://docs.astral.sh/ruff/rules/#isort-i
+    "I",
+    # https://docs.astral.sh/ruff/rules/relative-imports/
+    "TID252",
+    # https://docs.astral.sh/ruff/rules/#flake8-annotations-ann
+    "ANN",
+    # https://docs.astral.sh/ruff/rules/#flake8-blind-except-ble
+    "BLE",
+    # https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt
+    "FBT001",
+    # https://docs.astral.sh/ruff/rules/#flake8-bugbear-b
+    "B",
+    # https://docs.astral.sh/ruff/rules/#flake8-builtins-a
+    "A",
+    # https://docs.astral.sh/ruff/rules/#flake8-commas-com
+    "COM",
+    # https://docs.astral.sh/ruff/rules/#flake8-comprehensions-c4
+    "C4",
+    # https://docs.astral.sh/ruff/rules/#flake8-debugger-t10
+    "T10",
+    # https://docs.astral.sh/ruff/rules/#flake8-executable-exe
+    "EXE",
+    # https://docs.astral.sh/ruff/rules/#flake8-logging-log
+    "LOG",
+    # https://docs.astral.sh/ruff/rules/#flake8-logging-format-g
+    "G",
+    # https://docs.astral.sh/ruff/rules/#flake8-print-t20
+    "T20",
+    # https://docs.astral.sh/ruff/rules/#flake8-quotes-q
+    "Q",
+    # https://docs.astral.sh/ruff/rules/#flake8-raise-rse
+    "RSE",
+    # https://docs.astral.sh/ruff/rules/#flake8-return-ret
+    "RET",
+    # https://docs.astral.sh/ruff/rules/#flake8-self-slf
+    "SLF",
+    # https://docs.astral.sh/ruff/rules/#flake8-simplify-sim
+    "SIM",
+    # https://docs.astral.sh/ruff/rules/#flake8-unused-arguments-arg
+    "ARG",
+    # https://docs.astral.sh/ruff/rules/#ruff-specific-rules-ruf
+    "RUF"
+]
+
+[lint.pycodestyle]
+max-doc-length = 120
+
+[lint.isort]
+force-single-line = true
+force-sort-within-sections = true
+lines-after-imports = 2
+required-imports = [
+    "from __future__ import annotations"
+]

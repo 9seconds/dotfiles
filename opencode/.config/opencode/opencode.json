@@ -18,6 +18,7 @@
     "bash": {
       "*": "ask",
       "col *": "allow",
+      "bash -n *": "allow",
       "find *": "allow",
       "git blame *": "allow",
       "git diff *": "allow",
@@ -35,6 +36,7 @@
       "systemctl cat *": "allow",
       "systemctl list-*": "allow",
       "systemctl show *": "allow",
+      "true *": "allow",
       "uniq *": "allow",
       "wc *": "allow"
     }
@@ -49,6 +51,30 @@
   },
 
   "lsp": {
+    "basedpyright": {
+      "command": [
+        "basedpyright-langserver",
+        "--stdio"
+      ],
+      "extensions": [".py"],
+      "initizalization": {
+        "basedpyright": {
+          "analysis": {
+            "typeCheckingMode": "off"
+          }
+        }
+      },
+      "type": "local",
+      "enabled": true
+    },
+
+    "ruff": {
+      "command": ["ruff", "server"],
+      "extensions": [".py", ".pyi"],
+      "type": "local",
+      "enabled": true
+    },
+
     "pyright": {
       "disabled": true
     }

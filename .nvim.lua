@@ -1,8 +1,3 @@
-require("_.lint").set({
-  python = { "ruff" },
-  lua = { "selene" },
-})
-
 vim.lsp.config("emmylua_ls", {
   cmd = {"emmylua_ls", "--editor", "neovim"},
   -- https://mintlify.wiki/EmmyLuaLs/emmylua-analyzer-rust/editor-setup#neovim-configuration-for-plugin-development
@@ -43,7 +38,8 @@ vim.lsp.config("basedpyright", {
 vim.lsp.enable({
   "basedpyright",
   "bash-language-server",
-  "typos-lsp",
   "emmylua_ls",
+  "ruff",
   "ty",
+  "typos-lsp",
 })
