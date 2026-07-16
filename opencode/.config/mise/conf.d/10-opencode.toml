@@ -1,5 +1,6 @@
 [tools]
 "github:anomalyco/opencode" = "latest"
 "github:boyter/cs" = "latest"
+"github:github/github-mcp-server" = "latest"
 "npm:@upstash/context7-mcp" = "latest"
 "npm:tavily-mcp" = "latest"

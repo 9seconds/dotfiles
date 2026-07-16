@@ -59,6 +59,12 @@
       "command": ["tavily-mcp"],
       "type": "local",
       "enabled": true
+    },
+
+    "github": {
+      "command": ["github-mcp-server", "stdio", "--read-only"],
+      "type": "local",
+      "enabled": true
     }
   },
 
