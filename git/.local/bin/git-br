@@ -502,7 +502,14 @@ def cmd_new(options: argparse.Namespace) -> None:
     branch_chunks.append(options.stem)
     branch_name = "-".join(branch_chunks)
 
-    git.run("switch", "--no-track", "--no-guess", "-c", branch_name)
+    git.run(
+        "switch",
+        "--no-track",
+        "--no-guess",
+        "-c",
+        branch_name,
+        options.target,
+    )
     LOG.info("Branch %s is created", branch_name)
 
     remote = Branch.get_remote_repo(options.target)
