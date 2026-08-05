@@ -27,6 +27,7 @@ run = [
 [tasks."update:system:macos"]
 description = "Run system updates for MacOS"
 interactive = true
+env.HOMEBREW_NO_ASK = "true"
 run = [
   "brew update",
   "brew upgrade --greedy-latest",
