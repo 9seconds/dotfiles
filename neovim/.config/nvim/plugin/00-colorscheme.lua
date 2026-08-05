@@ -1,20 +1,19 @@
 -- colorscheme
--- https://github.com/webhooked/kanso.nvim
+-- https://github.com/Aejkatappaja/cendre
+-- https://cendretheme.com/
+--
+-- previous:
+--   -- https://github.com/webhooked/kanso.nvim
 
 vim.pack.add({
-  "https://github.com/webhooked/kanso.nvim",
-})
-
-vim.o.background = "dark"
-
-require("kanso").setup({
-  compile = true,
-  dimInactive = true,
-  background = {
-    dark = "ink",
-    light = "pearl",
+  {
+    src = "https://github.com/Aejkatappaja/cendre",
+    version = vim.version.range("*"),
   },
-  foreground = "default",
 })
 
-vim.cmd("colorscheme kanso")
+require("cendre").setup({
+  background = "medium",
+})
+
+vim.cmd("colorscheme cendre")

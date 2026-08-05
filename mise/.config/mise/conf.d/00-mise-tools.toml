@@ -7,15 +7,12 @@ python = "latest"
 
 # Dev
 "github:crate-ci/typos" = "latest"
-"github:eza-community/eza" = "latest"
 
 # Unix
 "github:atanunq/viu" = "latest"
 "github:binwiederhier/ntfy" = "latest"
 "github:jqlang/jq" = "latest"
-"github:junegunn/fzf" = "latest"
 "github:sharkdp/fd" = "latest"
-"github:skim-rs/skim" = "latest"
 
 # LSP
 "github:tekumara/typos-lsp" = "latest"

@@ -1,0 +1,3 @@
+[tools]
+"github:junegunn/fzf" = "latest"
+"github:skim-rs/skim" = "latest"
