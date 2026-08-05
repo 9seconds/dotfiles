@@ -8,7 +8,7 @@ vim.pack.add({
 local mod = require("lualine")
 
 mod.setup({
-  theme = "lualine",
+  theme = "cendre",
   options = {
     section_separators = "",
     component_separators = "",
