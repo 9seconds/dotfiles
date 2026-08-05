@@ -40,7 +40,6 @@ local ensure_installed = {
   "requirements",
   "ssh_config",
   "toml",
-  "xml",
   "yaml",
 }
 
