@@ -2,11 +2,7 @@
 -- https://github.com/neovim-treesitter/nvim-treesitter
 
 vim.pack.add({
-  "https://github.com/neovim-treesitter/treesitter-parser-registry",
-  {
-    src = "https://github.com/neovim-treesitter/nvim-treesitter",
-    releases = "main",
-  },
+  "https://github.com/nvim-treesitter/nvim-treesitter",
 })
 
 local skip_treesitter = {
