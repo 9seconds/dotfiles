@@ -1,0 +1,5 @@
+[tools]
+"github:binwiederhier/ntfy" = "latest"
+
+[env]
+_.file = { path = "{{ xdg_config_home }}/mise/10-env-ntfy.json", redact = true }
