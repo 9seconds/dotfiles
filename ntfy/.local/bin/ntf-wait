@@ -43,6 +43,20 @@ if test $status -eq 130
 end
 
 set pid (string trim -- $pid)
-if test -n "$pid"
-  exec ntf -- publish --wait-pid $pid
+if test -z "$pid"
+  return 0
+end
+
+set cmd ntf -- publish --wait-pid $pid
+
+if type -fq caffeinate
+  exec caffeinate -w $cmd
+else if type -qf systemd-inhibit
+  exec systemd-inhibit \
+    --what=idle \
+    --who=$this_script_name \
+    --why="Wait for pid $pid" \
+    $cmd
+else
+  exec $cmd
 end
