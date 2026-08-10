@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import base64
 import contextlib
+import gzip
 import hashlib
 import json
 import logging
@@ -73,7 +74,11 @@ class Ntfy:
         actions: list[dict] | None = None,
         sequence_id: str = "",
     ) -> str:
-        headers={"Content-Type": "application/json"}
+        headers={
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Accept-Encoding": "gzip",
+        }
         if sequence_id:
             headers["X-Sequence-ID"] = sequence_id
 
@@ -107,9 +112,12 @@ class Ntfy:
             with contextlib.closing(exc.file) as fp:
                 LOG.error("Error body: %s", fp.read().decode())
             raise
-        else:
-            with contextlib.closing(resp):
-                data = json.load(resp)
+
+        with contextlib.closing(resp):
+            fp = resp
+            if resp.headers.get("Content-Encoding") == "gzip":
+                fp = gzip.GzipFile(fileobj=resp)
+            data = json.load(fp)
 
         return data["sequence_id"]
 
