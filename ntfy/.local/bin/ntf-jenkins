@@ -1,0 +1,156 @@
+#!/usr/bin/env python3
+# MIT License
+#
+# Copyright (c) 2026 Sergey Arkhipov
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+from __future__ import annotations
+
+import argparse
+import contextlib
+import gzip
+import json
+import logging
+import sys
+import time
+import typing as t
+import urllib.error
+import urllib.parse
+import urllib.request
+
+from nineseconds import cli
+from nineseconds import ntfy
+from nineseconds import times
+
+
+LOG: t.Final = logging.getLogger(__name__)
+
+
+@cli.main
+def main() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="Wait for Jenkins job to finish with ntfy",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.set_defaults(cmd=run)
+    ntfy.add_parser_options(parser)
+
+    parser.add_argument(
+        "-p",
+        "--update-each",
+        type=cli.type_duration,
+        default="1m",
+        help="notification period for a ntfy",
+    )
+    parser.add_argument(
+        "url",
+        help="url of the job",
+    )
+
+    return parser
+
+
+def run(options: argparse.Namespace) -> None:
+
+    parsed_url = urllib.parse.urlparse(options.url)
+    if not parsed_url.path.endswith("/api/json"):
+        parsed_url = parsed_url._replace(
+            path=f"{parsed_url.path.rstrip('/')}/api/json",
+        )
+
+    parsed_url = parsed_url._replace(
+        query=(
+            "tree=estimatedDuration,timestamp,fullDisplayName,building,result"
+        ),
+    )
+    url = urllib.parse.urlunparse(parsed_url)
+
+    notifier: ntfy.Updater | None = None
+
+    while True:
+        data = make_request(url)
+        if notifier is None:
+            notifier = ntfy.Updater(
+                ntfy.Ntfy.from_options(options),
+                data["fullDisplayName"],
+                tags=["jenkins"],
+            )
+
+
+        start = float(data["timestamp"]) / 1_000.0
+        now = time.time()
+        elapsed = now - start
+
+        duration = float(data["estimatedDuration"]) / 1_000.0
+        percents = round(100.0 * elapsed / duration, 2)
+        if percents >= 100.0:
+            percents = 99.99
+
+        LOG.debug("Got %s, percents %f", data, percents)
+
+        match data:
+            case {"building": True}:
+                message = f"Ready on {percents}%."
+                if elapsed < duration:
+                    message = f"{message} Elapsed {times.elapsed(elapsed)}."
+                notifier.send(message, priority=1)
+            case {"result": "SUCCESS" | "UNSTABLE"}:
+                notifier.send("Done", tags=["white_check_mark"])
+                sys.exit(0)
+            case {"result": "FAILURE"}:
+                notifier.send("Failed", tags=["x"])
+                sys.exit(1)
+            case {"result": "ABORTED"}:
+                LOG.info("Aborted")
+                sys.exit(1)
+
+        time.sleep(options.update_each.total_seconds())
+
+
+def make_request(url: str) -> dict[str, t.Any]:
+    req = urllib.request.Request(
+        url=url,
+        method="GET",
+        headers={
+            "Accept": "application/json",
+            "Accept-Encoding": "gzip",
+            "Content-Type": "application/json",
+        },
+    )
+
+    LOG.debug("Send to %s", url)
+
+    try:
+        resp = urllib.request.urlopen(req)
+    except urllib.error.HTTPError as exc:
+        LOG.error("Got %d %s", exc.code, exc.reason)
+        with contextlib.closing(exc.file) as fp:
+            LOG.error("Error body: %s", fp.read().decode())
+        raise
+
+    with contextlib.closing(resp):
+        fp = resp
+        if resp.headers.get("Content-Encoding") == "gzip":
+            fp = gzip.GzipFile(fileobj=resp)
+        return t.cast("dict[str, t.Any]", json.load(fp))
+
+
+if __name__ == "__main__":
+    main()
