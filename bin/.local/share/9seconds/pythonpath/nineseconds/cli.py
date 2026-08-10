@@ -23,10 +23,12 @@
 from __future__ import annotations
 
 import argparse
+import datetime
 import functools
 import logging as log
 import os
 import pathlib
+import re
 import sys
 import typing as t
 
@@ -56,7 +58,9 @@ def main(func: t.Callable[[], argparse.ArgumentParser]) -> t.Callable[[], None]:
         logging.configure()
 
         parser = func()
-        parser.set_defaults(cmd=lambda _: parser.print_help())
+        if "cmd" not in parser._defaults:  # noqa: SLF001
+            parser.set_defaults(cmd=lambda _: parser.print_help())
+
         parser.add_argument(
             "-x",
             "--shlex",
@@ -133,3 +137,24 @@ def type_valid_dir(value: str) -> pathlib.Path:
     if (path := pathlib.Path(value)).is_dir():
         return path
     raise argparse.ArgumentTypeError("not a directory")
+
+
+def type_duration(value: str) -> datetime.timedelta:
+    parsed: dict[str, int] = {}
+
+    for found in re.finditer(r"(\d+)([hmsdw])?", value.lower()):
+        match found.groups():
+            case (num, None | "s"):
+                parsed["seconds"] = int(num)
+            case (num, "h"):
+                parsed["hours"] = int(num)
+            case (num, "m"):
+                parsed["minutes"] = int(num)
+            case (num, "d"):
+                parsed["days"] = int(num)
+            case (num, "w"):
+                parsed["weeks"] = int(num)
+            case _:
+                raise RuntimeError(f"Unsupported match {found}")
+
+    return datetime.timedelta(**parsed)

@@ -9,7 +9,7 @@ function show_help
   echo
   echo 'NTFY wrapper'
   echo
-  echo "  -t / --topic   topic to use. Default is $(cat /etc/machine-id)"
+  echo "  -t / --topic   topic to use. Default is $(ntf-topic)"
   echo '  -h / --help    show this help'
   echo '  -d / --debug   run in debug mode'
 end
@@ -31,7 +31,7 @@ end
 if set -q _flag_topic
   set topic $_flag_topic
 else
-  set topic (cat /etc/machine-id)
+  set topic (ntf-topic)
 end
 
 if not set -q NTFY_SERVER
