@@ -22,6 +22,12 @@
 
 from __future__ import annotations
 
+import datetime
+
+
+def now() -> datetime.datetime:
+    return datetime.datetime.now(tz=datetime.timezone.utc)
+
 
 def elapsed(total_seconds: float) -> str:
     rem, msecs = divmod(total_seconds, 1.0)

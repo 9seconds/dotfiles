@@ -1,0 +1,235 @@
+#!/usr/bin/env python3
+# MIT License
+#
+# Copyright (c) 2026 Sergey Arkhipov
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+from __future__ import annotations
+
+import argparse
+import contextlib
+import gzip
+import hashlib
+import logging
+import os
+import select
+import sys
+import typing as t
+
+from nineseconds import cli
+from nineseconds import cmd
+from nineseconds import env
+from nineseconds import paths
+from nineseconds import times
+
+
+if t.TYPE_CHECKING:
+    import datetime
+    import io
+    import pathlib
+
+
+LOG: t.Final = logging.getLogger(__name__)
+CACHE_PATH: t.Final = paths.cache("cache")
+
+RECORD_STDOUT: t.Final = b"\x00"
+RECORD_STDERR: t.Final = b"\x01"
+RECORD_EXIT_CODE: t.Final = b"\x02"
+MAX_RECORD_SIZE: t.Final = 65536  # 2 bytes
+
+
+@cli.main
+def main() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="9seconds timeouts commands.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.set_defaults(cmd=run)
+
+    parser.add_argument(
+        "-s",
+        "--stale-after",
+        type=cli.type_duration,
+        **cli.env_argument(
+            "consider cache stale after",
+            f"{env.PREFIX}_STALE_AFTER",
+            lambda: "1h",
+        ),
+    )
+    parser.add_argument(
+        "-c",
+        "--clean-after",
+        type=cli.type_duration,
+        **cli.env_argument(
+            "clean cache directory after. 0 means do not clean at all",
+            f"{env.PREFIX}_CLEAN_AFTER",
+            lambda: "0",
+        ),
+    )
+
+    parser.add_argument(
+        "command",
+        nargs=argparse.ONE_OR_MORE,
+        help="command to execute",
+    )
+
+    return parser
+
+
+def run(options: argparse.Namespace) -> None:
+    CACHE_PATH.mkdir(parents=True, exist_ok=True)
+
+    if options.clean_after.total_seconds() > 0.1:  # noqa: PLR2004
+        cleanup(options.clean_after)
+
+    limit = (times.now() - options.stale_after).timestamp()
+    LOG.debug("Time limit is %s", limit)
+
+    key = get_key(*options.command)
+    LOG.debug("Key is %s", key)
+
+    if (p := CACHE_PATH / key).is_file() and p.stat().st_mtime > limit:
+        sys.exit(read_from_cache(p))
+
+    with contextlib.ExitStack() as estack:
+        cache_path = estack.enter_context(CACHE_PATH.joinpath(key).open("wb"))
+
+        cache_fp = gzip.GzipFile(fileobj=cache_path, mode="wb")
+        estack.callback(cache_fp.close)
+
+        stdout_r, stdout_w = os.pipe()
+        estack.callback(os.close, stdout_r)
+
+        stderr_r, stderr_w = os.pipe()
+        estack.callback(os.close, stderr_r)
+
+        proc = estack.enter_context(
+            cmd.run_in_foreground(
+                *options.command,
+                stdout=stdout_w,
+                stderr=stderr_w,
+            )
+        )
+
+        os.close(stdout_w)
+        os.close(stderr_w)
+
+        while proc.poll() is None:
+            rlist, wlist, _ = select.select(
+                [stdout_r, stderr_r], [cache_fp], [], 0.01
+            )
+            if not (wlist and rlist):
+                continue
+
+            for fileno in rlist:
+                data = os.read(fileno, MAX_RECORD_SIZE)
+                write_to_cache(
+                    cache_fp,
+                    RECORD_STDOUT if fileno == stdout_r else RECORD_STDERR,
+                    data,
+                )
+
+        LOG.debug("Process exited with code %d", proc.returncode)
+        write_to_cache(
+            cache_fp,
+            RECORD_EXIT_CODE,
+            proc.returncode.to_bytes(4, "little", signed=True),
+        )
+
+
+def cleanup(after: datetime.timedelta) -> None:
+    limit = (times.now() - after).timestamp()
+
+    for item in list(CACHE_PATH.iterdir()):
+        if item.stat().st_mtime < limit:
+            item.unlink()
+            LOG.debug("Removed %s", item)
+
+
+def get_key(*cmd: str) -> str:
+    hasher = hashlib.blake2s()
+
+    def write_str(line: str) -> None:
+        val = line.encode()
+        hasher.update(len(val).to_bytes(4, "little"))
+        hasher.update(val)
+
+    write_str(os.getcwd())  # noqa: PTH109
+
+    for chunk in cmd:
+        write_str(chunk)
+
+    return hasher.hexdigest()
+
+
+def read_from_cache(path: pathlib.Path) -> int:
+    offset = 0
+
+    with path.open("rb") as fp:
+        gzip_fp = gzip.GzipFile(fileobj=fp)
+
+        while True:
+            record_type = gzip_fp.read(1)
+            if not record_type:
+                raise OSError(f"Cannot read record type at offset {offset}")
+            offset += 1
+
+            data_len = gzip_fp.read(2)
+            if len(data_len) != 2:  # noqa: PLR2004
+                raise OSError(f"Cannot read data len at offset {offset}")
+
+            offset += 2
+            to_read = int.from_bytes(data_len, "little", signed=False)
+
+            data = gzip_fp.read(to_read)
+            if len(data) != to_read:
+                raise OSError(f"Cannot read data at offset {offset}")
+            offset += to_read
+
+            if record_type == RECORD_STDOUT:
+                os.write(sys.stdout.fileno(), data)
+            elif record_type == RECORD_STDERR:
+                os.write(sys.stderr.fileno(), data)
+            elif record_type == RECORD_EXIT_CODE:
+                return int.from_bytes(data, "little", signed=True)
+            else:
+                raise OSError(f"Unsupported record type {record_type}")
+
+
+def write_to_cache(
+    fp: io.BufferedIOBase,
+    record_type: bytes,
+    data: bytes,
+) -> None:
+    if not data:
+        return
+
+    fp.write(record_type)
+    fp.write(len(data).to_bytes(2, "little", signed=False))
+    fp.write(data)
+
+    if record_type == RECORD_STDOUT:
+        os.write(sys.stdout.fileno(), data)
+    elif record_type == RECORD_STDERR:
+        os.write(sys.stderr.fileno(), data)
+
+
+if __name__ == "__main__":
+    main()

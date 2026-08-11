@@ -54,7 +54,7 @@ def state(app: str) -> pathlib.Path:
 
 
 def cache(app: str) -> pathlib.Path:
-    return _script_path(DATA_HOME, app)
+    return _script_path(CACHE_HOME, app)
 
 
 def _script_path(root: pathlib.Path, app: str) -> pathlib.Path:

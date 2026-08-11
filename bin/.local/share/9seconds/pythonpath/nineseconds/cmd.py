@@ -33,6 +33,7 @@ import typing as t
 
 from nineseconds import exceptions
 
+
 if t.TYPE_CHECKING:
     import pathlib
 
@@ -102,6 +103,8 @@ def run_in_foreground(
     *cmd: str | pathlib.Path,
     cwd: pathlib.Path | None = None,
     env: dict[str, str] | None = None,
+    stdout: int | t.TextIO = sys.stdout,
+    stderr: int | t.TextIO = sys.stderr,
 ) -> t.Iterator[subprocess.Popen]:
     command = [str(el) for el in cmd]
 
@@ -113,8 +116,8 @@ def run_in_foreground(
         cwd=cwd,
         env={**os.environ, **(env or {})},
         stdin=sys.stdin,
-        stdout=sys.stdout,
-        stderr=sys.stderr,
+        stdout=stdout,
+        stderr=stderr,
         preexec_fn=os.setpgrp,  # noqa: PLW1509
     )
     with proc, redirect_signals(proc.pid):
