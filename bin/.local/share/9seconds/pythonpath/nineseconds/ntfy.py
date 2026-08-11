@@ -55,10 +55,7 @@ class Ntfy:
     _user: str
 
     def __init__(
-        self,
-        server: str | None,
-        topic: str | None,
-        user: str | None,
+        self, server: str | None, topic: str | None, user: str | None,
     ) -> None:
         self._server = server or DEFAULT_SERVER
         self._topic = topic or get_default_topic()
@@ -74,7 +71,7 @@ class Ntfy:
         actions: list[dict] | None = None,
         sequence_id: str = "",
     ) -> str:
-        headers={
+        headers = {
             "Content-Type": "application/json",
             "Accept": "application/json",
             "Accept-Encoding": "gzip",
@@ -93,14 +90,16 @@ class Ntfy:
             url=self._server,
             method="POST",
             headers=headers,
-            data=json.dumps({
-                "topic": self._topic,
-                "title": title,
-                "message": message,
-                "tags": tags or [],
-                "actions": actions or [],
-                "priority": priority,
-            }).encode(),
+            data=json.dumps(
+                {
+                    "topic": self._topic,
+                    "title": title,
+                    "message": message,
+                    "tags": tags or [],
+                    "actions": actions or [],
+                    "priority": priority,
+                },
+            ).encode(),
         )
 
         LOG.debug("Send to %s", self._topic)
@@ -123,11 +122,7 @@ class Ntfy:
 
     @classmethod
     def from_options(cls, options: argparse.Namespace) -> Ntfy:
-        return Ntfy(
-            options.ntfy_url,
-            options.ntfy_topic,
-            options.ntfy_user,
-        )
+        return Ntfy(options.ntfy_url, options.ntfy_topic, options.ntfy_user)
 
 
 class Updater:
@@ -178,28 +173,18 @@ def add_parser_options(parser: argparse.ArgumentParser) -> None:
         "--ntfy-url",
         type=str,
         **cli.env_argument(
-            "ntfy server url",
-            "NTFY_SERVER",
-            lambda: DEFAULT_SERVER,
+            "ntfy server url", "NTFY_SERVER", lambda: DEFAULT_SERVER,
         ),
     )
     parser.add_argument(
         "--ntfy-user",
         type=str,
-        **cli.env_argument(
-            "ntfy user",
-            "NTFY_USER",
-            lambda: None,
-        ),
+        **cli.env_argument("ntfy user", "NTFY_USER", lambda: None),
     )
     parser.add_argument(
         "--ntfy-topic",
         type=str,
-        **cli.env_argument(
-            "ntfy topic",
-            "NTFY_TOPIC",
-            get_default_topic,
-        ),
+        **cli.env_argument("ntfy topic", "NTFY_TOPIC", get_default_topic),
     )
 
 
@@ -208,8 +193,7 @@ def get_default_topic() -> str:
         value = PATH_MACHINE_ID.read_bytes()
     else:
         value = subprocess.check_output(
-            ["ioreg", "-d2", "-c", "IOPlatformExpertDevice"],
-            text=False,
+            ["ioreg", "-d2", "-c", "IOPlatformExpertDevice"], text=False,
         )
 
     hashed = hashlib.sha1(value).digest()

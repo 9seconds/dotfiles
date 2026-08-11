@@ -60,11 +60,7 @@ def main() -> argparse.ArgumentParser:
         default="1m",
         help="notification period for a ntfy",
     )
-    parser.add_argument(
-        "url",
-        type=urls.URL,
-        help="url of the job",
-    )
+    parser.add_argument("url", type=urls.URL, help="url of the job")
 
     return parser
 
@@ -76,16 +72,8 @@ def run(options: argparse.Namespace) -> None:
     parameters_url.path /= "parameters"
 
     actions = [
-        {
-            "action": "view",
-            "label": "Open",
-            "url": url.url(),
-        },
-        {
-            "action": "view",
-            "label": "Parameters",
-            "url": parameters_url.url(),
-        },
+        {"action": "view", "label": "Open", "url": url.url()},
+        {"action": "view", "label": "Parameters", "url": parameters_url.url()},
     ]
 
     notifier: ntfy.Updater | None = None
@@ -120,17 +108,14 @@ def run(options: argparse.Namespace) -> None:
 
             case {"result": "SUCCESS" | "UNSTABLE"}:
                 notifier.send(
-                    "Done",
-                    tags=["white_check_mark"],
-                    actions=actions,
+                    "Done", tags=["white_check_mark"], actions=actions
                 )
                 sys.exit(0)
 
             case {"result": "FAILURE"}:
                 build_artifacts_url = url.copy()
                 build_artifacts_url.path = build_artifacts_url.path.joinpath(
-                    "artifact",
-                    "bld",
+                    "artifact", "bld"
                 )
 
                 notifier.send(
@@ -155,13 +140,17 @@ def run(options: argparse.Namespace) -> None:
 
 def make_request(base_url: urls.URL) -> dict[str, t.Any]:
     api_url = base_url.copy()
-    api_url.query["tree"] = [",".join([
-        "estimatedDuration",
-        "timestamp",
-        "fullDisplayName",
-        "building",
-        "result",
-    ])]
+    api_url.query["tree"] = [
+        ",".join(
+            [
+                "estimatedDuration",
+                "timestamp",
+                "fullDisplayName",
+                "building",
+                "result",
+            ]
+        )
+    ]
     if api_url.path.parts[-2:] != ("api", "json"):
         api_url.path = api_url.path.joinpath("api", "json")
 

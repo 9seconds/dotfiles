@@ -127,9 +127,7 @@ def main() -> argparse.ArgumentParser:
         help="require TTY for the command. won't attach any files",
     )
     parser.add_argument(
-        "command",
-        nargs=argparse.REMAINDER,
-        help="command to execute",
+        "command", nargs=argparse.REMAINDER, help="command to execute"
     )
 
     return parser
@@ -151,9 +149,7 @@ def run(options: argparse.Namespace) -> None:
 
     notifier.send("Start the process")
     tracker = ProgressTracker(
-        notifier,
-        options.show_stdout_bytes,
-        options.update_each,
+        notifier, options.show_stdout_bytes, options.update_each
     )
 
     start = time.monotonic()
@@ -182,7 +178,7 @@ def run_with_subprocess(tracker: ProgressTracker, command: list[str]) -> int:
     )
 
     with proc:
-        for data in (proc.stdout or []):
+        for data in proc.stdout or []:
             tracker.write(data)
             os.write(sys.stdout.fileno(), data)
 

@@ -70,11 +70,7 @@ def main(func: t.Callable[[], argparse.ArgumentParser]) -> t.Callable[[], None]:
         parser.add_argument(
             "-d",
             "--debug",
-            **env_bool_argument(
-                "run in debug mode",
-                env.DEBUG,
-                env.debug,
-            ),
+            **env_bool_argument("run in debug mode", env.DEBUG, env.debug),
         )
 
         options = parser.parse_args()
@@ -93,9 +89,7 @@ def main(func: t.Callable[[], argparse.ArgumentParser]) -> t.Callable[[], None]:
 
 
 def env_argument(
-    msg: str,
-    name: str,
-    value_getter: t.Callable[[], str | None],
+    msg: str, name: str, value_getter: t.Callable[[], str | None],
 ) -> EnvArgumentT:
     value = os.getenv(name, None)
     return {
@@ -105,9 +99,7 @@ def env_argument(
 
 
 def env_bool_argument(
-    msg: str,
-    name: str,
-    value_getter: t.Callable[[], bool | None],
+    msg: str, name: str, value_getter: t.Callable[[], bool | None],
 ) -> EnvBoolArgumentT:
     if (val := os.environ.get(name)) is not None:
         value = env.as_bool(val)

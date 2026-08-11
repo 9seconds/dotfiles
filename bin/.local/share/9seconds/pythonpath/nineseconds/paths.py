@@ -28,16 +28,16 @@ import typing as t
 
 
 CONFIG_HOME: t.Final = pathlib.Path(
-    os.getenv("XDG_CONFIG_HOME", pathlib.Path.home() / ".config")
+    os.getenv("XDG_CONFIG_HOME", pathlib.Path.home() / ".config"),
 )
 DATA_HOME: t.Final = pathlib.Path(
-    os.getenv("XDG_DATA_HOME", pathlib.Path.home() / ".local" / "share")
+    os.getenv("XDG_DATA_HOME", pathlib.Path.home() / ".local" / "share"),
 )
 STATE_HOME: t.Final = pathlib.Path(
-    os.getenv("XDG_STATE_HOME", pathlib.Path.home() / ".local" / "state")
+    os.getenv("XDG_STATE_HOME", pathlib.Path.home() / ".local" / "state"),
 )
 CACHE_HOME: t.Final = pathlib.Path(
-    os.getenv("XDG_CACHE_HOME", pathlib.Path.home() / ".local" / "cache")
+    os.getenv("XDG_CACHE_HOME", pathlib.Path.home() / ".local" / "cache"),
 )
 
 

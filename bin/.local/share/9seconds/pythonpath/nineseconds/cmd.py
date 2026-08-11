@@ -43,7 +43,7 @@ LOG: t.Final[logging.Logger] = logging.getLogger(__name__)
 
 def run(
     *cmd: str | pathlib.Path,
-    cwd: None | pathlib.Path = None,
+    cwd: pathlib.Path | None = None,
     env: dict[str, str] | None = None,
 ) -> list[str]:
     command = [str(el) for el in cmd]
@@ -51,7 +51,7 @@ def run(
     if LOG.isEnabledFor(logging.DEBUG):
         LOG.debug("Execute %s", subprocess.list2cmdline(command))
 
-    result = subprocess.run(  # noqa: S603
+    result = subprocess.run(
         command,
         stdin=subprocess.DEVNULL,
         check=False,
@@ -73,9 +73,7 @@ def run(
 
     if result.returncode:
         raise exceptions.CommandError(
-            cmd=command,
-            stderr=stderr,
-            exit_code=result.returncode,
+            cmd=command, stderr=stderr, exit_code=result.returncode,
         )
 
     return stdout

@@ -62,10 +62,12 @@ class URL:
         return f"{self.username or ''}:{self.password or ''}@{rv}"
 
     def url(self) -> str:
-        return urllib.parse.urlunsplit((
-            self.scheme,
-            self.netloc,
-            str(self.path),
-            urllib.parse.urlencode(self.query, doseq=True),
-            None,
-        ))
+        return urllib.parse.urlunsplit(
+            (
+                self.scheme,
+                self.netloc,
+                str(self.path),
+                urllib.parse.urlencode(self.query, doseq=True),
+                None,
+            ),
+        )

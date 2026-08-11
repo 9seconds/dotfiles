@@ -50,7 +50,7 @@ def get_dir(*, cwd: pathlib.Path | None = None) -> pathlib.Path:
         path = value
     else:
         path = run(
-            "rev-parse", "--absolute-git-dir", cwd=cwd, set_git_dir=False
+            "rev-parse", "--absolute-git-dir", cwd=cwd, set_git_dir=False,
         )[0]
 
     return pathlib.Path(path).absolute()
@@ -75,7 +75,11 @@ def config_get(setting: str, *, cwd: pathlib.Path | None = None) -> list[str]:
 
 
 def config_set(
-    key: str, value: str, *, cwd: pathlib.Path | None = None, local: bool = True
+    key: str,
+    value: str,
+    *,
+    cwd: pathlib.Path | None = None,
+    local: bool = True,
 ) -> None:
     command = ["config", "set"]
     if local:
@@ -98,19 +102,11 @@ def run(
     cwd: pathlib.Path | None = None,
     set_git_dir: bool = True,
 ) -> list[str]:
-    command = [
-        get_bin(),
-        "-P",
-        "--no-advice",
-    ]
+    command = [get_bin(), "-P", "--no-advice"]
     if set_git_dir:
         command.append("--git-dir")
         command.append(get_dir(cwd=cwd))
 
     command.extend(args)
 
-    return cmd.run(
-        *command,
-        cwd=cwd,
-        env={"NO_COLOR": "1", "TZ": "UTC"},
-    )
+    return cmd.run(*command, cwd=cwd, env={"NO_COLOR": "1", "TZ": "UTC"})
