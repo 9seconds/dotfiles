@@ -29,7 +29,6 @@ if set -q _flag_help
 end
 
 set    fzf_flags --scheme=path
-set -a fzf_flags --sort
 set -a fzf_flags --multi
 set -a fzf_flags --prompt='file> '
 set -a fzf_flags --preview='bat --plain --color=always {}'
@@ -43,4 +42,5 @@ set root $(git rev-parse --show-toplevel)
 git status --porcelain=1 \
   | string replace -fr '^[^D].+\s+(\S+)$' $root'/$1' \
   | path normalize \
-  | 9fzf $fzf_flags
+  | sort \
+  | 9s-fzf $fzf_flags

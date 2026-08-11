@@ -30,4 +30,4 @@ if test (count $argv) -ne 0
   set -a fzf_flags --query=(string join ' ' $argv | string escape)
 end
 
-zmx list --short | 9fzf $fzf_flags
+zmx list --short | sort | 9s-fzf $fzf_flags

@@ -55,7 +55,7 @@ end
 set -x DFT_DISPLAY inline
 set -x DFT_COLOR always
 
-set commit $($git_log_cmd | 9fzf $fzf_flags)
+set commit $($git_log_cmd | 9s-fzf $fzf_flags)
 if not set -q _flag_short
   exec git rev-parse $commit
 end

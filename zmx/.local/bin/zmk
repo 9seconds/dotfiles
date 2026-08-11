@@ -22,7 +22,6 @@ if set -q _flag_help
   return 0
 end
 
-set -a fzf_flags --sort
 set -a fzf_flags --multi
 set -a fzf_flags --prompt='session> '
 
@@ -30,4 +29,4 @@ if test (count $argv) -ne 0
   set -a fzf_flags --query=(string join ' ' $argv | string escape)
 end
 
-zmx kill (zmx list --short | 9fzf $fzf_flags)
+zmx kill (zmx list --short | sort | 9s-fzf $fzf_flags)

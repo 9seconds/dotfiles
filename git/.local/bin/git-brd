@@ -39,7 +39,7 @@ if test (count $argv) -ne 0
 end
 
 git br -x list -a -c -- name upstream_repo upstream_branch target ago commits \
-  | 9fzf $fzf_flags \
+  | 9s-fzf $fzf_flags \
   | while read -t local upstream_repo upstream_branch
       git branch -D $local
       if set -q _flag_remote; and test -n "$upstream_repo"
