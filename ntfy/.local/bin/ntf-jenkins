@@ -107,9 +107,7 @@ def run(options: argparse.Namespace) -> None:
                 notifier.send(message, priority=1, actions=actions)
 
             case {"result": "SUCCESS" | "UNSTABLE"}:
-                notifier.send(
-                    "Done", tags=["white_check_mark"], actions=actions
-                )
+                notifier.send("Done", tags=["white_check_mark"], actions=actions)
                 sys.exit(0)
 
             case {"result": "FAILURE"}:

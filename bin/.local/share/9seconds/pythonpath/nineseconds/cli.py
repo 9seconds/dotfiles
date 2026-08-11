@@ -29,6 +29,7 @@ import logging as log
 import os
 import pathlib
 import re
+import signal
 import sys
 import typing as t
 
@@ -150,3 +151,13 @@ def type_duration(value: str) -> datetime.timedelta:
                 raise RuntimeError(f"Unsupported match {found}")
 
     return datetime.timedelta(**parsed)
+
+
+def type_signal(value: str) -> signal.Signals:
+    if value.isdigit():
+        return signal.Signals(int(value))
+
+    if not value.startswith("SIG"):
+        value = f"SIG{value.upper()}"
+
+    return signal.Signals[value]

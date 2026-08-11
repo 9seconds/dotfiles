@@ -26,11 +26,12 @@ import contextlib
 import functools
 import logging
 import os
+import signal
 import subprocess
+import sys
 import typing as t
 
 from nineseconds import exceptions
-
 
 if t.TYPE_CHECKING:
     import pathlib
@@ -39,6 +40,12 @@ if t.TYPE_CHECKING:
 
 
 LOG: t.Final[logging.Logger] = logging.getLogger(__name__)
+FORWARDED_SIGNALS: t.Final = (
+    signal.SIGHUP,
+    signal.SIGINT,
+    signal.SIGQUIT,
+    signal.SIGTERM,
+)
 
 
 def run(
@@ -51,7 +58,7 @@ def run(
     if LOG.isEnabledFor(logging.DEBUG):
         LOG.debug("Execute %s", subprocess.list2cmdline(command))
 
-    result = subprocess.run(
+    result = subprocess.run(  # noqa: S603
         command,
         stdin=subprocess.DEVNULL,
         check=False,
@@ -82,8 +89,54 @@ def run(
 def first_or_empty_string(func: t.Callable[P, list[str]]) -> t.Callable[P, str]:
     @functools.wraps(func)
     def decorator(*args: P.args, **kwargs: P.kwargs) -> str:
-        with contextlib.suppress(exceptions.CommandError):
+        try:
             return func(*args, **kwargs)[0]
-        return ""
+        except exceptions.CommandError:
+            return ""
 
     return decorator
+
+
+@contextlib.contextmanager
+def run_in_foreground(
+    *cmd: str | pathlib.Path,
+    cwd: pathlib.Path | None = None,
+    env: dict[str, str] | None = None,
+) -> t.Iterator[subprocess.Popen]:
+    command = [str(el) for el in cmd]
+
+    if LOG.isEnabledFor(logging.DEBUG):
+        LOG.debug("Execute %s", subprocess.list2cmdline(command))
+
+    proc = subprocess.Popen(  # noqa: S603
+        command,
+        cwd=cwd,
+        env={**os.environ, **(env or {})},
+        stdin=sys.stdin,
+        stdout=sys.stdout,
+        stderr=sys.stderr,
+        preexec_fn=os.setpgrp,  # noqa: PLW1509
+    )
+    with proc, redirect_signals(proc.pid):
+        yield proc
+
+
+@contextlib.contextmanager
+def redirect_signals(pgid: int) -> t.Iterator[None]:
+    def forward(signum: int, _frame: object) -> None:
+        with contextlib.suppress(ProcessLookupError):
+            os.killpg(pgid, signum)
+
+        signal.signal(signum, signal.SIG_DFL)
+        os.kill(os.getpid(), signum)
+
+    handlers = {
+        sig: signal.signal(sig, forward)
+        for sig in FORWARDED_SIGNALS
+    }
+
+    try:
+        yield
+    finally:
+        for sig, handler in handlers.items():
+            signal.signal(sig, handler)
