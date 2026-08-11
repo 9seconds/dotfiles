@@ -173,6 +173,8 @@ def get_key(*cmd: str) -> str:
         hasher.update(line)
 
     write_str(os.getsid(os.getpid()).to_bytes(4, "little", signed=False))
+    write_str(os.getuid().to_bytes(4, "little", signed=False))
+    write_str(os.geteuid().to_bytes(4, "little", signed=False))
     write_str(os.getcwd())  # noqa: PTH109
 
     for chunk in cmd:
