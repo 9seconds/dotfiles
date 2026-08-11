@@ -166,11 +166,13 @@ def cleanup(after: datetime.timedelta) -> None:
 def get_key(*cmd: str) -> str:
     hasher = hashlib.blake2s()
 
-    def write_str(line: str) -> None:
-        val = line.encode()
-        hasher.update(len(val).to_bytes(4, "little"))
-        hasher.update(val)
+    def write_str(line: str | bytes) -> None:
+        if isinstance(line, str):
+            line = line.encode()
+        hasher.update(len(line).to_bytes(4, "little"))
+        hasher.update(line)
 
+    write_str(os.getsid(os.getpid()).to_bytes(4, "little", signed=False))
     write_str(os.getcwd())  # noqa: PTH109
 
     for chunk in cmd:
