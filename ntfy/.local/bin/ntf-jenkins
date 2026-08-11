@@ -38,6 +38,7 @@ import urllib.request
 from nineseconds import cli
 from nineseconds import ntfy
 from nineseconds import times
+from nineseconds import urls
 
 
 LOG: t.Final = logging.getLogger(__name__)
@@ -61,6 +62,7 @@ def main() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "url",
+        type=urls.URL,
         help="url of the job",
     )
 
@@ -68,31 +70,35 @@ def main() -> argparse.ArgumentParser:
 
 
 def run(options: argparse.Namespace) -> None:
+    url = t.cast("urls.URL", options.url)
 
-    parsed_url = urllib.parse.urlparse(options.url)
-    if not parsed_url.path.endswith("/api/json"):
-        parsed_url = parsed_url._replace(
-            path=f"{parsed_url.path.rstrip('/')}/api/json",
-        )
+    parameters_url = url.copy()
+    parameters_url.path /= "parameters"
 
-    parsed_url = parsed_url._replace(
-        query=(
-            "tree=estimatedDuration,timestamp,fullDisplayName,building,result"
-        ),
-    )
-    url = urllib.parse.urlunparse(parsed_url)
+    actions = [
+        {
+            "action": "view",
+            "label": "Open",
+            "url": url.url(),
+        },
+        {
+            "action": "view",
+            "label": "Parameters",
+            "url": parameters_url.url(),
+        },
+    ]
 
     notifier: ntfy.Updater | None = None
 
     while True:
         data = make_request(url)
+
         if notifier is None:
             notifier = ntfy.Updater(
                 ntfy.Ntfy.from_options(options),
                 data["fullDisplayName"],
                 tags=["jenkins"],
             )
-
 
         start = float(data["timestamp"]) / 1_000.0
         now = time.time()
@@ -110,12 +116,35 @@ def run(options: argparse.Namespace) -> None:
                 message = f"Ready on {percents}%."
                 if elapsed < duration:
                     message = f"{message} Elapsed {times.elapsed(elapsed)}."
-                notifier.send(message, priority=1)
+                notifier.send(message, priority=1, actions=actions)
+
             case {"result": "SUCCESS" | "UNSTABLE"}:
-                notifier.send("Done", tags=["white_check_mark"])
+                notifier.send(
+                    "Done",
+                    tags=["white_check_mark"],
+                    actions=actions,
+                )
                 sys.exit(0)
+
             case {"result": "FAILURE"}:
-                notifier.send("Failed", tags=["x"])
+                build_artifacts_url = url.copy()
+                build_artifacts_url.path = build_artifacts_url.path.joinpath(
+                    "artifact",
+                    "bld",
+                )
+
+                notifier.send(
+                    "Failed",
+                    tags=["x"],
+                    actions=[
+                        *actions,
+                        {
+                            "action": "view",
+                            "label": "Build artifacts",
+                            "url": build_artifacts_url.url(),
+                        },
+                    ],
+                )
                 sys.exit(1)
             case {"result": "ABORTED"}:
                 LOG.info("Aborted")
@@ -124,9 +153,20 @@ def run(options: argparse.Namespace) -> None:
         time.sleep(options.update_each.total_seconds())
 
 
-def make_request(url: str) -> dict[str, t.Any]:
+def make_request(base_url: urls.URL) -> dict[str, t.Any]:
+    api_url = base_url.copy()
+    api_url.query["tree"] = [",".join([
+        "estimatedDuration",
+        "timestamp",
+        "fullDisplayName",
+        "building",
+        "result",
+    ])]
+    if api_url.path.parts[-2:] != ("api", "json"):
+        api_url.path = api_url.path.joinpath("api", "json")
+
     req = urllib.request.Request(
-        url=url,
+        url=api_url.url(),
         method="GET",
         headers={
             "Accept": "application/json",
@@ -135,7 +175,7 @@ def make_request(url: str) -> dict[str, t.Any]:
         },
     )
 
-    LOG.debug("Send to %s", url)
+    LOG.debug("Send to %s", api_url.url())
 
     try:
         resp = urllib.request.urlopen(req)
