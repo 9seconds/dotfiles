@@ -31,6 +31,7 @@ set -a fzf_flags --nth 3..
 set -a fzf_flags --accept-nth 1
 set -a fzf_flags --exact
 set -a fzf_flags --tiebreak=chunk
+set -a fzf_flags '--prompt=process> '
 
 if test (count $argv) -ne 0
   set -a fzf_flags --select-1
