@@ -52,7 +52,7 @@ CACHE_PATH: t.Final = paths.cache("cache")
 RECORD_STDOUT: t.Final = b"\x00"
 RECORD_STDERR: t.Final = b"\x01"
 RECORD_EXIT_CODE: t.Final = b"\x02"
-MAX_RECORD_SIZE: t.Final = 65536  # 2 bytes
+MAX_RECORD_SIZE: t.Final = (1 << 16) - 1  # 2 bytes
 
 
 @cli.main
@@ -131,20 +131,17 @@ def run(options: argparse.Namespace) -> None:
         os.close(stdout_w)
         os.close(stderr_w)
 
-        while proc.poll() is None:
-            rlist, wlist, _ = select.select(
-                [stdout_r, stderr_r], [cache_fp], [], 0.01
-            )
-            if not (wlist and rlist):
-                continue
+        readable = {stdout_r: RECORD_STDOUT, stderr_r: RECORD_STDERR}
+        while readable:
+            rlist, _, _ = select.select(readable, [], [])
 
             for fileno in rlist:
                 data = os.read(fileno, MAX_RECORD_SIZE)
-                write_to_cache(
-                    cache_fp,
-                    RECORD_STDOUT if fileno == stdout_r else RECORD_STDERR,
-                    data,
-                )
+                if not data:
+                    del readable[fileno]
+                    continue
+
+                write_to_cache(cache_fp, readable[fileno], data)
 
         LOG.debug("Process exited with code %d", proc.returncode)
         write_to_cache(
