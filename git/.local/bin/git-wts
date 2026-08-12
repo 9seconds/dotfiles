@@ -1,0 +1,34 @@
+#!/usr/bin/env fish
+# vim: set ts=2 sts=2 sw=2:
+
+set this_script_path $(path resolve $(status --current-filename))
+set this_script_name $(path basename $this_script_path)
+
+function show_help
+  echo "Usage: $this_script_name [-h/--help] [-d/--debug]"
+  echo
+  echo 'Change working tree'
+  echo
+  echo '  -h / --help    show this help'
+  echo '  -d / --debug   run in debug mode'
+end
+
+argparse --max-args=0 'h/help&' 'd/debug&' -- $argv
+or begin
+  show_help
+  return 1
+end
+
+if set -q _flag_debug
+  set fish_trace 1
+end
+if set -q _flag_help
+  show_help
+  return 0
+end
+
+set -a fzf_flags --nth 1
+set -a fzf_flags --accept-nth=1
+set -a fzf_flags '--prompt=working tree> '
+
+cd $(git wt ls | 9s-fzf --nth 1 --accept-nth 1 '--prompt=working tree> ')
