@@ -33,6 +33,7 @@ class URL:
     username: str | None
     password: str | None
     port: int | None
+    fragment: str | None
     path: pathlib.Path
     query: dict[str, list[str]]
 
@@ -46,6 +47,7 @@ class URL:
         self.password = split.password
         self.path = pathlib.PosixPath("/").joinpath(split.path)
         self.query = urllib.parse.parse_qs(split.query)
+        self.fragment = split.fragment
 
     def copy(self) -> URL:
         return copy.deepcopy(self)
