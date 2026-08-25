@@ -46,7 +46,7 @@ if test (count $argv) -ne 0
   set -a fzf_flags "--query=$(string join -- ' ' $argv)"
 end
 
-set chosen $(git br list -a -c name target ago | 9fzf $fzf_flags)
+set chosen $(git br list -a -c name target ago | 9s-fzf $fzf_flags)
 if test (count $chosen) -ne 0
   exec git switch $chosen
 end
