@@ -1,1 +1,89 @@
-tap "homebrew/bundle"
+# Download with resuming and segmented downloading
+brew "aria2"
+# Get a file from an HTTP, HTTPS or FTP server
+brew "curl"
+# Run arbitrary commands when files change
+brew "entr"
+# User-friendly command-line shell for UNIX-like operating systems
+brew "fish"
+# Distributed revision control system
+brew "git"
+# Just-In-Time Compiler (JIT) for the Lua programming language
+brew "luajit"
+# Mac App Store command-line interface
+brew "mas"
+# Simple tool to make locally trusted development certificates
+brew "mkcert"
+# Incremental parsing library
+brew "tree-sitter"
+# Ambitious Vim-fork focused on extensibility and agility
+brew "neovim"
+# Tool for managing OCI containers and pods
+brew "podman"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.13"
+# Tool for downloading RTMP streaming media
+brew "rtmpdump"
+# Non-interactive SSH password auth
+brew "sshpass"
+# Privacy-focused app for managing your finances
+cask "actual"
+# Memory training application
+cask "anki"
+# Multi-track audio editor and recorder
+cask "audacity"
+# Display management tool
+cask "betterdisplay"
+# Screen capturing tool
+cask "cleanshot"
+# App to build and share containerised applications and microservices
+cask "docker-desktop"
+# Elgato FACECAM configuration tool
+cask "elgato-camera-hub"
+cask "font-geist"
+cask "font-geist-mono"
+cask "font-inter"
+cask "font-jetbrains-mono"
+cask "font-maple-mono-nf"
+cask "font-monaspace"
+cask "font-recursive-code"
+# Web browser
+cask "google-chrome"
+# GPU-based terminal emulator
+cask "kitty"
+# Discover, download, and run local LLMs
+cask "lm-studio"
+# Local speech-to-text, transcription, and meeting recording
+cask "macparakeet"
+# Knowledge base that works on top of a local folder of plain text Markdown files
+cask "obsidian"
+# Internet radio player for the menu bar
+cask "radiola"
+# App that enables mouse-free UI interaction
+cask "shortcat"
+# Team communication and collaboration software
+cask "slack"
+# Notepad with a built-in calculator
+cask "soulver"
+# Music streaming service
+cask "spotify"
+# Desktop client for Telegram messenger
+cask "telegram-desktop"
+# Multi-platform VNC client and server
+cask "tigervnc"
+# Video communication and virtual meeting platform
+cask "zoom"
+mas "Amphetamine", id: 937984704
+mas "Bitwarden", id: 1352778147
+mas "CapCut", id: 1500855883
+mas "GarageBand", id: 682658836
+mas "GoodLinks", id: 1474335294
+mas "iA Writer", id: 775737590
+mas "iMovie", id: 408981434
+mas "Keynote", id: 409183694
+mas "Magnet", id: 441258766
+mas "Numbers", id: 409203825
+mas "Pages", id: 409201541
+mas "Pixelmator Pro", id: 1289583905
+mas "Things", id: 904280696
+mas "Yubico Authenticator", id: 1497506650
