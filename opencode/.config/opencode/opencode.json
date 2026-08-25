@@ -28,6 +28,8 @@
       "git ls-files *": "allow",
       "git merge-base *": "allow",
       "git show *": "allow",
+      "docker image inspect *": "allow",
+      "docker image ls *": "allow",
       "git status *": "allow",
       "grep *": "allow",
       "head *": "allow",
