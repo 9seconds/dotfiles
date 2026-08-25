@@ -155,7 +155,7 @@ def main() -> argparse.ArgumentParser:
     )
     provision_cmd.set_defaults(cmd=cmd_populate)
 
-    for cmd_ in add_cmd, provision_cmd:
+    for cmd_ in add_cmd, remove_cmd, provision_cmd:
         cmd_.add_argument(
             "-t",
             "--template-dir",
