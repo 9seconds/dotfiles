@@ -11,7 +11,7 @@ require("neogit").setup({
     fzf_lua = true,
     snacks = false,
     mini_pick = false,
-  }
+  },
 })
 
 vim.keymap.set(

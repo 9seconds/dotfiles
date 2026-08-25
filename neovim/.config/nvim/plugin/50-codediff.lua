@@ -4,6 +4,6 @@
 vim.pack.add({
   {
     src = "https://github.com/esmuellert/codediff.nvim",
-    version = vim.version.range("*")
-  }
+    version = vim.version.range("*"),
+  },
 })
