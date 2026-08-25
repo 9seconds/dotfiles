@@ -50,7 +50,10 @@ def get_dir(*, cwd: pathlib.Path | None = None) -> pathlib.Path:
         path = value
     else:
         path = run(
-            "rev-parse", "--absolute-git-dir", cwd=cwd, set_git_dir=False,
+            "rev-parse",
+            "--absolute-git-dir",
+            cwd=cwd,
+            set_git_dir=False,
         )[0]
 
     return pathlib.Path(path).absolute()

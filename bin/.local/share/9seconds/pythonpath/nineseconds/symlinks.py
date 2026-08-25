@@ -92,7 +92,9 @@ def mount(
 
     hooks = Hooks(target_dir)
     make_symlink = functools.partial(
-        _mount_make_symlink, source_dir, target_dir,
+        _mount_make_symlink,
+        source_dir,
+        target_dir,
     )
 
     mounted: list[pathlib.Path] = []
@@ -106,7 +108,9 @@ def mount(
 
         config_hook = parser.get(parser.default_section, "hook", fallback="")
         config_type = parser.get(
-            parser.default_section, "type", fallback="granular",
+            parser.default_section,
+            "type",
+            fallback="granular",
         )
 
         hooks.add(dirpath, config_hook)
@@ -138,7 +142,8 @@ def _mount_make_symlink(
     target_file = target_dir / source_path.relative_to(source_dir)
     target_file.parent.mkdir(exist_ok=True, parents=True)
     target_file.symlink_to(
-        source_path, target_is_directory=source_path.is_dir(),
+        source_path,
+        target_is_directory=source_path.is_dir(),
     )
     LOG.info("Symlinked %s -> %s", target_file, source_path)
 
@@ -146,7 +151,8 @@ def _mount_make_symlink(
 
 
 def collect(
-    source_dir: pathlib.Path, target_dir: pathlib.Path,
+    source_dir: pathlib.Path,
+    target_dir: pathlib.Path,
 ) -> list[pathlib.Path]:
     found: list[pathlib.Path] = []
 

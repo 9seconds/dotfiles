@@ -55,7 +55,10 @@ class Ntfy:
     _user: str
 
     def __init__(
-        self, server: str | None, topic: str | None, user: str | None,
+        self,
+        server: str | None,
+        topic: str | None,
+        user: str | None,
     ) -> None:
         self._server = server or DEFAULT_SERVER
         self._topic = topic or get_default_topic()
@@ -173,7 +176,9 @@ def add_parser_options(parser: argparse.ArgumentParser) -> None:
         "--ntfy-url",
         type=str,
         **cli.env_argument(
-            "ntfy server url", "NTFY_SERVER", lambda: DEFAULT_SERVER,
+            "ntfy server url",
+            "NTFY_SERVER",
+            lambda: DEFAULT_SERVER,
         ),
     )
     parser.add_argument(
@@ -193,7 +198,8 @@ def get_default_topic() -> str:
         value = PATH_MACHINE_ID.read_bytes()
     else:
         value = subprocess.check_output(
-            ["ioreg", "-d2", "-c", "IOPlatformExpertDevice"], text=False,
+            ["ioreg", "-d2", "-c", "IOPlatformExpertDevice"],
+            text=False,
         )
 
     hashed = hashlib.sha1(value).digest()

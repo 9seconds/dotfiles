@@ -81,7 +81,9 @@ def run(
 
     if result.returncode:
         raise exceptions.CommandError(
-            cmd=command, stderr=stderr, exit_code=result.returncode,
+            cmd=command,
+            stderr=stderr,
+            exit_code=result.returncode,
         )
 
     return stdout
@@ -133,10 +135,7 @@ def redirect_signals(pgid: int) -> t.Iterator[None]:
         signal.signal(signum, signal.SIG_DFL)
         os.kill(os.getpid(), signum)
 
-    handlers = {
-        sig: signal.signal(sig, forward)
-        for sig in FORWARDED_SIGNALS
-    }
+    handlers = {sig: signal.signal(sig, forward) for sig in FORWARDED_SIGNALS}
 
     try:
         yield
