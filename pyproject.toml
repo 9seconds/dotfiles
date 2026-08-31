@@ -46,3 +46,7 @@ project-includes = [
 search-path = [
     "./bin/.local/share/9seconds/pythonpath",
 ]
+
+[tool.pyrefly.errors]
+# enable why python-version >= 3.12
+missing-override-decorator = false

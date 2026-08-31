@@ -42,12 +42,12 @@ if t.TYPE_CHECKING:
 
     class EnvArgumentT(t.TypedDict):
         help: str
-        default: str
+        default: str | None
 
     class EnvBoolArgumentT(t.TypedDict):
         help: str
         action: str
-        default: bool
+        default: bool | None
 
 
 LOG: t.Final[log.Logger] = log.getLogger(__name__)
@@ -60,7 +60,9 @@ def main(func: t.Callable[[], argparse.ArgumentParser]) -> t.Callable[[], None]:
 
         parser = func()
         if "cmd" not in parser._defaults:  # noqa: SLF001
-            parser.set_defaults(cmd=lambda _: parser.print_help())
+            parser.set_defaults(
+                cmd=lambda _: parser.print_help(),  # pyrefly: ignore[implicit-any-lambda]
+            )
 
         parser.add_argument(
             "-x",

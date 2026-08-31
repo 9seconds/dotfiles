@@ -71,7 +71,7 @@ class Ntfy:
         *,
         tags: list[str] | None = None,
         priority: int = DEFAULT_PRIORITY,
-        actions: list[dict] | None = None,
+        actions: list[dict[str, t.Any]] | None = None,
         sequence_id: str = "",
     ) -> str:
         headers = {
@@ -133,7 +133,7 @@ class Updater:
     _title: str
     _tags: list[str]
     _priority: int
-    _actions: list[dict]
+    _actions: list[dict[str, t.Any]]
     _sequence_id: str
 
     def __init__(
@@ -143,7 +143,7 @@ class Updater:
         *,
         tags: list[str] | None = None,
         priority: int = DEFAULT_PRIORITY,
-        actions: list[dict] | None = None,
+        actions: list[dict[str, t.Any]] | None = None,
     ) -> None:
         self._instance = instance
         self._title = title
@@ -159,7 +159,7 @@ class Updater:
         title: str | None = None,
         tags: list[str] | None = None,
         priority: int | None = None,
-        actions: list[dict] | None = None,
+        actions: list[dict[str, t.Any]] | None = None,
     ) -> None:
         self._instance.send(
             title=self._title if title is None else title,

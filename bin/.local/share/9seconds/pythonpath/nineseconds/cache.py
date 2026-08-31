@@ -130,7 +130,7 @@ def _produce_key(value: KeyT) -> t.Generator[bytes]:  # noqa: C901
         case set() | frozenset():
             yield (b"S" if isinstance(value, set) else b"F")
             yield _produce_len(value)
-            for el in sorted(value):
+            for el in sorted(value, key=repr):
                 yield from _produce_key(el)
 
         case None:

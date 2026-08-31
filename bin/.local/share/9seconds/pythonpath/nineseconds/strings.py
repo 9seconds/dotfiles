@@ -43,18 +43,19 @@ def slugify(value: str, delimiter: str = "_") -> str:
 
 
 def print_rows(
-    rows: collections.abc.Sequence[collections.abc.Sequence[str]],
+    rows: collections.abc.Sequence[collections.abc.Sequence[str | int | float]],
     *,
     is_shlex: bool = False,
 ) -> None:
     if not rows:
         return
 
-    stringify = str
+    stringify: t.Callable[[str], str] = str
     if is_shlex:
-        stringify = lambda el: shlex.quote(str(el))  # noqa: E731
+        stringify = shlex.quote
 
-    rows = [[stringify(r) for r in row] for row in rows]
+    rows = [[stringify(str(r)) for r in row] for row in rows]
+    rows = t.cast("list[list[str]]", rows)
     lengths = [0] * len(rows[0])
 
     for row in rows:
