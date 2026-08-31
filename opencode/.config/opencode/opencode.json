@@ -75,17 +75,15 @@
   },
 
   "lsp": {
-    "basedpyright": {
+    "pyrefly": {
       "command": [
-        "basedpyright-langserver",
-        "--stdio"
+        "pyrefly",
+        "lsp"
       ],
-      "extensions": [".py"],
-      "initizalization": {
-        "basedpyright": {
-          "analysis": {
-            "typeCheckingMode": "off"
-          }
+      "extensions": [".py", ".pyi"],
+      "initialization": {
+        "pyrefly": {
+          "typeCheckingMode": "off"
         }
       },
       "type": "local",

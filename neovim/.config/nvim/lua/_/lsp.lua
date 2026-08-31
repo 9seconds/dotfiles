@@ -15,28 +15,6 @@ vim.lsp.config("*", {
   },
 })
 
-vim.lsp.config("basedpyright", {
-  handlers = {
-    ["textDocument/publishDiagnostics"] = function () end,
-  },
-  settings = {
-    basedpyright = {
-      disableOrganizeImports = true,
-      openFilesOnly = true,
-      analysis = {
-        diagnosticMode = "openFilesOnly",
-        typeCheckingMode = "off",
-        inlayHints = {
-          variableTypes = true,
-          callArgumentNames = true,
-          functionReturnTypes = true,
-          genericTypes = true,
-        },
-      },
-    },
-  },
-})
-
 vim.lsp.config("gopls", {
   settings = {
     gopls = {

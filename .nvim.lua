@@ -17,26 +17,21 @@ vim.lsp.config("emmylua_ls", {
   },
 })
 
-vim.lsp.config("basedpyright", {
-  handlers = {
-    ["textDocument/publishDiagnostics"] = function() end,
-  },
+vim.lsp.config("pyrefly", {
   settings = {
-    basedpyright = {
-      analysis = {
-        pythonVersion = "3.10",
-        pythonPlatform = "Linux",
+    python = {
+      pyrefly = {
         typeCheckingMode = "off",
         extraPaths = {
-          "bin/.local/share/9seconds/pythonpath"
+          "bin/.local/share/9seconds/pythonpath",
         },
-      }
+      },
     },
   },
 })
 
 vim.lsp.enable({
-  "basedpyright",
+  "pyrefly",
   "bash-language-server",
   "emmylua_ls",
   "ruff",
