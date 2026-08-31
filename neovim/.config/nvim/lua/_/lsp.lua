@@ -35,7 +35,6 @@ vim.api.nvim_create_autocmd("FileType", {
   once = true,
   callback = function ()
     vim.lsp.enable({
-      "basedpyright",
       "bash-language-server",
       "docker-language-server",
       "emmylua_ls",

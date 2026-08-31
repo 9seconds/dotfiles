@@ -17,7 +17,6 @@ python = "latest"
 # LSP
 "github:tekumara/typos-lsp" = "latest"
 "npm:bash-language-server" = "latest"
-"pipx:basedpyright" = "latest"
 "github:docker/docker-language-server" = "latest"
 
 # Linters

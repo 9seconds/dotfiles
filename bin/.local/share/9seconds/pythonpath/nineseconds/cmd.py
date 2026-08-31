@@ -35,6 +35,7 @@ from nineseconds import exceptions
 
 
 if t.TYPE_CHECKING:
+    import collections.abc
     import pathlib
 
     P = t.ParamSpec("P")
@@ -107,7 +108,7 @@ def run_in_foreground(
     env: dict[str, str] | None = None,
     stdout: int | t.TextIO = sys.stdout,
     stderr: int | t.TextIO = sys.stderr,
-) -> t.Iterator[subprocess.Popen]:
+) -> collections.abc.Generator[subprocess.Popen[bytes]]:
     command = [str(el) for el in cmd]
 
     if LOG.isEnabledFor(logging.DEBUG):
@@ -127,12 +128,12 @@ def run_in_foreground(
 
 
 @contextlib.contextmanager
-def redirect_signals(pgid: int) -> t.Iterator[None]:
+def redirect_signals(pgid: int) -> collections.abc.Generator[None]:
     def forward(signum: int, _frame: object) -> None:
         with contextlib.suppress(ProcessLookupError):
             os.killpg(pgid, signum)
 
-        signal.signal(signum, signal.SIG_DFL)
+        _ = signal.signal(signum, signal.SIG_DFL)
         os.kill(os.getpid(), signum)
 
     handlers = {sig: signal.signal(sig, forward) for sig in FORWARDED_SIGNALS}
@@ -141,4 +142,4 @@ def redirect_signals(pgid: int) -> t.Iterator[None]:
         yield
     finally:
         for sig, handler in handlers.items():
-            signal.signal(sig, handler)
+            _ = signal.signal(sig, handler)
