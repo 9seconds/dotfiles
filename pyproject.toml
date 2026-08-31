@@ -34,8 +34,15 @@ line-ending = "auto"
 docstring-code-format = true
 docstring-code-line-length = "dynamic"
 
-[tool.ty.environment]
+[tool.pyrefly]
+preset = "strict"
 python-version = "3.10"
-extra-paths = [
+disable-project-excludes-heuristics = true
+project-includes = [
+    "**/*.py*",
+    "dots",
+    "git/.local/bin/git-br"
+]
+search-path = [
     "./bin/.local/share/9seconds/pythonpath",
 ]

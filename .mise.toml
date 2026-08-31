@@ -5,8 +5,8 @@ PYTHONPATH = "{{ config_root }}/bin/.local/share/9seconds/pythonpath"
 
 [tools]
 "pipx:magika" = "latest"
+"pipx:pyrefly" = "latest"
 "github:astral-sh/ruff" = "latest"
-"github:astral-sh/ty" = "latest"
 
 # -----------------------------------------------------------------------------
 
