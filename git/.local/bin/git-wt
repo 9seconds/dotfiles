@@ -51,6 +51,7 @@ class Worktrees:
     @classmethod
     def scan(cls, name: str, storage: pathlib.Path) -> Worktrees:
         inst = cls()
+        project: str | None = None
 
         for line in git.run("worktree", "list", "--porcelain"):
             match line.split():
@@ -68,9 +69,13 @@ class Worktrees:
 
                     inst._paths[project] = path
                 case ["HEAD", value]:
-                    inst._heads[project] = value
+                    if project is not None:
+                        inst._heads[project] = value
                 case ["branch", value]:
-                    inst._branches[project] = value.removeprefix("refs/heads/")
+                    if project is not None:
+                        inst._branches[project] = value.removeprefix(
+                            "refs/heads/"
+                        )
 
         return inst
 

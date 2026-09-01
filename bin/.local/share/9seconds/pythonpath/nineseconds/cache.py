@@ -112,7 +112,7 @@ def cache_key(value: KeyT) -> str:
     return hasher.hexdigest()
 
 
-def _produce_key(value: KeyT) -> t.Generator[bytes]:  # noqa: C901
+def _produce_key(value: KeyT) -> t.Generator[bytes]:  # noqa: C901, PLR0912
     match value:
         case list() | tuple():
             yield (b"L" if isinstance(value, list) else b"T")

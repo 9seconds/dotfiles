@@ -49,7 +49,8 @@ min-severity = "warn"
 project-includes = [
     "**/*.py*",
     "dots",
-    "git/.local/bin/git-br"
+    "git/.local/bin/git-br",
+    "git/.local/bin/git-wt"
 ]
 # https://pyrefly.org/en/docs/configuration/#search-path
 search-path = [

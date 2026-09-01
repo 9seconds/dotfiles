@@ -64,7 +64,7 @@ class Ntfy:
         self._topic = topic or get_default_topic()
         self._user = user or ""
 
-    def send(
+    def send(  # noqa: PLR0913
         self,
         title: str,
         message: str,
@@ -89,7 +89,8 @@ class Ntfy:
             else:
                 headers["Authorization"] = f"Bearer {self._user}"
 
-        req = urllib.request.Request(
+        # The configured server is intentionally user-controlled.
+        req = urllib.request.Request(  # noqa: S310
             url=self._server,
             method="POST",
             headers=headers,
@@ -108,7 +109,7 @@ class Ntfy:
         LOG.debug("Send to %s", self._topic)
 
         try:
-            resp = urllib.request.urlopen(req)
+            resp = urllib.request.urlopen(req)  # noqa: S310
         except urllib.error.HTTPError as exc:
             LOG.error("Got %d %s", exc.code, exc.reason)
             with contextlib.closing(exc.file) as fp:
@@ -198,9 +199,9 @@ def get_default_topic() -> str:
         value = PATH_MACHINE_ID.read_bytes()
     else:
         value = subprocess.check_output(
-            ["ioreg", "-d2", "-c", "IOPlatformExpertDevice"],
+            ["/usr/sbin/ioreg", "-d2", "-c", "IOPlatformExpertDevice"],
             text=False,
         )
 
-    hashed = hashlib.sha1(value).digest()
+    hashed = hashlib.sha1(value, usedforsecurity=False).digest()
     return base64.b32hexencode(hashed).lower().decode()
