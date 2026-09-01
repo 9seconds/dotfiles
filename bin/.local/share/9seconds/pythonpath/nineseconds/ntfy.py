@@ -23,8 +23,6 @@
 from __future__ import annotations
 
 import base64
-import contextlib
-import gzip
 import hashlib
 import json
 import logging
@@ -32,14 +30,16 @@ import pathlib
 import secrets
 import subprocess
 import typing as t
-import urllib.error
-import urllib.request
 
 from nineseconds import cli
+from nineseconds import net
 
 
 if t.TYPE_CHECKING:
     import argparse
+
+    class NtfyResponseT(t.TypedDict):
+        sequence_id: str
 
 
 LOG: t.Final = logging.getLogger(__name__)
@@ -74,55 +74,32 @@ class Ntfy:
         actions: list[dict[str, t.Any]] | None = None,
         sequence_id: str = "",
     ) -> str:
-        headers = {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Accept-Encoding": "gzip",
-        }
+        req = net.Request(self._server)
+        req = req.header("accept", "application/json")
         if sequence_id:
-            headers["X-Sequence-ID"] = sequence_id
+            req = req.header("X-Sequence-ID", sequence_id)
 
         if self._user:
             if ":" in self._user:
                 encoded = base64.standard_b64encode(self._user.encode())
-                headers["Authorization"] = f"Basic {encoded.decode()}"
+                req = req.header("authorization", f"Basic {encoded.decode()}")
             else:
-                headers["Authorization"] = f"Bearer {self._user}"
+                req = req.header("authorization", f"Bearer {self._user}")
 
-        # The configured server is intentionally user-controlled.
-        req = urllib.request.Request(  # noqa: S310
-            url=self._server,
-            method="POST",
-            headers=headers,
-            data=json.dumps(
-                {
-                    "topic": self._topic,
-                    "title": title,
-                    "message": message,
-                    "tags": tags or [],
-                    "actions": actions or [],
-                    "priority": priority,
-                },
-            ).encode(),
+        req = req.json(
+            {
+                "topic": self._topic,
+                "title": title,
+                "message": message,
+                "tags": tags or [],
+                "actions": actions or [],
+                "priority": priority,
+            }
         )
 
-        LOG.debug("Send to %s", self._topic)
-
-        try:
-            resp = urllib.request.urlopen(req)  # noqa: S310
-        except urllib.error.HTTPError as exc:
-            LOG.error("Got %d %s", exc.code, exc.reason)
-            with contextlib.closing(exc.file) as fp:
-                LOG.error("Error body: %s", fp.read().decode())
-            raise
-
-        with contextlib.closing(resp):
-            fp = resp
-            if resp.headers.get("Content-Encoding") == "gzip":
-                fp = gzip.GzipFile(fileobj=resp)
-            data = json.load(fp)
-
-        return data["sequence_id"]
+        body, _ = req.do()
+        response = t.cast("NtfyResponseT", json.loads(body))
+        return response["sequence_id"]
 
     @classmethod
     def from_options(cls, options: argparse.Namespace) -> Ntfy:
