@@ -35,17 +35,28 @@ docstring-code-format = true
 docstring-code-line-length = "dynamic"
 
 [tool.pyrefly]
+# https://pyrefly.org/en/docs/configuration/#preset
 preset = "strict"
+# https://pyrefly.org/en/docs/configuration/#python-version
 python-version = "3.10"
+# https://pyrefly.org/en/docs/configuration/#disable-project-excludes-heuristics
 disable-project-excludes-heuristics = true
+# https://pyrefly.org/en/docs/configuration/#disable-search-path-heuristics
+disable-search-path-heuristics = true
+# https://pyrefly.org/en/docs/configuration/#min-severity
+min-severity = "warn"
+# https://pyrefly.org/en/docs/configuration/#project-includes
 project-includes = [
     "**/*.py*",
     "dots",
     "git/.local/bin/git-br"
 ]
+# https://pyrefly.org/en/docs/configuration/#search-path
 search-path = [
     "./bin/.local/share/9seconds/pythonpath",
 ]
+# https://pyrefly.org/en/docs/configuration/#disable-type-errors-in-ide
+disable-type-errors-in-ide = true
 
 [tool.pyrefly.errors]
 # enable why python-version >= 3.12
