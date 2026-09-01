@@ -133,7 +133,7 @@ def run(options: argparse.Namespace) -> None:
 
         readable = {stdout_r: RECORD_STDOUT, stderr_r: RECORD_STDERR}
         while readable:
-            rlist, _, _ = select.select(readable, [], [])
+            rlist, _, _ = select.select(readable, (), ())
 
             for fileno in rlist:
                 data = os.read(fileno, MAX_RECORD_SIZE)

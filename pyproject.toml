@@ -50,7 +50,8 @@ project-includes = [
     "**/*.py*",
     "dots",
     "git/.local/bin/git-br",
-    "git/.local/bin/git-wt"
+    "git/.local/bin/git-wt",
+    "bin/.local/bin/9s-cache",
 ]
 # https://pyrefly.org/en/docs/configuration/#search-path
 search-path = [
