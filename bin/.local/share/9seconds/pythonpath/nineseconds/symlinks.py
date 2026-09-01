@@ -37,6 +37,20 @@ from nineseconds import cmd
 
 
 LOG: t.Final = logging.getLogger(__name__)
+
+# A module may contain an optional file named `.___9s.ini`. It uses the
+# standard INI format and only the `[DEFAULT]` section is read. For example,
+# it may contain `type = granular` and a multiline `hook` whose body is
+# `echo "module mounted"`.
+#
+# `type` controls how the module directory is mounted. `granular` (the
+# default) creates a symlink for every file and continues into subdirectories.
+# `leaf` creates one symlink for the directory itself and skips its contents.
+#
+# `hook` is an optional shell script. Its value may span multiple lines when
+# continuation lines are indented. The hook runs with the module directory as
+# its working directory and receives `USER_CWD` and `TARGET_DIR` environment
+# variables. A hook without a shebang is run as Bash with `set -eu -o pipefail`.
 CONFIG_NAME: t.Final = ".___9s.ini"
 
 
@@ -85,7 +99,7 @@ def mount(
     source_dir: pathlib.Path,
     target_dir: pathlib.Path,
     *,
-    cache_: cache.Cache | None = None,
+    cache_: cache.Cache[list[pathlib.Path]] | None = None,
 ) -> list[pathlib.Path]:
     source_dir = source_dir.absolute()
     target_dir = target_dir.absolute()
@@ -178,14 +192,14 @@ def unmount(
     source_dir: pathlib.Path,
     target_dir: pathlib.Path,
     *,
-    cache_: cache.Cache | None = None,
+    cache_: cache.Cache[list[pathlib.Path]] | None = None,
 ) -> list[pathlib.Path]:
     source_dir = source_dir.absolute()
     target_dir = target_dir.absolute()
     key = cache_key(source_dir, target_dir)
 
     if cache_ is not None and key in cache_:
-        to_delete = t.cast("list[pathlib.Path]", cache_[key])
+        to_delete = cache_[key]
     else:
         to_delete = collect(source_dir, target_dir)
 
@@ -206,4 +220,8 @@ def unmount(
 
 
 def cache_key(source_dir: pathlib.Path, target_dir: pathlib.Path) -> str:
-    return cache.cache_key([os.fspath(source_dir), os.fspath(target_dir)])
+    value = t.cast(
+        "cache.KeyT",
+        [os.fspath(source_dir), os.fspath(target_dir)],
+    )
+    return cache.cache_key(value)
