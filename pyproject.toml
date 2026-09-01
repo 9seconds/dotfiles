@@ -56,6 +56,7 @@ project-includes = [
     "bin/.local/bin/9s-tmo",
     "ntfy/.local/bin/ntf-jenkins",
     "ntfy/.local/bin/ntf-cmd",
+    "ntfy/.local/bin/ntf-topic",
 ]
 # https://pyrefly.org/en/docs/configuration/#search-path
 search-path = [
