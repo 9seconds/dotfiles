@@ -55,6 +55,7 @@ project-includes = [
     "bin/.local/bin/9s-retry",
     "bin/.local/bin/9s-tmo",
     "ntfy/.local/bin/ntf-jenkins",
+    "ntfy/.local/bin/ntf-cmd",
 ]
 # https://pyrefly.org/en/docs/configuration/#search-path
 search-path = [
