@@ -89,7 +89,7 @@ def run(options: argparse.Namespace) -> None:
 
         duration = float(data["estimatedDuration"]) / 1_000.0
         percents = round(100.0 * elapsed / duration, 2)
-        if percents >= 100.0:
+        if percents >= 100.0:  # noqa: PLR2004
             percents = 99.99
 
         LOG.debug("Got %s, percents %f", data, percents)
@@ -136,7 +136,7 @@ def run(options: argparse.Namespace) -> None:
 def make_request(base_url: net.URL) -> dict[str, t.Any]:
     api_url = base_url.copy()
     api_url.query["tree"] = [
-        ",".join(
+        ",".join(  # noqa: FLY002
             [
                 "estimatedDuration",
                 "timestamp",

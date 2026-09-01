@@ -169,7 +169,7 @@ def run(options: argparse.Namespace) -> None:
 
 
 def run_with_subprocess(tracker: ProgressTracker, command: list[str]) -> int:
-    proc = subprocess.Popen(
+    proc = subprocess.Popen(  # noqa: S603
         command,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
