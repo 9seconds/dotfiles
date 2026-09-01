@@ -459,8 +459,14 @@ class BranchMatcher:
         self.matchers.append(match)
 
 
-def make_branch_sorted(fields: list[str]) -> t.Callable[[Branch], tuple]:
-    def make_tuple(field_name: str, reversed_: bool, branch: Branch) -> tuple:  # noqa: FBT001
+def make_branch_sorted(
+    fields: list[str],
+) -> t.Callable[[Branch], tuple[object, ...]]:
+    def make_tuple(
+        field_name: str,
+        reversed_: bool,  # noqa: FBT001
+        branch: Branch,
+    ) -> object:
         value = getattr(branch, field_name)
         if not reversed_:
             return value
@@ -482,7 +488,7 @@ def make_branch_sorted(fields: list[str]) -> t.Callable[[Branch], tuple]:
             field = field[1:]  # noqa: PLW2901
         tuple_makers.append(functools.partial(make_tuple, field, reversed_))
 
-    def keyfunc(branch: Branch) -> tuple:
+    def keyfunc(branch: Branch) -> tuple[object, ...]:
         sort_tup = tuple(maker(branch) for maker in tuple_makers)
         LOG.debug("Sort key for %s: %r", branch.name, sort_tup)
         return sort_tup
