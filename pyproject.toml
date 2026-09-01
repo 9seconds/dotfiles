@@ -52,6 +52,7 @@ project-includes = [
     "git/.local/bin/git-br",
     "git/.local/bin/git-wt",
     "bin/.local/bin/9s-cache",
+    "bin/.local/bin/9s-retry",
 ]
 # https://pyrefly.org/en/docs/configuration/#search-path
 search-path = [
