@@ -36,5 +36,4 @@ vim.lsp.enable({
   "emmylua_ls",
   "ruff",
   "ty",
-  "typos-lsp",
 })

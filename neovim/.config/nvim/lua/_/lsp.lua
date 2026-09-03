@@ -1,5 +1,7 @@
 -- different LSP helpers
 
+local has_harper = vim.fn.executable("harper-ls") == 1
+
 vim.lsp.inlay_hint.enable(false)
 
 vim.lsp.config("*", {
@@ -24,11 +26,15 @@ vim.lsp.config("gopls", {
   },
 })
 
-vim.lsp.config("typos_lsp", {
-  init_options = {
-    config = os.getenv("TYPOS_CONFIG_PATH"),
-    diagnosticSeverity = "Hint",
-  },
+vim.lsp.config("harper_ls", {
+  settings = {
+    ["harper-ls"] = {
+      -- https://writewithharper.com/docs/rules
+      linters = {
+        ["LongSentences"] = false,
+      }
+    }
+  }
 })
 
 vim.api.nvim_create_autocmd("FileType", {
@@ -38,7 +44,10 @@ vim.api.nvim_create_autocmd("FileType", {
       "bash-language-server",
       "docker-language-server",
       "emmylua_ls",
-      "typos_lsp",
     })
+
+    if has_harper then
+      vim.lsp.enable({ "harper_ls" })
+    end
   end,
 })

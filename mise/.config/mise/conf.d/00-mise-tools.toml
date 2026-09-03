@@ -5,9 +5,6 @@ poetry = "latest"
 tmux = "latest"
 python = "latest"
 
-# Dev
-"github:crate-ci/typos" = "latest"
-
 # Unix
 "github:atanunq/viu" = "latest"
 "github:binwiederhier/ntfy" = "latest"
@@ -15,7 +12,6 @@ python = "latest"
 "github:sharkdp/fd" = "latest"
 
 # LSP
-"github:tekumara/typos-lsp" = "latest"
 "npm:bash-language-server" = "latest"
 "github:docker/docker-language-server" = "latest"
 
