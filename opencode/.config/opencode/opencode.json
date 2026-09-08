@@ -38,7 +38,7 @@
       "git status *": "allow",
       "grep *": "allow",
       "head *": "allow",
-      "ls": "allow",
+      "jq *": "allow",
       "man *": "allow",
       "nl *": "allow",
       "printf *": "allow",
@@ -50,6 +50,7 @@
       "rg *": "allow",
       "ruff check *": "allow",
       "shift *": "allow",
+      "sleep *": "allow",
       "sort *": "allow",
       "stat *": "allow",
       "systemctl cat *": "allow",
@@ -57,6 +58,10 @@
       "systemctl show *": "allow",
       "true *": "allow",
       "uniq *": "allow",
+      "docker top *": "allow",
+      "getfacl *": "allow",
+      "ls *": "allow",
+      "tr *": "allow",
       "wc *": "allow"
     }
   },
