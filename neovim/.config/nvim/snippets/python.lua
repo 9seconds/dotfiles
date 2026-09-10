@@ -11,7 +11,7 @@ return {
     desc = "while loop",
     prefix = {
       "wh",
-      "while"
+      "while",
     },
     body = {
       "while ${1:True}:",
@@ -20,7 +20,7 @@ return {
   },
   {
     desc = "function definition",
-    prefix = "fnn",
+    prefix = "fn",
     body = {
       "def ${1:function}($4)${2: -> ${3:None}:}",
       "\t$0",
@@ -72,8 +72,8 @@ return {
     prefix = "bb",
     body = {
       "if $1:",
-      "\tbreakpoint()$0"
-    }
+      "\tbreakpoint()$0",
+    },
   },
   {
     desc = "insert dunder",
