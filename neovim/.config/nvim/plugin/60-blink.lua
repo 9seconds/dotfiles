@@ -62,7 +62,7 @@ require("blink.cmp").setup({
       end,
       draw = {
         -- see https://github.com/xzbdmw/colorful-menu.nvim
-        columns = { { "kind_icon" }, { "label", gap = 1 } },
+        columns = { { "kind_icon" }, { "label", "label_description", gap = 1 } },
         components = {
           label = {
             text = function (ctx)
@@ -102,6 +102,11 @@ require("blink.cmp").setup({
       return { "lsp", "snippets", "path" }
     end,
     providers = {
+      snippets = {
+        opts = {
+          use_label_description = true,
+        },
+      },
       copilot = {
         name = "copilot",
         module = "blink-copilot",
