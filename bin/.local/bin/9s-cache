@@ -143,6 +143,7 @@ def run(options: argparse.Namespace) -> None:
 
                 write_to_cache(cache_fp, readable[fileno], data)
 
+        proc.wait()
         LOG.debug("Process exited with code %d", proc.returncode)
         write_to_cache(
             cache_fp,
