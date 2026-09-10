@@ -4,15 +4,15 @@ return {
     prefix = "for",
     body = {
       "for ${2:item} in ${1:items}:",
-      "    $0"
+      "    $0",
     },
   },
   {
     desc = "while loop",
-    prefix = {"wh", "while"},
+    prefix = { "wh", "while" },
     body = {
       "while ${1:True}:",
-      "    $0"
+      "    $0",
     },
   },
   {
@@ -20,7 +20,7 @@ return {
     prefix = "fnn",
     body = {
       "def ${1:function}($4)${2: -> ${3:None}:}",
-      "    $0"
+      "    $0",
     },
   },
   {
@@ -28,7 +28,7 @@ return {
     prefix = "fnm",
     body = {
       "def ${1:function}(self${4:, $5})${2: -> ${3:None}:}",
-      "    $0"
+      "    $0",
     },
   },
   {
@@ -37,7 +37,7 @@ return {
     body = {
       "@staticmethod",
       "def ${1:function}($4)${2: -> ${3:None}:}",
-      "    $0"
+      "    $0",
     },
   },
   {
@@ -46,7 +46,7 @@ return {
     body = {
       "@classmethod",
       "def ${1:function}(cls${4:, $5})${2: -> ${3:None}:}",
-      "    $0"
+      "    $0",
     },
   },
   {
@@ -82,6 +82,6 @@ return {
   {
     desc = "comprehension",
     prefix = "c",
-    body = "${3:${2:item}} for $2 in ${1:items}$0"
-  }
+    body = "${3:${2:item}} for $2 in ${1:items}$0",
+  },
 }

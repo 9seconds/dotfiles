@@ -32,9 +32,9 @@ vim.lsp.config("harper_ls", {
       -- https://writewithharper.com/docs/rules
       linters = {
         ["LongSentences"] = false,
-      }
-    }
-  }
+      },
+    },
+  },
 })
 
 vim.api.nvim_create_autocmd("FileType", {
