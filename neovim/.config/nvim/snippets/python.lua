@@ -69,7 +69,7 @@ return {
   },
   {
     desc = "insert conditional breakpoint",
-    prefix = "cb",
+    prefix = "bb",
     body = {
       "if $1:",
       "\tbreakpoint()$0"
@@ -82,12 +82,12 @@ return {
   },
   {
     desc = "insert triple single quotes",
-    prefix = "3s",
+    prefix = "3q",
     body = "'''$0'''",
   },
   {
     desc = "insert triple single quotes",
-    prefix = "3d",
+    prefix = "3qq",
     body = "\"\"\"$0\"\"\"",
   },
   {
@@ -96,8 +96,13 @@ return {
     body = "${3:${2:item}} for $2 in ${1:items}$0",
   },
   {
-    desc = "comprehension",
-    prefix = "ci",
+    desc = "comprehension with conditional",
+    prefix = "cc",
     body = "${3:${2:item}} for $2 in ${1:items} if ${4:$3}",
+  },
+  {
+    desc = "lambda",
+    prefix = "l",
+    body = "lambda ${1:item}: ${0:$1}",
   },
 }
