@@ -1,4 +1,10 @@
 return {
+  -- N -> 9seconds
+  {
+    desc = "Insert Git username",
+    prefix = "N",
+    body = "$GIT_USERNAME",
+  },
   -- Y -> 2026
   {
     desc = "Insert current year",
