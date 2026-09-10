@@ -1,56 +1,61 @@
 return {
-  -- _year -> 2025
-  ["Insert current year"] = {
-    prefix = "_year",
+  -- Y -> 2026
+  {
+    desc = "Insert current year",
+    prefix = "Y",
     body = "$CURRENT_YEAR",
   },
-  -- _date -> 2025-01-03
-  ["Insert current date"] = {
-    prefix = "_date",
+  -- D -> 2026-09-10
+  {
+    desc = "Insert current date",
+    prefix = "D",
     body = "$CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE",
   },
-  -- _time -> 08:26
-  ["Insert current time"] = {
-    prefix = "_time",
+  -- T -> 09:39
+  {
+    desc = "Insert current time",
+    prefix = "T",
     body = "$CURRENT_HOUR:$CURRENT_MINUTE",
   },
-  -- _times -> 08:26:36
-  ["Insert current time with seconds"] = {
-    prefix = "_times",
+  -- S -> 09:39:35
+  {
+    desc = "Insert current time with seconds",
+    prefix = "S",
     body = "$CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
   },
-  -- _unix -> 1735892819
-  ["Insert UNIX timestamp"] = {
-    prefix = "_unix",
+  -- U -> 1789033239
+  {
+    desc = "Insert current unix timestamp",
+    prefix = "U",
     body = "$CURRENT_SECONDS_UNIX",
   },
-  -- _rnd -> 281205
-  ["Insert random number"] = {
-    prefix = "_rnd",
+  -- R -> 791011
+  {
+    desc = "Insert random number",
+    prefix = "R",
     body = "$RANDOM",
   },
-  -- _rndh -> f6ad74
-  ["Insert randon HEX number"] = {
-    prefix = "_rndh",
+  -- H -> c2fbee
+  {
+    desc = "Insert random hex number",
+    prefix = "H",
     body = "$RANDOM_HEX",
   },
-  -- _uuid -> ececde38-86a4-43e7-9a82-a6b36719a906
-  ["Insert random UUID"] = {
-    prefix = "_uuid",
-    body = "$UUID",
-  },
   -- #T -> -- TODO(9seconds): Comment
-  ["TODO comment"] = {
+  {
+    desc = "TODO comment",
     prefix = "#T",
     body = "$LINE_COMMENT TODO($GIT_USERNAME): ",
   },
   -- #F -> -- FIXME(9seconds): Comment
-  ["FIXME comment"] = {
+  {
+    desc = "FIXME comment",
     prefix = "#F",
     body = "$LINE_COMMENT FIXME($GIT_USERNAME): ",
   },
   -- #! -> #!/usr/bin/env hello
-  ["Shebang comment"] = {
+  {
+    desc = "Shebang",
     prefix = "#!",
     body = "#!/${1:usr/bin/env }$0",
   },
