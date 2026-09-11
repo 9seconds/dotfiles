@@ -21,11 +21,11 @@ local mod = require("mini.snippets")
 mod.setup({
   expand = {
     insert = function (snippet)
-      local lookup = {}
-      for key, value in pairs(VARS) do
-        lookup[key] = value()
-      end
-      return mod.default_insert(snippet, { lookup = lookup })
+      return mod.default_insert(snippet, {
+        lookup = vim.tbl_map(function (value)
+          return value()
+        end, VARS),
+      })
     end,
   },
   snippets = {
