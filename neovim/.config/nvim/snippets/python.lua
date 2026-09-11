@@ -1,4 +1,4 @@
-return {
+local SYNTAX = {
   ["\"for\" loop"] = {
     prefix = "for",
     body = {
@@ -15,6 +15,16 @@ return {
       "while ${1:True}:",
       "\t${0:$TM_SELECTED_TEXT}",
     },
+  },
+  ["\"with\" statement"] = {
+    prefix = {
+      "w",
+      "with",
+    },
+    body = {
+      "with ${1:context}:",
+      "\t${0:$TM_SELECTED_TEXT}"
+    }
   },
   ["Function definition"] = {
     prefix = "fn",
@@ -90,3 +100,60 @@ return {
     body = "lambda ${1:item}: ${0:$1}",
   },
 }
+
+local UNITTEST = {
+  ["assertEqual"] = {
+    prefix = "ae",
+    body = "self.assertEqual(${1:expected}, ${2:actual})",
+  },
+  ["assertNotEqual"] = {
+    prefix = "ae_",
+    body = "self.assertNotEqual(${1:expected}, ${2:actual})",
+  },
+  ["assertTrue"] = {
+    prefix = "at",
+    body = "self.assertTrue($1)",
+  },
+  ["assertFalse"] = {
+    prefix = "at_",
+    body = "self.assertFalse($1)",
+  },
+  ["assertIs"] = {
+    prefix = "ais",
+    body = "self.assertIs($1)",
+  },
+  ["assertIsNot"] = {
+    prefix = "ais_",
+    body = "self.assertIsNot($1)",
+  },
+  ["assertIsNone"] = {
+    prefix = "ain",
+    body = "self.assertIsNone($1)",
+  },
+  ["assertIsNotNone"] = {
+    prefix = "ain_",
+    body = "self.assertIsNotNone($1)",
+  },
+  ["assertIn"] = {
+    prefix = "ai",
+    body = "self.assertIn(${1:needle}, ${2:haystack})",
+  },
+  ["assertNotIn"] = {
+    prefix = "ai_",
+    body = "self.assertNotIn(${1:needle}, ${2:haystack})",
+  },
+  ["assertIsInstance"] = {
+    prefix = "aii",
+    body = "self.assertIsInstance(${1:obj}, ${2:class})",
+  },
+  ["assertIsNotInstance"] = {
+    prefix = "aii_",
+    body = "self.assertIsNotInstance(${1:obj}, ${2:class})",
+  },
+}
+
+return vim.tbl_extend(
+  "error",
+  SYNTAX,
+  UNITTEST
+)
