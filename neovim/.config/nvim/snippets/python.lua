@@ -23,8 +23,8 @@ local SYNTAX = {
     },
     body = {
       "with ${1:context}:",
-      "\t${0:$TM_SELECTED_TEXT}"
-    }
+      "\t${0:$TM_SELECTED_TEXT}",
+    },
   },
   ["Function definition"] = {
     prefix = "fn",
@@ -34,7 +34,7 @@ local SYNTAX = {
     },
   },
   ["Method definition"] = {
-    prefix = "fnm",
+    prefix = "fnn",
     body = {
       "def ${1:function}(self${4:, $5})${2: -> ${3:None}:}",
       "\t$0",
@@ -66,13 +66,29 @@ local SYNTAX = {
   },
   ["insert breakpoint"] = {
     prefix = "b",
-    body = "breakpoint()",
+    body = {
+      "$LINE_COMMENT FIXME($GIT_USERNAME): Remove before merge",
+      "breakpoint()",
+    },
   },
   ["insert conditional breakpoint"] = {
     prefix = "bb",
     body = {
-      "if $1:",
-      "\tbreakpoint()$0",
+      "$LINE_COMMENT FIXME($GIT_USERNAME): Remove before merge",
+      "if $0:",
+      "\tbreakpoint()",
+    },
+  },
+  ["debug exception"] = {
+    prefix = "be",
+    body = {
+      "$LINE_COMMENT FIXME($GIT_USERNAME): Remove before merge",
+      "try:",
+      "\t${0:$TM_SELECTED_TEXT}",
+      "except Exception:",
+      "\timport sys",
+      "\te_type, exc, e_tb = sys.exc_info()",
+      "\tbreakpoint()",
     },
   },
   ["double underscores"] = {
@@ -152,8 +168,4 @@ local UNITTEST = {
   },
 }
 
-return vim.tbl_extend(
-  "error",
-  SYNTAX,
-  UNITTEST
-)
+return vim.tbl_extend("error", SYNTAX, UNITTEST)
