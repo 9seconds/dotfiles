@@ -7,6 +7,11 @@ local VARS = {
     local result = proc:wait(1000)
     return vim.trim(result.stdout or "")
   end,
+  GIT_EMAIL = function ()
+    local proc = vim.system({ "git", "config", "user.email" }, { text = true })
+    local result = proc:wait(1000)
+    return vim.trim(result.stdout or "")
+  end,
 }
 
 vim.pack.add({
@@ -21,10 +26,9 @@ local mod = require("mini.snippets")
 mod.setup({
   expand = {
     insert = function (snippet)
+      local vars = vim.tbl_extend("error", VARS, vim.g.nineseconds_mini_snippets or {})
       return mod.default_insert(snippet, {
-        lookup = vim.tbl_map(function (value)
-          return value()
-        end, VARS),
+        lookup = vim.tbl_map(function (value) return value() end, vars),
       })
     end,
   },

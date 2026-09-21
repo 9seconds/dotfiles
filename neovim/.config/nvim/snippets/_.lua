@@ -5,17 +5,30 @@ return {
     prefix = "N",
     body = "$GIT_USERNAME",
   },
-  -- Y -> 2026
+  -- M -> nineseconds@...com
+  {
+    desc = "Insert Git user email",
+    prefix = "M",
+    body = "$GIT_EMAIL",
+  },
+
+  -- D -> 2026
   {
     desc = "Insert current year",
-    prefix = "Y",
+    prefix = "D",
     body = "$CURRENT_YEAR",
   },
-  -- D -> 2026-09-10
+  -- DD -> 2026-09-10
   {
     desc = "Insert current date",
-    prefix = "D",
+    prefix = "DD",
     body = "$CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE",
+  },
+  -- DDD -> 2026-09-21T11:18:12
+  {
+    desc = "Insert current date as IOS8601 timestamp",
+    prefix = "DDD",
+    body = "$CURRENT_YEAR-$CURRENT_MONTH-${CURRENT_DATE}T$CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
   },
   -- T -> 09:39
   {
@@ -29,24 +42,32 @@ return {
     prefix = "S",
     body = "$CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
   },
-  -- U -> 1789033239
+  -- SS -> 1789033239
   {
     desc = "Insert current unix timestamp",
-    prefix = "U",
+    prefix = "SS",
     body = "$CURRENT_SECONDS_UNIX",
   },
+
   -- R -> 791011
   {
     desc = "Insert random number",
     prefix = "R",
     body = "$RANDOM",
   },
-  -- H -> c2fbee
+  -- RR -> c2fbee
   {
     desc = "Insert random hex number",
-    prefix = "H",
+    prefix = "RR",
     body = "$RANDOM_HEX",
   },
+  -- RRR -> 768a1f25-ff6d-45ba-8370-a4fb1e23a9fc
+  {
+    desc = "Insert random uuid",
+    prefix = "RRR",
+    body = "$UUID",
+  },
+
   -- #T -> -- TODO(9seconds): Comment
   {
     desc = "TODO comment",
