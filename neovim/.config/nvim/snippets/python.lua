@@ -1,31 +1,26 @@
-local SYNTAX = {
-  ["\"for\" loop"] = {
-    prefix = "for",
-    body = {
-      "for ${2:item} in ${1:items}:",
-      "\t${0:$TM_SELECTED_TEXT}",
-    },
+local ASSIGNMENTS = {
+  -- a: int
+  ["variable with type"] = {
+    prefix = "t",
+    body = "${0:var}: ${1:type}",
   },
-  ["\"while\" loop"] = {
-    prefix = {
-      "wh",
-      "while",
-    },
-    body = {
-      "while ${1:True}:",
-      "\t${0:$TM_SELECTED_TEXT}",
-    },
+  -- a = b
+  ["variable assignment"] = {
+    prefix = "v",
+    body = "${0:to} = ${1:from}",
   },
-  ["\"with\" statement"] = {
-    prefix = {
-      "w",
-      "with",
-    },
-    body = {
-      "with ${1:context}:",
-      "\t${0:$TM_SELECTED_TEXT}",
-    },
+  -- a = a or b
+  ["variable assignment with default"] = {
+    prefix = "vv",
+    body = "${0:${1:from}} = ${1:from} or ${2:default}",
   },
+}
+
+-------------------------------------------------------------------------------
+
+local FUNCTIONS = {
+  -- def something(a) -> int:
+  --   return a + 1
   ["Function definition"] = {
     prefix = "fn",
     body = {
@@ -33,6 +28,8 @@ local SYNTAX = {
       "\t$0",
     },
   },
+  -- def something(self, a) -> int:
+  --   return self.x + a + 1
   ["Method definition"] = {
     prefix = "fnn",
     body = {
@@ -40,6 +37,9 @@ local SYNTAX = {
       "\t$0",
     },
   },
+  -- @staticmethod
+  -- def something(a) -> int:
+  --   return a + 1
   ["Static method definition"] = {
     prefix = "fns",
     body = {
@@ -48,6 +48,9 @@ local SYNTAX = {
       "\t$0",
     },
   },
+  -- @classmethod
+  -- def something(cls, a) -> int:
+  --   return a + 1
   ["Class method definition"] = {
     prefix = "fnc",
     body = {
@@ -56,14 +59,31 @@ local SYNTAX = {
       "\t$0",
     },
   },
-  ["import statement"] = {
-    prefix = "im",
-    body = "import $0",
+  -- lambda x: x()
+  ["lambda function"] = {
+    prefix = "l",
+    body = "lambda ${1:item}: ${0:$1}",
   },
-  ["\"from ... import\" statement"] = {
-    prefix = "imm",
-    body = "from $1 import $0",
+}
+
+-------------------------------------------------------------------------------
+
+local COMPREHENSIONS = {
+  -- item() for item in items
+  ["comprehension"] = {
+    prefix = "c",
+    body = "${3:${2:item}} for $2 in ${1:items}$0",
   },
+  -- item() for item in items if item is not None
+  ["comprehension with conditional"] = {
+    prefix = "cc",
+    body = "${3:${2:item}} for $2 in ${1:items} if ${4:$3}",
+  },
+}
+
+-------------------------------------------------------------------------------
+
+local DEBUGGER = {
   ["insert breakpoint"] = {
     prefix = "b",
     body = {
@@ -91,6 +111,11 @@ local SYNTAX = {
       "\tbreakpoint()",
     },
   },
+}
+
+-------------------------------------------------------------------------------
+
+local SYMMETRY = {
   ["double underscores"] = {
     prefix = "_",
     body = "__${0}__",
@@ -103,19 +128,46 @@ local SYNTAX = {
     prefix = "3qq",
     body = "\"\"\"$0\"\"\"",
   },
-  ["comprehension"] = {
-    prefix = "c",
-    body = "${3:${2:item}} for $2 in ${1:items}$0",
+}
+
+-------------------------------------------------------------------------------
+
+local SYNTAX = {
+  ["\"for\" loop"] = {
+    prefix = "for",
+    body = {
+      "for ${2:item} in ${1:items}:",
+      "\t${0:$TM_SELECTED_TEXT}",
+    },
   },
-  ["comprehension with conditional"] = {
-    prefix = "cc",
-    body = "${3:${2:item}} for $2 in ${1:items} if ${4:$3}",
+  ["\"while\" loop"] = {
+    prefix = {
+      "wh",
+      "while",
+    },
+    body = {
+      "while ${1:True}:",
+      "\t${0:$TM_SELECTED_TEXT}",
+    },
   },
-  ["lambda function"] = {
-    prefix = "l",
-    body = "lambda ${1:item}: ${0:$1}",
+  ["\"with\" statement"] = {
+    prefix = "with",
+    body = {
+      "with ${1:context}:",
+      "\t${0:$TM_SELECTED_TEXT}",
+    },
+  },
+  ["import statement"] = {
+    prefix = "im",
+    body = "import $0",
+  },
+  ["\"from ... import\" statement"] = {
+    prefix = "imm",
+    body = "from $1 import $0",
   },
 }
+
+-------------------------------------------------------------------------------
 
 local UNITTEST = {
   ["assertEqual"] = {
@@ -168,4 +220,16 @@ local UNITTEST = {
   },
 }
 
-return vim.tbl_extend("error", SYNTAX, UNITTEST)
+-------------------------------------------------------------------------------
+
+local RV = {}
+
+RV = vim.tbl_extend("error", RV, ASSIGNMENTS)
+RV = vim.tbl_extend("error", RV, FUNCTIONS)
+RV = vim.tbl_extend("error", RV, COMPREHENSIONS)
+RV = vim.tbl_extend("error", RV, DEBUGGER)
+RV = vim.tbl_extend("error", RV, SYMMETRY)
+RV = vim.tbl_extend("error", RV, SYNTAX)
+RV = vim.tbl_extend("error", RV, UNITTEST)
+
+return RV

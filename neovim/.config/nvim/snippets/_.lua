@@ -1,89 +1,93 @@
-return {
+local TIME = {
   -- N -> 9seconds
-  {
-    desc = "Insert Git username",
+  ["git username"] = {
     prefix = "N",
     body = "$GIT_USERNAME",
   },
   -- M -> nineseconds@...com
-  {
-    desc = "Insert Git user email",
+  ["git user email"] = {
     prefix = "M",
     body = "$GIT_EMAIL",
   },
 
   -- D -> 2026
-  {
-    desc = "Insert current year",
+  ["current year"] = {
     prefix = "D",
     body = "$CURRENT_YEAR",
   },
   -- DD -> 2026-09-10
-  {
-    desc = "Insert current date",
+  ["current date"] = {
     prefix = "DD",
     body = "$CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE",
   },
   -- DDD -> 2026-09-21T11:18:12
-  {
-    desc = "Insert current date as IOS8601 timestamp",
+  ["iso8601 timestamp"] = {
     prefix = "DDD",
     body = "$CURRENT_YEAR-$CURRENT_MONTH-${CURRENT_DATE}T$CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
   },
   -- T -> 09:39
-  {
-    desc = "Insert current time",
+  ["current time"] = {
     prefix = "T",
     body = "$CURRENT_HOUR:$CURRENT_MINUTE",
   },
-  -- S -> 09:39:35
-  {
-    desc = "Insert current time with seconds",
-    prefix = "S",
+  -- TT -> 09:39:35
+  ["current time with seconds"] = {
+    prefix = "TT",
     body = "$CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
   },
-  -- SS -> 1789033239
-  {
-    desc = "Insert current unix timestamp",
-    prefix = "SS",
+  -- TTT -> 1789033239
+  ["current unix timestamp"] = {
+    prefix = "TTT",
     body = "$CURRENT_SECONDS_UNIX",
   },
+}
 
+-------------------------------------------------------------------------------
+
+local RANDOM = {
   -- R -> 791011
-  {
-    desc = "Insert random number",
+  ["random number"] = {
     prefix = "R",
     body = "$RANDOM",
   },
   -- RR -> c2fbee
-  {
-    desc = "Insert random hex number",
+  ["random hex number"] = {
     prefix = "RR",
     body = "$RANDOM_HEX",
   },
   -- RRR -> 768a1f25-ff6d-45ba-8370-a4fb1e23a9fc
-  {
-    desc = "Insert random uuid",
+  ["random uuid"] = {
     prefix = "RRR",
     body = "$UUID",
   },
+}
 
+-------------------------------------------------------------------------------
+
+local COMMENT = {
   -- #T -> -- TODO(9seconds): Comment
-  {
-    desc = "TODO comment",
+  ["TODO comment"] = {
     prefix = "#T",
     body = "$LINE_COMMENT TODO($GIT_USERNAME): ",
   },
   -- #F -> -- FIXME(9seconds): Comment
-  {
-    desc = "FIXME comment",
+  ["FIXME comment"] = {
     prefix = "#F",
     body = "$LINE_COMMENT FIXME($GIT_USERNAME): ",
   },
   -- #! -> #!/usr/bin/env hello
-  {
-    desc = "Shebang",
+  ["shebang"] = {
     prefix = "#!",
     body = "#!/${1:usr/bin/env }$0",
   },
 }
+
+-------------------------------------------------------------------------------
+
+local RV = {}
+
+RV = vim.tbl_extend("error", RV, TIME)
+RV = vim.tbl_extend("error", RV, RANDOM)
+RV = vim.tbl_extend("error", RV, COMMENT)
+
+return RV
