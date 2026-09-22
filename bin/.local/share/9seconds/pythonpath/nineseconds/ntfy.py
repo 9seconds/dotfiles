@@ -44,7 +44,6 @@ if t.TYPE_CHECKING:
 
 LOG: t.Final = logging.getLogger(__name__)
 
-DEFAULT_SERVER: t.Final = "http://ntfy.sh"
 DEFAULT_PRIORITY: t.Final[int] = 3
 PATH_MACHINE_ID: t.Final = pathlib.Path("/etc/machine-id")
 
@@ -60,9 +59,9 @@ class Ntfy:
         topic: str | None,
         user: str | None,
     ) -> None:
-        self._server = server or DEFAULT_SERVER
-        self._topic = topic or get_default_topic()
+        self._server = server or ""
         self._user = user or ""
+        self._topic = topic or get_default_topic()
 
     def send(  # noqa: PLR0913
         self,
@@ -74,6 +73,10 @@ class Ntfy:
         actions: list[dict[str, t.Any]] | None = None,
         sequence_id: str = "",
     ) -> str:
+        if not self._server:
+            LOG.info("No NTFY server is defined, skip")
+            return ""
+
         req = net.Request(self._server)
         req = req.header("accept", "application/json")
         if sequence_id:
@@ -156,7 +159,7 @@ def add_parser_options(parser: argparse.ArgumentParser) -> None:
         **cli.env_argument(
             "ntfy server url",
             "NTFY_SERVER",
-            lambda: DEFAULT_SERVER,
+            lambda: None,
         ),
     )
     parser.add_argument(
