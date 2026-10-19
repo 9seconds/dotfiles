@@ -1,7 +1,6 @@
 [tools]
 # Base tools
 "github:jdx/usage" = "latest"
-poetry = "latest"
 tmux = "latest"
 python = "latest"
 
