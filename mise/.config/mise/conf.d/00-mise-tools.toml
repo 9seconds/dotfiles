@@ -10,6 +10,7 @@ python = "latest"
 "github:binwiederhier/ntfy" = "latest"
 "github:jqlang/jq" = "latest"
 "github:sharkdp/fd" = "latest"
+"github:9seconds/shebang" = "2026.10.19"
 
 # LSP
 "npm:bash-language-server" = "latest"
