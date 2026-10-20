@@ -8,4 +8,7 @@ vim.pack.add({
   },
 })
 
-require("mini.icons").setup({})
+local mod = require("mini.icons")
+
+mod.setup({})
+mod.mock_nvim_web_devicons()
