@@ -163,7 +163,7 @@ vim.keymap.set(
 vim.keymap.set(
   { "n", "x", "o" }, "<A-a>",
   function ()
-    require("snacks").zen.zoom()
+    mod.zen.zoom()
   end,
   {
     desc = "Snacks: Zoom",
@@ -173,7 +173,7 @@ vim.keymap.set(
 vim.keymap.set(
   "n", PREFIX .. "g",
   function ()
-    require("snacks").lazygit()
+    mod.lazygit()
   end,
   {
     desc = "Snacks: LazyGit",
@@ -183,7 +183,7 @@ vim.keymap.set(
 vim.keymap.set(
   "n", PREFIX .. "o",
   function ()
-    require("snacks").scratch.open({
+    mod.scratch.open({
       win = {
         height = math.floor(vim.o.lines * 0.6),
         width = math.floor(vim.o.columns * 0.8),
@@ -197,7 +197,7 @@ vim.keymap.set(
 vim.keymap.set(
   "n", PREFIX .. "l",
   function ()
-    require("snacks").scratch.select()
+    mod.scratch.select()
   end,
   {
     desc = "Snacks: list scratches",
@@ -209,7 +209,7 @@ vim.api.nvim_create_autocmd("User", {
   pattern = "OilActionsPost",
   callback = function (evt)
     if evt.data.actions.type == "move" then
-      require("snacks").rename.on_rename_file(evt.data.actions.src_url, evt.data.actions.dest_url)
+      mod.rename.on_rename_file(evt.data.actions.src_url, evt.data.actions.dest_url)
     end
   end,
 })
