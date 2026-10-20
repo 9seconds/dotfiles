@@ -38,6 +38,6 @@ keymap("q", "Toggle quickfix", function ()
   require("quicker").toggle()
 end)
 
-keymap("q", "Toggle loclist", function ()
+keymap("l", "Toggle loclist", function ()
   require("quicker").toggle({ loclist = true })
 end)
