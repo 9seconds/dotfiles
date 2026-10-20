@@ -195,7 +195,7 @@ vim.keymap.set(
   }
 )
 vim.keymap.set(
-  "n", PREFIX .. "",
+  "n", PREFIX .. "l",
   function ()
     require("snacks").scratch.select()
   end,
