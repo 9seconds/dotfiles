@@ -13,7 +13,7 @@ vim.pack.add({
 })
 
 require("cendre").setup({
-  background = "medium",
+  background = "soft",
 })
 
 vim.cmd("colorscheme cendre")
