@@ -160,7 +160,6 @@ vim.keymap.set(
     desc = "Snacks: Zoom",
   }
 )
-
 vim.keymap.set(
   { "n", "x", "o" }, "<A-a>",
   function ()
@@ -170,6 +169,7 @@ vim.keymap.set(
     desc = "Snacks: Zoom",
   }
 )
+
 vim.keymap.set(
   "n", PREFIX .. "g",
   function ()
@@ -177,6 +177,30 @@ vim.keymap.set(
   end,
   {
     desc = "Snacks: LazyGit",
+  }
+)
+
+vim.keymap.set(
+  "n", PREFIX .. "o",
+  function ()
+    require("snacks").scratch.open({
+      win = {
+        height = math.floor(vim.o.lines * 0.6),
+        width = math.floor(vim.o.columns * 0.8),
+      },
+    })
+  end,
+  {
+    desc = "Snacks: Open scratch",
+  }
+)
+vim.keymap.set(
+  "n", PREFIX .. "",
+  function ()
+    require("snacks").scratch.select()
+  end,
+  {
+    desc = "Snacks: list scratches",
   }
 )
 
