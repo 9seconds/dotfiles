@@ -1,84 +1,233 @@
 {
   "$schema": "https://opencode.ai/theme.json",
-  "defs": {
-    "bg": "#1d1917",
-    "bgFloat": "#141110",
-    "bgElevated": "#26211f",
-    "bgCursorline": "#26211f",
-    "bgSelection": "#36241d",
-    "border": "#3d3633",
-    "fg": "#e6d5c2",
-    "fgDim": "#a09384",
-    "fgComment": "#73665b",
-    "fgGutter": "#4e4641",
-    "cinder": "#d1766e",
-    "ember": "#ea9875",
-    "brass": "#fcba81",
-    "sap": "#99af6b",
-    "frost": "#4e89a2",
-    "error": "#d25780",
-    "warning": "#f4a21c",
-    "success": "#43b16a",
-    "info": "#58bdff",
-    "hint": "#20c9cb",
-    "gitAdd": "#43b16a",
-    "gitDelete": "#d25780",
-    "gitChange": "#58bdff",
-    "bgAdd": "#262c1b",
-    "bgDel": "#372321"
+  "base": {
+    "categorical": [
+      "cyan",
+      "orange",
+      "green",
+      "red",
+      "blue"
+    ],
+    "text": {
+      "base": "$hue.neutral.200",
+      "muted": "$hue.neutral.400",
+      "action": {
+        "primary": {
+          "base": "$text.base",
+          "$disabled": "$hue.neutral.400",
+          "$focused": "$hue.neutral.800",
+          "$selected": "$hue.interactive.200"
+        },
+        "secondary": {
+          "base": "$text.muted",
+          "$hovered": "$text.base"
+        },
+        "destructive": {
+          "base": "$hue.neutral.800",
+          "$disabled": "$hue.neutral.400"
+        }
+      },
+      "formfield": {
+        "base": "$hue.neutral.200",
+        "$hovered": "$hue.interactive.200",
+        "$focused": "$hue.interactive.200",
+        "$pressed": "$hue.interactive.200",
+        "$disabled": "$hue.neutral.400",
+        "$selected": "$hue.interactive.200"
+      },
+      "feedback": {
+        "error": {
+          "base": "$hue.red.200"
+        },
+        "warning": {
+          "base": "#f4a21c"
+        },
+        "success": {
+          "base": "$hue.green.200"
+        },
+        "info": {
+          "base": "$hue.blue.200"
+        }
+      }
+    },
+    "background": {
+      "base": "$hue.neutral.800",
+      "raised": {
+        "base": "$hue.neutral.700",
+        "high": "$hue.neutral.600",
+        "max": "$hue.neutral.500"
+      },
+      "action": {
+        "primary": {
+          "base": "transparent",
+          "$hovered": "$hue.neutral.700",
+          "$focused": "$hue.interactive.200",
+          "$selected": "transparent"
+        },
+        "secondary": {
+          "base": "transparent"
+        },
+        "destructive": {
+          "base": "$hue.red.200"
+        }
+      },
+      "formfield": {
+        "base": "$background.base"
+      },
+      "feedback": {
+        "error": {
+          "base": "$background.base"
+        },
+        "warning": {
+          "base": "$background.base"
+        },
+        "success": {
+          "base": "$background.base"
+        },
+        "info": {
+          "base": "$background.base"
+        }
+      }
+    },
+    "border": {
+      "base": "#3d3633"
+    },
+    "scrollbar": {
+      "base": "$hue.interactive.200"
+    },
+    "diff": {
+      "text": {
+        "added": "$hue.green.200",
+        "removed": "$hue.red.200",
+        "context": "$hue.neutral.400",
+        "hunkHeader": "#73665b"
+      },
+      "background": {
+        "added": "#262c1b",
+        "removed": "#372321",
+        "context": "$hue.neutral.800"
+      },
+      "highlight": {
+        "added": "$hue.green.200",
+        "removed": "$hue.red.200"
+      },
+      "lineNumber": {
+        "text": "#4e4641",
+        "background": {
+          "added": "#262c1b",
+          "removed": "#372321"
+        }
+      }
+    },
+    "syntax": {
+      "comment": "#73665b",
+      "keyword": "#d1766e",
+      "function": "#fcba81",
+      "variable": "$hue.neutral.200",
+      "string": "#99af6b",
+      "number": "#99af6b",
+      "type": "$hue.cyan.200",
+      "operator": "$hue.neutral.400",
+      "punctuation": "$hue.neutral.400"
+    },
+    "markdown": {
+      "text": "$hue.neutral.200",
+      "heading": "$hue.interactive.200",
+      "link": "$hue.cyan.200",
+      "linkText": "$hue.cyan.200",
+      "code": "#99af6b",
+      "blockQuote": "#73665b",
+      "emphasis": "$hue.interactive.200",
+      "strong": "#fcba81",
+      "horizontalRule": "#3d3633",
+      "listItem": "$hue.interactive.200",
+      "listEnumeration": "$hue.interactive.200",
+      "image": "$hue.cyan.200",
+      "imageText": "$hue.cyan.200",
+      "codeBlock": "#99af6b"
+    },
+    "@dialog": {
+      "background": {
+        "base": "$background.raised.base",
+        "action": {
+          "primary": {
+            "$hovered": "$background.raised.high"
+          }
+        }
+      }
+    }
   },
-  "theme": {
-    "primary": "ember",
-    "secondary": "frost",
-    "accent": "brass",
-    "text": "fg",
-    "textMuted": "fgDim",
-    "background": "bg",
-    "backgroundPanel": "bgFloat",
-    "backgroundElement": "bgElevated",
-    "selectedListItemText": "bg",
-    "backgroundMenu": "bgFloat",
-    "border": "border",
-    "borderActive": "ember",
-    "borderSubtle": "border",
-    "error": "error",
-    "warning": "warning",
-    "success": "success",
-    "info": "info",
-    "diffAdded": "gitAdd",
-    "diffRemoved": "gitDelete",
-    "diffContext": "fgDim",
-    "diffHunkHeader": "fgComment",
-    "diffHighlightAdded": "success",
-    "diffHighlightRemoved": "error",
-    "diffAddedBg": "bgAdd",
-    "diffRemovedBg": "bgDel",
-    "diffContextBg": "bg",
-    "diffLineNumber": "fgGutter",
-    "diffAddedLineNumberBg": "bgAdd",
-    "diffRemovedLineNumberBg": "bgDel",
-    "markdownText": "fg",
-    "markdownHeading": "ember",
-    "markdownLink": "frost",
-    "markdownLinkText": "frost",
-    "markdownCode": "sap",
-    "markdownBlockQuote": "fgComment",
-    "markdownEmph": "ember",
-    "markdownStrong": "brass",
-    "markdownHorizontalRule": "border",
-    "markdownListItem": "ember",
-    "markdownListEnumeration": "ember",
-    "markdownImage": "frost",
-    "markdownImageText": "frost",
-    "markdownCodeBlock": "sap",
-    "syntaxComment": "fgComment",
-    "syntaxKeyword": "cinder",
-    "syntaxFunction": "brass",
-    "syntaxVariable": "fg",
-    "syntaxString": "sap",
-    "syntaxNumber": "sap",
-    "syntaxType": "frost",
-    "syntaxOperator": "fgDim",
-    "syntaxPunctuation": "fgDim"
+  "dark": {
+    "hue": {
+      "gray": {
+        "100": "#fffaf5",
+        "200": "#e6d5c2",
+        "300": "#c2b3a2",
+        "400": "#a09384",
+        "500": "#60564f",
+        "600": "#26211f",
+        "700": "#141110",
+        "800": "#1d1917",
+        "900": "#26211e"
+      },
+      "red": {
+        "100": "#ed6693",
+        "200": "#d25780",
+        "300": "#b8486e",
+        "400": "#9e3a5c",
+        "500": "#852c4b",
+        "600": "#6d1e3b",
+        "700": "#56112b",
+        "800": "#40041d",
+        "900": "#28000f"
+      },
+      "orange": {
+        "100": "#ffb697",
+        "200": "#ea9875",
+        "300": "#cb8161",
+        "400": "#ac6a4e",
+        "500": "#8f543b",
+        "600": "#723f29",
+        "700": "#572b18",
+        "800": "#3d1908",
+        "900": "#230801"
+      },
+      "green": {
+        "100": "#53ca7c",
+        "200": "#43b16a",
+        "300": "#339959",
+        "400": "#248248",
+        "500": "#136b38",
+        "600": "#11542c",
+        "700": "#013f1d",
+        "800": "#042a13",
+        "900": "#021708"
+      },
+      "cyan": {
+        "100": "#5c9cb7",
+        "200": "#4e89a2",
+        "300": "#41778d",
+        "400": "#346579",
+        "500": "#275365",
+        "600": "#1b4252",
+        "700": "#0f3240",
+        "800": "#05232e",
+        "900": "#01141d"
+      },
+      "blue": {
+        "100": "#a1d5fb",
+        "200": "#58bdff",
+        "300": "#45a2dd",
+        "400": "#3287bd",
+        "500": "#1f6e9d",
+        "600": "#09567f",
+        "700": "#043e5e",
+        "800": "#04283d",
+        "900": "#011321"
+      },
+      "accent": "$hue.orange",
+      "interactive": "$hue.orange",
+      "neutral": "$hue.gray"
+    }
   }
 }

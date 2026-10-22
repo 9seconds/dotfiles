@@ -1,5 +1,5 @@
 [tools]
-"github:anomalyco/opencode" = "latest"
+opencode = "latest"
 "github:boyter/cs" = "latest"
 "github:github/github-mcp-server" = "latest"
 "npm:@upstash/context7-mcp" = "latest"

@@ -1,96 +1,99 @@
 {
   "$schema": "https://opencode.ai/config.json",
 
-  "enabled_providers": ["github-copilot", "mistral"],
+  "policies": [
+    { "action": "provider.use", "resource": "*", "effect": "deny" },
+    { "action": "provider.use", "resource": "github-copilot", "effect": "allow" },
+    { "action": "provider.use", "resource": "mistral", "effect": "allow" }
+  ],
 
-  "autoupdate": false,
+  "update": "disable",
   "compaction": {
     "auto": true,
-    "prune": true,
-    "reserved": 50000
+    "buffer": 50000
   },
 
-  "permission": {
-    "read": "allow",
-    "grep": "allow",
-    "task": "allow",
-    "lsp": "allow",
-    "webfetch": "allow",
-    "edit": "ask",
-    "bash": {
-      "*": "ask",
-      "bash -n *": "allow",
-      "col *": "allow",
-      "diff *": "allow",
-      "docker image inspect *": "allow",
-      "docker image ls *": "allow",
-      "docker logs *": "allow",
-      "docker ps *": "allow",
-      "find *": "allow",
-      "git blame *": "allow",
-      "git diff *": "allow",
-      "git grep *": "allow",
-      "git log *": "allow",
-      "git ls-files *": "allow",
-      "git ls-tree *": "allow",
-      "git merge-base *": "allow",
-      "git merge-base *": "allow",
-      "git rev-parse *": "allow",
-      "git show *": "allow",
-      "git status *": "allow",
-      "grep *": "allow",
-      "head *": "allow",
-      "jq *": "allow",
-      "man *": "allow",
-      "nl *": "allow",
-      "printf *": "allow",
-      "pyrefly check *": "allow",
-      "python -m py_compile *": "allow",
-      "python -m unittest *": "allow",
-      "python3 -m py_compile *": "allow",
-      "python3 -m unittest *": "allow",
-      "rg *": "allow",
-      "ruff check *": "allow",
-      "shift *": "allow",
-      "sleep *": "allow",
-      "sort *": "allow",
-      "stat *": "allow",
-      "systemctl cat *": "allow",
-      "systemctl list-*": "allow",
-      "systemctl show *": "allow",
-      "true *": "allow",
-      "uniq *": "allow",
-      "docker top *": "allow",
-      "getfacl *": "allow",
-      "ls *": "allow",
-      "tr *": "allow",
-      "wc *": "allow"
-    }
-  },
+  "permissions": [
+    { "action": "read", "resource": "*", "effect": "allow" },
+    { "action": "grep", "resource": "*", "effect": "allow" },
+    { "action": "subagent", "resource": "*", "effect": "allow" },
+    { "action": "lsp", "resource": "*", "effect": "allow" },
+    { "action": "webfetch", "resource": "*", "effect": "allow" },
+    { "action": "edit", "resource": "*", "effect": "ask" },
+    { "action": "external_directory", "resource": "*", "effect": "ask" },
+    { "action": "shell", "resource": "*", "effect": "ask" },
+    { "action": "shell", "resource": "bash -n *", "effect": "allow" },
+    { "action": "shell", "resource": "col *", "effect": "allow" },
+    { "action": "shell", "resource": "diff *", "effect": "allow" },
+    { "action": "shell", "resource": "docker image inspect *", "effect": "allow" },
+    { "action": "shell", "resource": "docker image ls *", "effect": "allow" },
+    { "action": "shell", "resource": "docker logs *", "effect": "allow" },
+    { "action": "shell", "resource": "docker ps *", "effect": "allow" },
+    { "action": "shell", "resource": "find *", "effect": "allow" },
+    { "action": "shell", "resource": "git blame *", "effect": "allow" },
+    { "action": "shell", "resource": "git diff *", "effect": "allow" },
+    { "action": "shell", "resource": "git grep *", "effect": "allow" },
+    { "action": "shell", "resource": "git log *", "effect": "allow" },
+    { "action": "shell", "resource": "git ls-files *", "effect": "allow" },
+    { "action": "shell", "resource": "git ls-tree *", "effect": "allow" },
+    { "action": "shell", "resource": "git merge-base *", "effect": "allow" },
+    { "action": "shell", "resource": "git rev-parse *", "effect": "allow" },
+    { "action": "shell", "resource": "git show *", "effect": "allow" },
+    { "action": "shell", "resource": "git status *", "effect": "allow" },
+    { "action": "shell", "resource": "grep *", "effect": "allow" },
+    { "action": "shell", "resource": "head *", "effect": "allow" },
+    { "action": "shell", "resource": "jq *", "effect": "allow" },
+    { "action": "shell", "resource": "man *", "effect": "allow" },
+    { "action": "shell", "resource": "nl *", "effect": "allow" },
+    { "action": "shell", "resource": "printf *", "effect": "allow" },
+    { "action": "shell", "resource": "pyrefly check *", "effect": "allow" },
+    { "action": "shell", "resource": "python -m py_compile *", "effect": "allow" },
+    { "action": "shell", "resource": "python -m unittest *", "effect": "allow" },
+    { "action": "shell", "resource": "python3 -m py_compile *", "effect": "allow" },
+    { "action": "shell", "resource": "python3 -m unittest *", "effect": "allow" },
+    { "action": "shell", "resource": "rg *", "effect": "allow" },
+    { "action": "shell", "resource": "ruff check *", "effect": "allow" },
+    { "action": "shell", "resource": "shift *", "effect": "allow" },
+    { "action": "shell", "resource": "sleep *", "effect": "allow" },
+    { "action": "shell", "resource": "sort *", "effect": "allow" },
+    { "action": "shell", "resource": "stat *", "effect": "allow" },
+    { "action": "shell", "resource": "systemctl cat *", "effect": "allow" },
+    { "action": "shell", "resource": "systemctl list-*", "effect": "allow" },
+    { "action": "shell", "resource": "systemctl show *", "effect": "allow" },
+    { "action": "shell", "resource": "true *", "effect": "allow" },
+    { "action": "shell", "resource": "uniq *", "effect": "allow" },
+    { "action": "shell", "resource": "docker top *", "effect": "allow" },
+    { "action": "shell", "resource": "getfacl *", "effect": "allow" },
+    { "action": "shell", "resource": "ls *", "effect": "allow" },
+    { "action": "shell", "resource": "tr *", "effect": "allow" },
+    { "action": "shell", "resource": "wc *", "effect": "allow" }
+  ],
 
   "mcp": {
-    "cs": {
-      "command": ["cs", "--find-root", "--mcp"],
-      "type": "local",
-      "enabled": true
-    },
+    "servers": {
+      "cs": {
+        "command": ["cs", "--find-root", "--mcp"],
+        "type": "local",
+        "disabled": false
+      },
 
-    "context7": {
-      "command": ["context7-mcp"],
-      "type": "local",
-      "enabled": true
-    },
+      "context7": {
+        "command": ["context7-mcp"],
+        "type": "local",
+        "disabled": false
+      },
 
-    "tavily": {
-      "command": ["tavily-mcp"],
-      "type": "local",
-      "enabled": true
-    },
+      "tavily": {
+        "command": ["tavily-mcp"],
+        "type": "local",
+        "disabled": false
+      },
 
-    "github": {
-      "command": ["github-mcp-server", "stdio", "--read-only"],
-      "type": "local",
-      "enabled": true
+      "github": {
+        "command": ["github-mcp-server", "stdio", "--read-only"],
+        "type": "local",
+        "disabled": false
+      }
     }
   },
 
