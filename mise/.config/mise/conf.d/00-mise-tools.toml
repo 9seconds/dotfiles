@@ -13,6 +13,7 @@ python = "latest"
 
 # LSP
 "npm:bash-language-server" = "latest"
+"github:tekumara/typos-lsp" = "latest"
 "github:docker/docker-language-server" = "latest"
 
 # Linters
