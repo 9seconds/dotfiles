@@ -39,7 +39,6 @@
     smf = submodule foreach --recursive
     sw = switch
 [merge]
-    tool = nvimdiff
     conflictstyle = diff3
 [merge "mergiraf"]
     name = mergiraf
