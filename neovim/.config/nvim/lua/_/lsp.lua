@@ -31,7 +31,7 @@ vim.api.nvim_create_autocmd("FileType", {
       "bash-language-server",
       "docker-language-server",
       "emmylua_ls",
-      "typos_lsp"
+      "typos_lsp",
     })
   end,
 })
