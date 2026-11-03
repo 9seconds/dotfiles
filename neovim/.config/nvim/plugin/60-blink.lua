@@ -4,10 +4,6 @@
 vim.pack.add({
   "https://github.com/xzbdmw/colorful-menu.nvim",
   {
-    src = "https://github.com/fang2hou/blink-copilot",
-    version = vim.version.range("*"),
-  },
-  {
     src = "https://github.com/Saghen/blink.cmp",
     version = vim.version.range("1.*"),
   },
@@ -51,15 +47,7 @@ require("blink.cmp").setup({
         enabled = false,
       },
     },
-    ghost_text = {
-      enabled = function ()
-        return vim.g.copilot_mode or false
-      end,
-    },
     menu = {
-      auto_show = function ()
-        return not vim.g.copilot_mode
-      end,
       draw = {
         -- see https://github.com/xzbdmw/colorful-menu.nvim
         columns = { { "kind_icon" }, { "label", "label_description", gap = 1 } },
@@ -96,9 +84,6 @@ require("blink.cmp").setup({
   },
   sources = {
     default = function ()
-      if vim.g.copilot_mode then
-        return { "copilot" }
-      end
       return { "lsp", "snippets", "path" }
     end,
     providers = {
@@ -106,12 +91,6 @@ require("blink.cmp").setup({
         opts = {
           use_label_description = true,
         },
-      },
-      copilot = {
-        name = "copilot",
-        module = "blink-copilot",
-        score_offset = 100,
-        async = true,
       },
     },
   },

@@ -13,10 +13,6 @@ local function is_blank_line()
   return line:find("^%s*$") ~= nil
 end
 
-local function is_copilot_active()
-  return package.loaded["blink.cmp"] and vim.g.copilot_mode
-end
-
 local function is_gitsigns_active()
   return package.loaded["gitsigns"] and not vim.wo.diff
 end
@@ -48,24 +44,12 @@ multi("i", "<Tab>", {
     end,
   },
   "minisnippets_next",
-  {
-    condition = is_copilot_active,
-    action = function ()
-      return require("blink.cmp").select_next() or false
-    end,
-  },
   "blink_next",
   "jump_after_tsnode",
   "jump_after_close",
 })
 multi("i", "<S-Tab>", {
   "minisnippets_prev",
-  {
-    condition = is_copilot_active,
-    action = function ()
-      return require("blink.cmp").select_prev() or false
-    end,
-  },
   "blink_prev",
   "jump_before_tsnode",
   "jump_before_open",
@@ -73,12 +57,6 @@ multi("i", "<S-Tab>", {
 
 -- integrate mini.pairs
 multi("i", "<CR>", {
-  {
-    condition = is_copilot_active,
-    action = function ()
-      return require("blink.cmp").accept() or false
-    end,
-  },
   "blink_accept",
   "minipairs_cr",
 })

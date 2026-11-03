@@ -120,36 +120,6 @@ mod.toggle({
   end,
 }):map(TOGGLE_PREFIX .. "s")
 
-mod.toggle({
-  id = "copilot",
-  name = "copilot completions",
-  get = function ()
-    return vim.g.copilot_mode or false
-  end,
-  set = function (state)
-    vim.g.copilot_mode = state
-    vim.api.nvim_exec_autocmds("User", {
-      pattern = "CopilotModeChanged",
-      data = state,
-    })
-  end,
-}):map(TOGGLE_PREFIX .. "c")
-
-mod.toggle({
-  id = "nes",
-  name = "copilot next edit suggestions",
-  get = function ()
-    return vim.g.copilot_nes_mode or false
-  end,
-  set = function (state)
-    vim.g.copilot_nes_mode = state
-    vim.api.nvim_exec_autocmds("User", {
-      pattern = "CopilotNesModeChanged",
-      data = state,
-    })
-  end,
-}):map(TOGGLE_PREFIX .. "n")
-
 mod.indent.enable()
 
 vim.keymap.set(
