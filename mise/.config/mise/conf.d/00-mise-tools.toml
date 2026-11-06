@@ -3,6 +3,7 @@
 "github:jdx/usage" = "latest"
 tmux = "latest"
 python = "latest"
+github-cli = "latest"
 
 # Unix
 "github:atanunq/viu" = "latest"
