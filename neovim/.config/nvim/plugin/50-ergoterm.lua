@@ -20,6 +20,10 @@ require("ergoterm").setup({
     persist_size = false,
     watch_files = true,
 
+    float_opts = {
+      title = "",
+    },
+
     on_start = function (term)
       vim.keymap.set("t", "<A-e>", "<Esc>", {
         buffer = term._state.bufnr,
@@ -56,7 +60,6 @@ local function setup(key, conf)
           buffer = state.bufnr,
           callback = function ()
             local opts = vim.wo[state.window]
-            opts.winbar = term.name
             opts.list = false
             opts.number = false
           end,
