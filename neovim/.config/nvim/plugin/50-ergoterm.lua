@@ -36,6 +36,8 @@ require("ergoterm").setup({
   },
 })
 
+-- ----------------------------------------------------------------------------
+
 local function setup(key, conf)
   local keybind = string.format("<C-%s>", key)
   local term = require("ergoterm"):new(vim.tbl_deep_extend("force", {
@@ -80,23 +82,6 @@ local function setup(key, conf)
 
   vim.keymap.set("n", keybind, function () term:toggle() end, { noremap = true, silent = true })
 end
-
-setup(",", {
-  name = "alpha",
-  layout = "right",
-})
-setup("/", {
-  name = "beta",
-  layout = "vertical",
-})
-setup(".", {
-  name = "ai",
-  layout = "right",
-  cmd = "opencode",
-  env = {
-    OPENCODE_CLI_CONFIG_CONTENT = '{"tabs":{"mode":"off"}}',
-  },
-})
 
 local function keymap(desc, mode, key, fn)
   vim.keymap.set(mode, "<leader>k" .. key, fn, {
@@ -187,3 +172,33 @@ keymap("Send 'this' to terminal", "x", "t", function ()
 
   term:send({ reference }, { trim = false, new_line = false })
 end)
+
+-- ----------------------------------------------------------------------------
+
+setup(",", {
+  name = "alpha",
+  layout = "right",
+})
+setup("/", {
+  name = "beta",
+  layout = "below",
+})
+
+if vim.fn.executable("opencode") == 1 then
+  setup(".", {
+    name = "ai",
+    layout = "right",
+    cmd = "opencode",
+    env = {
+      OPENCODE_CLI_CONFIG_CONTENT = '{"tabs":{"mode":"off"}}',
+    },
+  })
+end
+
+if vim.fn.executable("lazygit") == 1 then
+  setup("'", {
+    name = "git",
+    layout = "float",
+    cmd = "lazygit",
+  })
+end
