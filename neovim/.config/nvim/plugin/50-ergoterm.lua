@@ -31,6 +31,26 @@ require("ergoterm").setup({
         silent = true,
         desc = "Send Escape to terminal",
       })
+
+      local registers = {
+        ["+"] = "System clipboard",
+        ["*"] = "Selection clipboard",
+        ['"'] = "Default register",
+      }
+      for register, desc in pairs(registers) do
+        vim.keymap.set("t", "<A-p>" .. register, '<C-\\><C-o>"' .. register .. "p", {
+          buffer = term._state.bufnr,
+          silent = true,
+          desc = desc,
+        })
+      end
+
+      local buf = term._state.bufnr
+      local config = vim.b[buf].miniclue_config or {}
+      config.triggers = config.triggers or {}
+      table.insert(config.triggers, { mode = "t", keys = "<A-p>" })
+      vim.b[buf].miniclue_config = config
+      require("mini.clue").ensure_buf_triggers(buf)
     end,
 
     float_opts = {
