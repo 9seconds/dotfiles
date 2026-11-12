@@ -1,0 +1,158 @@
+#!/usr/bin/env python3
+# MIT License
+#
+# Copyright (c) 2026 Sergey Arkhipov
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+from __future__ import annotations
+
+import argparse
+import logging
+import pathlib
+import typing as t
+
+from nineseconds import cache
+from nineseconds import cli
+from nineseconds import env
+from nineseconds import modules
+
+
+LOG: t.Final = logging.getLogger(__name__)
+ENV_PREFIX: t.Final = f"{env.PREFIX}_MODULE"
+CACHE: t.Final = cache.Cache("module")
+
+
+@cli.main
+def main() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="9seconds symlinks modules.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+
+    parser.add_argument(
+        "-s",
+        "--source-dir",
+        type=cli.type_valid_dir,
+        **cli.env_argument(
+            "directory with modules",
+            f"{ENV_PREFIX}_SOURCE",
+            pathlib.Path().absolute,
+        ),
+    )
+    parser.add_argument(
+        "-t",
+        "--target-dir",
+        type=cli.type_valid_dir,
+        **cli.env_argument(
+            "directory with modules",
+            f"{ENV_PREFIX}_TARGET",
+            pathlib.Path.home().absolute,
+        ),
+    )
+
+    commands = parser.add_subparsers(title="Commands")
+
+    plug_cmd = commands.add_parser(
+        "plug",
+        description="Install a new module.",
+        help="install a module",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    plug_cmd.set_defaults(cmd=run_plug)
+
+    unplug_cmd = commands.add_parser(
+        "unplug",
+        description="Uninstall a module",
+        help="uninstall a module",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    unplug_cmd.set_defaults(cmd=run_unplug)
+
+    discover_cmd = commands.add_parser(
+        "discover",
+        description="Discover source links in target and update cache",
+        help="discover source links in target directory",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    discover_cmd.set_defaults(cmd=run_discover)
+
+    for cmd in plug_cmd, unplug_cmd:
+        cmd.add_argument("module", help="Name of the module")
+
+    return parser
+
+
+def run_plug(options: argparse.Namespace) -> None:
+    key = cache_key(options)
+    source_dir = options.source_dir / options.module
+
+    old_node = CACHE.get(key, modules.Node())
+    new_node = modules.collect(source_dir)
+    to_remove, to_add = old_node.diff(new_node)
+
+    remove = modules.NodeRemoveProcessor(options.target_dir, to_remove)
+    remove.process()
+
+    create = modules.NodeCreateProcessor(
+        source_dir,
+        options.target_dir,
+        to_add,
+    )
+    create.process()
+
+    CACHE[key] = new_node
+
+
+def run_unplug(options: argparse.Namespace) -> None:
+    key = cache_key(options)
+
+    node = CACHE.get(key)
+    if node is None:
+        node = modules.collect(options.source_dir / options.module)
+
+    proc = modules.NodeRemoveProcessor(options.target_dir, node.flattify())
+    proc.process()
+
+    CACHE.pop(key, None)
+
+
+def run_discover(options: argparse.Namespace) -> None:
+    discovered = modules.discover(options.source_dir, options.target_dir)
+
+    for path in options.source_dir.iterdir():
+        if path.is_dir() and not path.is_symlink():
+            CACHE.pop(cache_key(options, module=path.name), None)
+
+    for module, root in discovered.items():
+        CACHE[cache_key(options, module=module)] = root
+
+
+def cache_key(options: argparse.Namespace, *, module: str = "") -> str:
+    module = module or options.module
+    return cache.cache_key(
+        (
+            str(options.source_dir / module),
+            str(options.target_dir),
+        )
+    )
+
+
+if __name__ == "__main__":
+    main()
