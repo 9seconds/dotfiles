@@ -3,15 +3,21 @@ PYTHONPATH = "{{ config_root }}/bin/.local/share/9seconds/pythonpath"
 
 # -----------------------------------------------------------------------------
 
+[vars]
+dots_source = "{{ config_root | canonicalize | quote }}"
+dots_target = "{{ env.HOME | canonicalize | quote }}"
+
+# -----------------------------------------------------------------------------
+
 [tools]
-"pipx:pyrefly" = "latest"
+"github:sharkdp/fd" = "latest"
+"github:meta/pyrefly" = "latest"
 "github:astral-sh/ruff" = "latest"
 
 # -----------------------------------------------------------------------------
 
-[tasks."module:ensure"]
-description = "Mount module"
-alias = "m"
+[tasks."plug"]
+description = "Plug module"
 usage = '''
 arg "<module>" {
   double_dash optional
@@ -19,13 +25,12 @@ arg "<module>" {
 }
 '''
 wait_for = [
-  "module:integrate"
+  "discover"
 ]
-run = "./dots ensure $usage_module"
+run = "echo ./dots -s {{ vars.dots_source }} -t {{ vars.dots_target }} plug $usage_module"
 
-[tasks."module:drop"]
-description = "Drop module"
-alias = "d"
+[tasks."unplug"]
+description = "Plug module"
 usage = '''
 arg "<module>" {
   double_dash optional
@@ -33,14 +38,13 @@ arg "<module>" {
 }
 '''
 wait_for = [
-  "module:integrate"
+  "discover"
 ]
-run = "./dots drop $usage_module"
+run = "echo ./dots -s {{ vars.dots_source }} -t {{ vars.dots_target }} unplug $usage_module"
 
-[tasks."module:integrate"]
-description = "Reintegrate modules"
-alias = "r"
-run = "./dots integrate"
+[tasks."discover"]
+description = "Discover modules"
+run = "echo ./dots -s {{ vars.dots_source }} -t {{ vars.dots_target }} discover"
 
 [tasks.python]
 description = "Run Python tasks"

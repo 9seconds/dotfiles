@@ -1,173 +1,21 @@
-#!/usr/bin/env python3
-# MIT License
-#
-# Copyright (c) 2026 Sergey Arkhipov
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+#!/usr/bin/env bash
 
-from __future__ import annotations
+script=${BASH_SOURCE[0]}
+if [[ $script != */* ]]; then
+    # Bash can open a script by name from the current directory.
+    if [[ -f $script ]]; then
+        # Preserve that local file instead of looking for another one in PATH.
+        script=./$script
+    else
+        # No local file exists, so the name must have been found through PAToH
+        script=$(command -v "$script") || exit 1
+    fi
+fi
 
-import argparse
-import logging
-import os
-import pathlib
-import typing as t
+script=$(realpath "$script") || exit 1
+dir=$(dirname "$script")
 
-from nineseconds import cache
-from nineseconds import cli
-from nineseconds import env
-from nineseconds import symlinks
+PYTHONPATH=$dir/bin/.local/share/pythonpath${PYTHONPATH:+:$PYTHONPATH}
+export PYTHONPATH
 
-
-LOG: t.Final = logging.getLogger(__name__)
-CACHE: t.Final = cache.Cache("dots")
-
-
-@cli.main
-def main() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        description="9seconds manages dotfiles.",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
-
-    parser.add_argument(
-        "-s",
-        "--sources",
-        type=cli.type_valid_dir,
-        **cli.env_argument(
-            "root to the modules",
-            f"{env.PREFIX}_DOTS_SOURCE",
-            lambda: os.fspath(pathlib.Path(__file__).absolute().parent),
-        ),
-    )
-    parser.add_argument(
-        "-t",
-        "--target",
-        type=cli.type_valid_dir,
-        **cli.env_argument(
-            "target directory",
-            f"{env.PREFIX}_DOTS_TARGET",
-            lambda: os.fspath(pathlib.Path.home().absolute()),
-        ),
-    )
-
-    commands = parser.add_subparsers(title="Commands")
-
-    ensure_cmd = commands.add_parser(
-        "ensure",
-        aliases=["e", "i", "mount"],
-        description="Ensure module is installed.",
-        help="ensure module is installed",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
-    ensure_cmd.set_defaults(cmd=cmd_ensure)
-
-    drop_cmd = commands.add_parser(
-        "drop",
-        aliases=["d", "u", "unmount"],
-        description="Drop modules.",
-        help="drop modules",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
-    drop_cmd.set_defaults(cmd=cmd_drop)
-
-    integrate_cmd = commands.add_parser(
-        "integrate",
-        description="Integrate with existing symlinks",
-        help="integrate with existing symlinks",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
-    integrate_cmd.set_defaults(cmd=cmd_integrate)
-
-    for cmd in (ensure_cmd, drop_cmd):
-        cmd.add_argument(
-            "module", nargs=argparse.ONE_OR_MORE, help="module names"
-        )
-
-    return parser
-
-
-def cmd_ensure(options: argparse.Namespace) -> None:
-    for mod in get_module_paths(options):
-        symlinks.unmount(mod, options.target, cache_=CACHE)
-        symlinks.mount(mod, options.target, cache_=CACHE)
-
-
-def cmd_drop(options: argparse.Namespace) -> None:
-    for mod in get_module_paths(options):
-        symlinks.unmount(mod, options.target, cache_=CACHE)
-
-
-def cmd_integrate(options: argparse.Namespace) -> None:
-    all_symlinks = symlinks.collect(options.sources, options.target)
-    modules: dict[str, list[pathlib.Path]] = {
-        mod.name: []
-        for mod in options.sources.iterdir()
-        if not mod.name.startswith(".")
-        and options.sources.joinpath(mod).is_dir()
-    }
-
-    for target_filepath in all_symlinks:
-        LOG.info("Examine %s", target_filepath)
-
-        source_filepath = target_filepath.readlink()
-        LOG.info("  Source: %s", source_filepath)
-
-        if not source_filepath.exists():
-            LOG.info("    Does not exist")
-            continue
-
-        relative_source = source_filepath.relative_to(options.sources)
-        if not relative_source.parts:
-            LOG.info("  Has no potential modules")
-            continue
-
-        potential_mod = relative_source.parts[0]
-        LOG.info("  Potential module %s", potential_mod)
-
-        if potential_mod not in modules:
-            LOG.info("    Not in modules")
-            continue
-
-        rel_target = target_filepath.relative_to(options.target)
-        if rel_target != (rs := relative_source.relative_to(potential_mod)):
-            LOG.info("  %s != %s", rel_target, rs)
-            continue
-
-        if (mod := relative_source.parts[0]) in modules:
-            modules[mod].append(target_filepath)
-
-    for mod, paths in modules.items():
-        key = symlinks.cache_key(options.sources / mod, options.target)
-        paths.sort(reverse=True)
-        CACHE[key] = paths
-
-
-def get_module_paths(options: argparse.Namespace) -> list[pathlib.Path]:
-    modules = sorted({options.sources / mod for mod in options.module})
-
-    for mod in modules:
-        if not mod.is_dir():
-            raise ValueError(f"{mod} is not a module")
-
-    return modules
-
-
-if __name__ == "__main__":
-    main()
+exec "$dir/bin/.local/bin/9s-module" "$@"
