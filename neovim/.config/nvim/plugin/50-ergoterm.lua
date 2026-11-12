@@ -108,9 +108,6 @@ local function setup(key, conf)
           end,
         })
 
-        tset(keybind, function ()
-          toggle_terminal(term)
-        end)
         tset("<C-h>", "<cmd>wincmd h<cr>")
         tset("<C-j>", "<cmd>wincmd j<cr>")
         tset("<C-k>", "<cmd>wincmd k<cr>")
@@ -120,7 +117,7 @@ local function setup(key, conf)
     ))
 
   vim.keymap.set(
-    { "n", "i", "v" }, keybind, function () toggle_terminal(term) end,
+    { "n", "i", "v", "t" }, keybind, function () toggle_terminal(term) end,
     { noremap = true, silent = true }
   )
 end
