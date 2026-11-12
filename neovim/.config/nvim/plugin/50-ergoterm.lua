@@ -62,6 +62,22 @@ require("ergoterm").setup({
 
 -- ----------------------------------------------------------------------------
 
+local function toggle_terminal(term)
+  local others = require("ergoterm").filter(function (other)
+    return other ~= term and other:is_open()
+  end)
+
+  for _, other in ipairs(others) do
+    other:close()
+  end
+
+  if #others > 0 then
+    term:focus()
+  else
+    term:toggle()
+  end
+end
+
 local function setup(key, conf)
   local keybind = string.format("<C-%s>", key)
   local term = require("ergoterm"):new(vim.tbl_deep_extend("force", {
@@ -93,7 +109,7 @@ local function setup(key, conf)
         })
 
         tset(keybind, function ()
-          term:toggle()
+          toggle_terminal(term)
         end)
         tset("<C-h>", "<cmd>wincmd h<cr>")
         tset("<C-j>", "<cmd>wincmd j<cr>")
@@ -103,7 +119,10 @@ local function setup(key, conf)
     }, conf or {}
     ))
 
-  vim.keymap.set("n", keybind, function () term:toggle() end, { noremap = true, silent = true })
+  vim.keymap.set(
+    { "n", "i", "v" }, keybind, function () toggle_terminal(term) end,
+    { noremap = true, silent = true }
+  )
 end
 
 local function keymap(desc, mode, key, fn)
