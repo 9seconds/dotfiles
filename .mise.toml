@@ -27,7 +27,7 @@ arg "<module>" {
 wait_for = [
   "discover"
 ]
-run = "echo ./dots -s {{ vars.dots_source }} -t {{ vars.dots_target }} plug $usage_module"
+run = "./dots -s {{ vars.dots_source }} -t {{ vars.dots_target }} plug $usage_module"
 
 [tasks."unplug"]
 description = "Plug module"
@@ -40,11 +40,11 @@ arg "<module>" {
 wait_for = [
   "discover"
 ]
-run = "echo ./dots -s {{ vars.dots_source }} -t {{ vars.dots_target }} unplug $usage_module"
+run = "./dots -s {{ vars.dots_source }} -t {{ vars.dots_target }} unplug $usage_module"
 
 [tasks."discover"]
 description = "Discover modules"
-run = "echo ./dots -s {{ vars.dots_source }} -t {{ vars.dots_target }} discover"
+run = "./dots -s {{ vars.dots_source }} -t {{ vars.dots_target }} discover"
 
 [tasks.python]
 description = "Run Python tasks"

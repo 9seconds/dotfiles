@@ -1,4 +1,4 @@
 [tools]
 python = "latest"
-"pipx:pyrefly" = "latest"
+"github:meta/pyrefly" = "latest"
 "github:astral-sh/ruff" = "latest"
