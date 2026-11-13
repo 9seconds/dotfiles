@@ -98,6 +98,17 @@ keymap("Dotfiles", "T", function ()
   })
 end)
 
+keymap("Marks", "m", function()
+  return require("fzf-lua").marks()
+end)
+
+keymap("Global marks", "M", function()
+  return require("fzf-lua").marks({
+    marks = "^[A-Z]",
+    winopts = { title = "Global marks" },
+  })
+end)
+
 keymap("Buffers", "b", function ()
   return require("fzf-lua").buffers({})
 end)
