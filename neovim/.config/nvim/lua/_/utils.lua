@@ -20,30 +20,4 @@ function M.set_indent(length, obj)
   obj.shiftwidth = length
 end
 
-function M.get_buf_file_size(bufnr)
-  bufnr = bufnr or 0
-
-  local buf_name = vim.api.nvim_buf_get_name(bufnr)
-  if not buf_name then
-    return 0
-  end
-
-  local stat = vim.loop.fs_stat(buf_name, nil)
-  if not stat then
-    return 0
-  end
-
-  return stat.size
-end
-
-function M.refresh_statusline()
-  local lualine = package.loaded["lualine"]
-
-  if lualine then
-    lualine.refresh({
-      place = { "statusline" },
-    })
-  end
-end
-
 return M
