@@ -23,9 +23,11 @@ local opts = {
   grep = {
     rg_glob = true,
   },
-  keymap = {
-    fzf = {
-      ["ctrl-q"] = "select-all+accept",
+  actions = {
+    files = {
+      true,
+      ["ctrl-q"] = { fn = mod.actions.file_sel_to_qf, prefix = "select-all" },
+      ["ctrl-l"] = { fn = mod.actions.file_sel_to_ll, prefix = "select-all" },
     },
   },
 }
