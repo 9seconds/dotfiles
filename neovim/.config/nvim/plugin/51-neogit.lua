@@ -5,21 +5,15 @@ vim.pack.add({
   "https://github.com/neogitorg/neogit",
 })
 
-require("neogit").setup({
+local mod = require("neogit")
+local keymap = require("_.utils").keymap("Neogit", "<leader>g")
+
+mod.setup({
   integrations = {
-    codediff = true,
     fzf_lua = true,
     snacks = false,
     mini_pick = false,
   },
 })
 
-vim.keymap.set(
-  "n", "<leader>gg",
-  function ()
-    require("neogit").open()
-  end,
-  {
-    desc = "Neogit: Open",
-  }
-)
+keymap("Open", "g", mod.open)

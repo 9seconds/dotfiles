@@ -8,64 +8,31 @@ vim.pack.add({
   },
 })
 
-local function keymap(name, key, func, mode)
-  if not mode then
-    mode = "n"
-  end
+local mod = require("gitsigns")
+local leader_keymap = require("_.utils").keymap("GitSigns", "<leader>g")
+local keymap = require("_.utils").keymap("GitSigns")
 
-  vim.keymap.set(mode, "<leader>g" .. key, func, {
-    desc = "GitSigns: " .. name,
-  })
-end
-
-require("gitsigns").setup({
+mod.setup({
   numhl = true,
   signcolumn = false,
 })
 
-keymap("Preview hunk", "P", function ()
-  require("gitsigns").preview_hunk()
-end)
+leader_keymap("Preview hunk", "P", mod.preview_hunk)
+leader_keymap("Preview hunk inline", "p", mod.preview_hunk_inline)
 
-keymap("Preview hunk inline", "p", function ()
-  require("gitsigns").preview_hunk_inline()
+leader_keymap("Blame line", "b", function ()
+  mod.blame_line({ full = true })
 end)
+leader_keymap("Blame file", "B", mod.blame)
+leader_keymap("Toggle current line blame", "l", mod.toggle_current_line_blame)
 
-keymap("Blame line", "b", function ()
-  require("gitsigns").blame_line({ full = true })
-end)
+leader_keymap("Toggle word diff", "w", mod.toggle_word_diff)
 
-keymap("Blame file", "B", function ()
-  require("gitsigns").blame()
-end)
-
-keymap("Toggle current line blame", "l", function ()
-  require("gitsigns").toggle_current_line_blame()
-end)
-
-keymap("Toggle word diff", "w", function ()
-  require("gitsigns").toggle_word_diff()
-end)
-
-keymap("Reset hunk", "r", function ()
-  require("gitsigns").reset_hunk()
-end)
-
-keymap("Reset hunk", "r", function ()
-  require("gitsigns").reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+leader_keymap("Reset hunk", "r", mod.reset_hunk)
+leader_keymap("Reset hunk", "r", function ()
+  mod.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
 end, { "v", "s" }
 )
+leader_keymap("Reset whole buffer", "R", mod.reset_buffer)
 
-keymap("Reset whole buffer", "R", function ()
-  require("gitsigns").reset_buffer()
-end)
-
-vim.keymap.set(
-  { "n", "x", "o", "s" }, "ih",
-  function ()
-    require("gitsigns").select_hunk()
-  end,
-  {
-    desc = "GitSigns: Select hunk",
-  }
-)
+keymap("Select hunk", "ih", mod.select_hunk, { "n", "x", "o", "s" })

@@ -5,18 +5,22 @@ vim.pack.add({
   "https://codeberg.org/andyg/leap.nvim",
 })
 
-vim.keymap.set({ "n", "x", "o" }, "s", "<Plug>(leap)")
-vim.keymap.set({ "n", "x", "o" }, "S", function ()
+local keymap = require("_.utils").keymap("Leap")
+
+keymap("Start", "s", "<Plug>(leap)", { "n", "x", "o" })
+keymap("Jump to remote object with selection", "S", function ()
   require("leap").visit({
     input = vim.fn.mode(true):match("o") and "" or "v",
   })
-end)
+end, { "n", "x", "o" }
+)
 
-vim.keymap.set({ "x", "o" }, "an", function ()
+keymap("Select by treesitter", "an", function ()
   require("leap.treesitter").select({
     opts = require("leap.user").with_traversal_keys("n", "N"),
   })
-end)
+end, { "x", "o" }
+)
 
 vim.api.nvim_create_autocmd("User", {
   pattern = "VisitDone",

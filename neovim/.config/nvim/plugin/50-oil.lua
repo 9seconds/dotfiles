@@ -11,7 +11,10 @@ vim.pack.add({
   },
 })
 
-require("oil").setup({
+local mod = require("oil")
+local keymap = require("_.utils").keymap("Oil")
+
+mod.setup({
   columns = {
     "icon",
     "permissions",
@@ -24,12 +27,4 @@ require("oil").setup({
   },
 })
 
-vim.keymap.set(
-  "n", "-",
-  function ()
-    require("oil").open()
-  end,
-  {
-    desc = "Oil: Open a directory",
-  }
-)
+keymap("Open", "-", mod.open)

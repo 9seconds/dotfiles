@@ -5,18 +5,15 @@ vim.pack.add({
   "https://github.com/stevearc/quicker.nvim",
 })
 
-local function keymap(key, name, func)
-  vim.keymap.set("n", "<leader>q" .. key, func, {
-    desc = "Quicker: " .. name,
-  })
-end
+local mod = require("quicker")
+local keymap = require("_.utils").keymap("Quicker", "<leader>q")
 
-require("quicker").setup({
+mod.setup({
   keys = {
     {
       ">",
       function ()
-        require("quicker").expand({
+        mod.expand({
           before = 2,
           after = 2,
           add_to_existing = true,
@@ -27,17 +24,12 @@ require("quicker").setup({
     {
       "<",
       function ()
-        require("quicker").collapse()
+        mod.collapse()
       end,
       desc = "Collapse quickfix context",
     },
   },
 })
 
-keymap("q", "Toggle quickfix", function ()
-  require("quicker").toggle()
-end)
-
-keymap("l", "Toggle loclist", function ()
-  require("quicker").toggle({ loclist = true })
-end)
+keymap("Toggle quickfix", "q", mod.toggle)
+keymap("Toggle loclist", "l", function () mod.toggle({ loclist = true }) end)

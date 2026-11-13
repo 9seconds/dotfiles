@@ -5,64 +5,16 @@ vim.pack.add({
   "https://github.com/ibhagwan/fzf-lua",
 })
 
-local function keymap(name, key, func)
-  vim.keymap.set("n", "<leader>t" .. key, func, {
-    desc = "FZF: " .. name,
-  })
-end
+local mod = require("fzf-lua")
+local map = require("_.utils").keymap("FZF", "<leader>t")
 
-local function rg_glob(query)
-  local chunks = vim.split(query, "--", {
-    plain = true,
-    trimempty = true,
-  })
+local function keymap(description, key, callback, opts)
+  opts = opts or {}
+  opts.winopts = { title = " " .. description .. " " }
 
-  if #chunks == 1 then
-    return query
-  end
-
-  local new_query = ""
-  for i = 2, #chunks do
-    new_query = new_query .. " " .. chunks[i]
-  end
-
-  local flags = ""
-
-  for _, word in ipairs(vim.split(chunks[1], " ", { trimempty = true })) do
-    -- "+ -- something" -> rg --word-regexp something
-    if word == "+" then
-      flags = flags .. " --word-regexp"
-
-      -- "! -- something" > rg -F something
-    elseif word == "!" then
-      flags = flags .. " --fixed-strings"
-
-      -- ^python -> rg -t python
-    elseif vim.startswith(word, "^") then
-      flags = flags .. " -t " .. vim.fn.shellescape(word:sub(2))
-
-      -- "-I -X ww" -> rg -I -X ww
-    elseif vim.startswith(word, "-") then
-      flags = flags .. " " .. word
-
-      -- iglob clause
-    else
-      -- dots -> dots/**
-      if not word:find("*") then
-        if not vim.endswith(word, "/") then
-          word = word .. "/"
-        end
-        word = word .. "**"
-      end
-
-      flags = string.format("%s --iglob %s", flags, vim.fn.shellescape(word))
-    end
-  end
-
-  flags = vim.trim(flags)
-  new_query = vim.trim(new_query)
-
-  return new_query, flags
+  map(description, key, function ()
+    callback(opts)
+  end)
 end
 
 local opts = {
@@ -70,7 +22,6 @@ local opts = {
   fzf_colors = true,
   grep = {
     rg_glob = true,
-    rg_glob_fn = rg_glob,
   },
   keymap = {
     fzf = {
@@ -86,84 +37,37 @@ if vim.fn.executable("sk") then
   opts[1][1] = "skim"
 end
 
-require("fzf-lua").setup(opts)
+mod.setup(opts)
 
-keymap("Files", "t", function ()
-  return require("fzf-lua").files({})
-end)
+keymap("Files", "t", mod.files)
+keymap("Dotfiles", "T", mod.files, {
+  cwd = vim.uv.fs_realpath(vim.env["9SECONDS_DIR_DOTFILES"] or "~/.dotfiles"),
+})
 
-keymap("Dotfiles", "T", function ()
-  return require("fzf-lua").files({
-    cwd = vim.env["9SECONDS_DIR_DOTFILES"] or "~/.dotfiles",
-  })
-end)
+keymap("Marks", "m", mod.marks)
+keymap("Global marks", "M", mod.marks, { marks = "^[A-Z]" })
 
-keymap("Marks", "m", function()
-  return require("fzf-lua").marks()
-end)
-
-keymap("Global marks", "M", function()
-  return require("fzf-lua").marks({
-    marks = "^[A-Z]",
-    winopts = { title = "Global marks" },
-  })
-end)
-
-keymap("Buffers", "b", function ()
-  return require("fzf-lua").buffers({})
-end)
-
-keymap("Symbols", "s", function ()
-  local fzf = require("fzf-lua")
+keymap("Symbols", "s", function (opts)
   local clients = vim.lsp.get_clients({
     bufnr = vim.api.nvim_get_current_buf(),
   })
 
   for _, client in ipairs(clients) do
     if client.server_capabilities and client.server_capabilities.documentSymbolProvider then
-      return fzf.lsp_document_symbols({})
+      return mod.lsp_document_symbols(opts)
     end
   end
 
-  return fzf.treesitter({})
+  return mod.treesitter(opts)
 end)
+keymap("All symbols", "S", mod.lsp_workspace_symbols)
 
-keymap("All symbols", "S", function ()
-  return require("fzf-lua").lsp_workspace_symbols({})
-end)
+keymap("Grep", "f", mod.live_grep)
+keymap("Grep current buffer", "F", mod.grep_curbuf)
 
-keymap("Grep", "f", function ()
-  return require("fzf-lua").live_grep({})
-end)
+keymap("Git status", "l", mod.git_stash)
+keymap("References", "r", mod.lsp_references)
+keymap("Resume", "y", mod.resume)
 
-keymap("Grep current buffer", "F", function ()
-  return require("fzf-lua").grep_curbuf({})
-end)
-
-keymap("Git status", "l", function ()
-  return require("fzf-lua").git_status({})
-end)
-
-keymap("References", "r", function ()
-  return require("fzf-lua").lsp_references({})
-end)
-
-keymap("Incoming calls", "c", function ()
-  return require("fzf-lua").lsp_incoming_calls({})
-end)
-
-keymap("Outgoing calls", "C", function ()
-  return require("fzf-lua").lsp_outgoing_calls({})
-end)
-
-keymap("Resume", "y", function ()
-  return require("fzf-lua").resume({})
-end)
-
-keymap("Diagnostics for current buffer", "d", function ()
-  return require("fzf-lua").diagnostics_document({})
-end)
-
-keymap("Diagnostics for workspace", "D", function ()
-  return require("fzf-lua").diagnostics_workspace({})
-end)
+keymap("Diagnostics for the current buffer", "d", mod.diagnostics_document)
+keymap("Diagnostics for the workspace", "D", mod.diagnostics_workspace)
