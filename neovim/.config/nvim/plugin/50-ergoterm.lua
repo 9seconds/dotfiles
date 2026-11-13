@@ -8,7 +8,11 @@ vim.pack.add({
   },
 })
 
-require("ergoterm").setup({
+local mod = require("ergoterm")
+local keymap = require("_.utils").keymap("ErgoTerm")
+local leader_keymap = require("_.utils").keymap("Ergoterm", "<leader>k")
+
+mod.setup({
   -- https://github.com/waiting-for-dev/ergoterm.nvim/tree/main#terminal-defaults
   terminal_defaults = {
     shell = vim.env.SHELL or vim.o.shell or "/bin/bash",
@@ -25,31 +29,28 @@ require("ergoterm").setup({
     },
 
     on_start = function (term)
-      vim.keymap.set("t", "<A-e>", "<Esc>", {
-        buffer = term._state.bufnr,
-        noremap = true,
-        silent = true,
-        desc = "Send Escape to terminal",
-      })
+      local buf = term._state.bufnr
 
-      local registers = {
-        ["+"] = "System clipboard",
-        ["*"] = "Selection clipboard",
-        ['"'] = "Default register",
-      }
-      for register, desc in pairs(registers) do
-        vim.keymap.set("t", "<A-p>" .. register, '<C-\\><C-o>"' .. register .. "p", {
-          buffer = term._state.bufnr,
-          silent = true,
-          desc = desc,
-        })
+      local function tset(desc, key, callback)
+        keymap(desc, key, callback, "t", { buffer = buf })
       end
 
-      local buf = term._state.bufnr
+      tset("Send Esc to the terminal", "<A-e>", "<Esc>")
+
+      local registers = {
+        ["+"] = "system clipboard",
+        ["*"] = "selection clipboard",
+        ['"'] = "default register",
+      }
+      for register, desc in pairs(registers) do
+        tset("Paste from " .. desc, "<A-p>" .. register, "<C-\\><C-o>" .. register .. "p")
+      end
+
       local config = vim.b[buf].miniclue_config or {}
       config.triggers = config.triggers or {}
       table.insert(config.triggers, { mode = "t", keys = "<A-p>" })
       vim.b[buf].miniclue_config = config
+
       require("mini.clue").ensure_buf_triggers(buf)
     end,
 
@@ -63,7 +64,7 @@ require("ergoterm").setup({
 -- ----------------------------------------------------------------------------
 
 local function toggle_terminal(term)
-  local others = require("ergoterm").filter(function (other)
+  local others = mod.filter(function (other)
     return other ~= term and other:is_open()
   end)
 
@@ -80,16 +81,13 @@ end
 
 local function setup(key, conf)
   local keybind = string.format("<C-%s>", key)
-  local term = require("ergoterm"):new(vim.tbl_deep_extend("force", {
+
+  local term = mod:new(vim.tbl_deep_extend("force", {
       on_open = function (term)
         local state = term._state
 
-        local function tset(lhs, rhs)
-          vim.keymap.set("t", lhs, rhs, {
-            buffer = state.bufnr,
-            noremap = true,
-            silent = true,
-          })
+        local function tset(description, key, callback)
+          keymap(description, key, callback, "t", { buffer = state.bufnr })
         end
 
         vim.api.nvim_create_autocmd("TermEnter", {
@@ -108,36 +106,28 @@ local function setup(key, conf)
           end,
         })
 
-        tset("<C-h>", "<cmd>wincmd h<cr>")
-        tset("<C-j>", "<cmd>wincmd j<cr>")
-        tset("<C-k>", "<cmd>wincmd k<cr>")
-        tset("<C-l>", "<cmd>wincmd l<cr>")
+        tset("Go to the left", "<C-h>", "<cmd>wincmd h<cr>")
+        tset("Go to the right", "<C-j>", "<cmd>wincmd j<cr>")
+        tset("Go down", "<C-k>", "<cmd>wincmd k<cr>")
+        tset("Go up", "<C-l>", "<cmd>wincmd l<cr>")
       end,
     }, conf or {}
     ))
 
-  vim.keymap.set(
-    { "n", "i", "v", "t" }, keybind, function () toggle_terminal(term) end,
-    { noremap = true, silent = true }
+  keymap(
+    "Toggle " .. keybind .. " terminal", keybind, function () toggle_terminal(term) end,
+    { "n", "i", "v", "t" }
   )
 end
 
-local function keymap(desc, mode, key, fn)
-  vim.keymap.set(mode, "<leader>k" .. key, fn, {
-    noremap = true,
-    silent = true,
-    desc = "ErgoTerm: " .. desc,
-  })
-end
-
 local function get_term()
-  local term = require("ergoterm").get_state("last_focused")
+  local term = mod.get_state("last_focused")
   if term and term:is_started() then
     return term
   end
 end
 
-keymap("Send a filename to the terminal", "n", "f", function ()
+leader_keymap("Send a filename to the terminal", "f", function ()
   local term = get_term()
   if not term then
     return
@@ -156,7 +146,7 @@ keymap("Send a filename to the terminal", "n", "f", function ()
   term:send({ file .. " " }, { trim = false, new_line = false })
 end)
 
-keymap("Send 'this' to terminal", "n", "t", function ()
+leader_keymap("Send 'this' to terminal", "t", function ()
   local term = get_term()
   if not term then
     return
@@ -175,10 +165,11 @@ keymap("Send 'this' to terminal", "n", "t", function ()
   local dir = term._state.dir or vim.uv.cwd()
   file = vim.fs.relpath(dir, file) or file
   local line = vim.api.nvim_win_get_cursor(0)[1]
+
   term:send({ "@" .. file .. "#" .. line .. " " }, { trim = false, new_line = false })
 end)
 
-keymap("Send 'this' to terminal", "x", "t", function ()
+leader_keymap("Send 'this' to terminal", "t", function ()
   local term = get_term()
   if not term then
     return
@@ -210,7 +201,8 @@ keymap("Send 'this' to terminal", "x", "t", function ()
   local reference = string.format("@%s#%d-%d ", file, start_line, end_line)
 
   term:send({ reference }, { trim = false, new_line = false })
-end)
+end, "x"
+)
 
 -- ----------------------------------------------------------------------------
 
