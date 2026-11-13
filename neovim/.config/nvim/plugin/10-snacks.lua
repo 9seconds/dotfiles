@@ -141,16 +141,6 @@ vim.keymap.set(
 )
 
 vim.keymap.set(
-  "n", PREFIX .. "g",
-  function ()
-    mod.lazygit()
-  end,
-  {
-    desc = "Snacks: LazyGit",
-  }
-)
-
-vim.keymap.set(
   "n", PREFIX .. "o",
   function ()
     mod.scratch.open({
