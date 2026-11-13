@@ -8,9 +8,10 @@ vim.pack.add({
   },
 })
 
-local PREFIX = "<leader>s"
-local TOGGLE_PREFIX = PREFIX .. "t"
 local mod = require("snacks")
+local keymap = require("_.utils").keymap("Snacks")
+
+local PREFIX = "<leader>s"
 
 mod.setup({
   styles = {
@@ -86,28 +87,23 @@ mod.setup({
   },
 })
 
-mod.toggle.inlay_hints():map(TOGGLE_PREFIX .. "h")
-mod.toggle.dim():map(TOGGLE_PREFIX .. "m")
-mod.toggle.indent():map(TOGGLE_PREFIX .. "i")
-mod.toggle.treesitter():map(TOGGLE_PREFIX .. "t")
+mod.toggle.inlay_hints():map(PREFIX .. "h")
+mod.toggle.dim():map(PREFIX .. "m")
+mod.toggle.indent():map(PREFIX .. "i")
+mod.toggle.treesitter():map(PREFIX .. "t")
 
 local state_diagnostic = false
 mod.toggle({
   id = "diagnostic",
-  name = "diagnostic virtual line",
+  name = "diagnostic virtual text",
   get = function ()
     return state_diagnostic
   end,
   set = function (state)
     state_diagnostic = state
-    if state then
-      state = { current_line = true }
-    else
-      state = false
-    end
-    vim.diagnostic.config({ virtual_lines = state })
+    vim.diagnostic.config({ virtual_text = state })
   end,
-}):map(TOGGLE_PREFIX .. "d")
+}):map(PREFIX .. "d")
 
 mod.toggle({
   id = "spellcheck",
@@ -118,51 +114,15 @@ mod.toggle({
   set = function (state)
     vim.o.spell = state
   end,
-}):map(TOGGLE_PREFIX .. "s")
+}):map(PREFIX .. "s")
 
 mod.indent.enable()
 
-vim.keymap.set(
-  { "i", "t" },
-  "<A-a>",
-  "<c-\\><c-n><cmd>lua require('snacks.zen').zoom()<cr><cmd>startinsert<cr>",
-  {
-    desc = "Snacks: Zoom",
-  }
+keymap(
+  "Zoom", "<A-a>", "<c-\\><c-n><cmd>lua require('snacks.zen').zoom()<cr><cmd>startinsert<cr>",
+  { "i", "t" }
 )
-vim.keymap.set(
-  { "n", "x", "o" }, "<A-a>",
-  function ()
-    mod.zen.zoom()
-  end,
-  {
-    desc = "Snacks: Zoom",
-  }
-)
-
-vim.keymap.set(
-  "n", PREFIX .. "o",
-  function ()
-    mod.scratch.open({
-      win = {
-        height = math.floor(vim.o.lines * 0.6),
-        width = math.floor(vim.o.columns * 0.8),
-      },
-    })
-  end,
-  {
-    desc = "Snacks: Open scratch",
-  }
-)
-vim.keymap.set(
-  "n", PREFIX .. "l",
-  function ()
-    mod.scratch.select()
-  end,
-  {
-    desc = "Snacks: list scratches",
-  }
-)
+keymap("Zoom", "<A-a>", mod.zen.zoom, { "n", "x", "o" })
 
 vim.api.nvim_create_autocmd("User", {
   group = vim.api.nvim_create_augroup("9_Snacks", {}),
