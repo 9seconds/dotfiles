@@ -42,6 +42,8 @@ keymap("Dotfiles", "T", mod.files, {
 keymap("Marks", "m", mod.marks)
 keymap("Global marks", "M", mod.marks, { marks = "^[A-Z]" })
 
+keymap("Buffers", "y", mod.buffers)
+
 keymap("Symbols", "s", function (opts)
   local clients = vim.lsp.get_clients({
     bufnr = vim.api.nvim_get_current_buf(),
