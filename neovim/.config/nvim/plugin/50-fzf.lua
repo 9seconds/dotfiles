@@ -60,7 +60,7 @@ keymap("All symbols", "S", mod.lsp_workspace_symbols)
 keymap("Grep", "f", mod.live_grep)
 keymap("Grep current buffer", "F", mod.grep_curbuf)
 
-keymap("Git status", "l", mod.git_stash)
+keymap("Git status", "l", mod.git_status)
 keymap("References", "r", mod.lsp_references)
 keymap("Resume", "y", mod.resume)
 
