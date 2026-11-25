@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import argparse
 import contextlib
+import datetime  # noqa: ICN001
 import gzip
 import hashlib
 import logging
@@ -35,13 +36,12 @@ import typing as t
 
 from nineseconds import cli
 from nineseconds import cmd
-from nineseconds import env
 from nineseconds import paths
+from nineseconds import strings
 from nineseconds import times
 
 
 if t.TYPE_CHECKING:
-    import datetime
     import io
     import pathlib
 
@@ -61,51 +61,99 @@ def main() -> argparse.ArgumentParser:
         description="9seconds timeouts commands.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.set_defaults(cmd=run)
 
-    parser.add_argument(
-        "-s",
-        "--stale-after",
-        type=cli.type_duration,
-        **cli.env_argument(
-            "consider cache stale after",
-            f"{env.PREFIX}_STALE_AFTER",
-            lambda: "1h",
-        ),
-    )
-    parser.add_argument(
-        "-c",
-        "--clean-after",
-        type=cli.type_duration,
-        **cli.env_argument(
-            "clean cache directory after. 0 means do not clean at all",
-            f"{env.PREFIX}_CLEAN_AFTER",
-            lambda: "0",
-        ),
-    )
+    commands = parser.add_subparsers(title="Commands")
 
-    parser.add_argument(
-        "command",
-        nargs=argparse.ONE_OR_MORE,
-        help="command to execute",
+    path_cmd = commands.add_parser(
+        "path",
+        aliases=["p"],
+        description="Show cache path",
+        help="show cache path",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
+    path_cmd.set_defaults(cmd=do_path)
+
+    list_cmd = commands.add_parser(
+        "list",
+        aliases=["l"],
+        description="List cache entries",
+        help="list cache entries",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    list_cmd.add_argument(
+        "older-than",
+        type=cli.type_duration,
+        default="0",
+        nargs=argparse.OPTIONAL,
+        help="show entries older than"
+    )
+    list_cmd.set_defaults(cmd=do_list)
+
+    key_cmd = commands.add_parser(
+        "key",
+        aliases=["k"],
+        description="Show cache key",
+        help="show cache key",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    key_cmd.set_defaults(cmd=do_key)
+
+    run_cmd = commands.add_parser(
+        "run",
+        aliases=["r"],
+        description="Run a command",
+        help="run a command",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    run_cmd.set_defaults(cmd=do_run)
+
+    for cmd_ in key_cmd, run_cmd:
+        cmd_.add_argument(
+            "command",
+            nargs=argparse.ONE_OR_MORE,
+            help="command to execute",
+        )
 
     return parser
 
 
-def run(options: argparse.Namespace) -> None:
+def do_path(_: argparse.Namespace) -> None:
+    print(CACHE_PATH)  # noqa: T201
+
+
+def do_list(options: argparse.Namespace) -> None:
+    now = times.now()
+    limit = now - getattr(options, "older-than")
+    items = sorted(
+        (item, mtime) for item in CACHE_PATH.iterdir()
+        if (
+            mtime := datetime.datetime.fromtimestamp(
+                item.stat().st_mtime,
+                datetime.timezone.utc,
+            )
+        ) < limit
+    )
+
+    strings.print_rows(
+        [
+            (str(pth), times.elapsed((now - time).total_seconds()))
+            for pth, time in items
+        ],
+        is_shlex=options.shlex,
+    )
+
+
+def do_key(options: argparse.Namespace) -> None:
+    print(get_key(*options.command))  # noqa: T201
+
+
+def do_run(options: argparse.Namespace) -> None:
     CACHE_PATH.mkdir(parents=True, exist_ok=True)
-
-    if options.clean_after.total_seconds() > 0.1:  # noqa: PLR2004
-        cleanup(options.clean_after)
-
-    limit = (times.now() - options.stale_after).timestamp()
-    LOG.debug("Time limit is %s", limit)
 
     key = get_key(*options.command)
     LOG.debug("Key is %s", key)
 
-    if (p := CACHE_PATH / key).is_file() and p.stat().st_mtime > limit:
+    if (p := CACHE_PATH / key).is_file():
         sys.exit(read_from_cache(p))
 
     with contextlib.ExitStack() as estack:
@@ -150,15 +198,6 @@ def run(options: argparse.Namespace) -> None:
             RECORD_EXIT_CODE,
             proc.returncode.to_bytes(4, "little", signed=True),
         )
-
-
-def cleanup(after: datetime.timedelta) -> None:
-    limit = (times.now() - after).timestamp()
-
-    for item in list(CACHE_PATH.iterdir()):
-        if item.stat().st_mtime < limit:
-            item.unlink()
-            LOG.debug("Removed %s", item)
 
 
 def get_key(*cmd: str) -> str:
