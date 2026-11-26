@@ -94,6 +94,12 @@ def main() -> argparse.ArgumentParser:
     discover_cmd.set_defaults(cmd=run_discover)
 
     for cmd in plug_cmd, unplug_cmd:
+        cmd.add_argument(
+            "-n", "--no-cache",
+            action="store_true",
+            default=False,
+            help="Do not cache results"
+        )
         cmd.add_argument("module", help="Name of the module")
 
     return parser
@@ -103,7 +109,9 @@ def run_plug(options: argparse.Namespace) -> None:
     key = cache_key(options)
     source_dir = options.source_dir / options.module
 
-    old_node = CACHE.get(key, modules.Node())
+    old_node = modules.Node()
+    if not options.no_cache:
+        old_node = CACHE.get(key, old_node)
     new_node = modules.collect(source_dir)
     to_remove, to_add = old_node.diff(new_node)
 
@@ -117,13 +125,14 @@ def run_plug(options: argparse.Namespace) -> None:
     )
     create.process()
 
-    CACHE[key] = new_node
+    if not options.no_cache:
+        CACHE[key] = new_node
 
 
 def run_unplug(options: argparse.Namespace) -> None:
     key = cache_key(options)
 
-    node = CACHE.get(key)
+    node = CACHE.get(key) if not options.no_cache else None
     if node is None:
         node = modules.collect(options.source_dir / options.module)
 
