@@ -24,81 +24,29 @@
 from __future__ import annotations
 
 import argparse
+import functools
 import logging
-import os
 import pathlib
+import shutil
+import sys
 import typing as t
 
-from nineseconds import cache
 from nineseconds import cli
+from nineseconds import cmd
 from nineseconds import env
 from nineseconds import git
 from nineseconds import paths
 from nineseconds import strings
-from nineseconds import symlinks
 
 
 LOG: t.Final = logging.getLogger(__name__)
-TEMPLATES_DIR: t.Final = paths.config("git-wt")
-CACHE: t.Final = cache.Cache("git-wt")
-MAIN_PROJECT: t.Final = "MAIN"
+CONFIG_PATH: t.Final = paths.config("git-wt")
+ENV_PREFIX: t.Final = f"{env.PREFIX}_GIT_WT"
+CONFIG_OPT: t.Final = "nineseconds.wt"
 
 
-class Worktrees:
-    _paths: dict[str, pathlib.Path]
-    _heads: dict[str, str]
-    _branches: dict[str, str]
-
-    def __init__(self) -> None:
-        self._paths = {}
-        self._heads = {}
-        self._branches = {}
-
-    def __contains__(self, key: str) -> bool:
-        return key in self._paths
-
-    def names(self) -> list[str]:
-        return sorted(self._paths)
-
-    def path(self, key: str) -> pathlib.Path:
-        return self._paths[key]
-
-    def head(self, key: str) -> str:
-        return self._heads[key]
-
-    def branch(self, key: str) -> str | None:
-        return self._branches.get(key, None)
-
-    @classmethod
-    def scan(cls, name: str, storage: pathlib.Path) -> Worktrees:
-        inst = cls()
-        project: str | None = None
-
-        for line in git.run("worktree", "list", "--porcelain"):
-            match line.split():
-                case ["worktree", value]:
-                    path = pathlib.Path(value)
-                    if not path.is_relative_to(storage):
-                        continue
-
-                    if path.name == name:
-                        project = MAIN_PROJECT
-                    elif path.name.startswith(f"{name}-"):
-                        project = path.name[len(name) + 1 :]
-                    else:
-                        continue
-
-                    inst._paths[project] = path
-                case ["HEAD", value]:
-                    if project is not None:
-                        inst._heads[project] = value
-                case ["branch", value]:
-                    if project is not None:
-                        inst._branches[project] = value.removeprefix(
-                            "refs/heads/"
-                        )
-
-        return inst
+if not shutil.which("9s-module"):
+    sys.exit("9s-module is absent")
 
 
 @cli.main
@@ -113,145 +61,203 @@ def main() -> argparse.ArgumentParser:
             return str(git.get_common_dir().parent.parent)
         return ""
 
-    parser = argparse.ArgumentParser(
-        description="9seconds manages git worktrees.",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
+    def type_normal_repository(value: str) -> pathlib.Path:
+        path = pathlib.Path(value).absolute()
+        if not git.is_inside_git_worktree(cwd=path):
+            raise argparse.ArgumentTypeError("Not a git repository")
 
-    parser.add_argument(
-        "-p",
-        "--project-name",
-        **cli.env_argument(
-            "project name",
-            f"{env.PREFIX}_GIT_WT_PROJECT",
-            get_project,
-        ),
-    )
-    parser.add_argument(
-        "-s",
-        "--storage",
-        type=cli.type_valid_dir,
-        **cli.env_argument(
-            "directory where projects are stored",
-            f"{env.PREFIX}_GIT_WT_STORAGE",
-            get_storage,
-        ),
+        path = git.get_common_dir(cwd=path)
+        if env.as_bool(git.config_get(CONFIG_OPT, cwd=path)):
+            raise argparse.ArgumentTypeError("Repository is wt")
+
+        return path
+
+    def type_valid_worktree(value: str) -> pathlib.Path:
+        path = pathlib.Path(value).absolute()
+        if not git.is_inside_git_worktree(cwd=path):
+            raise argparse.ArgumentTypeError("Invalid directory")
+        current_common_dir = git.get_common_dir()
+        if current_common_dir != (d := git.get_common_dir(cwd=path)):
+            raise argparse.ArgumentTypeError(
+                f"Unexpected worktree: {current_common_dir} != {d}"
+            )
+        return path
+
+    def type_absent(value: str) -> pathlib.Path:
+        path = pathlib.Path(value).absolute()
+        if path.exists():
+            raise argparse.ArgumentTypeError("Path should not exist")
+        return path
+
+    def type_new_worktree(value: str) -> pathlib.Path:
+        path = pathlib.Path(value)
+        if path.is_absolute():
+            return path
+        return git.get_common_dir().parent / path
+
+    def get_module() -> str:
+        if not git.is_inside_git_worktree(cwd=pathlib.Path.cwd()):
+            return ""
+
+        dirname = git.get_common_dir()
+        return dirname.parent.name.removeprefix(".") if dirname else ""
+
+    parser = argparse.ArgumentParser(
+        description="9seconds managed worktrees",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
 
     commands = parser.add_subparsers(title="Commands")
 
-    add_cmd = commands.add_parser(
-        "add",
-        aliases=["a"],
-        description="Add a new worktree based on a template.",
-        help="add new worktree",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    convert_cmd = commands.add_parser(
+        "convert",
+        description="Convert repository to worktrees.",
+        help="convert to worktrees"
     )
-    add_cmd.add_argument("name", help="name of the worktree")
-    add_cmd.set_defaults(cmd=cmd_add)
+    convert_cmd.add_argument(
+        "from",
+        type=type_normal_repository,
+        help="Repository to convert from",
+    )
+    convert_cmd.add_argument(
+        "to",
+        type=type_absent,
+        help="Path to convert to"
+    )
+    convert_cmd.set_defaults(cmd=do_convert)
 
     list_cmd = commands.add_parser(
         "list",
-        aliases=["ls"],
-        description="List known worktrees",
-        help="list worktrees.",
+        aliases=["l"],
+        description="List worktrees.",
+        help="list worktrees",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    list_cmd.set_defaults(cmd=cmd_list)
+    list_cmd.set_defaults(cmd=do_list)
+
+    add_cmd = commands.add_parser(
+        "add",
+        aliases=["a"],
+        description="Add a worktree.",
+        help="add a worktree",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    add_cmd.add_argument(
+        "worktree",
+        type=type_new_worktree,
+        help="Worktree to add.",
+    )
+    add_cmd.set_defaults(cmd=do_add)
 
     remove_cmd = commands.add_parser(
         "remove",
-        aliases=["r", "rm"],
-        description="Remove a worktree.",
-        help="remove worktrees.",
+        aliases=["r"],
+        description="Remove worktrees.",
+        help="remove worktrees",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     remove_cmd.add_argument(
-        "name",
+        "worktree",
+        type=type_valid_worktree,
         nargs=argparse.ONE_OR_MORE,
-        help="names (or paths) to worktrees to remove",
+        help="Worktree to remove.",
     )
-    remove_cmd.set_defaults(cmd=cmd_remove)
+    remove_cmd.set_defaults(cmd=do_remove)
 
-    provision_cmd = commands.add_parser(
-        "populate",
-        aliases=["p"],
-        description="Repopulate symlinks.",
-        help="repopulate symlinks.",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
-    provision_cmd.set_defaults(cmd=cmd_populate)
-
-    for cmd_ in add_cmd, remove_cmd, provision_cmd:
+    for cmd_ in add_cmd, remove_cmd:
         cmd_.add_argument(
-            "-t",
-            "--template-dir",
-            type=cli.type_valid_dir,
-            default=TEMPLATES_DIR,
-            help="path to directory with templates",
+            "-m", "--module",
+            **cli.env_argument(
+                "module name",
+                f"{ENV_PREFIX}_MODULE",
+                get_module,
+            )
         )
 
     return parser
 
 
-def cmd_add(options: argparse.Namespace) -> None:
-    if options.name == MAIN_PROJECT:
-        raise ValueError("Cannot add a main project")
+def require_wt(
+    func: t.Callable[[argparse.Namespace], None]
+) -> t.Callable[[argparse.Namespace], None]:
+    @functools.wraps(func)
+    def decorator(options: argparse.Namespace) -> None:
+        if not env.as_bool(git.config_get(CONFIG_OPT)):
+            name = func.__name__.removeprefix("do_")
+            sys.exit(f"Command {name!r} should be executed from wt repository")
+        func(options)
 
-    worktrees = Worktrees.scan(options.project_name, options.storage)
-    if options.name in worktrees:
-        raise ValueError("Such worktree already exists")
-
-    options.template_dir.mkdir(exist_ok=True, parents=True)
-
-    source_dir = options.template_dir / options.project_name
-    source_dir.parent.mkdir(exist_ok=True, parents=True)
-
-    target_dir = options.storage / f"{options.project_name}-{options.name}"
-    git.run("worktree", "add", "--detach", target_dir)
-
-    symlinks.mount(source_dir, target_dir, cache_=CACHE)
+    return decorator
 
 
-def cmd_list(options: argparse.Namespace) -> None:
-    worktrees = Worktrees.scan(options.project_name, options.storage)
+def do_convert(options: argparse.Namespace) -> None:
+    dest = options.to / ".git"
 
-    rows = [
+    options.to.mkdir(parents=True, exist_ok=False)
+    shutil.copytree(getattr(options, "from"), dest)
+    if (wt := dest / "worktrees").is_dir():
+        shutil.rmtree(wt)
+
+    git.config_set("core.bare", "true", cwd=dest)
+    git.config_set(CONFIG_OPT, "1", cwd=dest)
+
+
+@require_wt
+def do_list(options: argparse.Namespace) -> None:
+    worktrees = {}
+    name = ""
+
+    for line in git.run("worktree", "list", "--porcelain"):
+        match line.split():
+            case ["worktree", *pth]:
+                name = " ".join(pth)
+            case ["bare"]:
+                name = ""
+            case [] if name != "":
+                worktrees[name] = git.get_current_branch(cwd=name)
+
+    strings.print_rows(
         [
-            name,
-            os.fspath(worktrees.path(name)),
-            worktrees.head(name),
-            worktrees.branch(name) or "",
-        ]
-        for name in worktrees.names()
-    ]
-    strings.print_rows(rows)
+            (name, f"({branch})" if branch else "")
+            for name, branch in sorted(worktrees.items())
+        ],
+        is_shlex=options.shlex
+    )
 
 
-def cmd_remove(options: argparse.Namespace) -> None:
-    worktrees = Worktrees.scan(options.project_name, options.storage)
-
-    for name in options.name:
-        if name == MAIN_PROJECT:
-            raise ValueError("Cannot delete main project")
-        if name not in worktrees:
-            raise ValueError(f"Unknown name {name}")
-
-    source_dir = options.template_dir / options.project_name
-
-    for name in options.name:
-        target_dir = worktrees.path(name)
-        git.run("worktree", "remove", "--force", worktrees.path(name))
-        CACHE.pop(symlinks.cache_key(source_dir, target_dir), None)
+@require_wt
+def do_add(options: argparse.Namespace) -> None:
+    git.run(
+        "worktree", "add",
+        "--detach",
+        "--no-guess-remote",
+        options.worktree
+    )
+    if CONFIG_PATH.joinpath(options.module).is_dir():
+        module_cmd(options.worktree, "plug", options.module)
 
 
-def cmd_populate(options: argparse.Namespace) -> None:
-    source_dir = options.template_dir / options.project_name
-    target_dir = pathlib.Path(
-        git.run("rev-parse", "--show-toplevel")[0]
-    ).absolute()
+@require_wt
+def do_remove(options: argparse.Namespace) -> None:
+    for pth in set(options.worktree):
+        if CONFIG_PATH.joinpath(options.module).is_dir():
+            module_cmd(pth, "unplug", options.module)
+        git.run("worktree", "remove", "--force", pth)
 
-    symlinks.unmount(source_dir, target_dir, cache_=CACHE)
-    symlinks.mount(source_dir, target_dir, cache_=CACHE)
+
+def module_cmd(
+    target: pathlib.Path,
+    action: t.Literal["plug", "unplug"],
+    module: str
+) -> list[str]:
+    return cmd.run(
+        "9s-module",
+        "--source-dir", CONFIG_PATH,
+        "--target-dir", target,
+        action,
+        "--no-cache",
+        module
+    )
 
 
 if __name__ == "__main__":

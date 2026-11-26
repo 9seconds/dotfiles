@@ -52,29 +52,33 @@ class Config:
     def is_leaf(self) -> bool:
         return self.leaf.lower().strip() in ("1", "t", "true")
 
-    def run_install(self) -> None:
-        self._execute(self.install.encode())
+    def run_install(self, cwd: pathlib.Path) -> None:
+        self._execute(self.install.encode(), cwd)
 
-    def run_uninstall(self) -> None:
-        self._execute(self.uninstall.encode())
+    def run_uninstall(self, cwd: pathlib.Path) -> None:
+        self._execute(self.uninstall.encode(), cwd)
 
-    def _execute(self, script: str) -> None:
+    def _execute(self, script: bytes, cwd: pathlib.Path) -> None:
         script = script.strip()
         if not script:
             return
 
-        with tempfile.NamedTemporaryFile() as tmpfile:
+        with tempfile.NamedTemporaryFile(delete=False) as tmpfile:
             tmpfile.write(script)
-            tmpfile.flush()
-            os.chmod(tmpfile.name, 0o755)  # noqa: PTH101, S103
-            LOG.debug("Execute %s", tmpfile.name)
+            script_path = pathlib.Path(tmpfile.name)
 
+        try:
+            script_path.chmod(0o755)  # noqa: S103
+            LOG.debug("Execute %s", script_path)
             subprocess.run(  # noqa: S603
-                [tmpfile.name],
+                [script_path],
                 stdin=subprocess.DEVNULL,
+                cwd=cwd,
                 check=True,
                 timeout=10,
             )
+        finally:
+            script_path.unlink(missing_ok=True)
 
     @classmethod
     def scan(cls, path: pathlib.Path) -> Config:
@@ -192,8 +196,7 @@ class NodeProcessor(metaclass=abc.ABCMeta):
 
         nodes = set(nodes)
         while nodes:
-            if (node := nodes.pop()).parent is not None:
-                self.add_node(node)
+            self.add_node(nodes.pop())
 
     def process(self) -> None:
         for node in self.topo.static_order():
@@ -223,25 +226,28 @@ class NodeCreateProcessor(NodeProcessor):
         super().__init__(nodes)
 
     def add_node(self, node: Node) -> None:
-        self.topo.add(node)
-        for child in node.children:
-            self.topo.add(child, node)
+        self.topo.add(node, *node.children)
 
     def process_node(self, node: Node) -> None:
         LOG.debug("Create node %s", node.path)
 
         target_path = self.target_dir / node.path
+        if node.parent is None:
+            node.config.run_install(target_path)
+            return
+
         target_path.parent.mkdir(parents=True, exist_ok=True)
 
         if node.directory and not node.config.is_leaf():
             target_path.mkdir(exist_ok=True)
-            return
-
-        if not target_path.exists(follow_symlinks=False):
+        elif not os.path.lexists(target_path):
             target_path.symlink_to(
                 self.source_dir / node.path,
                 target_is_directory=node.directory,
             )
+
+        if node.directory and target_path.is_dir():
+            node.config.run_install(target_path)
 
 
 class NodeRemoveProcessor(NodeProcessor):
@@ -262,6 +268,11 @@ class NodeRemoveProcessor(NodeProcessor):
         LOG.debug("Delete node %s", node.path)
 
         target_path = self.target_dir / node.path
+        if node.directory and target_path.is_dir():
+            node.config.run_uninstall(target_path)
+
+        if node.parent is None:
+            return
         if node.directory and not node.config.is_leaf():
             with contextlib.suppress(FileNotFoundError):
                 target_path.rmdir()
